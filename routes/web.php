@@ -33,3 +33,4 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');

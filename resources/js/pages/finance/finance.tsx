@@ -11,6 +11,7 @@ import {
     Eye,
     FileText,
     Image as ImageIcon,
+    Link,
     Plus,
     Search,
     Trash2,
@@ -154,10 +155,12 @@ function Finance() {
                                 <option value="expense">Pengeluaran</option>
                             </select>
 
-                            <button className="flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white transition-colors hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none">
-                                <Plus className="h-4 w-4" />
-                                Tambah Transaksi
-                            </button>
+                            <a href="/finance/create">
+                                <button className="flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white transition-colors hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none">
+                                    <Plus className="h-4 w-4" />
+                                    Tambah Transaksi
+                                </button>
+                            </a>
                         </div>
                     </div>
 

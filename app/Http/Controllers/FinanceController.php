@@ -57,4 +57,12 @@ class FinanceController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Show create form (UI only).
+     */
+    public function create()
+    {
+        return inertia('finance/create');
+    }
 }
