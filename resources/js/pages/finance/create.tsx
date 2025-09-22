@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
+import InputField, { formatters, parsers } from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { formatCurrency } from '@/lib/utils';
 import { useState } from 'react';
 
 function CreateFinance() {
@@ -38,7 +38,6 @@ function CreateFinance() {
 
     const parseCurrency = (value: string) => {
         return value.replace(/[^\d]/g, '');
-        // return value
     };
 
     return (
@@ -63,7 +62,7 @@ function CreateFinance() {
                                     <button
                                         type="button"
                                         onClick={() => setType('income')}
-                                        className={`relative rounded-xl border-2 px-4 py-2 lg:px-5 lg:py-3 text-left transition-all ${
+                                        className={`relative rounded-xl border-2 px-4 py-2 text-left transition-all lg:px-5 lg:py-3 ${
                                             type === 'income' ? 'border-green-500 bg-green-50' : 'border-green-200 bg-white hover:border-green-300'
                                         }`}
                                     >
@@ -82,7 +81,7 @@ function CreateFinance() {
                                     <button
                                         type="button"
                                         onClick={() => setType('expense')}
-                                        className={`relative rounded-xl border-2 px-4 py-2 lg:px-5 lg:py-3 text-left transition-all ${
+                                        className={`relative rounded-xl border-2 px-4 py-2 text-left transition-all lg:px-5 lg:py-3 ${
                                             type === 'expense' ? 'border-blue-500 bg-blue-50' : 'border-green-200 bg-white hover:border-green-300'
                                         }`}
                                     >
@@ -106,48 +105,32 @@ function CreateFinance() {
 
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     {/* Date */}
-                                    <div>
-                                        <label className="mb-2 block text-sm font-medium text-green-800">Tanggal Transaksi</label>
-                                        <input
-                                            type="date"
-                                            value={date}
-                                            onChange={(e) => setDate(e.target.value)}
-                                            className="w-full rounded-lg border border-green-300 bg-white px-3 py-2.5 text-green-900 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200 focus:outline-none"
-                                        />
-                                    </div>
+                                    <InputField label="Tanggal Transaksi" type="date" value={date} onChange={setDate} />
 
                                     {/* Amount */}
-                                    <div>
-                                        <label className="mb-2 block text-sm font-medium text-green-800">Jumlah (Rupiah)</label>
-                                        <div className="flex overflow-hidden rounded-lg border border-green-300 bg-white shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
-                                            <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">Rp</div>
-                                            <input
-                                                type="text"
-                                                value={amount ? formatCurrency(Number(amount), false) : ''}
-                                                onChange={(e) => setAmount(parseCurrency(e.target.value))}
-                                                className="w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none"
-                                                placeholder="0"
-                                            />
-                                        </div>
-                                    </div>
+                                    <InputField
+                                        label="Jumlah (Rupiah)"
+                                        value={amount}
+                                        placeholder="Masukkan jumlah transaksi"
+                                        onChange={setAmount}
+                                        prefix="Rp"
+                                        parseInput={parsers.digitsOnly}
+                                        formatValue={formatters.currencyDigitsToDisplay}
+                                    />
                                 </div>
 
                                 {/* Remaining Balance */}
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-green-800">Sisa Saldo (Rupiah)</label>
-                                    <div className="flex overflow-hidden rounded-lg border border-green-300 bg-green-50 shadow-sm">
-                                        <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">Rp</div>
-                                        <input
-                                            type="text"
-                                            value={remainingBalance ? formatCurrency(Number(remainingBalance), false) : ''}
-                                            onChange={(e) => setRemainingBalance(parseCurrency(e.target.value))}
-                                            className="w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none"
-                                            placeholder="0"
-                                            readOnly
-                                        />
-                                    </div>
-                                    <p className="mt-1 text-xs text-green-700">Akan dihitung otomatis</p>
-                                </div>
+                                <InputField
+                                    label="Sisa Saldo (Rupiah)"
+                                    value={remainingBalance}
+                                    onChange={setRemainingBalance}
+                                    prefix="Rp"
+                                    variant="muted"
+                                    readOnly
+                                    helperText="Akan dihitung otomatis"
+                                    parseInput={parsers.digitsOnly}
+                                    formatValue={formatters.currencyDigitsToDisplay}
+                                />
 
                                 {/* Responsible Person */}
                                 <div>
@@ -165,16 +148,14 @@ function CreateFinance() {
                                 </div>
 
                                 {/* Notes */}
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-green-800">Catatan</label>
-                                    <textarea
-                                        rows={3}
-                                        value={note}
-                                        onChange={(e) => setNote(e.target.value)}
-                                        className="w-full resize-none rounded-lg border border-green-300 bg-white px-3 py-2.5 text-green-900 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200 focus:outline-none"
-                                        placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
-                                    />
-                                </div>
+                                <InputField
+                                    label="Catatan"
+                                    as="textarea"
+                                    rows={3}
+                                    value={note}
+                                    onChange={setNote}
+                                    placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
+                                />
 
                                 {/* File Upload */}
                                 <div>
