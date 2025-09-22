@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('families', function (Blueprint $table) {
             $table->id();
+            $table->string('family_name')->nullable(false);
             $table->string('kk_number', 16)->unique()->comment('Nomor Kartu Keluarga');
             $table->timestamps();
         });

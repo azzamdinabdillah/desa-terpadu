@@ -16,16 +16,19 @@ class FamilySeeder extends Seeder
         $families = [
             [
                 'kk_number' => '3201010101000001',
+                'family_name' => 'Keluarga 1',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'kk_number' => '3201010101000002',
+                'family_name' => 'Keluarga 2',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'kk_number' => '3201010101000003',
+                'family_name' => 'Keluarga 3',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
