@@ -1,86 +1,80 @@
 import Header from '@/components/Header';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { Calendar, Edit, Eye, FileText, Image as ImageIcon, Plus, Search, Trash2, TrendingDown, TrendingUp, User, Wallet } from 'lucide-react';
-import { useState } from 'react';
-
-// Mock data untuk demo
-const mockFinanceData = [
-    {
-        id: 1,
-        date: '2025-01-20',
-        type: 'income',
-        amount: 5000000,
-        note: 'Dana BOS dari pemerintah',
-        user: 'Admin Desa',
-        proof_image: 'proof1.jpg',
-        created_at: '2025-01-20 10:30:00',
-    },
-    {
-        id: 2,
-        date: '2025-01-19',
-        type: 'expense',
-        amount: 2500000,
-        note: 'Pembelian alat tulis kantor',
-        user: 'Bendahara',
-        proof_image: 'proof2.jpg',
-        created_at: '2025-01-19 14:15:00',
-    },
-    {
-        id: 3,
-        date: '2025-01-18',
-        type: 'income',
-        amount: 1500000,
-        note: 'Retribusi pasar mingguan',
-        user: 'Petugas Retribusi',
-        proof_image: 'proof3.jpg',
-        created_at: '2025-01-18 09:45:00',
-    },
-    {
-        id: 4,
-        date: '2025-01-17',
-        type: 'expense',
-        amount: 800000,
-        note: 'Biaya listrik kantor desa',
-        user: 'Admin Desa',
-        proof_image: 'proof4.jpg',
-        created_at: '2025-01-17 16:20:00',
-    },
-];
+import { formatCurrency, formatDate } from '@/lib/utils';
+import { Props } from '@/types/finance/financeTypes';
+import { router, usePage } from '@inertiajs/react';
+import {
+    Calendar,
+    ChevronLeft,
+    ChevronRight,
+    Edit,
+    Eye,
+    FileText,
+    Image as ImageIcon,
+    Plus,
+    Search,
+    Trash2,
+    TrendingDown,
+    TrendingUp,
+    User,
+    Wallet,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 function Finance() {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterType, setFilterType] = useState('all');
+    const { finances, summary, filters } = usePage<Props>().props;
+    const [searchTerm, setSearchTerm] = useState(filters.search || '');
+    const [filterType, setFilterType] = useState(filters.type || 'all');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    // Calculate summary
-    const totalIncome = mockFinanceData.filter((item) => item.type === 'income').reduce((sum, item) => sum + item.amount, 0);
-
-    const totalExpense = mockFinanceData.filter((item) => item.type === 'expense').reduce((sum, item) => sum + item.amount, 0);
-
-    const balance = totalIncome - totalExpense;
-
-    // Filter data
-    const filteredData = mockFinanceData.filter((item) => {
-        const matchesSearch =
-            item.note.toLowerCase().includes(searchTerm.toLowerCase()) || item.user.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesFilter = filterType === 'all' || item.type === filterType;
-        return matchesSearch && matchesFilter;
-    });
-
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-        }).format(amount);
+    const handleSearch = () => {
+        router.get(
+            '/finance',
+            {
+                search: searchTerm,
+                type: filterType,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            },
+        );
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-        });
+    // Debounce search input to trigger server-side requests as user types
+    // without spamming the server
+    // 300ms delay after user stops typing
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            if (searchTerm !== (filters.search || '')) {
+                router.get('/finance', { search: searchTerm, type: filterType }, { preserveState: true, replace: true });
+            }
+        }, 300);
+        return () => clearTimeout(handler);
+    }, [searchTerm, filterType]);
+
+    const handleFilterChange = (type: string) => {
+        setFilterType(type);
+        router.get(
+            '/finance',
+            {
+                search: searchTerm,
+                type: type,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            },
+        );
+    };
+
+    const handlePageChange = (url: string) => {
+        if (url) {
+            router.visit(url, {
+                preserveState: true,
+                replace: true,
+            });
+        }
     };
 
     return (
@@ -96,7 +90,7 @@ function Finance() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="mb-1 text-sm font-medium text-green-700">Total Pemasukan</p>
-                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{formatCurrency(totalIncome)}</p>
+                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{formatCurrency(summary.totalIncome)}</p>
                                 </div>
                                 <div className="rounded-full bg-green-100 p-3">
                                     <TrendingUp className="h-6 w-6 text-green-700" />
@@ -109,7 +103,7 @@ function Finance() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="mb-1 text-sm font-medium text-green-700">Total Pengeluaran</p>
-                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{formatCurrency(totalExpense)}</p>
+                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{formatCurrency(summary.totalExpense)}</p>
                                 </div>
                                 <div className="rounded-full bg-green-100 p-3">
                                     <TrendingDown className="h-6 w-6 text-green-700" />
@@ -122,8 +116,8 @@ function Finance() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="mb-1 text-sm font-medium text-green-700">Saldo</p>
-                                    <p className={`text-2xl font-bold lg:text-3xl ${balance >= 0 ? 'text-green-900' : 'text-green-900'}`}>
-                                        {formatCurrency(balance)}
+                                    <p className={`text-2xl font-bold lg:text-3xl ${summary.balance >= 0 ? 'text-green-900' : 'text-green-900'}`}>
+                                        {formatCurrency(summary.balance)}
                                     </p>
                                 </div>
                                 <div className="rounded-full bg-green-100 p-3">
@@ -144,6 +138,7 @@ function Finance() {
                                 placeholder="Cari transaksi (catatan, user)..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                                 className="w-full rounded-lg border border-green-300 bg-white py-2 pr-4 pl-10 text-green-900 placeholder-green-500 focus:border-green-600 focus:ring-2 focus:ring-green-200 focus:outline-none"
                             />
                         </div>
@@ -151,7 +146,7 @@ function Finance() {
                         <div className="flex gap-2">
                             <select
                                 value={filterType}
-                                onChange={(e) => setFilterType(e.target.value)}
+                                onChange={(e) => handleFilterChange(e.target.value)}
                                 className="rounded-lg border border-green-300 bg-white px-3 py-2 text-green-900 focus:border-green-600 focus:ring-2 focus:ring-green-200 focus:outline-none"
                             >
                                 <option value="all">Semua Tipe</option>
@@ -177,12 +172,15 @@ function Finance() {
                                         <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Jumlah</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Catatan</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">User</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">
+                                            Sisa Saldo
+                                        </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Bukti</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-green-800 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-green-100 bg-white">
-                                    {filteredData.map((item) => (
+                                    {finances.data.map((item) => (
                                         <tr key={item.id} className="hover:bg-green-50">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
@@ -211,8 +209,13 @@ function Finance() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
                                                     <User className="h-4 w-4 text-green-600" />
-                                                    <span className="text-sm text-green-900">{item.user}</span>
+                                                    <span className="text-sm text-green-900">
+                                                        {(item as any).user?.citizen?.full_name || item.user?.email}
+                                                    </span>
                                                 </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className="text-sm font-semibold text-green-700">{formatCurrency(item.remaining_balance)}</span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <button
@@ -243,15 +246,63 @@ function Finance() {
                         </div>
                     </div>
 
+                    {/* Pagination */}
+                    {finances.data.length > 0 && (
+                        <div className="mt-6 flex items-center justify-between rounded-lg border border-green-200 bg-white px-6 py-3 shadow-lg">
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-green-700">
+                                    Menampilkan {(finances.current_page - 1) * finances.per_page + 1} sampai{' '}
+                                    {Math.min(finances.current_page * finances.per_page, finances.total)} dari {finances.total} data
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handlePageChange(finances.links.find((link) => link.label === '&laquo; Previous')?.url || '')}
+                                    disabled={finances.current_page === 1}
+                                    className="flex items-center gap-1 rounded-lg border border-green-300 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white"
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                    Sebelumnya
+                                </button>
+
+                                <div className="flex gap-1">
+                                    {finances.links
+                                        .filter((link) => link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;')
+                                        .map((link, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => handlePageChange(link.url || '')}
+                                                className={`rounded-lg px-3 py-2 text-sm transition-colors ${
+                                                    link.active
+                                                        ? 'bg-green-700 text-white'
+                                                        : 'border border-green-300 text-green-700 hover:bg-green-50'
+                                                }`}
+                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                            />
+                                        ))}
+                                </div>
+
+                                <button
+                                    onClick={() => handlePageChange(finances.links.find((link) => link.label === 'Next &raquo;')?.url || '')}
+                                    disabled={finances.current_page === finances.last_page}
+                                    className="flex items-center gap-1 rounded-lg border border-green-300 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white"
+                                >
+                                    Selanjutnya
+                                    <ChevronRight className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Empty State */}
-                    {filteredData.length === 0 && (
+                    {finances.data.length === 0 && (
                         <div className="rounded-lg border border-green-200 bg-white p-12 text-center shadow-lg">
                             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                                 <Wallet className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="mb-2 text-lg font-semibold text-green-900">Tidak ada data transaksi</h3>
                             <p className="mb-6 text-green-700">
-                                {searchTerm || filterType !== 'all'
+                                {filters.search || (filters.type && filters.type !== 'all')
                                     ? 'Tidak ada transaksi yang sesuai dengan pencarian atau filter Anda.'
                                     : 'Belum ada transaksi keuangan yang tercatat.'}
                             </p>

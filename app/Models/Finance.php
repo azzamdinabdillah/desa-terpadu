@@ -22,6 +22,7 @@ class Finance extends Model
         'date',
         'type',
         'amount',
+        'remaining_balance',
         'note',
         'user_id',
         'proof_image',
