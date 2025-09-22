@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->enum('type', ['income', 'expense']);
-            $table->decimal('amount', 15, 2);
+            $table->bigInteger('amount');
+            $table->bigInteger('remaining_balance');
             $table->text('note')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('proof_image');

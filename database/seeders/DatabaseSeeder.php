@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             FamilySeeder::class,
             CitizenSeeder::class,
             UserSeeder::class,
+            FinanceSeeder::class,
         ]);
     }
 }
