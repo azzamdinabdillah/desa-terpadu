@@ -8,14 +8,21 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format number as Indonesian Rupiah currency
  * @param amount - The amount to format
+ * @param includeCurrency - Whether to include currency symbol (default: true)
  * @returns Formatted currency string in IDR
  */
-export function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-    }).format(amount);
+export function formatCurrency(amount: number, includeCurrency: boolean = true): string {
+    if (includeCurrency) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(amount);
+    } else {
+        return new Intl.NumberFormat('id-ID', {
+            minimumFractionDigits: 0,
+        }).format(amount);
+    }
 }
 
 /**

@@ -84,7 +84,7 @@ function Finance() {
                 <Header title="Manajemen Keuangan Desa" icon="💰" />
 
                 {/* Dashboard Cards */}
-                <div className="p-4 lg:p-8">
+                <div className="p-4 lg:p-8 max-w-7xl mx-auto">
                     <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
                         {/* Total Income */}
                         <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">

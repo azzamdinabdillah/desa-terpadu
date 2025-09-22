@@ -1,6 +1,7 @@
 interface User {
     id: number;
     name: string;
+    email: string;
 }
 
 interface Finance {

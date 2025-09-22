@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { formatCurrency } from '@/lib/utils';
 import { useState } from 'react';
 
 function CreateFinance() {
@@ -35,161 +36,214 @@ function CreateFinance() {
         setProofPreview(null);
     };
 
+    const parseCurrency = (value: string) => {
+        return value.replace(/[^\d]/g, '');
+        // return value
+    };
+
     return (
         <BaseLayouts>
-            <div>
+            <div className="min-h-screen bg-green-50">
                 <Header title="Tambah Transaksi Keuangan" icon="💰" />
 
-                <div className="p-4 lg:p-8">
-                    <div className="">
-                        {/* Section Header */}
-                        <div className="mb-6">
-                            <h2 className="text-xl font-semibold text-green-900">Form Transaksi</h2>
-                            <p className="mt-1 text-sm text-green-700">UI saja, tidak ada proses simpan</p>
+                <div className="p-6">
+                    <div className="mx-auto max-w-7xl">
+                        {/* Page Header */}
+                        <div className="mb-8">
+                            <h1 className="text-3xl font-bold text-green-900">Tambah Transaksi</h1>
+                            <p className="mt-2 text-green-700">Catat pemasukan atau pengeluaran desa</p>
                         </div>
 
-                        {/* Form Grid */}
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {/* Tanggal */}
+                        {/* Form */}
+                        <div className="space-y-8">
+                            {/* Transaction Type */}
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-green-800">Tanggal</label>
-                                <div className="rounded-lg border border-green-300 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
-                                    <input
-                                        type="date"
-                                        value={date}
-                                        onChange={(e) => setDate(e.target.value)}
-                                        className="w-full bg-transparent text-green-900 placeholder:text-green-500 focus:outline-none"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Tipe */}
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-green-800">Tipe</label>
-                                <div className="flex gap-2">
+                                <h3 className="mb-4 text-lg font-medium text-green-800">Jenis Transaksi</h3>
+                                <div className="grid grid-cols-2 gap-4">
                                     <button
                                         type="button"
                                         onClick={() => setType('income')}
-                                        className={`flex-1 rounded-full border px-4 py-2 text-sm font-medium transition ${
-                                            type === 'income'
-                                                ? 'border-green-700 bg-green-700 text-white'
-                                                : 'border-green-300 text-green-700 hover:bg-green-50'
+                                        className={`relative rounded-xl border-2 px-4 py-2 lg:px-5 lg:py-3 text-left transition-all ${
+                                            type === 'income' ? 'border-green-500 bg-green-50' : 'border-green-200 bg-white hover:border-green-300'
                                         }`}
                                     >
-                                        Pemasukan
+                                        <div className="flex items-center">
+                                            <div className="">
+                                                <h4 className={`font-medium ${type === 'income' ? 'text-green-900' : 'text-green-900'}`}>
+                                                    Pemasukan
+                                                </h4>
+                                                <p className={`text-sm ${type === 'income' ? 'text-green-700' : 'text-green-600'}`}>
+                                                    Uang masuk ke kas
+                                                </p>
+                                            </div>
+                                        </div>
                                     </button>
+
                                     <button
                                         type="button"
                                         onClick={() => setType('expense')}
-                                        className={`flex-1 rounded-full border px-4 py-2 text-sm font-medium transition ${
-                                            type === 'expense'
-                                                ? 'border-blue-700 bg-blue-700 text-white'
-                                                : 'border-blue-300 text-blue-700 hover:bg-blue-50'
+                                        className={`relative rounded-xl border-2 px-4 py-2 lg:px-5 lg:py-3 text-left transition-all ${
+                                            type === 'expense' ? 'border-blue-500 bg-blue-50' : 'border-green-200 bg-white hover:border-green-300'
                                         }`}
                                     >
-                                        Pengeluaran
+                                        <div className="flex items-center">
+                                            <div className="">
+                                                <h4 className={`font-medium ${type === 'expense' ? 'text-blue-900' : 'text-green-900'}`}>
+                                                    Pengeluaran
+                                                </h4>
+                                                <p className={`text-sm ${type === 'expense' ? 'text-blue-700' : 'text-green-600'}`}>
+                                                    Uang keluar dari kas
+                                                </p>
+                                            </div>
+                                        </div>
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Jumlah */}
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-green-800">Jumlah (IDR)</label>
-                                <div className="flex overflow-hidden rounded-lg border border-green-300 bg-white shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
-                                    <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">Rp</div>
-                                    <input
-                                        type="number"
-                                        min={0}
-                                        inputMode="numeric"
-                                        value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
-                                        className="w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none"
-                                        placeholder="0"
-                                    />
-                                </div>
-                            </div>
+                            {/* Form Fields */}
+                            <div className="space-y-6 rounded-lg border border-green-200 bg-white p-6 shadow-lg">
+                                <h3 className="text-lg font-medium text-green-800">Detail Transaksi</h3>
 
-                            {/* Sisa Saldo */}
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-green-800">Sisa Saldo (IDR)</label>
-                                <div className="flex overflow-hidden rounded-lg border border-green-300 bg-white shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
-                                    <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">Rp</div>
-                                    <input
-                                        type="number"
-                                        inputMode="numeric"
-                                        value={remainingBalance}
-                                        onChange={(e) => setRemainingBalance(e.target.value)}
-                                        className="w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none"
-                                        placeholder="0"
-                                    />
-                                </div>
-                            </div>
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                    {/* Date */}
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-green-800">Tanggal Transaksi</label>
+                                        <input
+                                            type="date"
+                                            value={date}
+                                            onChange={(e) => setDate(e.target.value)}
+                                            className="w-full rounded-lg border border-green-300 bg-white px-3 py-2.5 text-green-900 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200 focus:outline-none"
+                                        />
+                                    </div>
 
-                            {/* User */}
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-green-800">User</label>
-                                <div className="rounded-lg border border-green-300 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
+                                    {/* Amount */}
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-green-800">Jumlah (Rupiah)</label>
+                                        <div className="flex overflow-hidden rounded-lg border border-green-300 bg-white shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
+                                            <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">Rp</div>
+                                            <input
+                                                type="text"
+                                                value={amount ? formatCurrency(Number(amount), false) : ''}
+                                                onChange={(e) => setAmount(parseCurrency(e.target.value))}
+                                                className="w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none"
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Remaining Balance */}
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium text-green-800">Sisa Saldo (Rupiah)</label>
+                                    <div className="flex overflow-hidden rounded-lg border border-green-300 bg-green-50 shadow-sm">
+                                        <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">Rp</div>
+                                        <input
+                                            type="text"
+                                            value={remainingBalance ? formatCurrency(Number(remainingBalance), false) : ''}
+                                            onChange={(e) => setRemainingBalance(parseCurrency(e.target.value))}
+                                            className="w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none"
+                                            placeholder="0"
+                                            readOnly
+                                        />
+                                    </div>
+                                    <p className="mt-1 text-xs text-green-700">Akan dihitung otomatis</p>
+                                </div>
+
+                                {/* Responsible Person */}
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium text-green-800">Penanggung Jawab</label>
                                     <select
                                         value={userId}
                                         onChange={(e) => setUserId(e.target.value)}
-                                        className="w-full bg-transparent text-green-900 focus:outline-none"
+                                        className="w-full rounded-lg border border-green-300 bg-white px-3 py-2.5 text-green-900 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200 focus:outline-none"
                                     >
-                                        <option value="">Pilih user</option>
+                                        <option value="">Pilih penanggung jawab</option>
+                                        <option value="1">Kepala Desa</option>
+                                        <option value="2">Bendahara Desa</option>
+                                        <option value="3">Sekretaris Desa</option>
                                     </select>
                                 </div>
-                                <p className="mt-1 text-xs text-green-700">Di sistem nyata, ini akan terisi dari data user.</p>
-                            </div>
 
-                            {/* Catatan */}
-                            <div className="md:col-span-2">
-                                <label className="mb-1 block text-sm font-medium text-green-800">Catatan</label>
-                                <div className="rounded-lg border border-green-300 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
+                                {/* Notes */}
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium text-green-800">Catatan</label>
                                     <textarea
-                                        rows={4}
+                                        rows={3}
                                         value={note}
                                         onChange={(e) => setNote(e.target.value)}
-                                        className="w-full resize-none bg-transparent text-green-900 placeholder:text-green-500 focus:outline-none"
-                                        placeholder="Tulis catatan (opsional)"
+                                        className="w-full resize-none rounded-lg border border-green-300 bg-white px-3 py-2.5 text-green-900 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200 focus:outline-none"
+                                        placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
                                     />
                                 </div>
-                            </div>
 
-                            {/* Bukti (Gambar) */}
-                            <div className="md:col-span-2">
-                                <label className="mb-1 block text-sm font-medium text-green-800">Bukti (Gambar)</label>
-                                <div className="rounded-lg border border-green-300 bg-white px-3 py-2.5 shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleFileChange}
-                                        className="w-full text-green-900 file:mr-4 file:rounded-md file:border-0 file:bg-green-700 file:px-4 file:py-2 file:text-white file:hover:bg-green-800 focus:outline-none"
-                                    />
-                                </div>
-                                {proofPreview && (
-                                    <div className="mt-3 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-3">
-                                        <img src={proofPreview} alt="Preview Bukti" className="h-20 w-20 rounded object-cover" />
-                                        <div>
-                                            <p className="text-sm font-medium text-green-900">Preview bukti terlampir</p>
-                                            <p className="text-xs text-green-700">Ini hanya pratinjau lokal, tidak diunggah.</p>
+                                {/* File Upload */}
+                                <div>
+                                    <label className="mb-2 block text-sm font-medium text-green-800">Bukti Transaksi</label>
+                                    <div className="mt-1 flex justify-center rounded-lg border-2 border-dashed border-green-300 px-6 pt-5 pb-6 transition-colors hover:border-green-400">
+                                        <div className="space-y-1 text-center">
+                                            <svg className="mx-auto h-12 w-12 text-green-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                <path
+                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                />
+                                            </svg>
+                                            <div className="flex text-sm text-green-600">
+                                                <label
+                                                    htmlFor="file-upload"
+                                                    className="relative cursor-pointer rounded-md bg-white font-medium text-green-700 focus-within:ring-2 focus-within:ring-green-500 focus-within:ring-offset-2 focus-within:outline-none hover:text-green-800"
+                                                >
+                                                    <span>Upload file</span>
+                                                    <input
+                                                        id="file-upload"
+                                                        type="file"
+                                                        accept="image/*,.pdf"
+                                                        onChange={handleFileChange}
+                                                        className="sr-only"
+                                                    />
+                                                </label>
+                                                <p className="pl-1">atau drag and drop</p>
+                                            </div>
+                                            <p className="text-xs text-green-500">PNG, JPG, PDF hingga 10MB</p>
                                         </div>
                                     </div>
-                                )}
+                                    {proofPreview && (
+                                        <div className="mt-4 flex items-center rounded-lg bg-green-50 p-3">
+                                            <img src={proofPreview} alt="Preview" className="h-12 w-12 rounded object-cover" />
+                                            <div className="ml-3 flex-1">
+                                                <p className="text-sm font-medium text-green-900">File terpilih</p>
+                                                <p className="text-xs text-green-700">Pratinjau lokal</p>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setProofFile(null);
+                                                    setProofPreview(null);
+                                                }}
+                                                className="ml-3 text-sm text-red-600 hover:text-red-500"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
-                            {/* Aksi */}
-                            <div className="flex items-center justify-end gap-3 pt-4 md:col-span-2">
+                            {/* Action Buttons */}
+                            <div className="flex justify-end space-x-3">
                                 <button
                                     type="button"
                                     onClick={handleCancel}
-                                    className="rounded-md border border-green-300 px-4 py-2 text-green-700 transition-colors hover:bg-green-50 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                    className="rounded-lg border border-green-300 bg-white px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-50 focus:ring-2 focus:ring-green-200 focus:outline-none"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="button"
-                                    className="rounded-md bg-green-700 px-4 py-2 text-white transition-colors hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                    className="rounded-lg border border-transparent bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none"
                                 >
-                                    Simpan (UI Saja)
+                                    Simpan Transaksi
                                 </button>
                             </div>
                         </div>
