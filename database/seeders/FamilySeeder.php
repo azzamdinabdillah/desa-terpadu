@@ -29,16 +29,6 @@ class FamilySeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'kk_number' => '3201010101000004',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'kk_number' => '3201010101000005',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ];
 
         DB::table('families')->insert($families);
