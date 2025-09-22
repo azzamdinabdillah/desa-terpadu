@@ -1,6 +1,6 @@
 import * as Collapsible from '@radix-ui/react-collapsible';
 import * as Dialog from '@radix-ui/react-dialog';
-import { ChevronDown, ChevronRight, Home, Menu, Settings, User, Users, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, CircleDollarSign, CurrencyIcon, Home, Menu, Settings, User, Users, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -25,6 +25,12 @@ const menuItems: MenuItem[] = [
         label: 'Dashboard',
         icon: <Home className="h-5 w-5" />,
         href: '/dashboard',
+    },
+    {
+        id: 'finance',
+        label: 'Manajemen Keuangan',
+        icon: <CircleDollarSign className="h-5 w-5" />,
+        href: '/finance',
     },
     {
         id: 'warga',

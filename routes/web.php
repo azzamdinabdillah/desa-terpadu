@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FinanceController;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +31,5 @@ Route::get('/', function () {
         ],
     ]);
 })->name('home');
+
+Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');

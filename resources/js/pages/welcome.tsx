@@ -1,6 +1,6 @@
+import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import { router } from '@inertiajs/react';
-import { Settings } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface Citizen {
@@ -131,25 +131,14 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ citizens, filters }) => {
 
                 {/* Main Content */}
                 <div className="lg:ml-64">
-                    <header className="border-b border-green-200 bg-gradient-to-r from-green-700 to-green-900 px-4 py-4 lg:px-8">
-                        <div className="flex items-center justify-between">
-                            <div className="lg:hidden">
-                                {/* Space for mobile menu button */}
-                                <div className="w-10"></div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                                    <span className="text-sm">🌾</span>
-                                </div>
-                                <h1 className="font-heading text-xl font-bold text-white">Dashboard Desa</h1>
-                            </div>
-                            <div className="flex items-center space-x-4">
-                                <button className="rounded-lg bg-white/10 p-2 text-white transition-all duration-200 hover:bg-white/20 hover:shadow-md">
-                                    <Settings className="h-5 w-5" />
-                                </button>
-                            </div>
-                        </div>
-                    </header>
+                    <Header
+                        title="Dashboard Desa"
+                        icon="🌾"
+                        onSettingsClick={() => {
+                            // Handle settings click - you can add your logic here
+                            console.log('Settings clicked from Dashboard Desa');
+                        }}
+                    />
 
                     {/* Page Content */}
                     <main className="bg-green-50 p-4 lg:p-8">
