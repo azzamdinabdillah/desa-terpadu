@@ -1,6 +1,6 @@
+import { usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import * as Dialog from '@radix-ui/react-dialog';
-import { ChevronDown, ChevronRight, CircleDollarSign, CurrencyIcon, Home, Menu, Settings, User, Users, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, CircleDollarSign, Home, Settings, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -50,15 +50,33 @@ const menuItems: MenuItem[] = [
     },
 ];
 
-const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick }) => {
+const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     const [openMenus, setOpenMenus] = useState<string[]>([]);
+    const { url } = usePage();
 
     const toggleMenu = (menuId: string) => {
         setOpenMenus((prev) => (prev.includes(menuId) ? prev.filter((id) => id !== menuId) : [...prev, menuId]));
     };
 
+    // Function to check if a menu item is active
+    const isActive = (href: string) => {
+        return url === href || url.startsWith(href + '/');
+    };
+
+    // Function to check if a submenu item is active
+    const isSubmenuActive = (href: string) => {
+        return url === href || url.startsWith(href + '/');
+    };
+
+    // Function to check if a parent menu should be open (has active submenu)
+    const shouldMenuBeOpen = (submenu: { href: string }[]) => {
+        return submenu.some((item) => isSubmenuActive(item.href));
+    };
+
     return (
-        <div className="flex h-full flex-col bg-green-50">
+        <div
+            className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-green-200 lg:bg-green-50 lg:shadow-lg ${className}`}
+        >
             {/* Logo Section */}
             <div className="border-b border-green-200 bg-green-100 p-6">
                 <div className="flex items-center space-x-3">
@@ -77,13 +95,20 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
                 {menuItems.map((item) => (
                     <div key={item.id}>
                         {item.submenu ? (
-                            <Collapsible.Root open={openMenus.includes(item.id)} onOpenChange={() => toggleMenu(item.id)}>
-                                <Collapsible.Trigger className="flex w-full items-center justify-between rounded-lg p-3 text-left text-green-800 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm">
+                            <Collapsible.Root
+                                open={openMenus.includes(item.id) || shouldMenuBeOpen(item.submenu)}
+                                onOpenChange={() => toggleMenu(item.id)}
+                            >
+                                <Collapsible.Trigger
+                                    className={`flex w-full items-center justify-between rounded-lg p-3 text-left transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
+                                        shouldMenuBeOpen(item.submenu) ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
+                                    }`}
+                                >
                                     <div className="flex items-center space-x-3">
-                                        <div className="text-green-700">{item.icon}</div>
+                                        <div className={`${shouldMenuBeOpen(item.submenu) ? 'text-green-800' : 'text-green-700'}`}>{item.icon}</div>
                                         <span className="text-sm font-medium">{item.label}</span>
                                     </div>
-                                    {openMenus.includes(item.id) ? (
+                                    {openMenus.includes(item.id) || shouldMenuBeOpen(item.submenu) ? (
                                         <ChevronDown className="h-4 w-4 text-green-600" />
                                     ) : (
                                         <ChevronRight className="h-4 w-4 text-green-600" />
@@ -95,8 +120,11 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
                                         <a
                                             key={subitem.id}
                                             href={subitem.href}
-                                            onClick={onItemClick}
-                                            className="block rounded-md px-3 py-2 text-sm text-green-700 transition-all duration-200 hover:bg-green-50 hover:text-green-900 hover:shadow-sm"
+                                            className={`block rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-900 hover:shadow-sm ${
+                                                isSubmenuActive(subitem.href)
+                                                    ? 'bg-green-200 font-semibold text-green-900 shadow-sm'
+                                                    : 'text-green-700'
+                                            }`}
                                         >
                                             {subitem.label}
                                         </a>
@@ -106,10 +134,11 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
                         ) : (
                             <a
                                 href={item.href}
-                                onClick={onItemClick}
-                                className="flex items-center space-x-3 rounded-lg p-3 text-green-800 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm"
+                                className={`flex items-center space-x-3 rounded-lg p-3 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
+                                    isActive(item.href || '') ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
+                                }`}
                             >
-                                <div className="text-green-700">{item.icon}</div>
+                                <div className={`${isActive(item.href || '') ? 'text-green-800' : 'text-green-700'}`}>{item.icon}</div>
                                 <span className="text-sm font-medium">{item.label}</span>
                             </a>
                         )}
@@ -130,48 +159,6 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
                 </div>
             </div>
         </div>
-    );
-};
-
-const Sidebar: React.FC<SidebarProps> = ({ className }) => {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-    return (
-        <>
-            {/* Desktop Sidebar */}
-            <div
-                className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-green-200 lg:bg-green-50 lg:shadow-lg ${className}`}
-            >
-                <SidebarContent />
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="fixed top-4 left-4 z-50 lg:hidden">
-                <button
-                    onClick={() => setMobileMenuOpen(true)}
-                    className="rounded-lg border border-green-300 bg-green-100 p-2 shadow-md transition-all duration-200 hover:bg-green-200 hover:shadow-lg"
-                >
-                    <Menu className="h-5 w-5 text-green-800" />
-                </button>
-            </div>
-
-            {/* Mobile Drawer */}
-            <Dialog.Root open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 lg:hidden" />
-                    <Dialog.Content className="fixed top-0 left-0 z-50 h-full w-80 bg-green-50 lg:hidden">
-                        {/* Close Button */}
-                        <div className="absolute top-4 right-4">
-                            <Dialog.Close className="rounded-lg p-2 transition-all duration-200 hover:bg-green-200">
-                                <X className="h-5 w-5 text-green-800" />
-                            </Dialog.Close>
-                        </div>
-
-                        <SidebarContent onItemClick={() => setMobileMenuOpen(false)} />
-                    </Dialog.Content>
-                </Dialog.Portal>
-            </Dialog.Root>
-        </>
     );
 };
 
