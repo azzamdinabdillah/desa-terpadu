@@ -88,6 +88,83 @@ class FinanceSeeder extends Seeder
             'proof_image' => 'proof_images/operational_cost.jpg',
         ]);
 
+        // Generate 100 more finance data entries with varied dates, types, amounts, notes, and proof images
+        $notes = [
+            'Pembayaran listrik desa',
+            'Penerimaan dana CSR',
+            'Pengeluaran perbaikan balai desa',
+            'Pemasukan hasil sewa tanah desa',
+            'Pengeluaran pelatihan perangkat desa',
+            'Penerimaan donasi masyarakat',
+            'Pengeluaran kegiatan 17 Agustus',
+            'Pemasukan retribusi parkir',
+            'Pengeluaran pembelian bibit pohon',
+            'Penerimaan bantuan provinsi',
+            'Pengeluaran perawatan kendaraan dinas',
+            'Pemasukan hasil panen sawah desa',
+            'Pengeluaran subsidi pupuk',
+            'Penerimaan dana BUMDes',
+            'Pengeluaran pembangunan pos ronda',
+            'Pemasukan hasil lelang desa',
+            'Pengeluaran honor petugas kebersihan',
+            'Penerimaan dana hibah',
+            'Pengeluaran pengadaan komputer',
+            'Pemasukan retribusi air bersih',
+        ];
+
+        $proofImages = [
+            'proof_images/electricity.jpg',
+            'proof_images/csr.jpg',
+            'proof_images/repair.jpg',
+            'proof_images/land_rent.jpg',
+            'proof_images/training.jpg',
+            'proof_images/donation.jpg',
+            'proof_images/independence_day.jpg',
+            'proof_images/parking.jpg',
+            'proof_images/tree_seed.jpg',
+            'proof_images/province_aid.jpg',
+            'proof_images/vehicle_maintenance.jpg',
+            'proof_images/harvest.jpg',
+            'proof_images/fertilizer.jpg',
+            'proof_images/bumdes.jpg',
+            'proof_images/security_post.jpg',
+            'proof_images/auction.jpg',
+            'proof_images/cleaning_staff.jpg',
+            'proof_images/grant.jpg',
+            'proof_images/computer.jpg',
+            'proof_images/clean_water.jpg',
+        ];
+
+        $balance = 59000000;
+        $faker = app(\Faker\Generator::class);
+
+        for ($i = 0; $i < 100; $i++) {
+            // Randomly choose type
+            $type = $faker->randomElement(['income', 'expense']);
+            // Random amount between 1jt and 15jt
+            $amount = $faker->numberBetween(1000000, 15000000);
+
+            if ($type === 'income') {
+                $balance += $amount;
+            } else {
+                // Prevent negative balance
+                if ($balance - $amount < 0) {
+                    $amount = $balance > 0 ? $balance : 0;
+                }
+                $balance -= $amount;
+            }
+
+            Finance::create([
+                'date' => now()->subDays(4)->subDays($i + 1),
+                'type' => $type,
+                'amount' => $amount,
+                'remaining_balance' => $balance,
+                'note' => $faker->randomElement($notes),
+                'user_id' => $user->id,
+                'proof_image' => $faker->randomElement($proofImages),
+            ]);
+        }
+
         $this->command->info('Finance seeder completed successfully!');
     }
 }

@@ -29,6 +29,8 @@ interface PaginatedFinances {
     per_page: number;
     total: number;
     links: PaginationLink[];
+    prev_page_url: string | null;
+    next_page_url: string | null;
 }
 
 interface Summary {

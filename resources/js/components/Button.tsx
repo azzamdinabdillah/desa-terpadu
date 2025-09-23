@@ -15,6 +15,7 @@ type ButtonProps = {
     icon?: ReactNode;
     iconPosition?: 'left' | 'right';
     fullWidth?: boolean;
+    title?: string;
 };
 
 export default function Button({
@@ -29,6 +30,7 @@ export default function Button({
     icon,
     iconPosition = 'left',
     fullWidth = false,
+    title,
 }: ButtonProps) {
     // Base classes
     const baseClasses =
@@ -59,7 +61,7 @@ export default function Button({
     const combinedClasses = [baseClasses, sizeClasses[size], variantClasses[variant], widthClasses, iconSpacing, className].filter(Boolean).join(' ');
 
     return (
-        <button type={type} onClick={onClick} disabled={disabled || loading} className={combinedClasses}>
+        <button type={type} onClick={onClick} disabled={disabled || loading} className={combinedClasses} title={title}>
             {loading && (
                 <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

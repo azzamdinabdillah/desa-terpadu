@@ -38,7 +38,7 @@ class FinanceController extends Controller
         $query->orderBy('date', 'desc');
 
         // Pagination (preserve query string for pagination links)
-        $finances = $query->paginate(10)->withQueryString();
+        $finances = $query->paginate(10)->onEachSide(0)->withQueryString();
 
         // Calculate summary
         $totalIncome = Finance::where('type', 'income')->sum('amount');

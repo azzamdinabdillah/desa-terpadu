@@ -237,25 +237,32 @@ function Finance() {
                                                 <span className="text-sm font-semibold text-green-700">{formatCurrency(item.remaining_balance)}</span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <button
+                                                <Button
                                                     onClick={() => setSelectedImage(item.proof_image)}
-                                                    className="flex items-center gap-2 text-green-600 transition-colors hover:text-green-800"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    icon={<ImageIcon className="h-4 w-4" />}
+                                                    className="text-green-600 hover:text-green-800"
                                                 >
-                                                    <ImageIcon className="h-4 w-4" />
                                                     <span className="text-sm">Lihat</span>
-                                                </button>
+                                                </Button>
                                             </td>
                                             <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <button className="p-1 text-green-600 hover:text-green-800" title="Lihat Detail">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-green-600 hover:text-green-800"
+                                                        title="Lihat Detail"
+                                                    >
                                                         <Eye className="h-4 w-4" />
-                                                    </button>
-                                                    <button className="p-1 text-green-600 hover:text-green-800" title="Edit">
+                                                    </Button>
+                                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800" title="Edit">
                                                         <Edit className="h-4 w-4" />
-                                                    </button>
-                                                    <button className="p-1 text-green-600 hover:text-red-600" title="Hapus">
+                                                    </Button>
+                                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-red-600" title="Hapus">
                                                         <Trash2 className="h-4 w-4" />
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -274,41 +281,52 @@ function Finance() {
                                     {Math.min(finances.current_page * finances.per_page, finances.total)} dari {finances.total} data
                                 </span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => handlePageChange(finances.links.find((link) => link.label === '&laquo; Previous')?.url || '')}
+                            <div className="flex flex-col items-center gap-2 md:flex-row w-full md:w-auto">
+                                <Button
+                                    onClick={() => handlePageChange(finances.prev_page_url || '')}
                                     disabled={finances.current_page === 1}
-                                    className="flex items-center gap-1 rounded-lg border border-green-300 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white"
+                                    variant="outline"
+                                    size="sm"
+                                    fullWidth
+                                    icon={<ChevronLeft className="h-4 w-4" />}
                                 >
-                                    <ChevronLeft className="h-4 w-4" />
-                                    <span className="hidden md:block">Sebelumnya</span>
-                                </button>
+                                    <span className="block">Sebelumnya</span>
+                                </Button>
 
                                 <div className="flex gap-1">
                                     {finances.links
-                                        .filter((link) => link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;')
+                                        .filter((link) => {
+                                            const labelNoTags = (link.label || '').replace(/<[^>]*>/g, '');
+                                            const normalized = labelNoTags
+                                                .replace(/&laquo;|&raquo;|«|»/g, '')
+                                                .trim()
+                                                .toLowerCase();
+                                            return !['previous', 'next', 'sebelumnya', 'selanjutnya', 'berikutnya'].includes(normalized);
+                                        })
                                         .map((link, index) => (
-                                            <button
+                                            <Button
                                                 key={index}
                                                 onClick={() => handlePageChange(link.url || '')}
-                                                className={`h-8 w-8 rounded-lg text-sm transition-colors ${
-                                                    link.active
-                                                        ? 'bg-green-700 text-white'
-                                                        : 'border border-green-300 text-green-700 hover:bg-green-50'
-                                                }`}
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
+                                                variant={link.active ? 'primary' : 'outline'}
+                                                size="sm"
+                                                className="h-8 w-8 rounded-lg text-sm"
+                                            >
+                                                <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                            </Button>
                                         ))}
                                 </div>
 
-                                <button
-                                    onClick={() => handlePageChange(finances.links.find((link) => link.label === 'Next &raquo;')?.url || '')}
+                                <Button
+                                    onClick={() => handlePageChange(finances.next_page_url || '')}
                                     disabled={finances.current_page === finances.last_page}
-                                    className="flex items-center gap-1 rounded-lg border border-green-300 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white"
+                                    variant="outline"
+                                    size="sm"
+                                    fullWidth
+                                    icon={<ChevronRight className="h-4 w-4" />}
+                                    iconPosition="right"
                                 >
-                                    <span className="hidden md:block">Selanjutnya</span>
-                                    <ChevronRight className="h-4 w-4" />
-                                </button>
+                                    <span className="block">Selanjutnya</span>
+                                </Button>
                             </div>
                         </div>
                     )}
@@ -325,10 +343,14 @@ function Finance() {
                                     ? 'Tidak ada transaksi yang sesuai dengan pencarian atau filter Anda.'
                                     : 'Belum ada transaksi keuangan yang tercatat.'}
                             </p>
-                            <button className="mx-auto flex items-center gap-2 rounded-lg bg-green-700 px-6 py-2 text-white transition-colors hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none">
-                                <Plus className="h-4 w-4" />
+                            <Button
+                                onClick={() => router.visit('/finance/create')}
+                                icon={<Plus className="h-4 w-4" />}
+                                iconPosition="left"
+                                className="mx-auto"
+                            >
                                 Tambah Transaksi Pertama
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>
@@ -339,11 +361,16 @@ function Finance() {
                         <div className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white">
                             <div className="flex items-center justify-between border-b border-green-200 p-4">
                                 <h3 className="text-lg font-semibold text-green-900">Bukti Transaksi</h3>
-                                <button onClick={() => setSelectedImage(null)} className="text-green-600 transition-colors hover:text-green-800">
+                                <Button
+                                    onClick={() => setSelectedImage(null)}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-green-600 hover:text-green-800"
+                                >
                                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
-                                </button>
+                                </Button>
                             </div>
                             <div className="p-4">
                                 <div className="flex h-96 items-center justify-center rounded-lg bg-green-50">

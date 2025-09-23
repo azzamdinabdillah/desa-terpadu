@@ -21,12 +21,12 @@ export default defineConfig({
         jsx: 'automatic',
     },
     server: {
-        host: '0.0.0.0',
+        host: 'localhost',
         port: 5173,
         strictPort: true,
         cors: true,
         hmr: {
-            host: '192.168.104.244', // Ganti dengan IP laptop/PC kamu
+            host: 'localhost',
             protocol: 'http',
             port: 5173,
         },
