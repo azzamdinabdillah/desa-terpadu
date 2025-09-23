@@ -281,7 +281,7 @@ function Finance() {
                                     {Math.min(finances.current_page * finances.per_page, finances.total)} dari {finances.total} data
                                 </span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 md:flex-row w-full md:w-auto">
+                            <div className="flex w-full flex-col items-center gap-2 md:w-auto md:flex-row">
                                 <Button
                                     onClick={() => handlePageChange(finances.prev_page_url || '')}
                                     disabled={finances.current_page === 1}
@@ -357,7 +357,7 @@ function Finance() {
 
                 {/* Image Preview Modal */}
                 {selectedImage && (
-                    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+                    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
                         <div className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white">
                             <div className="flex items-center justify-between border-b border-green-200 p-4">
                                 <h3 className="text-lg font-semibold text-green-900">Bukti Transaksi</h3>
@@ -373,13 +373,7 @@ function Finance() {
                                 </Button>
                             </div>
                             <div className="p-4">
-                                <div className="flex h-96 items-center justify-center rounded-lg bg-green-50">
-                                    <div className="text-center">
-                                        <ImageIcon className="mx-auto mb-4 h-16 w-16 text-green-600" />
-                                        <p className="text-green-900">Preview gambar: {selectedImage}</p>
-                                        <p className="mt-2 text-sm text-green-700">(Dalam implementasi nyata, gambar akan ditampilkan di sini)</p>
-                                    </div>
-                                </div>
+                                <img src={`/storage/${selectedImage}`} alt="Bukti Transaksi" className="w-full h-auto border border-green-400 rounded-2xl" />
                             </div>
                         </div>
                     </div>
