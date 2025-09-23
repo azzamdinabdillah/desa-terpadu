@@ -1,3 +1,4 @@
+import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import InputField, { formatters, parsers } from '@/components/InputField';
@@ -13,7 +14,7 @@ interface CreateFinanceProps {
 }
 
 function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
-    const { users } = usePage<Props>().props;
+    const { users, flash } = usePage<Props>().props;
     const [date, setDate] = useState<string>('');
     const [type, setType] = useState<'income' | 'expense' | ''>('income');
     const [amount, setAmount] = useState<string>('');
@@ -23,6 +24,16 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [currentBalance, setCurrentBalance] = useState<number>(initialBalance);
+    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
+
+    // Handle flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
 
     // Calculate remaining balance when amount or type changes
     useEffect(() => {
@@ -36,7 +47,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
                 if (type === 'income') {
                     console.log('income');
-                    
+
                     newBalance = currentBalance + amountValue;
                 } else if (type === 'expense') {
                     console.log('expense');
@@ -86,7 +97,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     const handleSubmit = () => {
         // Validation
         if (!date || !type || !amount || !userId) {
-            alert('Mohon lengkapi semua field yang wajib diisi!');
+            setAlert({ type: 'error', message: 'Mohon lengkapi semua field yang wajib diisi!' });
             return;
         }
 
@@ -110,7 +121,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
             },
             onError: (errors) => {
                 console.error('Validation errors:', errors);
-                alert('Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+                setAlert({ type: 'error', message: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.' });
             },
         });
     };
@@ -119,6 +130,9 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
         <BaseLayouts>
             <div className="min-h-screen bg-green-50">
                 <Header title="Tambah Transaksi Keuangan" icon="💰" />
+
+                {/* Alert */}
+                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="p-4 lg:p-6">
                     <div className="mx-auto max-w-7xl">

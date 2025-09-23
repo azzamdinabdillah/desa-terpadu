@@ -1,3 +1,4 @@
+import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import InputField from '@/components/InputField';
@@ -25,10 +26,20 @@ import {
 import { useEffect, useState } from 'react';
 
 function Finance() {
-    const { finances, summary, filters } = usePage<Props>().props;
+    const { finances, summary, filters, flash } = usePage<Props>().props;
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [filterType, setFilterType] = useState(filters.type || 'all');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
+
+    // Handle flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
 
     const handleSearch = () => {
         router.get(
@@ -84,6 +95,9 @@ function Finance() {
         <BaseLayouts>
             <div>
                 <Header title="Manajemen Keuangan Desa" icon="💰" />
+
+                {/* Alert */}
+                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 {/* Dashboard Cards */}
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
