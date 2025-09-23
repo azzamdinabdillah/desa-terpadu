@@ -1,4 +1,7 @@
+import Button from '@/components/Button';
 import Header from '@/components/Header';
+import InputField from '@/components/InputField';
+import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Props } from '@/types/finance/financeTypes';
@@ -11,7 +14,6 @@ import {
     Eye,
     FileText,
     Image as ImageIcon,
-    Link,
     Plus,
     Search,
     Trash2,
@@ -84,7 +86,7 @@ function Finance() {
                 <Header title="Manajemen Keuangan Desa" icon="💰" />
 
                 {/* Dashboard Cards */}
-                <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+                <div className="mx-auto max-w-7xl p-4 lg:p-8">
                     <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
                         {/* Total Income */}
                         <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">
@@ -134,33 +136,33 @@ function Finance() {
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                                 <Search className="h-5 w-5 text-green-600" />
                             </div>
-                            <input
+                            <InputField
                                 type="text"
                                 placeholder="Cari transaksi (catatan, user)..."
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                                className="w-full rounded-lg border border-green-300 bg-white py-2 pr-4 pl-10 text-green-900 placeholder-green-500 focus:border-green-600 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                onChange={(value) => setSearchTerm(value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                inputClassName="pl-10"
                             />
                         </div>
 
-                        <div className="flex gap-2">
-                            <select
+                        <div className="flex flex-wrap gap-2">
+                            <Select
+                                label=""
                                 value={filterType}
-                                onChange={(e) => handleFilterChange(e.target.value)}
-                                className="rounded-lg border border-green-300 bg-white px-3 py-2 text-green-900 focus:border-green-600 focus:ring-2 focus:ring-green-200 focus:outline-none"
-                            >
-                                <option value="all">Semua Tipe</option>
-                                <option value="income">Pemasukan</option>
-                                <option value="expense">Pengeluaran</option>
-                            </select>
+                                onChange={handleFilterChange}
+                                options={[
+                                    { value: 'all', label: 'Semua Tipe' },
+                                    { value: 'income', label: 'Pemasukan' },
+                                    { value: 'expense', label: 'Pengeluaran' },
+                                ]}
+                                className="min-w-[150px]"
+                                placeholder="Pilih tipe"
+                            />
 
-                            <a href="/finance/create">
-                                <button className="flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white transition-colors hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none">
-                                    <Plus className="h-4 w-4" />
-                                    Tambah Transaksi
-                                </button>
-                            </a>
+                            <Button onClick={() => router.visit('/finance/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                Tambah Transaksi
+                            </Button>
                         </div>
                     </div>
 
@@ -251,7 +253,7 @@ function Finance() {
 
                     {/* Pagination */}
                     {finances.data.length > 0 && (
-                        <div className="mt-6 flex items-center justify-between rounded-lg border border-green-200 bg-white px-6 py-3 shadow-lg">
+                        <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-green-200 bg-white px-6 py-3 shadow-lg">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm text-green-700">
                                     Menampilkan {(finances.current_page - 1) * finances.per_page + 1} sampai{' '}
@@ -265,7 +267,7 @@ function Finance() {
                                     className="flex items-center gap-1 rounded-lg border border-green-300 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white"
                                 >
                                     <ChevronLeft className="h-4 w-4" />
-                                    Sebelumnya
+                                    <span className="hidden md:block">Sebelumnya</span>
                                 </button>
 
                                 <div className="flex gap-1">
@@ -275,7 +277,7 @@ function Finance() {
                                             <button
                                                 key={index}
                                                 onClick={() => handlePageChange(link.url || '')}
-                                                className={`rounded-lg px-3 py-2 text-sm transition-colors ${
+                                                className={`h-8 w-8 rounded-lg text-sm transition-colors ${
                                                     link.active
                                                         ? 'bg-green-700 text-white'
                                                         : 'border border-green-300 text-green-700 hover:bg-green-50'
@@ -290,7 +292,7 @@ function Finance() {
                                     disabled={finances.current_page === finances.last_page}
                                     className="flex items-center gap-1 rounded-lg border border-green-300 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white"
                                 >
-                                    Selanjutnya
+                                    <span className="hidden md:block">Selanjutnya</span>
                                     <ChevronRight className="h-4 w-4" />
                                 </button>
                             </div>

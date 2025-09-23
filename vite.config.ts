@@ -20,4 +20,15 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        cors: true,
+        hmr: {
+            host: '192.168.104.244', // Ganti dengan IP laptop/PC kamu
+            protocol: 'http',
+            port: 5173,
+        },
+    },
 });

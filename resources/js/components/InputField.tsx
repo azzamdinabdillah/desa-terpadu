@@ -1,4 +1,5 @@
 import { formatCurrency } from '@/lib/utils';
+import { ReactNode } from 'react';
 
 type InputFieldProps = {
     label?: string;
@@ -11,12 +12,13 @@ type InputFieldProps = {
     containerClassName?: string;
     inputClassName?: string;
     variant?: 'default' | 'muted';
-    prefix?: string;
-    suffix?: string;
+    prefix?: ReactNode;
+    suffix?: ReactNode;
     as?: 'input' | 'textarea';
     rows?: number;
     formatValue?: (value: string) => string; // display formatting
     parseInput?: (raw: string) => string; // input parsing
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
 export default function InputField({
@@ -36,6 +38,7 @@ export default function InputField({
     rows = 3,
     formatValue,
     parseInput,
+    onKeyDown,
 }: InputFieldProps) {
     const wrapperBg = variant === 'muted' ? 'bg-green-50' : 'bg-white';
 
@@ -59,18 +62,20 @@ export default function InputField({
                         rows={rows}
                         value={displayedValue}
                         onChange={handleChange}
+                        onKeyDown={onKeyDown}
                         placeholder={placeholder}
                         readOnly={readOnly}
-                        className={`w-full resize-none bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none ${inputClassName}`}
+                        className={`w-full resize-none bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
                     />
                 ) : (
                     <input
                         type={type}
                         value={displayedValue}
                         onChange={handleChange}
+                        onKeyDown={onKeyDown}
                         placeholder={placeholder}
                         readOnly={readOnly}
-                        className={`w-full bg-transparent py-2.5 pr-3 pl-3 text-green-900 placeholder:text-green-500 focus:outline-none ${inputClassName}`}
+                        className={`w-full bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
                     />
                 )}
                 {suffix && <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">{suffix}</div>}
