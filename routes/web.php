@@ -34,3 +34,4 @@ Route::get('/', function () {
 
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
+Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');

@@ -3,10 +3,17 @@ import Header from '@/components/Header';
 import InputField, { formatters, parsers } from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { User } from '@/types/user/userTypes';
+import { router, usePage } from '@inertiajs/react';
 import { CalendarDays, CircleUserRound } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-function CreateFinance() {
+interface CreateFinanceProps {
+    currentBalance: number;
+}
+
+function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
+    const { users } = usePage<Props>().props;
     const [date, setDate] = useState<string>('');
     const [type, setType] = useState<'income' | 'expense' | ''>('income');
     const [amount, setAmount] = useState<string>('');
@@ -15,6 +22,43 @@ function CreateFinance() {
     const [userId, setUserId] = useState<string>('');
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [proofPreview, setProofPreview] = useState<string | null>(null);
+    const [currentBalance, setCurrentBalance] = useState<number>(initialBalance);
+
+    // Calculate remaining balance when amount or type changes
+    useEffect(() => {
+        if (amount && type && amount.trim() !== '') {
+            // Amount is already parsed as digits only, so we can directly parse it
+            const amountValue = parseFloat(amount);
+
+            // Check if amountValue is a valid number
+            if (!isNaN(amountValue) && amountValue > 0) {
+                let newBalance = currentBalance;
+
+                if (type === 'income') {
+                    console.log('income');
+                    
+                    newBalance = currentBalance + amountValue;
+                } else if (type === 'expense') {
+                    console.log('expense');
+                    newBalance = currentBalance - amountValue;
+                }
+
+                // Format the balance for display
+                setRemainingBalance(newBalance.toString());
+            } else {
+                // If amount is invalid, show current balance
+                setRemainingBalance(currentBalance.toString());
+            }
+        } else {
+            // Show current balance when no amount or type is selected
+            setRemainingBalance(currentBalance.toString());
+        }
+    }, [amount, type, currentBalance]);
+
+    // Update current balance when initialBalance changes
+    useEffect(() => {
+        setCurrentBalance(initialBalance);
+    }, [initialBalance]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
@@ -32,11 +76,43 @@ function CreateFinance() {
         setDate('');
         setType('');
         setAmount('');
-        setRemainingBalance('');
+        setRemainingBalance(currentBalance.toString());
         setNote('');
         setUserId('');
         setProofFile(null);
         setProofPreview(null);
+    };
+
+    const handleSubmit = () => {
+        // Validation
+        if (!date || !type || !amount || !userId) {
+            alert('Mohon lengkapi semua field yang wajib diisi!');
+            return;
+        }
+
+        // Prepare form data
+        const formData = new FormData();
+        formData.append('date', date);
+        formData.append('type', type);
+        formData.append('amount', amount);
+        formData.append('note', note);
+        formData.append('user_id', userId);
+
+        if (proofFile) {
+            formData.append('proof_file', proofFile);
+        }
+
+        // Submit data
+        router.post('/finance', formData, {
+            onSuccess: () => {
+                // Reset form after successful submission
+                handleCancel();
+            },
+            onError: (errors) => {
+                console.error('Validation errors:', errors);
+                alert('Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+            },
+        });
     };
 
     return (
@@ -130,15 +206,14 @@ function CreateFinance() {
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     {/* Remaining Balance */}
                                     <InputField
-                                        label="Sisa Saldo (Rupiah)"
+                                        label="Sisa Saldo Saat Ini"
                                         value={remainingBalance}
-                                        onChange={setRemainingBalance}
                                         prefix="Rp"
                                         variant="muted"
                                         readOnly
                                         helperText="Akan dihitung otomatis"
-                                        parseInput={parsers.digitsOnly}
                                         formatValue={formatters.currencyDigitsToDisplay}
+                                        onChange={() => {}}
                                     />
 
                                     {/* Responsible Person */}
@@ -147,11 +222,7 @@ function CreateFinance() {
                                         value={userId}
                                         prefix={<CircleUserRound className="h-5 w-5" />}
                                         onChange={setUserId}
-                                        options={[
-                                            { value: '1', label: 'Kepala Desa' },
-                                            { value: '2', label: 'Bendahara Desa' },
-                                            { value: '3', label: 'Sekretaris Desa' },
-                                        ]}
+                                        options={users.map((user: User) => ({ value: user.id, label: user.citizen.full_name }))}
                                         placeholder="Pilih penanggung jawab"
                                     />
                                 </div>
@@ -205,9 +276,9 @@ function CreateFinance() {
                                             </div>
                                         </label>
                                         {proofPreview && (
-                                            <div className="mt-4 flex flex-row rounded-lg bg-green-50 p-3 items-center">
+                                            <div className="mt-4 flex flex-row items-center rounded-lg bg-green-50 p-3">
                                                 <img src={proofPreview} alt="Preview" className="h-12 w-12 rounded object-cover" />
-                                                <div className="flex-1 ml-3">
+                                                <div className="ml-3 flex-1">
                                                     <p className="text-sm font-medium text-green-900">File terpilih</p>
                                                     <p className="text-xs text-green-700">Pratinjau lokal</p>
                                                 </div>
@@ -232,7 +303,7 @@ function CreateFinance() {
                                 <Button type="button" onClick={handleCancel} variant="outline">
                                     Batal
                                 </Button>
-                                <Button type="button" variant="primary">
+                                <Button type="button" variant="primary" onClick={handleSubmit}>
                                     Simpan Transaksi
                                 </Button>
                             </div>

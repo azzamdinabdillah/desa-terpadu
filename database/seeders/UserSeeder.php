@@ -16,22 +16,12 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            // Admin
-            [
-                'citizen_id' => null,
-                'email' => 'admin@desa.com',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
             // Warga dengan akun
             [
                 'citizen_id' => 1, // Ahmad Susanto
                 'email' => 'ahmad.susanto@email.com',
                 'password' => Hash::make('password'),
-                'role' => 'citizen',
+                'role' => 'admin',
                 'status' => 'active',
                 'created_at' => now(),
                 'updated_at' => now(),

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Finance;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FinanceController extends Controller
@@ -63,6 +64,63 @@ class FinanceController extends Controller
      */
     public function create()
     {
-        return inertia('finance/create');
+        // Calculate current balance
+        $totalIncome = Finance::where('type', 'income')->sum('amount');
+        $totalExpense = Finance::where('type', 'expense')->sum('amount');
+        $currentBalance = $totalIncome - $totalExpense;
+        $users = User::with('citizen:id,full_name')->select('id', 'email', 'citizen_id')->get();
+
+        return inertia('finance/create', [
+            'currentBalance' => $currentBalance,
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Store a newly created finance record.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric|min:0',
+            'note' => 'nullable|string|max:1000',
+            'user_id' => 'required|exists:users,id',
+            'proof_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+        ]);
+
+        // Calculate remaining balance
+        $totalIncome = Finance::where('type', 'income')->sum('amount');
+        $totalExpense = Finance::where('type', 'expense')->sum('amount');
+        $currentBalance = $totalIncome - $totalExpense;
+        
+        $newAmount = $request->amount;
+        if ($request->type === 'income') {
+            $remainingBalance = $currentBalance + $newAmount;
+        } else {
+            $remainingBalance = $currentBalance - $newAmount;
+        }
+
+        $data = [
+            'date' => $request->date,
+            'type' => $request->type,
+            'amount' => $newAmount,
+            'remaining_balance' => $remainingBalance,
+            'note' => $request->note,
+            'user_id' => $request->user_id,
+        ];
+
+        // Handle file upload
+        if ($request->hasFile('proof_file')) {
+            $file = $request->file('proof_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('finance_proofs', $filename, 'public');
+            $data['proof_image'] = $path;
+        }
+
+        Finance::create($data);
+
+        return redirect()->route('finance.index')->with('success', 'Transaksi berhasil ditambahkan!');
     }
 }
