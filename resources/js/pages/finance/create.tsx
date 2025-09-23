@@ -5,7 +5,7 @@ import InputField, { formatters, parsers } from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { User } from '@/types/user/userTypes';
-import { router, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { CalendarDays, CircleUserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -15,16 +15,18 @@ interface CreateFinanceProps {
 
 function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     const { users, flash } = usePage<Props>().props;
-    const [date, setDate] = useState<string>('');
-    const [type, setType] = useState<'income' | 'expense' | ''>('income');
-    const [amount, setAmount] = useState<string>('');
+    const { data, setData, post, reset } = useForm({
+        date: '',
+        type: 'income' as 'income' | 'expense',
+        amount: '',
+        note: '',
+        user_id: '',
+        proof_file: null as File | null,
+    });
     const [remainingBalance, setRemainingBalance] = useState<string>('');
-    const [note, setNote] = useState<string>('');
-    const [userId, setUserId] = useState<string>('');
-    const [proofFile, setProofFile] = useState<File | null>(null);
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [currentBalance, setCurrentBalance] = useState<number>(initialBalance);
-    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
+    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: React.ReactNode } | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -37,19 +39,19 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
     // Calculate remaining balance when amount or type changes
     useEffect(() => {
-        if (amount && type && amount.trim() !== '') {
+        if (data.amount && data.type && data.amount.trim() !== '') {
             // Amount is already parsed as digits only, so we can directly parse it
-            const amountValue = parseFloat(amount);
+            const amountValue = parseFloat(data.amount);
 
             // Check if amountValue is a valid number
             if (!isNaN(amountValue) && amountValue > 0) {
                 let newBalance = currentBalance;
 
-                if (type === 'income') {
+                if (data.type === 'income') {
                     console.log('income');
 
                     newBalance = currentBalance + amountValue;
-                } else if (type === 'expense') {
+                } else if (data.type === 'expense') {
                     console.log('expense');
                     newBalance = currentBalance - amountValue;
                 }
@@ -64,7 +66,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
             // Show current balance when no amount or type is selected
             setRemainingBalance(currentBalance.toString());
         }
-    }, [amount, type, currentBalance]);
+    }, [data.amount, data.type, currentBalance]);
 
     // Update current balance when initialBalance changes
     useEffect(() => {
@@ -73,7 +75,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setProofFile(file);
+        setData('proof_file', file);
         if (file) {
             const url = URL.createObjectURL(file);
             setProofPreview(url);
@@ -84,44 +86,35 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
     const handleCancel = () => {
         // UI only: reset local state
-        setDate('');
-        setType('');
-        setAmount('');
+        reset();
         setRemainingBalance(currentBalance.toString());
-        setNote('');
-        setUserId('');
-        setProofFile(null);
         setProofPreview(null);
     };
 
     const handleSubmit = () => {
-        // Validation
-        if (!date || !type || !amount || !userId) {
-            setAlert({ type: 'error', message: 'Mohon lengkapi semua field yang wajib diisi!' });
-            return;
-        }
-
-        // Prepare form data
-        const formData = new FormData();
-        formData.append('date', date);
-        formData.append('type', type);
-        formData.append('amount', amount);
-        formData.append('note', note);
-        formData.append('user_id', userId);
-
-        if (proofFile) {
-            formData.append('proof_file', proofFile);
-        }
-
-        // Submit data
-        router.post('/finance', formData, {
+        post('/finance', {
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
-                // Reset form after successful submission
                 handleCancel();
             },
             onError: (errors) => {
                 console.error('Validation errors:', errors);
-                setAlert({ type: 'error', message: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.' });
+                setAlert({ 
+                    type: 'error', 
+                    message: (
+                        <div>
+                            <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                            <ul className="list-disc list-inside text-sm text-red-800">
+                                {errors && Object.entries(errors).map(([field, msgs]) => (
+                                    Array.isArray(msgs) ? msgs.map((msg, idx) => (
+                                        <li key={field + idx}>{msg}</li>
+                                    )) : <li key={field}>{msgs}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )
+                });
             },
         });
     };
@@ -152,17 +145,19 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                 <div className="grid gap-4 md:grid-cols-2">
                                     <button
                                         type="button"
-                                        onClick={() => setType('income')}
+                                        onClick={() => setData('type', 'income')}
                                         className={`relative rounded-xl border-2 px-4 py-2 text-left transition-all lg:px-5 lg:py-3 ${
-                                            type === 'income' ? 'border-green-500 bg-green-50' : 'border-green-200 bg-white hover:border-green-300'
+                                            data.type === 'income'
+                                                ? 'border-green-500 bg-green-50'
+                                                : 'border-green-200 bg-white hover:border-green-300'
                                         }`}
                                     >
                                         <div className="flex items-center">
                                             <div className="">
-                                                <h4 className={`font-medium ${type === 'income' ? 'text-green-900' : 'text-green-900'}`}>
+                                                <h4 className={`font-medium ${data.type === 'income' ? 'text-green-900' : 'text-green-900'}`}>
                                                     Pemasukan
                                                 </h4>
-                                                <p className={`text-sm ${type === 'income' ? 'text-green-700' : 'text-green-600'}`}>
+                                                <p className={`text-sm ${data.type === 'income' ? 'text-green-700' : 'text-green-600'}`}>
                                                     Uang masuk ke kas
                                                 </p>
                                             </div>
@@ -171,17 +166,19 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
                                     <button
                                         type="button"
-                                        onClick={() => setType('expense')}
+                                        onClick={() => setData('type', 'expense')}
                                         className={`relative rounded-xl border-2 px-4 py-2 text-left transition-all lg:px-5 lg:py-3 ${
-                                            type === 'expense' ? 'border-blue-500 bg-blue-50' : 'border-green-200 bg-white hover:border-green-300'
+                                            data.type === 'expense'
+                                                ? 'border-blue-500 bg-blue-50'
+                                                : 'border-green-200 bg-white hover:border-green-300'
                                         }`}
                                     >
                                         <div className="flex items-center">
                                             <div className="">
-                                                <h4 className={`font-medium ${type === 'expense' ? 'text-blue-900' : 'text-green-900'}`}>
+                                                <h4 className={`font-medium ${data.type === 'expense' ? 'text-blue-900' : 'text-green-900'}`}>
                                                     Pengeluaran
                                                 </h4>
-                                                <p className={`text-sm ${type === 'expense' ? 'text-blue-700' : 'text-green-600'}`}>
+                                                <p className={`text-sm ${data.type === 'expense' ? 'text-blue-700' : 'text-green-600'}`}>
                                                     Uang keluar dari kas
                                                 </p>
                                             </div>
@@ -201,16 +198,16 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         prefix={<CalendarDays className="h-5 w-5" />}
                                         label="Tanggal Transaksi"
                                         type="date"
-                                        value={date}
-                                        onChange={setDate}
+                                        value={data.date}
+                                        onChange={(v) => setData('date', v)}
                                     />
 
                                     {/* Amount */}
                                     <InputField
                                         label="Jumlah (Rupiah)"
-                                        value={amount}
+                                        value={data.amount}
                                         placeholder="Masukkan jumlah transaksi"
-                                        onChange={setAmount}
+                                        onChange={(v) => setData('amount', v)}
                                         prefix="Rp"
                                         parseInput={parsers.digitsOnly}
                                         formatValue={formatters.currencyDigitsToDisplay}
@@ -233,9 +230,9 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                     {/* Responsible Person */}
                                     <Select
                                         label="Penanggung Jawab"
-                                        value={userId}
+                                        value={data.user_id}
                                         prefix={<CircleUserRound className="h-5 w-5" />}
-                                        onChange={setUserId}
+                                        onChange={(v) => setData('user_id', v)}
                                         options={users.map((user: User) => ({ value: user.id, label: user.citizen.full_name }))}
                                         placeholder="Pilih penanggung jawab"
                                     />
@@ -247,8 +244,8 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         label="Catatan"
                                         as="textarea"
                                         rows={5}
-                                        value={note}
-                                        onChange={setNote}
+                                        value={data.note}
+                                        onChange={(v) => setData('note', v)}
                                         placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
                                     />
 
@@ -299,7 +296,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        setProofFile(null);
+                                                        setData('proof_file', null);
                                                         setProofPreview(null);
                                                     }}
                                                     className="text-sm text-red-600 hover:text-red-500 md:mt-0 md:ml-3"

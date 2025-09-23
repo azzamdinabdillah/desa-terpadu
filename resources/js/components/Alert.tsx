@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 interface AlertProps {
     type: 'success' | 'error' | 'warning' | 'info';
-    message: string;
+    message: React.ReactNode;
     onClose?: () => void;
     autoClose?: boolean;
     duration?: number;
@@ -79,7 +79,7 @@ export default function Alert({ type, message, onClose, autoClose = true, durati
                 <div className="flex items-start">
                     <div className="flex-shrink-0">{styles.icon}</div>
                     <div className="ml-3 flex-1">
-                        <p className="text-sm font-medium">{message}</p>
+                        <div className="text-sm font-medium">{message}</div>
                     </div>
                     <div className="ml-4 flex-shrink-0">
                         <button

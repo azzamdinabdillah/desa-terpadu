@@ -89,6 +89,21 @@ class FinanceController extends Controller
                 'note' => 'nullable|string|max:1000',
                 'user_id' => 'required|exists:users,id',
                 'proof_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+            ], [
+                'date.required' => 'Tanggal wajib diisi.',
+                'date.date' => 'Format tanggal tidak valid.',
+                'type.required' => 'Jenis transaksi wajib dipilih.',
+                'type.in' => 'Jenis transaksi harus berupa pemasukan atau pengeluaran.',
+                'amount.required' => 'Nominal wajib diisi.',
+                'amount.numeric' => 'Nominal harus berupa angka.',
+                'amount.min' => 'Nominal tidak boleh kurang dari 0.',
+                'note.string' => 'Catatan harus berupa teks.',
+                'note.max' => 'Catatan maksimal 1000 karakter.',
+                'user_id.required' => 'Penanggung jawab wajib dipilih.',
+                'user_id.exists' => 'Penanggung jawab yang dipilih tidak ditemukan.',
+                'proof_file.file' => 'Bukti transaksi harus berupa file.',
+                'proof_file.mimes' => 'Bukti transaksi harus berupa file jpeg, png, jpg, atau pdf.',
+                'proof_file.max' => 'Ukuran file bukti transaksi maksimal 10MB.',
             ]);
 
             // Calculate remaining balance
