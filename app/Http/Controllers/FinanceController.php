@@ -81,30 +81,33 @@ class FinanceController extends Controller
      */
     public function store(Request $request)
     {
+        // Let ValidationException bubble up so Inertia returns a 422 response
+        $request->validate([
+            'date' => 'required|date',
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric|min:0',
+            'note' => 'nullable|string|max:1000',
+            'user_id' => 'required|exists:users,id',
+            'proof_file' => 'required|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+        ], [
+            'date.required' => 'Tanggal wajib diisi.',
+            'date.date' => 'Format tanggal tidak valid.',
+            'type.required' => 'Jenis transaksi wajib dipilih.',
+            'type.in' => 'Jenis transaksi harus berupa pemasukan atau pengeluaran.',
+            'amount.required' => 'Nominal wajib diisi.',
+            'amount.numeric' => 'Nominal harus berupa angka.',
+            'amount.min' => 'Nominal tidak boleh kurang dari 0.',
+            'note.string' => 'Catatan harus berupa teks.',
+            'note.max' => 'Catatan maksimal 1000 karakter.',
+            'user_id.required' => 'Penanggung jawab wajib dipilih.',
+            'user_id.exists' => 'Penanggung jawab yang dipilih tidak ditemukan.',
+            'proof_file.required' => 'Bukti transaksi wajib diisi.',
+            'proof_file.file' => 'Bukti transaksi harus berupa file.',
+            'proof_file.mimes' => 'Bukti transaksi harus berupa file jpeg, png, jpg, atau pdf.',
+            'proof_file.max' => 'Ukuran file bukti transaksi maksimal 10MB.',
+        ]);
+
         try {
-            $request->validate([
-                'date' => 'required|date',
-                'type' => 'required|in:income,expense',
-                'amount' => 'required|numeric|min:0',
-                'note' => 'nullable|string|max:1000',
-                'user_id' => 'required|exists:users,id',
-                'proof_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
-            ], [
-                'date.required' => 'Tanggal wajib diisi.',
-                'date.date' => 'Format tanggal tidak valid.',
-                'type.required' => 'Jenis transaksi wajib dipilih.',
-                'type.in' => 'Jenis transaksi harus berupa pemasukan atau pengeluaran.',
-                'amount.required' => 'Nominal wajib diisi.',
-                'amount.numeric' => 'Nominal harus berupa angka.',
-                'amount.min' => 'Nominal tidak boleh kurang dari 0.',
-                'note.string' => 'Catatan harus berupa teks.',
-                'note.max' => 'Catatan maksimal 1000 karakter.',
-                'user_id.required' => 'Penanggung jawab wajib dipilih.',
-                'user_id.exists' => 'Penanggung jawab yang dipilih tidak ditemukan.',
-                'proof_file.file' => 'Bukti transaksi harus berupa file.',
-                'proof_file.mimes' => 'Bukti transaksi harus berupa file jpeg, png, jpg, atau pdf.',
-                'proof_file.max' => 'Ukuran file bukti transaksi maksimal 10MB.',
-            ]);
 
             // Calculate remaining balance
             $totalIncome = Finance::where('type', 'income')->sum('amount');
@@ -139,9 +142,7 @@ class FinanceController extends Controller
 
             $typeText = $request->type === 'income' ? 'Pemasukan' : 'Pengeluaran';
             return redirect()->route('finance.index')->with('success', "Transaksi {$typeText} berhasil ditambahkan!");
-            
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->with('error', 'Data tidak valid. Silakan periksa kembali input Anda.');
+
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }

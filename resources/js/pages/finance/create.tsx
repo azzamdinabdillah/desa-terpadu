@@ -99,7 +99,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                 handleCancel();
             },
             onError: (errors) => {
-                console.error('Validation errors:', errors);
+                console.error('Validation asdadasderrors:', errors);
                 setAlert({ 
                     type: 'error', 
                     message: (
