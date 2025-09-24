@@ -278,7 +278,7 @@ function Finance() {
                                             </td>
                                             <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800" title="Edit">
+                                                    <Button onClick={() => router.visit(`/finance/${item.id}/edit`)} variant="ghost" size="sm" className="text-green-600 hover:text-green-800" title="Edit">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
                                                     <Button

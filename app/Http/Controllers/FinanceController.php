@@ -149,6 +149,111 @@ class FinanceController extends Controller
     }
 
     /**
+     * Show the form for editing the specified finance record.
+     */
+    public function edit($id)
+    {
+        $finance = Finance::with(['user.citizen'])->findOrFail($id);
+        
+        // Calculate current balance
+        $totalIncome = Finance::where('type', 'income')->sum('amount');
+        $totalExpense = Finance::where('type', 'expense')->sum('amount');
+        $currentBalance = $totalIncome - $totalExpense;
+        $users = User::with('citizen:id,full_name')->select('id', 'email', 'citizen_id')->get();
+
+        return inertia('finance/edit', [
+            'finance' => $finance,
+            'currentBalance' => $currentBalance,
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Update the specified finance record in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $finance = Finance::findOrFail($id);
+        
+        // Handle method spoofing for file uploads
+        if ($request->has('_method') && $request->_method === 'PUT') {
+            // This is a POST request with _method=PUT (for file uploads)
+        }
+
+        // Let ValidationException bubble up so Inertia returns a 422 response
+        $request->validate([
+            'date' => 'required|date',
+            'type' => 'required|in:income,expense',
+            'amount' => 'required|numeric|min:0',
+            'note' => 'nullable|string|max:1000',
+            'user_id' => 'required|exists:users,id',
+            'proof_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+        ], [
+            'date.required' => 'Tanggal wajib diisi.',
+            'date.date' => 'Format tanggal tidak valid.',
+            'type.required' => 'Jenis transaksi wajib dipilih.',
+            'type.in' => 'Jenis transaksi harus berupa pemasukan atau pengeluaran.',
+            'amount.required' => 'Nominal wajib diisi.',
+            'amount.numeric' => 'Nominal harus berupa angka.',
+            'amount.min' => 'Nominal tidak boleh kurang dari 0.',
+            'note.string' => 'Catatan harus berupa teks.',
+            'note.max' => 'Catatan maksimal 1000 karakter.',
+            'user_id.required' => 'Penanggung jawab wajib dipilih.',
+            'user_id.exists' => 'Penanggung jawab yang dipilih tidak ditemukan.',
+            'proof_file.file' => 'Bukti transaksi harus berupa file.',
+            'proof_file.mimes' => 'Bukti transaksi harus berupa file jpeg, png, jpg, atau pdf.',
+            'proof_file.max' => 'Ukuran file bukti transaksi maksimal 10MB.',
+        ]);
+
+        try {
+            // Calculate remaining balance
+            $totalIncome = Finance::where('type', 'income')->sum('amount');
+            $totalExpense = Finance::where('type', 'expense')->sum('amount');
+            $currentBalance = $totalIncome - $totalExpense;
+            
+            $newAmount = $request->amount;
+            if ($request->type === 'income') {
+                $remainingBalance = $currentBalance + $newAmount;
+            } else {
+                $remainingBalance = $currentBalance - $newAmount;
+            }
+
+            $data = [
+                'date' => $request->date,
+                'type' => $request->type,
+                'amount' => $newAmount,
+                'remaining_balance' => $remainingBalance,
+                'note' => $request->note,
+                'user_id' => $request->user_id,
+            ];
+
+            // Handle file upload
+            if ($request->hasFile('proof_file')) {
+                // Delete old file if exists
+                if ($finance->proof_image) {
+                    $oldFilePath = storage_path('app/public/' . $finance->proof_image);
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+                
+                $file = $request->file('proof_file');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('finance_proofs', $filename, 'public');
+                $data['proof_image'] = $path;
+            }
+
+            $finance->update($data);
+
+            $typeText = $request->type === 'income' ? 'Pemasukan' : 'Pengeluaran';
+            return redirect()->route('finance.index')->with('success', "Transaksi {$typeText} berhasil diperbarui!");
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+        }
+    }
+
+    /**
      * Remove the specified finance record from storage.
      */
     public function destroy($id)

@@ -35,4 +35,7 @@ Route::get('/', function () {
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
 Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
+Route::get('/finance/{id}/edit', [FinanceController::class, 'edit'])->name('finance.edit');
+Route::put('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update');
+Route::post('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update.post'); // For file uploads
 Route::delete('/finance/{id}', [FinanceController::class, 'destroy'])->name('finance.destroy');

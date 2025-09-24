@@ -9,18 +9,36 @@ import { useForm, usePage } from '@inertiajs/react';
 import { CalendarDays, CircleUserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface CreateFinanceProps {
+interface Props {
+    users: User[];
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: any;
+}
+
+interface EditFinanceProps {
+    finance: {
+        id: number;
+        date: string;
+        type: 'income' | 'expense';
+        amount: number;
+        note: string;
+        user_id: number;
+        proof_image: string | null;
+    };
     currentBalance: number;
 }
 
-function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
+function EditFinance({ finance, currentBalance: initialBalance }: EditFinanceProps) {
     const { users, flash } = usePage<Props>().props;
-    const { data, setData, post, reset } = useForm({
-        date: '',
-        type: 'income' as 'income' | 'expense',
-        amount: '',
-        note: '',
-        user_id: '',
+    const { data, setData, put, post, reset } = useForm({
+        date: finance.date ? finance.date.substring(0, 10) : '',
+        type: finance.type,
+        amount: finance.amount.toString(),
+        note: finance.note,
+        user_id: finance.user_id.toString(),
         proof_file: null as File | null,
     });
     const [remainingBalance, setRemainingBalance] = useState<string>('');
@@ -92,14 +110,17 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     };
 
     const handleSubmit = () => {
-        post('/finance', {
+        // Use post method with _method=PUT for file uploads
+        post(`/finance/${finance.id}`, {
+            ...data,
+            method: 'put',
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
                 handleCancel();
             },
             onError: (errors) => {
-                console.error('Validation asdadasderrors:', errors);
+                console.error('Validation errors:', errors);
                 setAlert({
                     type: 'error',
                     message: (
@@ -121,7 +142,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     return (
         <BaseLayouts>
             <div className="min-h-screen bg-green-50">
-                <Header title="Tambah Transaksi Keuangan" icon="💰" />
+                <Header title="Edit Transaksi Keuangan" icon="💰" />
 
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
@@ -130,8 +151,8 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                     <div className="mx-auto max-w-7xl">
                         {/* Page Header */}
                         <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-green-900">Tambah Transaksi</h1>
-                            <p className="mt-2 text-green-700">Catat pemasukan atau pengeluaran desa</p>
+                            <h1 className="text-3xl font-bold text-green-900">Edit Transaksi</h1>
+                            <p className="mt-2 text-green-700">Ubah data pemasukan atau pengeluaran desa</p>
                         </div>
 
                         {/* Form */}
@@ -234,7 +255,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         value={data.user_id}
                                         prefix={<CircleUserRound className="h-5 w-5" />}
                                         onChange={(v) => setData('user_id', v)}
-                                        options={users.map((user: User) => ({ value: user.id, label: user.citizen.full_name }))}
+                                        options={users.map((user: User) => ({ value: user.id.toString(), label: user.citizen.full_name }))}
                                         placeholder="Pilih penanggung jawab"
                                         required
                                     />
@@ -310,6 +331,19 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                                 </button>
                                             </div>
                                         )}
+                                        {finance.proof_image && !proofPreview && (
+                                            <div className="mt-4 flex flex-row items-center rounded-lg bg-green-50 p-3">
+                                                <img
+                                                    src={`/storage/${finance.proof_image}`}
+                                                    alt="Current proof"
+                                                    className="h-12 w-12 rounded object-cover"
+                                                />
+                                                <div className="ml-3 flex-1">
+                                                    <p className="text-sm font-medium text-green-900">File saat ini</p>
+                                                    <p className="text-xs text-green-700">Upload file baru untuk mengganti</p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -320,7 +354,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                     Batal
                                 </Button>
                                 <Button type="button" variant="primary" onClick={handleSubmit}>
-                                    Simpan Transaksi
+                                    Update Transaksi
                                 </Button>
                             </div>
                         </div>
@@ -331,4 +365,4 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     );
 }
 
-export default CreateFinance;
+export default EditFinance;
