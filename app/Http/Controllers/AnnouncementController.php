@@ -10,7 +10,7 @@ class AnnouncementController extends Controller
     public function index()
     {
         $search = request('search');
-        $perPage = (int) request('per_page', 10);
+        $perPage = (int) request('per_page', 1);
 
         $query = Announcement::query();
 
@@ -23,7 +23,7 @@ class AnnouncementController extends Controller
 
         $query->orderByDesc('created_at');
 
-        $announcements = $query->paginate($perPage)->withQueryString();
+        $announcements = $query->paginate($perPage)->onEachSide(0)->withQueryString();
 
         return Inertia::render('announcement/announcement', [
             'announcements' => $announcements,

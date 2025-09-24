@@ -1,29 +1,17 @@
 import Alert from '@/components/Alert';
 import Button from '@/components/Button';
+import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import InputField from '@/components/InputField';
+import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Finance as FinanceType, PaginationLink } from '@/types/finance/financeTypes';
+import { Finance as FinanceType } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import {
-    Calendar,
-    ChevronLeft,
-    ChevronRight,
-    Edit,
-    FileText,
-    Image as ImageIcon,
-    Plus,
-    Search,
-    Trash2,
-    TrendingDown,
-    TrendingUp,
-    User,
-    Wallet,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Calendar, Edit, FileText, Image as ImageIcon, Plus, Search, Trash2, TrendingDown, TrendingUp, User, Wallet } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface Props {
     flash?: {
@@ -32,7 +20,6 @@ interface Props {
     };
     [key: string]: any;
 }
-
 
 function Finance() {
     const { finances, summary, filters, flash } = usePage<Props>().props;
@@ -67,8 +54,6 @@ function Finance() {
     };
 
     // Debounce search input to trigger server-side requests as user types
-    // without spamming the server
-    // 300ms delay after user stops typing
     useEffect(() => {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.search || '')) {
@@ -128,6 +113,113 @@ function Finance() {
         setDeleteModalOpen(false);
         setDeleteModalData(null);
     };
+
+    const columns = useMemo(
+        () => [
+            {
+                key: 'date',
+                header: 'Tanggal',
+                className: 'whitespace-nowrap',
+                cell: (item: FinanceType) => (
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{formatDate(item.date)}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'type',
+                header: 'Tipe',
+                className: 'whitespace-nowrap',
+                cell: (item: FinanceType) => (
+                    <span
+                        className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold ${
+                            item.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                        }`}
+                    >
+                        {item.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}
+                    </span>
+                ),
+            },
+            {
+                key: 'amount',
+                header: 'Jumlah',
+                className: 'whitespace-nowrap',
+                cell: (item: FinanceType) => <span className="text-sm font-semibold text-green-700">{formatCurrency(item.amount)}</span>,
+            },
+            {
+                key: 'note',
+                header: 'Catatan',
+                cell: (item: FinanceType) => (
+                    <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 flex-shrink-0 text-green-600" />
+                        <span className="max-w-xs truncate text-sm text-green-900">{item.note}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'user',
+                header: 'User',
+                className: 'whitespace-nowrap',
+                cell: (item: FinanceType) => (
+                    <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{(item as any).user?.citizen?.full_name || item.user?.email}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'remaining_balance',
+                header: 'Sisa Saldo',
+                className: 'whitespace-nowrap',
+                cell: (item: FinanceType) => <span className="text-sm font-semibold text-green-700">{formatCurrency(item.remaining_balance)}</span>,
+            },
+            {
+                key: 'proof_image',
+                header: 'Bukti',
+                className: 'whitespace-nowrap',
+                cell: (item: FinanceType) => (
+                    <Button
+                        onClick={() => setSelectedImage(item.proof_image)}
+                        variant="ghost"
+                        size="sm"
+                        icon={<ImageIcon className="h-4 w-4" />}
+                        className="text-green-600 hover:text-green-800"
+                    >
+                        <span className="text-sm">Lihat</span>
+                    </Button>
+                ),
+            },
+            {
+                key: 'actions',
+                header: <span className="float-right">Aksi</span>,
+                className: 'text-right whitespace-nowrap',
+                cell: (item: FinanceType) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            onClick={() => router.visit(`/finance/${item.id}/edit`)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-600 hover:text-green-800"
+                            title="Edit"
+                        >
+                            <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-600 hover:text-red-600"
+                            title="Hapus"
+                            onClick={() => handleDeleteClick(item.id, item.note, item.amount, item.type)}
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                ),
+            },
+        ],
+        [setSelectedImage],
+    );
 
     return (
         <BaseLayouts>
@@ -219,176 +311,43 @@ function Finance() {
                     </div>
 
                     {/* Finance Table */}
-                    <div className="overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg">
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-green-200">
-                                <thead className="bg-green-100">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Tanggal</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Tipe</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Jumlah</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Catatan</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">User</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">
-                                            Sisa Saldo
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Bukti</th>
-                                        <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-green-800 uppercase">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-green-100 bg-white">
-                                    {finances.data.map((item: FinanceType) => (
-                                        <tr key={item.id} className="hover:bg-green-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center gap-2">
-                                                    <Calendar className="h-4 w-4 text-green-600" />
-                                                    <span className="text-sm text-green-900">{formatDate(item.date)}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold ${
-                                                        item.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                                                    }`}
-                                                >
-                                                    {item.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="text-sm font-semibold text-green-700">{formatCurrency(item.amount)}</span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-2">
-                                                    <FileText className="h-4 w-4 flex-shrink-0 text-green-600" />
-                                                    <span className="max-w-xs truncate text-sm text-green-900">{item.note}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center gap-2">
-                                                    <User className="h-4 w-4 text-green-600" />
-                                                    <span className="text-sm text-green-900">
-                                                        {(item as any).user?.citizen?.full_name || item.user?.email}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="text-sm font-semibold text-green-700">{formatCurrency(item.remaining_balance)}</span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <Button
-                                                    onClick={() => setSelectedImage(item.proof_image)}
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    icon={<ImageIcon className="h-4 w-4" />}
-                                                    className="text-green-600 hover:text-green-800"
-                                                >
-                                                    <span className="text-sm">Lihat</span>
-                                                </Button>
-                                            </td>
-                                            <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <Button onClick={() => router.visit(`/finance/${item.id}/edit`)} variant="ghost" size="sm" className="text-green-600 hover:text-green-800" title="Edit">
-                                                        <Edit className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="text-green-600 hover:text-red-600"
-                                                        title="Hapus"
-                                                        onClick={() => handleDeleteClick(item.id, item.note, item.amount, item.type)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <DataTable
+                        columns={columns}
+                        data={finances.data}
+                        emptyMessage={
+                            <div>
+                                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                                    <Wallet className="h-8 w-8 text-green-600" />
+                                </div>
+                                <h3 className="mb-2 text-lg font-semibold text-green-900">Tidak ada data transaksi</h3>
+                                <p className="mb-6 text-green-700">
+                                    {filters.search || (filters.type && filters.type !== 'all')
+                                        ? 'Tidak ada transaksi yang sesuai dengan pencarian atau filter Anda.'
+                                        : 'Belum ada transaksi keuangan yang tercatat.'}
+                                </p>
+                                <Button
+                                    onClick={() => router.visit('/finance/create')}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                    className="mx-auto"
+                                >
+                                    Tambah Transaksi Pertama
+                                </Button>
+                            </div>
+                        }
+                    />
 
                     {/* Pagination */}
-                    {finances.data.length > 0 && (
-                        <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-green-200 bg-white px-6 py-3 shadow-lg">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-green-700">
-                                    Menampilkan {(finances.current_page - 1) * finances.per_page + 1} sampai{' '}
-                                    {Math.min(finances.current_page * finances.per_page, finances.total)} dari {finances.total} data
-                                </span>
-                            </div>
-                            <div className="flex w-full flex-col items-center gap-2 md:w-auto md:flex-row">
-                                <Button
-                                    onClick={() => handlePageChange(finances.prev_page_url || '')}
-                                    disabled={finances.current_page === 1}
-                                    variant="outline"
-                                    size="sm"
-                                    fullWidth
-                                    icon={<ChevronLeft className="h-4 w-4" />}
-                                >
-                                    <span className="block">Sebelumnya</span>
-                                </Button>
-
-                                <div className="flex gap-1">
-                                    {finances.links
-                                        .filter((link: PaginationLink) => {
-                                            const labelNoTags = (link.label || '').replace(/<[^>]*>/g, '');
-                                            const normalized = labelNoTags
-                                                .replace(/&laquo;|&raquo;|«|»/g, '')
-                                                .trim()
-                                                .toLowerCase();
-                                            return !['previous', 'next', 'sebelumnya', 'selanjutnya', 'berikutnya'].includes(normalized);
-                                        })
-                                        .map((link: PaginationLink, index: number) => (
-                                            <Button
-                                                key={index}
-                                                onClick={() => handlePageChange(link.url || '')}
-                                                variant={link.active ? 'primary' : 'outline'}
-                                                size="sm"
-                                                className="h-8 w-8 rounded-lg text-sm"
-                                            >
-                                                <span dangerouslySetInnerHTML={{ __html: link.label }} />
-                                            </Button>
-                                        ))}
-                                </div>
-
-                                <Button
-                                    onClick={() => handlePageChange(finances.next_page_url || '')}
-                                    disabled={finances.current_page === finances.last_page}
-                                    variant="outline"
-                                    size="sm"
-                                    fullWidth
-                                    icon={<ChevronRight className="h-4 w-4" />}
-                                    iconPosition="right"
-                                >
-                                    <span className="block">Selanjutnya</span>
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Empty State */}
-                    {finances.data.length === 0 && (
-                        <div className="rounded-lg border border-green-200 bg-white p-12 text-center shadow-lg">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                                <Wallet className="h-8 w-8 text-green-600" />
-                            </div>
-                            <h3 className="mb-2 text-lg font-semibold text-green-900">Tidak ada data transaksi</h3>
-                            <p className="mb-6 text-green-700">
-                                {filters.search || (filters.type && filters.type !== 'all')
-                                    ? 'Tidak ada transaksi yang sesuai dengan pencarian atau filter Anda.'
-                                    : 'Belum ada transaksi keuangan yang tercatat.'}
-                            </p>
-                            <Button
-                                onClick={() => router.visit('/finance/create')}
-                                icon={<Plus className="h-4 w-4" />}
-                                iconPosition="left"
-                                className="mx-auto"
-                            >
-                                Tambah Transaksi Pertama
-                            </Button>
-                        </div>
-                    )}
+                    <Pagination
+                        page={finances.current_page}
+                        perPage={finances.per_page}
+                        total={finances.total}
+                        lastPage={finances.last_page}
+                        prevUrl={finances.prev_page_url}
+                        nextUrl={finances.next_page_url}
+                        links={finances.links}
+                        onChange={handlePageChange}
+                    />
                 </div>
 
                 {/* Image Preview Modal */}
