@@ -10,7 +10,7 @@ class AnnouncementController extends Controller
     public function index()
     {
         $search = request('search');
-        $perPage = (int) request('per_page', 1);
+        $perPage = (int) request('per_page', 10);
 
         $query = Announcement::query();
 
@@ -34,5 +34,10 @@ class AnnouncementController extends Controller
                 'total' => $announcements->total(),
             ],
         ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('announcement/create');
     }
 }
