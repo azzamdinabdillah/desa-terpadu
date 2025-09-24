@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { ChevronDown, ChevronRight, CircleDollarSign, Home, Settings, User, Users } from 'lucide-react';
+import { Bell, ChevronDown, ChevronRight, CircleDollarSign, Home, Settings, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -41,6 +41,12 @@ const menuItems: MenuItem[] = [
             { id: 'kartu-keluarga', label: 'Kartu Keluarga', href: '/warga/kk' },
             { id: 'surat-keterangan', label: 'Surat Keterangan', href: '/warga/surat' },
         ],
+    },
+    {
+        id: 'announcement',
+        label: 'Pengumuman',
+        icon: <Bell className="h-5 w-5" />,
+        href: '/announcement',
     },
     {
         id: 'settings',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\FinanceController;
 use App\Models\Citizen;
 use App\Models\Family;
@@ -39,3 +40,5 @@ Route::get('/finance/{id}/edit', [FinanceController::class, 'edit'])->name('fina
 Route::put('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update');
 Route::post('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update.post'); // For file uploads
 Route::delete('/finance/{id}', [FinanceController::class, 'destroy'])->name('finance.destroy');
+
+Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
