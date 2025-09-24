@@ -19,6 +19,7 @@ type InputFieldProps = {
     formatValue?: (value: string) => string; // display formatting
     parseInput?: (raw: string) => string; // input parsing
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    required?: boolean;
 };
 
 export default function InputField({
@@ -39,6 +40,7 @@ export default function InputField({
     formatValue,
     parseInput,
     onKeyDown,
+    required = false,
 }: InputFieldProps) {
     const wrapperBg = variant === 'muted' ? 'bg-green-50' : 'bg-white';
 
@@ -52,7 +54,7 @@ export default function InputField({
 
     return (
         <div className={containerClassName}>
-            {label && <label className="mb-2 block text-sm font-medium text-green-800">{label}</label>}
+            {label && <label className="mb-2 block text-sm font-medium text-green-800">{label} {required && <span className="text-red-500">*</span>}</label>}
             <div
                 className={`flex overflow-hidden rounded-lg border border-green-300 ${wrapperBg} shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200`}
             >

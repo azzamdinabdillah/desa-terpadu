@@ -7,12 +7,12 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Props } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
+import * as Dialog from '@radix-ui/react-dialog';
 import {
     Calendar,
     ChevronLeft,
     ChevronRight,
     Edit,
-    Eye,
     FileText,
     Image as ImageIcon,
     Plus,
@@ -31,6 +31,8 @@ function Finance() {
     const [filterType, setFilterType] = useState(filters.type || 'all');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteModalData, setDeleteModalData] = useState<{ id: number; note: string; amount: number; type: string } | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -89,6 +91,33 @@ function Finance() {
                 replace: true,
             });
         }
+    };
+
+    const handleDeleteClick = (id: number, note: string, amount: number, type: string) => {
+        setDeleteModalData({ id, note, amount, type });
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (deleteModalData) {
+            router.delete(`/finance/${deleteModalData.id}`, {
+                onSuccess: () => {
+                    setAlert({ type: 'success', message: 'Transaksi berhasil dihapus!' });
+                    setDeleteModalOpen(false);
+                    setDeleteModalData(null);
+                },
+                onError: () => {
+                    setAlert({ type: 'error', message: 'Gagal menghapus transaksi!' });
+                    setDeleteModalOpen(false);
+                    setDeleteModalData(null);
+                },
+            });
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteModalOpen(false);
+        setDeleteModalData(null);
     };
 
     return (
@@ -249,18 +278,16 @@ function Finance() {
                                             </td>
                                             <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="text-green-600 hover:text-green-800"
-                                                        title="Lihat Detail"
-                                                    >
-                                                        <Eye className="h-4 w-4" />
-                                                    </Button>
                                                     <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800" title="Edit">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-red-600" title="Hapus">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-green-600 hover:text-red-600"
+                                                        title="Hapus"
+                                                        onClick={() => handleDeleteClick(item.id, item.note, item.amount, item.type)}
+                                                    >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -356,28 +383,78 @@ function Finance() {
                 </div>
 
                 {/* Image Preview Modal */}
-                {selectedImage && (
-                    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-                        <div className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white">
+                <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
                             <div className="flex items-center justify-between border-b border-green-200 p-4">
-                                <h3 className="text-lg font-semibold text-green-900">Bukti Transaksi</h3>
-                                <Button
-                                    onClick={() => setSelectedImage(null)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-green-600 hover:text-green-800"
-                                >
-                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </Button>
+                                <Dialog.Title className="text-lg font-semibold text-green-900">Bukti Transaksi</Dialog.Title>
+                                <Dialog.Close asChild>
+                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </Button>
+                                </Dialog.Close>
                             </div>
                             <div className="p-4">
-                                <img src={`/storage/${selectedImage}`} alt="Bukti Transaksi" className="w-full h-auto border border-green-400 rounded-2xl" />
+                                <img
+                                    src={`/storage/${selectedImage}`}
+                                    alt="Bukti Transaksi"
+                                    className="h-auto w-full rounded-2xl border border-green-400"
+                                />
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
+
+                {/* Delete Confirmation Modal */}
+                <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
+                            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-200 bg-red-100">
+                                <Trash2 className="h-6 w-6 text-red-600" />
+                            </div>
+                            <div className="text-center">
+                                <Dialog.Title className="mb-2 text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
+                                <Dialog.Description className="mb-4 text-sm text-red-700">
+                                    Apakah Anda yakin ingin menghapus transaksi ini?
+                                </Dialog.Description>
+                                {deleteModalData && (
+                                    <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-left">
+                                        <p className="text-sm font-medium text-red-900">Detail Transaksi:</p>
+                                        <p className="text-sm text-red-800">
+                                            {deleteModalData.type === 'income' ? 'Pemasukan' : 'Pengeluaran'} -{' '}
+                                            {formatCurrency(deleteModalData.amount)} - {deleteModalData.note}
+                                        </p>
+                                    </div>
+                                )}
+                                <p className="mt-3 text-xs font-medium text-red-600">⚠️ Tindakan ini tidak dapat dibatalkan!</p>
+                            </div>
+                            <div className="mt-6 flex gap-3">
+                                <Dialog.Close asChild>
+                                    <Button
+                                        onClick={handleDeleteCancel}
+                                        variant="outline"
+                                        className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
+                                        fullWidth
+                                    >
+                                        Batal
+                                    </Button>
+                                </Dialog.Close>
+                                <Button
+                                    onClick={handleDeleteConfirm}
+                                    variant="primary"
+                                    className="flex-1 bg-red-600 text-white hover:bg-red-700"
+                                    fullWidth
+                                >
+                                    Hapus
+                                </Button>
+                            </div>
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
             </div>
         </BaseLayouts>
     );

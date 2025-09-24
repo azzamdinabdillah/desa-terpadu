@@ -198,6 +198,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         prefix={<CalendarDays className="h-5 w-5" />}
                                         label="Tanggal Transaksi"
                                         type="date"
+                                        required
                                         value={data.date}
                                         onChange={(v) => setData('date', v)}
                                     />
@@ -211,6 +212,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         prefix="Rp"
                                         parseInput={parsers.digitsOnly}
                                         formatValue={formatters.currencyDigitsToDisplay}
+                                        required
                                     />
                                 </div>
 
@@ -235,6 +237,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         onChange={(v) => setData('user_id', v)}
                                         options={users.map((user: User) => ({ value: user.id, label: user.citizen.full_name }))}
                                         placeholder="Pilih penanggung jawab"
+                                        required
                                     />
                                 </div>
 
@@ -247,11 +250,12 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         value={data.note}
                                         onChange={(v) => setData('note', v)}
                                         placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
+                                        required
                                     />
 
                                     {/* File Upload */}
                                     <div className="w-full">
-                                        <label className="mb-2 block text-sm font-medium text-green-800">Bukti Transaksi</label>
+                                        <label className="mb-2 block text-sm font-medium text-green-800">Bukti Transaksi <span className="text-red-500">*</span></label>
                                         <label
                                             htmlFor="file-upload"
                                             className="mt-1 flex cursor-pointer justify-center rounded-lg border-2 border-dashed border-green-300 px-6 py-5 transition-colors hover:border-green-400"

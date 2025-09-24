@@ -147,4 +147,30 @@ class FinanceController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }
     }
+
+    /**
+     * Remove the specified finance record from storage.
+     */
+    public function destroy($id)
+    {
+        try {
+            $finance = Finance::findOrFail($id);
+            
+            // Delete the proof file if it exists
+            if ($finance->proof_image) {
+                $filePath = storage_path('app/public/' . $finance->proof_image);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+            
+            // Delete the finance record
+            $finance->delete();
+            
+            return redirect()->route('finance.index')->with('success', 'Transaksi berhasil dihapus!');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data. Silakan coba lagi.');
+        }
+    }
 }

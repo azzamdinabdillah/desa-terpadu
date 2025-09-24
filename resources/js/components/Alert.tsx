@@ -71,7 +71,7 @@ export default function Alert({ type, message, onClose, autoClose = true, durati
 
     return (
         <div
-            className={`fixed top-4 right-4 z-50 mx-auto w-full max-w-sm transform transition-all duration-300 ease-in-out ${
+            className={`fixed top-4 right-4 z-50 mx-auto w-[90%] max-w-sm transform transition-all duration-300 ease-in-out ${
                 isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
             }`}
         >
