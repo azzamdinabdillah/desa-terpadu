@@ -1,3 +1,4 @@
+import * as RadixSelect from '@radix-ui/react-select';
 import { ChevronDown } from 'lucide-react';
 import { ReactNode } from 'react';
 
@@ -41,10 +42,6 @@ export default function Select({
             : 'border-green-300 focus-within:border-green-600 focus-within:ring-green-200'
     } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : 'bg-white'} ${className}`.trim();
 
-    const selectClasses = `w-full bg-transparent py-2.5 pr-8 text-sm text-green-900 focus:outline-none sm:text-base appearance-none ${
-        prefix ? 'pl-3' : 'pl-3'
-    } ${suffix ? 'pr-3' : 'pr-3'} ${disabled ? 'cursor-not-allowed' : ''}`.trim();
-
     return (
         <div>
             {label && (
@@ -55,17 +52,35 @@ export default function Select({
             )}
             <div className={`${wrapperClasses} relative`}>
                 {prefix && <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">{prefix}</div>}
-                <select value={value} onChange={(e) => onChange(e.target.value)} className={selectClasses} disabled={disabled} required={required}>
-                    <option value="">{placeholder}</option>
-                    {options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-                <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
-                    <ChevronDown className="h-4 w-4 text-green-600" />
-                </div>
+                <RadixSelect.Root value={value} onValueChange={onChange} disabled={disabled} required={required}>
+                    <RadixSelect.Trigger
+                        className="h-auto min-h-0 w-full border-0 bg-transparent px-3 py-2.5 text-sm text-green-900 shadow-none focus:outline-none sm:text-base text-start"
+                    >
+                        <RadixSelect.Value placeholder={placeholder} />
+                        <RadixSelect.Icon className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
+                            <ChevronDown className="h-4 w-4 text-green-600" />
+                        </RadixSelect.Icon>
+                    </RadixSelect.Trigger>
+                    <RadixSelect.Portal>
+                        <RadixSelect.Content
+                            className="z-50 min-w-[var(--radix-select-trigger-width)] rounded-lg border border-green-300 bg-white shadow-lg"
+                            position="popper"
+                            sideOffset={4}
+                        >
+                            <RadixSelect.Viewport className="p-1">
+                                {options.map((option) => (
+                                    <RadixSelect.Item
+                                        key={option.value}
+                                        value={option.value.toString()}
+                                        className="cursor-pointer rounded px-3 py-2 text-sm text-green-900 hover:bg-green-50 focus:bg-green-50 focus:outline-none data-[highlighted]:bg-green-50"
+                                    >
+                                        <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
+                                    </RadixSelect.Item>
+                                ))}
+                            </RadixSelect.Viewport>
+                        </RadixSelect.Content>
+                    </RadixSelect.Portal>
+                </RadixSelect.Root>
                 {suffix && <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">{suffix}</div>}
             </div>
             {helperText && !error && <p className="mt-1 text-sm text-green-600">{helperText}</p>}
