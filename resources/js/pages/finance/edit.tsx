@@ -142,7 +142,7 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
     return (
         <BaseLayouts>
             <div className="min-h-screen bg-green-50">
-                <Header title="Edit Transaksi Keuangan" icon="💰" />
+                <Header showBackButton title="Edit Transaksi Keuangan" icon="💰" />
 
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}

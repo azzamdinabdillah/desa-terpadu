@@ -1,6 +1,7 @@
+import { router } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import * as Dialog from '@radix-ui/react-dialog';
-import { ChevronDown, ChevronRight, CircleDollarSign, Home, Menu, Settings, User, Users, X } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronRight, CircleDollarSign, Home, Menu, Settings, User, Users, X } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface HeaderProps {
@@ -8,6 +9,7 @@ interface HeaderProps {
     icon?: string;
     showMobileMenuSpace?: boolean;
     className?: string;
+    showBackButton?: boolean;
 }
 
 interface MenuItem {
@@ -136,7 +138,13 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
     );
 };
 
-const Header: React.FC<HeaderProps> = ({ title = 'Dashboard Desa', icon = '🌾', showMobileMenuSpace = true, className = '' }) => {
+const Header: React.FC<HeaderProps> = ({
+    title = 'Dashboard Desa',
+    icon = '🌾',
+    showMobileMenuSpace = true,
+    className = '',
+    showBackButton = false
+}) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
@@ -144,10 +152,19 @@ const Header: React.FC<HeaderProps> = ({ title = 'Dashboard Desa', icon = '🌾'
             <header className={`border-b border-green-200 bg-gradient-to-r from-green-700 to-green-900 px-4 py-4 lg:px-8 ${className}`}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
+                        {showBackButton && (
+                            <button
+                                onClick={() => window.history.back()}
+                                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 transition-all duration-200 hover:bg-white/30 hover:shadow-md"
+                                aria-label="Kembali"
+                            >
+                                <ArrowLeft className="h-4 w-4 text-white" />
+                            </button>
+                        )}
+                        <div className="md:flex hidden h-8 w-8 items-center justify-center rounded-full bg-white/20">
                             <span className="text-sm">{icon}</span>
                         </div>
-                        <h1 className="font-heading text-lg md:text-xl font-bold text-white">{title}</h1>
+                        <h1 className="font-heading text-base font-bold text-white md:text-xl">{title}</h1>
                     </div>
                     {/* Mobile Menu Button */}
                     <div className="lg:hidden">

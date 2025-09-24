@@ -130,7 +130,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     return (
         <BaseLayouts>
             <div className="min-h-screen bg-green-50">
-                <Header title="Tambah Transaksi Keuangan" icon="💰" />
+                <Header showBackButton title="Tambah Transaksi Keuangan" icon="💰" />
 
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
