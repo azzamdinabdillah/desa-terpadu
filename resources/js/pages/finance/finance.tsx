@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
@@ -26,7 +26,7 @@ function Finance() {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [filterType, setFilterType] = useState(filters.type || 'all');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<{ id: number; note: string; amount: number; type: string } | null>(null);
 

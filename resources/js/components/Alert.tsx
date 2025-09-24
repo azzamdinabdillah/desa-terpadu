@@ -1,7 +1,7 @@
 import { AlertCircle, CheckCircle, Info, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface AlertProps {
+export interface AlertProps {
     type: 'success' | 'error' | 'warning' | 'info';
     message: React.ReactNode;
     onClose?: () => void;

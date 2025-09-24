@@ -1,9 +1,9 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import InputField from '@/components/InputField';
-import Pagination from '@/components/Pagination';
+import Pagination, { Paginated } from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
@@ -20,22 +20,7 @@ interface Announcement {
     updated_at: string;
 }
 
-interface PaginationLink {
-    url?: string;
-    label: string;
-    active: boolean;
-}
-
-interface PaginationData {
-    data: Announcement[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    prev_page_url?: string;
-    next_page_url?: string;
-    links: PaginationLink[];
-}
+type PaginationData = Paginated<Announcement>;
 
 interface Props {
     flash?: {
@@ -71,7 +56,7 @@ function Announcement() {
         flash,
     } = usePage<Props>().props;
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
-    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewModalData, setViewModalData] = useState<Announcement | null>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);

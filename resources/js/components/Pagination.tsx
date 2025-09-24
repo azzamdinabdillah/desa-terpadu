@@ -1,10 +1,22 @@
 import Button from '@/components/Button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Shared pagination types to be reused across pages/modules
 export interface PaginationLink {
-    url?: string;
+    url?: string | null;
     label: string;
     active: boolean;
+}
+
+export interface Paginated<TItem> {
+    data: TItem[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    links: PaginationLink[];
+    prev_page_url?: string | null;
+    next_page_url?: string | null;
 }
 
 export interface PaginationProps {
@@ -12,8 +24,8 @@ export interface PaginationProps {
     perPage: number;
     total: number;
     lastPage: number;
-    prevUrl?: string;
-    nextUrl?: string;
+    prevUrl?: string | null;
+    nextUrl?: string | null;
     links: PaginationLink[];
     onChange: (url: string) => void;
     className?: string;

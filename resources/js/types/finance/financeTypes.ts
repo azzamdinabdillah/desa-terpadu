@@ -1,3 +1,4 @@
+import type { Paginated, PaginationLink } from '@/components/Pagination';
 interface User {
     id: number;
     name: string;
@@ -16,22 +17,7 @@ interface Finance {
     remaining_balance: number;
 }
 
-interface PaginationLink {
-    url: string | null;
-    label: string;
-    active: boolean;
-}
-
-interface PaginatedFinances {
-    data: Finance[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    links: PaginationLink[];
-    prev_page_url: string | null;
-    next_page_url: string | null;
-}
+type PaginatedFinances = Paginated<Finance>;
 
 interface Summary {
     totalIncome: number;
