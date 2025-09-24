@@ -65,13 +65,22 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     };
 
     // Function to check if a menu item is active
+    // Now also matches if url starts with href + '?' (for query params)
     const isActive = (href: string) => {
-        return url === href || url.startsWith(href + '/');
+        return (
+            url === href ||
+            url.startsWith(href + '/') ||
+            url.startsWith(href + '?')
+        );
     };
 
     // Function to check if a submenu item is active
     const isSubmenuActive = (href: string) => {
-        return url === href || url.startsWith(href + '/');
+        return (
+            url === href ||
+            url.startsWith(href + '/') ||
+            url.startsWith(href + '?')
+        );
     };
 
     // Function to check if a parent menu should be open (has active submenu)

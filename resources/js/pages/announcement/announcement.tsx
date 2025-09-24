@@ -2,48 +2,20 @@ import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import InputField from '@/components/InputField';
-import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import {
-    AlertCircle,
-    Calendar,
-    ChevronLeft,
-    ChevronRight,
-    Clock,
-    Edit,
-    Eye,
-    FileText,
-    MapPin,
-    Plus,
-    Search,
-    Star,
-    Trash2,
-    Users,
-} from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Eye, FileText, Image as ImageIcon, Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface Announcement {
     id: number;
-    judul: string;
-    isi: string;
-    tipe: 'umum' | 'terbatas';
-    lokasi?: string;
-    penting: boolean;
-    status: 'draft' | 'publish';
-    mulai_tampil?: string;
-    selesai_tampil?: string;
+    title: string;
+    description: string;
+    image?: string | null;
     created_at: string;
     updated_at: string;
-    created_by: {
-        id: number;
-        email: string;
-        citizen?: {
-            full_name: string;
-        };
-    };
 }
 
 interface PaginationLink {
@@ -71,15 +43,9 @@ interface Props {
     announcements: PaginationData;
     filters: {
         search?: string;
-        status?: string;
-        tipe?: string;
-        penting?: string;
     };
     summary: {
         total: number;
-        published: number;
-        draft: number;
-        important: number;
     };
     [key: string]: any;
 }
@@ -98,22 +64,15 @@ function Announcement() {
         },
         summary = {
             total: 0,
-            published: 0,
-            draft: 0,
-            important: 0,
         },
         filters = {},
         flash,
     } = usePage<Props>().props;
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
-    const [filterStatus, setFilterStatus] = useState(filters.status || 'all');
-    const [filterType, setFilterType] = useState(filters.tipe || 'all');
-    const [filterImportant, setFilterImportant] = useState(filters.penting || 'all');
     const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [deleteModalData, setDeleteModalData] = useState<{ id: number; judul: string } | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewModalData, setViewModalData] = useState<Announcement | null>(null);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -125,59 +84,18 @@ function Announcement() {
     }, [flash]);
 
     const handleSearch = () => {
-        router.get(
-            '/announcement',
-            {
-                search: searchTerm,
-                status: filterStatus,
-                tipe: filterType,
-                penting: filterImportant,
-            },
-            {
-                preserveState: true,
-                replace: true,
-            },
-        );
+        router.get('/announcement', { search: searchTerm }, { preserveState: true, replace: true });
     };
 
     // Debounce search input
     useEffect(() => {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.search || '')) {
-                router.get(
-                    '/announcement',
-                    {
-                        search: searchTerm,
-                        status: filterStatus,
-                        tipe: filterType,
-                        penting: filterImportant,
-                    },
-                    { preserveState: true, replace: true },
-                );
+                router.get('/announcement', { search: searchTerm }, { preserveState: true, replace: true });
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, filterStatus, filterType, filterImportant]);
-
-    const handleFilterChange = (type: string, value: string) => {
-        if (type === 'status') setFilterStatus(value);
-        if (type === 'tipe') setFilterType(value);
-        if (type === 'penting') setFilterImportant(value);
-
-        router.get(
-            '/announcement',
-            {
-                search: searchTerm,
-                status: type === 'status' ? value : filterStatus,
-                tipe: type === 'tipe' ? value : filterType,
-                penting: type === 'penting' ? value : filterImportant,
-            },
-            {
-                preserveState: true,
-                replace: true,
-            },
-        );
-    };
+    }, [searchTerm]);
 
     const handlePageChange = (url: string) => {
         if (url) {
@@ -186,33 +104,6 @@ function Announcement() {
                 replace: true,
             });
         }
-    };
-
-    const handleDeleteClick = (id: number, judul: string) => {
-        setDeleteModalData({ id, judul });
-        setDeleteModalOpen(true);
-    };
-
-    const handleDeleteConfirm = () => {
-        if (deleteModalData) {
-            router.delete(`/announcement/${deleteModalData.id}`, {
-                onSuccess: () => {
-                    setAlert({ type: 'success', message: 'Pengumuman berhasil dihapus!' });
-                    setDeleteModalOpen(false);
-                    setDeleteModalData(null);
-                },
-                onError: () => {
-                    setAlert({ type: 'error', message: 'Gagal menghapus pengumuman!' });
-                    setDeleteModalOpen(false);
-                    setDeleteModalData(null);
-                },
-            });
-        }
-    };
-
-    const handleDeleteCancel = () => {
-        setDeleteModalOpen(false);
-        setDeleteModalData(null);
     };
 
     const handleViewClick = (announcement: Announcement) => {
@@ -225,43 +116,7 @@ function Announcement() {
         setViewModalData(null);
     };
 
-    const toggleImportant = (id: number, currentStatus: boolean) => {
-        router.patch(
-            `/announcement/${id}/toggle-important`,
-            {
-                penting: !currentStatus,
-            },
-            {
-                onSuccess: () => {
-                    setAlert({ type: 'success', message: 'Status penting berhasil diubah!' });
-                },
-                onError: () => {
-                    setAlert({ type: 'error', message: 'Gagal mengubah status penting!' });
-                },
-            },
-        );
-    };
-
-    const toggleStatus = (id: number, currentStatus: string) => {
-        const newStatus = currentStatus === 'draft' ? 'publish' : 'draft';
-        router.patch(
-            `/announcement/${id}/toggle-status`,
-            {
-                status: newStatus,
-            },
-            {
-                onSuccess: () => {
-                    setAlert({
-                        type: 'success',
-                        message: `Pengumuman berhasil ${newStatus === 'publish' ? 'dipublikasikan' : 'disimpan sebagai draft'}!`,
-                    });
-                },
-                onError: () => {
-                    setAlert({ type: 'error', message: 'Gagal mengubah status pengumuman!' });
-                },
-            },
-        );
-    };
+    // no toggle actions in current schema
 
     return (
         <BaseLayouts>
@@ -271,10 +126,9 @@ function Announcement() {
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
-                {/* Dashboard Cards */}
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
-                    <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-4 lg:gap-6">
-                        {/* Total Announcements */}
+                    {/* Summary Cards */}
+                    {/* <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
                         <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -286,47 +140,7 @@ function Announcement() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Published */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="mb-1 text-sm font-medium text-green-700">Dipublikasikan</p>
-                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{summary.published}</p>
-                                </div>
-                                <div className="rounded-full bg-green-100 p-3">
-                                    <Eye className="h-6 w-6 text-green-700" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Draft */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="mb-1 text-sm font-medium text-green-700">Draft</p>
-                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{summary.draft}</p>
-                                </div>
-                                <div className="rounded-full bg-green-100 p-3">
-                                    <Edit className="h-6 w-6 text-green-700" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Important */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="mb-1 text-sm font-medium text-green-700">Penting</p>
-                                    <p className="text-2xl font-bold text-green-900 lg:text-3xl">{summary.important}</p>
-                                </div>
-                                <div className="rounded-full bg-green-100 p-3">
-                                    <Star className="h-6 w-6 text-green-700" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    </div> */}
                     {/* Search and Add Button */}
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="relative max-w-md flex-1">
@@ -344,45 +158,6 @@ function Announcement() {
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                            <Select
-                                label=""
-                                value={filterStatus}
-                                onChange={(value) => handleFilterChange('status', value)}
-                                options={[
-                                    { value: 'all', label: 'Semua Status' },
-                                    { value: 'publish', label: 'Dipublikasikan' },
-                                    { value: 'draft', label: 'Draft' },
-                                ]}
-                                className="min-w-[150px]"
-                                placeholder="Pilih status"
-                            />
-
-                            <Select
-                                label=""
-                                value={filterType}
-                                onChange={(value) => handleFilterChange('tipe', value)}
-                                options={[
-                                    { value: 'all', label: 'Semua Tipe' },
-                                    { value: 'umum', label: 'Umum' },
-                                    { value: 'terbatas', label: 'Terbatas' },
-                                ]}
-                                className="min-w-[150px]"
-                                placeholder="Pilih tipe"
-                            />
-
-                            <Select
-                                label=""
-                                value={filterImportant}
-                                onChange={(value) => handleFilterChange('penting', value)}
-                                options={[
-                                    { value: 'all', label: 'Semua' },
-                                    { value: 'true', label: 'Penting' },
-                                    { value: 'false', label: 'Biasa' },
-                                ]}
-                                className="min-w-[120px]"
-                                placeholder="Pilih prioritas"
-                            />
-
                             <Button onClick={() => router.visit('/announcement/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
                                 Tambah Pengumuman
                             </Button>
@@ -396,14 +171,11 @@ function Announcement() {
                                 <thead className="bg-green-100">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Judul</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Tipe</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Lokasi</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Status</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Penting</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Deskripsi</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Gambar</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">
-                                            Tanggal Dibuat
+                                            Tanggal
                                         </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase">Pembuat</th>
                                         <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-green-800 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
@@ -414,60 +186,34 @@ function Announcement() {
                                                 <div className="flex items-center gap-2">
                                                     <FileText className="h-4 w-4 flex-shrink-0 text-green-600" />
                                                     <div className="min-w-0 flex-1">
-                                                        <p className="max-w-xs truncate text-sm font-medium text-green-900">{item.judul}</p>
-                                                        <p className="max-w-xs truncate text-xs text-green-600">
-                                                            {item.isi.length > 50 ? `${item.isi.substring(0, 50)}...` : item.isi}
-                                                        </p>
+                                                        <p className="max-w-xs truncate text-sm font-medium text-green-900">{item.title}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold ${
-                                                        item.tipe === 'umum' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
-                                                    }`}
-                                                >
-                                                    {item.tipe === 'umum' ? 'Umum' : 'Terbatas'}
-                                                </span>
+                                            <td className="px-6 py-4">
+                                                <p className="max-w-md truncate text-sm text-green-900">
+                                                    {item.description?.length > 80 ? `${item.description.substring(0, 80)}...` : item.description}
+                                                </p>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center gap-2">
-                                                    <MapPin className="h-4 w-4 text-green-600" />
-                                                    <span className="text-sm text-green-900">{item.lokasi || '-'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    className={`inline-flex rounded-full px-2 text-xs leading-5 font-semibold ${
-                                                        item.status === 'publish' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                                                    }`}
-                                                >
-                                                    {item.status === 'publish' ? 'Dipublikasikan' : 'Draft'}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <Button
-                                                    onClick={() => toggleImportant(item.id, item.penting)}
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className={`${item.penting ? 'text-yellow-600 hover:text-yellow-800' : 'text-gray-400 hover:text-yellow-600'}`}
-                                                    title={item.penting ? 'Hapus dari penting' : 'Tandai sebagai penting'}
-                                                >
-                                                    <Star className={`h-4 w-4 ${item.penting ? 'fill-current' : ''}`} />
-                                                </Button>
+                                                {item.image ? (
+                                                    <Button
+                                                        onClick={() => setSelectedImage(item.image as string)}
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        icon={<ImageIcon className="h-4 w-4" />}
+                                                        className="text-green-600 hover:text-green-800"
+                                                    >
+                                                        <span className="text-sm">Lihat</span>
+                                                    </Button>
+                                                ) : (
+                                                    <span className="text-sm text-green-700">-</span>
+                                                )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="h-4 w-4 text-green-600" />
                                                     <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center gap-2">
-                                                    <Users className="h-4 w-4 text-green-600" />
-                                                    <span className="text-sm text-green-900">
-                                                        {item.created_by.citizen?.full_name || item.created_by.email}
-                                                    </span>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
@@ -480,37 +226,6 @@ function Announcement() {
                                                         title="Lihat Detail"
                                                     >
                                                         <Eye className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        onClick={() => router.visit(`/announcement/${item.id}/edit`)}
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="text-green-600 hover:text-green-800"
-                                                        title="Edit"
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        onClick={() => toggleStatus(item.id, item.status)}
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className={`${item.status === 'publish' ? 'text-orange-600 hover:text-orange-800' : 'text-green-600 hover:text-green-800'}`}
-                                                        title={item.status === 'publish' ? 'Ubah ke Draft' : 'Publikasikan'}
-                                                    >
-                                                        {item.status === 'publish' ? (
-                                                            <AlertCircle className="h-4 w-4" />
-                                                        ) : (
-                                                            <Eye className="h-4 w-4" />
-                                                        )}
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="text-green-600 hover:text-red-600"
-                                                        title="Hapus"
-                                                        onClick={() => handleDeleteClick(item.id, item.judul)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
                                             </td>
@@ -589,12 +304,7 @@ function Announcement() {
                             </div>
                             <h3 className="mb-2 text-lg font-semibold text-green-900">Tidak ada pengumuman</h3>
                             <p className="mb-6 text-green-700">
-                                {filters.search ||
-                                (filters.status && filters.status !== 'all') ||
-                                (filters.tipe && filters.tipe !== 'all') ||
-                                (filters.penting && filters.penting !== 'all')
-                                    ? 'Tidak ada pengumuman yang sesuai dengan pencarian atau filter Anda.'
-                                    : 'Belum ada pengumuman yang dibuat.'}
+                                {filters.search ? 'Tidak ada pengumuman yang sesuai dengan pencarian Anda.' : 'Belum ada pengumuman yang dibuat.'}
                             </p>
                             <Button
                                 onClick={() => router.visit('/announcement/create')}
@@ -606,169 +316,89 @@ function Announcement() {
                             </Button>
                         </div>
                     )}
-                </div>
 
-                {/* View Detail Modal */}
-                <Dialog.Root open={viewModalOpen} onOpenChange={setViewModalOpen}>
-                    <Dialog.Portal>
-                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-4xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
-                            <div className="flex items-center justify-between border-b border-green-200 p-4">
-                                <Dialog.Title className="text-lg font-semibold text-green-900">Detail Pengumuman</Dialog.Title>
-                                <Dialog.Close asChild>
-                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </Button>
-                                </Dialog.Close>
-                            </div>
-                            <div className="max-h-[70vh] overflow-y-auto p-6">
-                                {viewModalData && (
-                                    <div className="space-y-6">
-                                        {/* Header Info */}
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <h2 className="mb-2 text-2xl font-bold text-green-900">{viewModalData.judul}</h2>
-                                                <div className="flex flex-wrap gap-2">
-                                                    <span
-                                                        className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${
-                                                            viewModalData.status === 'publish'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : 'bg-gray-100 text-gray-800'
-                                                        }`}
-                                                    >
-                                                        {viewModalData.status === 'publish' ? 'Dipublikasikan' : 'Draft'}
-                                                    </span>
-                                                    <span
-                                                        className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${
-                                                            viewModalData.tipe === 'umum'
-                                                                ? 'bg-blue-100 text-blue-800'
-                                                                : 'bg-orange-100 text-orange-800'
-                                                        }`}
-                                                    >
-                                                        {viewModalData.tipe === 'umum' ? 'Umum' : 'Terbatas'}
-                                                    </span>
-                                                    {viewModalData.penting && (
-                                                        <span className="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-3 py-1 text-sm font-semibold text-yellow-800">
-                                                            <Star className="h-3 w-3 fill-current" />
-                                                            Penting
-                                                        </span>
-                                                    )}
+                    {/* View Detail Modal */}
+                    <Dialog.Root open={viewModalOpen} onOpenChange={setViewModalOpen}>
+                        <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-4xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                                <div className="flex items-center justify-between border-b border-green-200 p-4">
+                                    <Dialog.Title className="text-lg font-semibold text-green-900">Detail Pengumuman</Dialog.Title>
+                                    <Dialog.Close asChild>
+                                        <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </Button>
+                                    </Dialog.Close>
+                                </div>
+                                <div className="max-h-[70vh] overflow-y-auto p-6">
+                                    {viewModalData && (
+                                        <div className="space-y-6">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex-1">
+                                                    <h2 className="mb-2 text-2xl font-bold text-green-900">{viewModalData.title}</h2>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Content */}
-                                        <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                            <h3 className="mb-3 text-lg font-semibold text-green-900">Isi Pengumuman</h3>
-                                            <div className="prose prose-green max-w-none">
-                                                <p className="whitespace-pre-wrap text-green-800">{viewModalData.isi}</p>
+                                            <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                                                <h3 className="mb-3 text-lg font-semibold text-green-900">Isi Pengumuman</h3>
+                                                <div className="prose prose-green max-w-none">
+                                                    <p className="whitespace-pre-wrap text-green-800">{viewModalData.description}</p>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Additional Info */}
-                                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                            {viewModalData.lokasi && (
+                                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 <div className="flex items-center gap-2">
-                                                    <MapPin className="h-5 w-5 text-green-600" />
+                                                    <Calendar className="h-5 w-5 text-green-600" />
                                                     <div>
-                                                        <p className="text-sm font-medium text-green-700">Lokasi</p>
-                                                        <p className="text-sm text-green-900">{viewModalData.lokasi}</p>
+                                                        <p className="text-sm font-medium text-green-700">Tanggal Dibuat</p>
+                                                        <p className="text-sm text-green-900">{formatDate(viewModalData.created_at)}</p>
                                                     </div>
                                                 </div>
-                                            )}
+                                            </div>
 
-                                            <div className="flex items-center gap-2">
-                                                <Calendar className="h-5 w-5 text-green-600" />
+                                            {viewModalData.image && (
                                                 <div>
-                                                    <p className="text-sm font-medium text-green-700">Tanggal Dibuat</p>
-                                                    <p className="text-sm text-green-900">{formatDate(viewModalData.created_at)}</p>
-                                                </div>
-                                            </div>
-
-                                            {viewModalData.mulai_tampil && (
-                                                <div className="flex items-center gap-2">
-                                                    <Clock className="h-5 w-5 text-green-600" />
-                                                    <div>
-                                                        <p className="text-sm font-medium text-green-700">Mulai Tampil</p>
-                                                        <p className="text-sm text-green-900">{formatDate(viewModalData.mulai_tampil)}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {viewModalData.selesai_tampil && (
-                                                <div className="flex items-center gap-2">
-                                                    <Clock className="h-5 w-5 text-green-600" />
-                                                    <div>
-                                                        <p className="text-sm font-medium text-green-700">Selesai Tampil</p>
-                                                        <p className="text-sm text-green-900">{formatDate(viewModalData.selesai_tampil)}</p>
-                                                    </div>
+                                                    <h3 className="mb-3 text-lg font-semibold text-green-900">Gambar</h3>
+                                                    <img
+                                                        src={`/storage/${viewModalData.image}`}
+                                                        alt="Gambar Pengumuman"
+                                                        className="h-auto w-full rounded-2xl border border-green-400"
+                                                    />
                                                 </div>
                                             )}
                                         </div>
+                                    )}
+                                </div>
+                            </Dialog.Content>
+                        </Dialog.Portal>
+                    </Dialog.Root>
 
-                                        {/* Author */}
-                                        <div className="flex items-center gap-2">
-                                            <Users className="h-5 w-5 text-green-600" />
-                                            <div>
-                                                <p className="text-sm font-medium text-green-700">Dibuat oleh</p>
-                                                <p className="text-sm text-green-900">
-                                                    {viewModalData.created_by.citizen?.full_name || viewModalData.created_by.email}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </Dialog.Content>
-                    </Dialog.Portal>
-                </Dialog.Root>
-
-                {/* Delete Confirmation Modal */}
-                <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-                    <Dialog.Portal>
-                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-200 bg-red-100">
-                                <Trash2 className="h-6 w-6 text-red-600" />
-                            </div>
-                            <div className="text-center">
-                                <Dialog.Title className="mb-2 text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
-                                <Dialog.Description className="mb-4 text-sm text-red-700">
-                                    Apakah Anda yakin ingin menghapus pengumuman ini?
-                                </Dialog.Description>
-                                {deleteModalData && (
-                                    <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-left">
-                                        <p className="text-sm font-medium text-red-900">Detail Pengumuman:</p>
-                                        <p className="text-sm text-red-800">{deleteModalData.judul}</p>
-                                    </div>
-                                )}
-                                <p className="mt-3 text-xs font-medium text-red-600">⚠️ Tindakan ini tidak dapat dibatalkan!</p>
-                            </div>
-                            <div className="mt-6 flex gap-3">
-                                <Dialog.Close asChild>
-                                    <Button
-                                        onClick={handleDeleteCancel}
-                                        variant="outline"
-                                        className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
-                                        fullWidth
-                                    >
-                                        Batal
-                                    </Button>
-                                </Dialog.Close>
-                                <Button
-                                    onClick={handleDeleteConfirm}
-                                    variant="primary"
-                                    className="flex-1 bg-red-600 text-white hover:bg-red-700"
-                                    fullWidth
-                                >
-                                    Hapus
-                                </Button>
-                            </div>
-                        </Dialog.Content>
-                    </Dialog.Portal>
-                </Dialog.Root>
+                    {/* Image Preview Modal */}
+                    <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+                        <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                                <div className="flex items-center justify-between border-b border-green-200 p-4">
+                                    <Dialog.Title className="text-lg font-semibold text-green-900">Gambar Pengumuman</Dialog.Title>
+                                    <Dialog.Close asChild>
+                                        <button className="rounded-lg p-2 text-green-700 hover:bg-green-50">✕</button>
+                                    </Dialog.Close>
+                                </div>
+                                <div className="p-4">
+                                    {selectedImage && (
+                                        <img
+                                            src={`/storage/${selectedImage}`}
+                                            alt="Gambar Pengumuman"
+                                            className="h-auto w-full rounded-2xl border border-green-400"
+                                        />
+                                    )}
+                                </div>
+                            </Dialog.Content>
+                        </Dialog.Portal>
+                    </Dialog.Root>
+                </div>
             </div>
         </BaseLayouts>
     );
