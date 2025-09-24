@@ -2,7 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { ReactNode } from 'react';
 
 interface SelectOption {
-    value: string;
+    value: string | number;
     label: string;
 }
 

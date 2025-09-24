@@ -5,7 +5,7 @@ import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Props } from '@/types/finance/financeTypes';
+import { Finance as FinanceType, PaginationLink } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import {
@@ -24,6 +24,15 @@ import {
     Wallet,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+interface Props {
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: any;
+}
+
 
 function Finance() {
     const { finances, summary, filters, flash } = usePage<Props>().props;
@@ -228,7 +237,7 @@ function Finance() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-green-100 bg-white">
-                                    {finances.data.map((item) => (
+                                    {finances.data.map((item: FinanceType) => (
                                         <tr key={item.id} className="hover:bg-green-50">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
@@ -322,7 +331,7 @@ function Finance() {
 
                                 <div className="flex gap-1">
                                     {finances.links
-                                        .filter((link) => {
+                                        .filter((link: PaginationLink) => {
                                             const labelNoTags = (link.label || '').replace(/<[^>]*>/g, '');
                                             const normalized = labelNoTags
                                                 .replace(/&laquo;|&raquo;|«|»/g, '')
@@ -330,7 +339,7 @@ function Finance() {
                                                 .toLowerCase();
                                             return !['previous', 'next', 'sebelumnya', 'selanjutnya', 'berikutnya'].includes(normalized);
                                         })
-                                        .map((link, index) => (
+                                        .map((link: PaginationLink, index: number) => (
                                             <Button
                                                 key={index}
                                                 onClick={() => handlePageChange(link.url || '')}

@@ -50,4 +50,4 @@ interface Props {
     filters: Filters;
 }
 
-export type { Filters, Finance, PaginatedFinances, Props, Summary, User };
+export type { Filters, Finance, PaginatedFinances, PaginationLink, Props, Summary, User };

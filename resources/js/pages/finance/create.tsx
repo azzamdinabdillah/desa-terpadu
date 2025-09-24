@@ -9,6 +9,15 @@ import { useForm, usePage } from '@inertiajs/react';
 import { CalendarDays, CircleUserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+interface Props {
+    users: User[];
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: any;
+}
+
 interface CreateFinanceProps {
     currentBalance: number;
 }
