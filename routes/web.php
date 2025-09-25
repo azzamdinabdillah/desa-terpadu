@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\CitizenController;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,7 @@ Route::get('/', function () {
 
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 
 Route::middleware('auth')->group(function () {
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');

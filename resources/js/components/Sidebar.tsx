@@ -37,7 +37,7 @@ const menuItems: MenuItem[] = [
         label: 'Manajemen Warga',
         icon: <Users className="h-5 w-5" />,
         submenu: [
-            { id: 'data-warga', label: 'Data Penduduk', href: '/warga' },
+            { id: 'data-warga', label: 'Data Penduduk', href: '/citizens' },
             { id: 'kartu-keluarga', label: 'Kartu Keluarga', href: '/warga/kk' },
             { id: 'surat-keterangan', label: 'Surat Keterangan', href: '/warga/surat' },
         ],
@@ -131,7 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                                     )}
                                 </Collapsible.Trigger>
 
-                                <Collapsible.Content className="ml-4 mt-2 space-y-1">
+                                <Collapsible.Content className="mt-2 ml-4 space-y-1">
                                     {item.submenu.map((subitem) => (
                                         <a
                                             key={subitem.id}
@@ -174,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                             <div>
                                 <p className="truncate text-xs text-green-700">{props?.auth?.user?.email ?? 'Belum masuk'}</p>
                                 {props?.auth?.user?.role && (
-                                    <p className="truncate text-xs capitalize text-green-500">
+                                    <p className="truncate text-xs text-green-500 capitalize">
                                         {props.auth.user.role === 'admin'
                                             ? 'Admin'
                                             : props.auth.user.role === 'citizen'

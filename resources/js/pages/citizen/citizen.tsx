@@ -1,0 +1,242 @@
+import Alert, { AlertProps } from '@/components/Alert';
+import DataTable from '@/components/DataTable';
+import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
+import InputField from '@/components/InputField';
+import Pagination from '@/components/Pagination';
+import Select from '@/components/Select';
+import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { formatDate } from '@/lib/utils';
+import { CitizenType } from '@/types/citizen/citizenType';
+import { router, usePage } from '@inertiajs/react';
+import { Calendar, IdCard, MapPin, Phone, Search, User, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+
+interface CitizenPageProps {
+    citizens: {
+        data: CitizenType[];
+        current_page: number;
+        per_page: number;
+        total: number;
+        last_page: number;
+        prev_page_url: string | null;
+        next_page_url: string | null;
+        links: { url: string | null; label: string; active: boolean }[];
+    };
+    filters: {
+        q?: string;
+        gender?: string;
+    };
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: unknown;
+}
+
+function CitizenPage() {
+    const { citizens, filters, flash } = usePage().props as unknown as CitizenPageProps;
+    const [searchTerm, setSearchTerm] = useState(filters.q || '');
+    const [gender, setGender] = useState(filters.gender || 'all');
+    const [alert, setAlert] = useState<AlertProps | null>(null);
+
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
+
+    const handleSearch = () => {
+        router.get(
+            '/citizens',
+            {
+                q: searchTerm,
+                gender: gender === 'all' ? undefined : gender,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            },
+        );
+    };
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            if (searchTerm !== (filters.q || '') || (filters.gender || 'all') !== gender) {
+                router.get('/citizens', { q: searchTerm, gender: gender === 'all' ? undefined : gender }, { preserveState: true, replace: true });
+            }
+        }, 300);
+        return () => clearTimeout(handler);
+    }, [searchTerm, gender]);
+
+    const handlePageChange = (url: string) => {
+        if (url) {
+            router.visit(url, { preserveState: true, replace: true });
+        }
+    };
+
+    const columns = useMemo(
+        () => [
+            {
+                key: 'full_name',
+                header: 'Nama Lengkap',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.full_name}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'nik',
+                header: 'NIK',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <IdCard className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.nik}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'gender',
+                header: 'Jenis Kelamin',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => {
+                    let genderLabel = '-';
+                    if (item.gender === 'male') {
+                        genderLabel = 'Laki-laki';
+                    } else if (item.gender === 'female') {
+                        genderLabel = 'Perempuan';
+                    } else if (item.gender) {
+                        genderLabel = item.gender;
+                    }
+                    return <span className="text-sm text-green-900 capitalize">{genderLabel}</span>;
+                },
+            },
+            {
+                key: 'date_of_birth',
+                header: 'Tanggal Lahir',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.date_of_birth ? formatDate(item.date_of_birth) : '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'phone_number',
+                header: 'No. HP',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.phone_number || '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'address',
+                header: 'Alamat',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 flex-shrink-0 text-green-600" />
+                        <span className="max-w-xs truncate text-sm text-green-900">{item.address || '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'familyName',
+                header: 'Dari Keluarga',
+                className: 'w-full whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2 w-full">
+                        <Users className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900 w-full">{item.family.family_name || '-'}</span>
+                    </div>
+                ),
+            }
+        ],
+        [],
+    );
+
+    return (
+        <BaseLayouts>
+            <div>
+                <Header title="Data Penduduk Desa" icon="🧑‍🤝‍🧑" />
+
+                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
+
+                <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                    <HeaderPage title="Data Warga" description="Daftar seluruh data warga desa" search={filters?.q ?? ''} total={citizens.total} />
+
+                    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="relative max-w-md flex-1">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <Search className="h-5 w-5 text-green-600" />
+                            </div>
+                            <InputField
+                                type="text"
+                                placeholder="Cari warga (nama, NIK, alamat)..."
+                                value={searchTerm}
+                                onChange={(value) => setSearchTerm(value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                inputClassName="pl-10"
+                            />
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                            <Select
+                                label=""
+                                value={gender}
+                                onChange={(val) => setGender(val)}
+                                options={[
+                                    { value: 'all', label: 'Semua Jenis Kelamin' },
+                                    { value: 'male', label: 'Laki-laki' },
+                                    { value: 'female', label: 'Perempuan' },
+                                ]}
+                                className="min-w-[220px]"
+                                placeholder="Pilih gender"
+                            />
+                        </div>
+                    </div>
+
+                    <DataTable
+                        columns={columns}
+                        data={citizens.data}
+                        emptyMessage={
+                            <div>
+                                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                                    <User className="h-8 w-8 text-green-600" />
+                                </div>
+                                <h3 className="mb-2 text-lg font-semibold text-green-900">Tidak ada data warga</h3>
+                                <p className="mb-6 text-green-700">
+                                    {filters.q || (filters.gender && filters.gender !== 'all')
+                                        ? 'Tidak ada warga yang sesuai dengan pencarian atau filter Anda.'
+                                        : 'Belum ada data warga yang tercatat.'}
+                                </p>
+                            </div>
+                        }
+                    />
+
+                    <Pagination
+                        page={citizens.current_page}
+                        perPage={citizens.per_page}
+                        total={citizens.total}
+                        lastPage={citizens.last_page}
+                        prevUrl={citizens.prev_page_url}
+                        nextUrl={citizens.next_page_url}
+                        links={citizens.links}
+                        onChange={handlePageChange}
+                    />
+                </div>
+            </div>
+        </BaseLayouts>
+    );
+}
+
+export default CitizenPage;
