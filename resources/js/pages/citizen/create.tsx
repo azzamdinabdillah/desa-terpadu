@@ -1,0 +1,294 @@
+﻿import Alert, { AlertProps } from '@/components/Alert';
+import Button from '@/components/Button';
+import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
+import InputField from '@/components/InputField';
+import Select from '@/components/Select';
+import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { router, useForm, usePage } from '@inertiajs/react';
+import { Briefcase, Save, User, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+interface Family {
+    id: number;
+    family_name: string;
+}
+
+interface CreateCitizenPageProps {
+    families: Family[];
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: unknown;
+}
+
+function CreateCitizenPage() {
+    const { families, flash } = usePage().props as unknown as CreateCitizenPageProps;
+    const [alert, setAlert] = useState<AlertProps | null>(null);
+
+    const { data, setData, post, processing } = useForm({
+        full_name: '',
+        nik: '',
+        phone_number: '',
+        address: '',
+        date_of_birth: '',
+        occupation: '',
+        position: '',
+        religion: 'placeholder',
+        marital_status: 'placeholder',
+        gender: 'placeholder',
+        status: 'placeholder',
+        family_id: 'placeholder',
+    });
+
+    // Handle form submission
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Filter out placeholder values and convert to empty strings for backend
+        const submitData = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, value === 'placeholder' ? '' : value]));
+
+        post('/citizens', {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                // Success handled by flash message
+            },
+            onError: (errors) => {
+                setAlert({
+                    type: 'error',
+                    message: (
+                        <div>
+                            <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                            <ul className="list-inside list-disc text-sm text-red-800">
+                                {errors &&
+                                    Object.entries(errors).map(([field, msgs]) =>
+                                        Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs}</li>,
+                                    )}
+                            </ul>
+                        </div>
+                    ),
+                });
+            },
+        });
+    };
+
+    // Handle cancel
+    const handleCancel = () => {
+        router.visit('/citizens');
+    };
+
+    // Show flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+            // Redirect to citizens list after success
+            setTimeout(() => {
+                router.visit('/citizens');
+            }, 1500);
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
+
+    // Options for select fields
+    const religionOptions = [
+        { value: 'placeholder', label: 'Pilih Agama' },
+        { value: 'islam', label: 'Islam' },
+        { value: 'christian', label: 'Kristen' },
+        { value: 'catholic', label: 'Katolik' },
+        { value: 'hindu', label: 'Hindu' },
+        { value: 'buddhist', label: 'Buddha' },
+        { value: 'confucian', label: 'Konghucu' },
+    ];
+
+    const maritalStatusOptions = [
+        { value: 'placeholder', label: 'Pilih Status Pernikahan' },
+        { value: 'single', label: 'Belum Menikah' },
+        { value: 'married', label: 'Menikah' },
+        { value: 'widowed', label: 'Janda/Duda' },
+    ];
+
+    const genderOptions = [
+        { value: 'placeholder', label: 'Pilih Jenis Kelamin' },
+        { value: 'male', label: 'Laki-laki' },
+        { value: 'female', label: 'Perempuan' },
+    ];
+
+    const statusOptions = [
+        { value: 'placeholder', label: 'Pilih Status dalam Keluarga' },
+        { value: 'head_of_household', label: 'Kepala Keluarga' },
+        { value: 'spouse', label: 'Istri/Suami' },
+        { value: 'child', label: 'Anak' },
+    ];
+
+    const familyOptions = [
+        { value: 'placeholder', label: 'Pilih Keluarga' },
+        ...families.map((family) => ({
+            value: family.id.toString(),
+            label: family.family_name,
+        })),
+    ];
+
+    return (
+        <BaseLayouts>
+            <div>
+                <Header showBackButton title="Tambah Data Warga" />
+
+                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
+
+                <div className="mx-auto max-w-4xl p-4 lg:p-8">
+                    <HeaderPage title="Tambah Data Warga Baru" description="Isi form di bawah ini untuk menambahkan data warga baru ke sistem" />
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Personal Information Section */}
+                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                            <div className="mb-6 flex items-center gap-2">
+                                <User className="h-5 w-5 text-green-600" />
+                                <h3 className="text-lg font-semibold text-green-900">Informasi Pribadi</h3>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <InputField
+                                    label="Nama Lengkap"
+                                    value={data.full_name}
+                                    onChange={(value) => setData('full_name', value)}
+                                    placeholder="Masukkan nama lengkap"
+                                    required
+                                />
+
+                                <InputField
+                                    label="NIK"
+                                    value={data.nik}
+                                    onChange={(value) => setData('nik', value)}
+                                    placeholder="Masukkan NIK (16 digit)"
+                                    required
+                                />
+
+                                <InputField
+                                    label="Nomor Telepon"
+                                    value={data.phone_number}
+                                    onChange={(value) => setData('phone_number', value)}
+                                    placeholder="Masukkan nomor telepon"
+                                    type="tel"
+                                />
+
+                                <InputField
+                                    label="Tanggal Lahir"
+                                    value={data.date_of_birth}
+                                    onChange={(value) => setData('date_of_birth', value)}
+                                    type="date"
+                                    required
+                                />
+
+                                <Select
+                                    label="Jenis Kelamin"
+                                    value={data.gender}
+                                    onChange={(value) => setData('gender', value)}
+                                    options={genderOptions}
+                                    required
+                                />
+
+                                <Select
+                                    label="Agama"
+                                    value={data.religion}
+                                    onChange={(value) => setData('religion', value)}
+                                    options={religionOptions}
+                                />
+
+                                <Select
+                                    label="Status Pernikahan"
+                                    value={data.marital_status}
+                                    onChange={(value) => setData('marital_status', value)}
+                                    options={maritalStatusOptions}
+                                />
+                            </div>
+
+                            <div className="mt-6">
+                                <InputField
+                                    label="Alamat"
+                                    value={data.address}
+                                    onChange={(value) => setData('address', value)}
+                                    placeholder="Masukkan alamat lengkap"
+                                    as="textarea"
+                                    rows={3}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {/* Professional Information Section */}
+                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                            <div className="mb-6 flex items-center gap-2">
+                                <Briefcase className="h-5 w-5 text-green-600" />
+                                <h3 className="text-lg font-semibold text-green-900">Informasi Profesi</h3>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <InputField
+                                    label="Pekerjaan"
+                                    value={data.occupation}
+                                    onChange={(value) => setData('occupation', value)}
+                                    placeholder="Masukkan pekerjaan"
+                                    required
+                                />
+
+                                <InputField
+                                    label="Jabatan"
+                                    value={data.position}
+                                    onChange={(value) => setData('position', value)}
+                                    placeholder="Masukkan jabatan (opsional)"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Family Information Section */}
+                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                            <div className="mb-6 flex items-center gap-2">
+                                <Users className="h-5 w-5 text-green-600" />
+                                <h3 className="text-lg font-semibold text-green-900">Informasi Keluarga</h3>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <Select
+                                    label="Keluarga"
+                                    value={data.family_id}
+                                    onChange={(value) => setData('family_id', value)}
+                                    options={familyOptions}
+                                    required
+                                />
+
+                                <Select
+                                    label="Status dalam Keluarga"
+                                    value={data.status}
+                                    onChange={(value) => setData('status', value)}
+                                    options={statusOptions}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col gap-4 sm:flex-row sm:justify-end">
+                            <Button type="button" variant="outline" onClick={handleCancel} disabled={processing} className="w-full sm:w-auto">
+                                Batal
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={processing}
+                                icon={<Save className="h-4 w-4" />}
+                                iconPosition="left"
+                                className="w-full sm:w-auto"
+                            >
+                                {processing ? 'Menyimpan...' : 'Simpan Data'}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </BaseLayouts>
+    );
+}
+
+export default CreateCitizenPage;

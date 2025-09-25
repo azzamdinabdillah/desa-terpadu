@@ -54,6 +54,9 @@ Route::get('/announcement/{announcement}/edit', [AnnouncementController::class, 
 Route::put('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update');
 Route::post('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update.post'); // For file uploads
 Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcement.destroy');
+
+Route::get('/citizens/create', [CitizenController::class, 'create'])->name('citizens.create');
+Route::post('/citizens', [CitizenController::class, 'store'])->name('citizens.store');
 });
 
 

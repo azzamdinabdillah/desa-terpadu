@@ -1,4 +1,5 @@
 import Alert, { AlertProps } from '@/components/Alert';
+import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -9,7 +10,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, IdCard, MapPin, Phone, Search, User, Users } from 'lucide-react';
+import { Calendar, IdCard, MapPin, Phone, Plus, Search, User, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface CitizenPageProps {
@@ -154,12 +155,12 @@ function CitizenPage() {
                 header: 'Dari Keluarga',
                 className: 'w-full whitespace-nowrap',
                 cell: (item: CitizenType) => (
-                    <div className="flex items-center gap-2 w-full">
+                    <div className="flex w-full items-center gap-2">
                         <Users className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900 w-full">{item.family.family_name || '-'}</span>
+                        <span className="w-full text-sm text-green-900">{item.family.family_name || '-'}</span>
                     </div>
                 ),
-            }
+            },
         ],
         [],
     );
@@ -202,6 +203,10 @@ function CitizenPage() {
                                 className="min-w-[220px]"
                                 placeholder="Pilih gender"
                             />
+
+                            <Button onClick={() => router.visit('/citizens/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                Tambah Data Warga
+                            </Button>
                         </div>
                     </div>
 
