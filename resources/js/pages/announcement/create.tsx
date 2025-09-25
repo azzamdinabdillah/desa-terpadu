@@ -12,19 +12,41 @@ interface Props {
         success?: string;
         error?: string;
     };
+    announcement?: {
+        id: number;
+        title: string;
+        description: string;
+        image?: string;
+    };
+    isEdit?: boolean;
     [key: string]: any;
 }
 
 function CreateAnnouncement() {
-    const { flash } = usePage<Props>().props;
+    const { flash, announcement, isEdit } = usePage<Props>().props;
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    const { data, setData, post, processing } = useForm({
-        title: '',
-        description: '',
+    const { data, setData, post, put, processing } = useForm({
+        title: announcement?.title || '',
+        description: announcement?.description || '',
         image: null as File | null,
     });
+
+    // Set form data for edit mode
+    useEffect(() => {
+        if (isEdit && announcement) {
+            setData({
+                title: announcement.title || '',
+                description: announcement.description || '',
+                image: null as File | null,
+            });
+
+            if (announcement.image) {
+                setImagePreview(`/storage/${announcement.image}`);
+            }
+        }
+    }, [isEdit, announcement, setData]);
 
     // Handle flash messages
     useEffect(() => {
@@ -56,7 +78,7 @@ function CreateAnnouncement() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/announcement', {
+        const submitData = {
             forceFormData: true,
             preserveState: true,
             preserveScroll: true,
@@ -79,7 +101,20 @@ function CreateAnnouncement() {
                     ),
                 });
             },
-        });
+        };
+
+        if (isEdit && announcement) {
+            // Use POST with method spoofing for file uploads
+            post(`/announcement/${announcement.id}`, {
+                ...submitData,
+                data: {
+                    ...data,
+                    _method: 'PUT',
+                },
+            });
+        } else {
+            post('/announcement', submitData);
+        }
     };
 
     const handleBack = () => {
@@ -89,7 +124,7 @@ function CreateAnnouncement() {
     return (
         <BaseLayouts>
             <div>
-                <Header showBackButton title="Tambah Pengumuman Baru" icon="📣" />
+                <Header showBackButton title={isEdit ? 'Edit Pengumuman' : 'Tambah Pengumuman Baru'} icon="📣" />
 
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
@@ -122,7 +157,7 @@ function CreateAnnouncement() {
                                     value={data.description}
                                     onChange={(value) => setData('description', value)}
                                     placeholder="Masukkan isi pengumuman"
-                                    label='Isi Pengumuman'
+                                    label="Isi Pengumuman"
                                     rows={6}
                                 />
                             </div>
@@ -159,7 +194,7 @@ function CreateAnnouncement() {
                                     Batal
                                 </Button>
                                 <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
-                                    {processing ? 'Menyimpan...' : 'Simpan Pengumuman'}
+                                    {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Pengumuman' : 'Simpan Pengumuman'}
                                 </Button>
                             </div>
                         </form>

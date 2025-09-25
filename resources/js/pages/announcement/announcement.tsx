@@ -8,7 +8,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, Eye, FileText, Image as ImageIcon, Plus, Search } from 'lucide-react';
+import { Calendar, Edit, Eye, FileText, Image as ImageIcon, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Announcement {
@@ -171,6 +171,15 @@ function Announcement() {
                         >
                             <Eye className="h-4 w-4" />
                         </Button>
+                        <Button
+                            onClick={() => router.visit(`/announcement/${item.id}/edit`)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-blue-600 hover:text-blue-800"
+                            title="Edit Pengumuman"
+                        >
+                            <Edit className="h-4 w-4" />
+                        </Button>
                     </div>
                 ),
             },
@@ -271,7 +280,7 @@ function Announcement() {
                                                     <img
                                                         src={`/storage/${viewModalData.image}`}
                                                         alt="Gambar Pengumuman"
-                                                        className="w-full max-h-80 rounded-lg border border-green-200 object-contain"
+                                                        className="max-h-80 w-full rounded-lg border border-green-200 object-contain"
                                                     />
                                                     <Button
                                                         onClick={() => setSelectedImage(viewModalData.image as string)}
@@ -295,7 +304,7 @@ function Announcement() {
                     <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
                         <Dialog.Portal>
                             <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="max-h/[90vh] w/[90%] md/w/full fixed top-1/2 left-1/2 z-50 max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg">
+                            <Dialog.Content className="max-h-[90vh] w:[90%] md:w-full fixed top-1/2 left-1/2 z-50 max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg">
                                 <div className="flex items-center justify-between border-b border-green-200 p-4">
                                     <Dialog.Title className="text-lg font-semibold text-green-900">Gambar Pengumuman</Dialog.Title>
                                     <Dialog.Close asChild>
@@ -307,7 +316,7 @@ function Announcement() {
                                         <img
                                             src={`/storage/${selectedImage}`}
                                             alt="Gambar Pengumuman"
-                                            className="h-auto w-full rounded-2xl border border-green-400"
+                                            className="h-full max-h-80 w-full object-contain rounded-2xl border border-green-400"
                                         />
                                     )}
                                 </div>

@@ -44,3 +44,6 @@ Route::delete('/finance/{id}', [FinanceController::class, 'destroy'])->name('fin
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('announcement.create');
 Route::post('/announcement', [AnnouncementController::class, 'store'])->name('announcement.store');
+Route::get('/announcement/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcement.edit');
+Route::put('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update');
+Route::post('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update.post'); // For file uploads
