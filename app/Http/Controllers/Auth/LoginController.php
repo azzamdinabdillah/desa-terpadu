@@ -11,7 +11,7 @@ use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-    public function show(): Response
+    public function index(): Response
     {
         return Inertia::render('auth/login');
     }
@@ -40,7 +40,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login.show');
+        return redirect()->route('login');
     }
 }
 

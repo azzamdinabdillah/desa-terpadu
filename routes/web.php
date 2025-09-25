@@ -35,25 +35,29 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
-    Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
-    Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
-    Route::get('/finance/{id}/edit', [FinanceController::class, 'edit'])->name('finance.edit');
-    Route::put('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update');
-    Route::post('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update.post'); // For file uploads
-    Route::delete('/finance/{id}', [FinanceController::class, 'destroy'])->name('finance.destroy');
+Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
+Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 
-    Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
-    Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('announcement.create');
-    Route::post('/announcement', [AnnouncementController::class, 'store'])->name('announcement.store');
-    Route::get('/announcement/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcement.edit');
-    Route::put('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update');
-    Route::post('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update.post'); // For file uploads
-    Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcement.destroy');
+Route::middleware('auth')->group(function () {
+Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
+Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
+Route::get('/finance/{id}/edit', [FinanceController::class, 'edit'])->name('finance.edit');
+Route::put('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update');
+Route::post('/finance/{id}', [FinanceController::class, 'update'])->name('finance.update.post'); // For file uploads
+Route::delete('/finance/{id}', [FinanceController::class, 'destroy'])->name('finance.destroy');
+
+Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('announcement.create');
+Route::post('/announcement', [AnnouncementController::class, 'store'])->name('announcement.store');
+Route::get('/announcement/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcement.edit');
+Route::put('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update');
+Route::post('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update.post'); // For file uploads
+Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcement.destroy');
 });
 
+
+
+
 // Auth
-Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
