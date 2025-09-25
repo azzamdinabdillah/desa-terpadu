@@ -16,6 +16,7 @@ type InputFieldProps = {
     suffix?: ReactNode;
     as?: 'input' | 'textarea';
     rows?: number;
+    id?: string;
     formatValue?: (value: string) => string; // display formatting
     parseInput?: (raw: string) => string; // input parsing
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -37,6 +38,7 @@ export default function InputField({
     suffix,
     as = 'input',
     rows = 3,
+    id,
     formatValue,
     parseInput,
     onKeyDown,
@@ -62,6 +64,7 @@ export default function InputField({
                 {as === 'textarea' ? (
                     <textarea
                         rows={rows}
+                        id={id}
                         value={displayedValue}
                         onChange={handleChange}
                         onKeyDown={onKeyDown}
@@ -72,6 +75,7 @@ export default function InputField({
                 ) : (
                     <input
                         type={type}
+                        id={id}
                         value={displayedValue}
                         onChange={handleChange}
                         onKeyDown={onKeyDown}

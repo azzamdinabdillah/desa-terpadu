@@ -3,140 +3,167 @@ import Button from '@/components/Button';
 import Header from '@/components/Header';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { router, useForm } from '@inertiajs/react';
-import { Image as ImageIcon, Save, X } from 'lucide-react';
+import { router, useForm, usePage } from '@inertiajs/react';
+import { Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+interface Props {
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: any;
+}
+
 function CreateAnnouncement() {
-    const form = useForm({
+    const { flash } = usePage<Props>().props;
+    const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    const { data, setData, post, processing } = useForm({
         title: '',
         description: '',
         image: null as File | null,
     });
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [alert, setAlert] = useState<AlertProps | null>(null);
 
+    // Handle flash messages
     useEffect(() => {
-        return () => {
-            if (imagePreview) URL.revokeObjectURL(imagePreview);
-        };
-    }, [imagePreview]);
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+            // Redirect to announcement list after success
+            setTimeout(() => {
+                router.visit('/announcement');
+            }, 1500);
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        form.setData('image', file);
-        if (imagePreview) URL.revokeObjectURL(imagePreview);
-        setImagePreview(file ? URL.createObjectURL(file) : null);
-    };
+        const file = e.target.files?.[0];
+        if (file) {
+            setData('image', file);
 
-    const handleRemoveImage = () => {
-        if (imagePreview) URL.revokeObjectURL(imagePreview);
-        form.setData('image', null);
-        setImagePreview(null);
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
     };
-
-    const isValid = form.data.title.trim().length > 0 && form.data.description.trim().length > 0;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        form.post('/announcement', {
+
+        post('/announcement', {
             forceFormData: true,
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
-                setAlert({ type: 'success', message: 'Pengumuman berhasil disimpan.' });
-                router.visit('/announcement');
+                // Success handled by flash message
             },
-            onError: () => {
-                setAlert({ type: 'error', message: 'Gagal menyimpan. Periksa input Anda.' });
+            onError: (errors) => {
+                setAlert({
+                    type: 'error',
+                    message: (
+                        <div>
+                            <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                            <ul className="list-inside list-disc text-sm text-red-800">
+                                {errors &&
+                                    Object.entries(errors).map(([field, msgs]) =>
+                                        Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs}</li>,
+                                    )}
+                            </ul>
+                        </div>
+                    ),
+                });
             },
         });
+    };
+
+    const handleBack = () => {
+        router.visit('/announcement');
     };
 
     return (
         <BaseLayouts>
             <div>
-                <Header title="Tambah Pengumuman" icon="📣" showBackButton />
+                <Header showBackButton title="Tambah Pengumuman Baru" icon="📣" />
 
+                {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
-                <div className="mx-auto max-w-7xl p-4 lg:p-8">
-                    {/* <div className="mb-6 flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-green-900">Form Pengumuman</h2>
-                        <Button variant="secondary" onClick={() => router.visit('/announcement')}>
-                            Kembali
-                        </Button>
-                    </div> */}
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="rounded-xl border border-green-200 bg-white p-4 shadow-sm md:p-6">
-                            <div className="grid grid-cols-1 gap-5">
+                <div className="mx-auto max-w-4xl p-4 lg:p-8">
+                    {/* Form */}
+                    <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Title */}
+                            <div>
+                                <label htmlFor="title" className="mb-2 block text-sm font-medium text-green-900">
+                                    Judul Pengumuman *
+                                </label>
                                 <InputField
-                                    label="Judul Pengumuman"
-                                    value={form.data.title}
-                                    onChange={(v) => form.setData('title', v)}
+                                    id="title"
+                                    type="text"
+                                    value={data.title}
+                                    onChange={(value) => setData('title', value)}
                                     placeholder="Masukkan judul pengumuman"
                                     required
-                                    helperText={form.errors.title}
                                 />
-
-                                <InputField
-                                    label="Isi Pengumuman"
-                                    value={form.data.description}
-                                    onChange={(v) => form.setData('description', v)}
-                                    placeholder="Tulis isi pengumuman"
-                                    as="textarea"
-                                    rows={6}
-                                    required
-                                    helperText={form.errors.description}
-                                />
-
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-green-800">Gambar (opsional)</label>
-                                    <div className="flex flex-col items-start gap-3 rounded-lg border border-green-300 bg-green-50 p-4 shadow-sm">
-                                        <div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:items-center">
-                                            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-green-300 bg-white px-4 py-2 text-sm font-medium text-green-800 shadow-sm transition hover:bg-green-50">
-                                                <ImageIcon className="h-4 w-4 text-green-700" />
-                                                <span>Pilih Gambar</span>
-                                                <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                                            </label>
-                                            {form.data.image && <span className="text-sm text-green-700">{(form.data.image as File).name}</span>}
-                                            {form.data.image && (
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-red-600 hover:text-red-700"
-                                                    onClick={handleRemoveImage}
-                                                >
-                                                    <X className="h-4 w-4" /> Hapus
-                                                </Button>
-                                            )}
-                                        </div>
-
-                                        {imagePreview && (
-                                            <div className="w-full">
-                                                <img src={imagePreview} alt="Preview" className="h-auto w-full rounded-lg border border-green-300" />
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center justify-end gap-3">
-                            <Button variant="outline" onClick={() => router.visit('/announcement')}>
-                                Batal
-                            </Button>
-                            <Button
-                                type="submit"
-                                icon={<Save className="h-4 w-4" />}
-                                iconPosition="left"
-                                disabled={!isValid || form.processing}
-                                loading={form.processing}
-                            >
-                                Simpan
-                            </Button>
-                        </div>
-                    </form>
+                            {/* Description */}
+                            <div>
+                                <InputField
+                                    required
+                                    as="textarea"
+                                    id="description"
+                                    value={data.description}
+                                    onChange={(value) => setData('description', value)}
+                                    placeholder="Masukkan isi pengumuman"
+                                    label='Isi Pengumuman'
+                                    rows={6}
+                                />
+                            </div>
+
+                            {/* Image Upload */}
+                            <div>
+                                <label htmlFor="image" className="mb-2 block text-sm font-medium text-green-900">
+                                    Gambar Pengumuman
+                                </label>
+                                <input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    className="block w-full text-sm text-green-600 file:mr-4 file:rounded-lg file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-green-700 hover:file:bg-green-100"
+                                />
+
+                                {/* Image Preview */}
+                                {imagePreview && (
+                                    <div className="mt-4">
+                                        <p className="mb-2 text-sm font-medium text-green-900">Preview Gambar:</p>
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="h-48 w-full rounded-lg border border-green-300 object-cover"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Submit Buttons */}
+                            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                                <Button type="button" onClick={handleBack} variant="ghost" className="text-green-600 hover:text-green-800">
+                                    Batal
+                                </Button>
+                                <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
+                                    {processing ? 'Menyimpan...' : 'Simpan Pengumuman'}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </BaseLayouts>

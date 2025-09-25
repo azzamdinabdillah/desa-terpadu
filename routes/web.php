@@ -43,3 +43,4 @@ Route::delete('/finance/{id}', [FinanceController::class, 'destroy'])->name('fin
 
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('announcement.create');
+Route::post('/announcement', [AnnouncementController::class, 'store'])->name('announcement.store');
