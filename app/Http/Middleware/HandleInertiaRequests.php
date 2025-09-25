@@ -43,7 +43,13 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => function () use ($request) {
+                    $user = $request->user();
+                    if ($user) {
+                        $user->load('citizen');
+                    }
+                    return $user;
+                },
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

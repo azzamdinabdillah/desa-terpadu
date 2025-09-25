@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { Bell, ChevronDown, ChevronRight, CircleDollarSign, Home, LogIn, Settings, User, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -86,6 +86,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         return submenu.some((item) => isSubmenuActive(item.href));
     };
 
+    const { props } = usePage() as any;
+    const isAuthenticated = !!props?.auth?.user;
+
     return (
         <div
             className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-green-200 lg:bg-green-50 lg:shadow-lg ${className}`}
@@ -161,14 +164,36 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
             {/* User Profile Section */}
             <div className="border-t border-green-200 bg-green-100 p-4">
-                <div className="flex items-center space-x-3 rounded-lg bg-white p-3 shadow-sm">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-700">
-                        <User className="h-5 w-5 text-white" />
+                <div className="rounded-lg bg-white p-3 shadow-sm">
+                    <div className="flex items-center space-x-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-700">
+                            <User className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="flex min-w-0 flex-1 flex-col gap-px">
+                            <p className="truncate text-sm font-semibold text-green-900">{props?.auth?.user?.citizen?.full_name ?? 'Tamu'}</p>
+                            <div>
+                                <p className="truncate text-xs text-green-700">{props?.auth?.user?.email ?? 'Belum masuk'}</p>
+                                {props?.auth?.user?.role && (
+                                    <p className="truncate text-xs capitalize text-green-500">
+                                        {props.auth.user.role === 'admin'
+                                            ? 'Admin'
+                                            : props.auth.user.role === 'citizen'
+                                              ? 'Warga'
+                                              : props.auth.user.role}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-green-900">Kepala Desa</p>
-                        <p className="truncate text-xs text-green-700">admin@desa.id</p>
-                    </div>
+                    {isAuthenticated && (
+                        <button
+                            type="button"
+                            onClick={() => router.post('/logout')}
+                            className="mt-3 w-full rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+                        >
+                            Keluar
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
