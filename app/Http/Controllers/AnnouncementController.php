@@ -135,4 +135,23 @@ class AnnouncementController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat memperbarui pengumuman: ' . $e->getMessage());
         }
     }
+
+    public function destroy(Announcement $announcement)
+    {
+        try {
+            // Delete image file if exists
+            if ($announcement->image && \Storage::disk('public')->exists($announcement->image)) {
+                \Storage::disk('public')->delete($announcement->image);
+            }
+
+            // Delete announcement
+            $announcement->delete();
+
+            return redirect()->route('announcement.index')
+                ->with('success', 'Pengumuman berhasil dihapus!');
+                
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghapus pengumuman: ' . $e->getMessage());
+        }
+    }
 }

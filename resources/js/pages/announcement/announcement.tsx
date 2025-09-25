@@ -8,7 +8,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, Edit, Eye, FileText, Image as ImageIcon, Plus, Search } from 'lucide-react';
+import { Calendar, Edit, Eye, FileText, Image as ImageIcon, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Announcement {
@@ -60,6 +60,8 @@ function Announcement() {
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewModalData, setViewModalData] = useState<Announcement | null>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteModalData, setDeleteModalData] = useState<Announcement | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -101,6 +103,31 @@ function Announcement() {
     const handleViewClose = () => {
         setViewModalOpen(false);
         setViewModalData(null);
+    };
+
+    const handleDeleteClick = (announcement: Announcement) => {
+        setDeleteModalData(announcement);
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (deleteModalData) {
+            router.delete(`/announcement/${deleteModalData.id}`, {
+                onSuccess: () => {
+                    setDeleteModalOpen(false);
+                    setDeleteModalData(null);
+                },
+                onError: () => {
+                    setDeleteModalOpen(false);
+                    setDeleteModalData(null);
+                },
+            });
+        }
+    };
+
+    const handleDeleteClose = () => {
+        setDeleteModalOpen(false);
+        setDeleteModalData(null);
     };
 
     const columns = useMemo(
@@ -179,6 +206,15 @@ function Announcement() {
                             title="Edit Pengumuman"
                         >
                             <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            onClick={() => handleDeleteClick(item)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 hover:text-red-800"
+                            title="Hapus Pengumuman"
+                        >
+                            <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
                 ),
@@ -304,7 +340,7 @@ function Announcement() {
                     <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
                         <Dialog.Portal>
                             <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="max-h-[90vh] w:[90%] md:w-full fixed top-1/2 left-1/2 z-50 max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg">
+                            <Dialog.Content className="w:[90%] fixed top-1/2 left-1/2 z-50 max-h-[90vh] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
                                 <div className="flex items-center justify-between border-b border-green-200 p-4">
                                     <Dialog.Title className="text-lg font-semibold text-green-900">Gambar Pengumuman</Dialog.Title>
                                     <Dialog.Close asChild>
@@ -316,9 +352,50 @@ function Announcement() {
                                         <img
                                             src={`/storage/${selectedImage}`}
                                             alt="Gambar Pengumuman"
-                                            className="h-full max-h-80 w-full object-contain rounded-2xl border border-green-400"
+                                            className="h-full max-h-80 w-full rounded-2xl border border-green-400 object-contain"
                                         />
                                     )}
+                                </div>
+                            </Dialog.Content>
+                        </Dialog.Portal>
+                    </Dialog.Root>
+
+                    {/* Delete Confirmation Modal */}
+                    <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+                        <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
+                                <div className="mb-4 flex items-center gap-3 border-b border-red-200 pb-4">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                                        <Trash2 className="h-5 w-5 text-red-600" />
+                                    </div>
+                                    <div>
+                                        <Dialog.Title className="text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
+                                        <p className="text-sm text-red-700">Tindakan ini tidak dapat dibatalkan.</p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <p className="mb-2 text-sm text-gray-700">Apakah Anda yakin ingin menghapus pengumuman berikut?</p>
+                                    {deleteModalData && (
+                                        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                                            <h3 className="font-medium text-red-900">{deleteModalData.title}</h3>
+                                            <p className="mt-1 text-sm text-red-700">
+                                                {deleteModalData.description?.length > 100
+                                                    ? `${deleteModalData.description.substring(0, 100)}...`
+                                                    : deleteModalData.description}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex justify-end gap-3">
+                                    <Button onClick={handleDeleteClose} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
+                                        Batal
+                                    </Button>
+                                    <Button onClick={handleDeleteConfirm} variant="red">
+                                        Hapus
+                                    </Button>
                                 </div>
                             </Dialog.Content>
                         </Dialog.Portal>

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'red';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 type ButtonProps = {
@@ -49,6 +49,7 @@ export default function Button({
         secondary: 'bg-green-100 text-green-800 hover:bg-green-200 focus:ring-green-200',
         outline: 'border border-green-300 bg-white text-green-700 hover:bg-green-50 focus:ring-green-200',
         ghost: 'text-green-700 hover:bg-green-50 focus:ring-green-200',
+        red: 'bg-red-700 text-white hover:bg-red-800 focus:ring-red-200',
     };
 
     // Width classes
