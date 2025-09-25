@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { Bell, ChevronDown, ChevronRight, CircleDollarSign, Home, Settings, User, Users } from 'lucide-react';
+import { Bell, ChevronDown, ChevronRight, CircleDollarSign, Home, LogIn, Settings, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -54,6 +54,12 @@ const menuItems: MenuItem[] = [
         icon: <Settings className="h-5 w-5" />,
         href: '/settings',
     },
+    {
+        id: 'login',
+        label: 'Login',
+        icon: <LogIn className="h-5 w-5" />,
+        href: '/login',
+    },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
@@ -67,20 +73,12 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     // Function to check if a menu item is active
     // Now also matches if url starts with href + '?' (for query params)
     const isActive = (href: string) => {
-        return (
-            url === href ||
-            url.startsWith(href + '/') ||
-            url.startsWith(href + '?')
-        );
+        return url === href || url.startsWith(href + '/') || url.startsWith(href + '?');
     };
 
     // Function to check if a submenu item is active
     const isSubmenuActive = (href: string) => {
-        return (
-            url === href ||
-            url.startsWith(href + '/') ||
-            url.startsWith(href + '?')
-        );
+        return url === href || url.startsWith(href + '/') || url.startsWith(href + '?');
     };
 
     // Function to check if a parent menu should be open (has active submenu)
@@ -130,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                                     )}
                                 </Collapsible.Trigger>
 
-                                <Collapsible.Content className="mt-2 ml-4 space-y-1">
+                                <Collapsible.Content className="ml-4 mt-2 space-y-1">
                                     {item.submenu.map((subitem) => (
                                         <a
                                             key={subitem.id}

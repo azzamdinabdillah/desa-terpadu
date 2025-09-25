@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FinanceController;
 use App\Models\Citizen;
 use App\Models\Family;
@@ -48,3 +49,6 @@ Route::get('/announcement/{announcement}/edit', [AnnouncementController::class, 
 Route::put('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update');
 Route::post('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('announcement.update.post'); // For file uploads
 Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcement.destroy');
+
+// Auth
+Route::get('/login', [LoginController::class, 'show'])->name('login.show');
