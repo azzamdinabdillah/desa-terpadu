@@ -6,6 +6,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination, { Paginated } from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -56,6 +57,7 @@ function Announcement() {
         filters = {},
         flash,
     } = usePage<Props>().props;
+    const { isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -184,44 +186,48 @@ function Announcement() {
                     </div>
                 ),
             },
-            {
-                key: 'actions',
-                header: <span className="float-right">Aksi</span>,
-                className: 'text-right whitespace-nowrap',
-                cell: (item: Announcement) => (
-                    <div className="flex items-center justify-end gap-2">
-                        <Button
-                            onClick={() => handleViewClick(item)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-green-600 hover:text-green-800"
-                            title="Lihat Detail"
-                        >
-                            <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            onClick={() => router.visit(`/announcement/${item.id}/edit`)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-blue-600 hover:text-blue-800"
-                            title="Edit Pengumuman"
-                        >
-                            <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            onClick={() => handleDeleteClick(item)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:text-red-800"
-                            title="Hapus Pengumuman"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </div>
-                ),
-            },
+            ...(isAdmin
+                ? [
+                      {
+                          key: 'actions',
+                          header: <span className="float-right">Aksi</span>,
+                          className: 'text-right whitespace-nowrap',
+                          cell: (item: Announcement) => (
+                              <div className="flex items-center justify-end gap-2">
+                                  <Button
+                                      onClick={() => handleViewClick(item)}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-green-600 hover:text-green-800"
+                                      title="Lihat Detail"
+                                  >
+                                      <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                      onClick={() => router.visit(`/announcement/${item.id}/edit`)}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-blue-600 hover:text-blue-800"
+                                      title="Edit Pengumuman"
+                                  >
+                                      <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                      onClick={() => handleDeleteClick(item)}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-red-600 hover:text-red-800"
+                                      title="Hapus Pengumuman"
+                                  >
+                                      <Trash2 className="h-4 w-4" />
+                                  </Button>
+                              </div>
+                          ),
+                      },
+                  ]
+                : []),
         ],
-        [setSelectedImage],
+        [setSelectedImage, isAdmin],
     );
 
     return (
@@ -255,11 +261,13 @@ function Announcement() {
                             />
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
-                            <Button onClick={() => router.visit('/announcement/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
-                                Tambah Pengumuman
-                            </Button>
-                        </div>
+                        {isAdmin && (
+                            <div className="flex flex-wrap gap-2">
+                                <Button onClick={() => router.visit('/announcement/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                    Tambah Pengumuman
+                                </Button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Announcements Table */}

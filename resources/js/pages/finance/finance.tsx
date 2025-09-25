@@ -7,6 +7,7 @@ import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Finance as FinanceType } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
@@ -24,6 +25,7 @@ interface Props {
 
 function Finance() {
     const { finances, summary, filters, flash } = usePage<Props>().props;
+    const { isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [filterType, setFilterType] = useState(filters.type || 'all');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -191,35 +193,39 @@ function Finance() {
                     </Button>
                 ),
             },
-            {
-                key: 'actions',
-                header: <span className="float-right">Aksi</span>,
-                className: 'text-right whitespace-nowrap',
-                cell: (item: FinanceType) => (
-                    <div className="flex items-center justify-end gap-2">
-                        <Button
-                            onClick={() => router.visit(`/finance/${item.id}/edit`)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-green-600 hover:text-green-800"
-                            title="Edit"
-                        >
-                            <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-green-600 hover:text-red-600"
-                            title="Hapus"
-                            onClick={() => handleDeleteClick(item.id, item.note, item.amount, item.type)}
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </div>
-                ),
-            },
+            ...(isAdmin
+                ? [
+                      {
+                          key: 'actions',
+                          header: <span className="float-right">Aksi</span>,
+                          className: 'text-right whitespace-nowrap',
+                          cell: (item: FinanceType) => (
+                              <div className="flex items-center justify-end gap-2">
+                                  <Button
+                                      onClick={() => router.visit(`/finance/${item.id}/edit`)}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-green-600 hover:text-green-800"
+                                      title="Edit"
+                                  >
+                                      <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-green-600 hover:text-red-600"
+                                      title="Hapus"
+                                      onClick={() => handleDeleteClick(item.id, item.note, item.amount, item.type)}
+                                  >
+                                      <Trash2 className="h-4 w-4" />
+                                  </Button>
+                              </div>
+                          ),
+                      },
+                  ]
+                : []),
         ],
-        [setSelectedImage],
+        [setSelectedImage, isAdmin],
     );
 
     return (
@@ -312,9 +318,11 @@ function Finance() {
                                 placeholder="Pilih tipe"
                             />
 
-                            <Button onClick={() => router.visit('/finance/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
-                                Tambah Transaksi
-                            </Button>
+                            {isAdmin && (
+                                <Button onClick={() => router.visit('/finance/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                    Tambah Transaksi
+                                </Button>
+                            )}
                         </div>
                     </div>
 
@@ -362,7 +370,7 @@ function Finance() {
                 <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
                     <Dialog.Portal>
                         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                        <Dialog.Content className="max_h_[90vh] fixed top-1/2 left-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
                             <div className="flex items-center justify-between border-b border-green-200 p-4">
                                 <Dialog.Title className="text-lg font-semibold text-green-900">Bukti Transaksi</Dialog.Title>
                                 <Dialog.Close asChild>
@@ -389,7 +397,7 @@ function Finance() {
                     <Dialog.Portal>
                         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
                         <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-200 bg-red-100">
+                            <div className="justify_center mx-auto mb-4 flex h-12 w-12 items-center rounded-full border-2 border-red-200 bg-red-100">
                                 <Trash2 className="h-6 w-6 text-red-600" />
                             </div>
                             <div className="text-center">

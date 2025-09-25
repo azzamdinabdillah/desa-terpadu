@@ -1,7 +1,9 @@
 export interface User {
     id: number;
     email: string;
-    citizen: {
+    role?: 'admin' | 'superadmin' | 'citizen';
+    status?: 'active' | 'inactive' | string;
+    citizen?: {
         full_name: string;
     };
 }
