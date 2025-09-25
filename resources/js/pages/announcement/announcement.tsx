@@ -2,6 +2,7 @@ import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination, { Paginated } from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
@@ -232,6 +233,12 @@ function Announcement() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                    <HeaderPage
+                        title="Data Pengumuman"
+                        description="Kelola pengumuman desa"
+                        search={filters?.search ?? ''}
+                        total={announcements.total}
+                    />
                     {/* Search and Add Button */}
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="relative max-w-md flex-1">

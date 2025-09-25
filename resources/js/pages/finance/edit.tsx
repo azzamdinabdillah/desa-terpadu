@@ -1,6 +1,7 @@
 import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import InputField, { formatters, parsers } from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
@@ -149,11 +150,10 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
 
                 <div className="p-4 lg:p-6">
                     <div className="mx-auto max-w-7xl">
-                        {/* Page Header */}
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-green-900">Edit Transaksi</h1>
-                            <p className="mt-2 text-green-700">Ubah data pemasukan atau pengeluaran desa</p>
-                        </div>
+                        <HeaderPage
+                            title="Edit Transaksi Keuangan"
+                            description="Ubah data pemasukan atau pengeluaran desa"
+                        />
 
                         {/* Form */}
                         <div className="space-y-8">

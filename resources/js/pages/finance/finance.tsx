@@ -2,6 +2,7 @@ import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -231,6 +232,13 @@ function Finance() {
 
                 {/* Dashboard Cards */}
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                    {/* Page Header */}
+                    <HeaderPage
+                        title="Data Keuangan"
+                        description="Kelola transaksi keuangan desa"
+                        search={filters?.search ?? ''}
+                        total={finances.total}
+                    />
                     <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
                         {/* Total Income */}
                         <div className="rounded-lg border border-green-200 bg-white p-6 shadow-lg">

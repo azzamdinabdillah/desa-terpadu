@@ -1,6 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { router, useForm, usePage } from '@inertiajs/react';
@@ -130,6 +131,10 @@ function CreateAnnouncement() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
+                    <HeaderPage
+                        title={isEdit ? "Edit Pengumuman" : "Tambah Pengumuman Baru"}
+                        description={isEdit ? "Ubah data pengumuman desa sesuai kebutuhan." : "Lengkapi data pengumuman desa dengan benar."}
+                    />
                     {/* Form */}
                     <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                         <form onSubmit={handleSubmit} className="space-y-6">
