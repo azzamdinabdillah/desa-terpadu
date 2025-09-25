@@ -13,188 +13,56 @@ class CitizenSeeder extends Seeder
      */
     public function run(): void
     {
-        $citizens = [
-            // Keluarga 1 - Kepala Keluarga
-            [
-                'full_name' => 'Ahmad Susanto',
-                'nik' => '3201010101000001',
-                'phone_number' => '081234567890',
+        $faker = \Faker\Factory::create('id_ID');
+        $religions = ['islam', 'christian', 'catholic', 'hindu', 'buddhist', 'confucian'];
+        $genders = ['male', 'female'];
+        $statuses = ['head_of_household', 'spouse', 'child'];
+
+        $citizens = [];
+        $nikBase = 3201010101000001;
+
+        for ($i = 0; $i < 50; $i++) {
+            $family_id = ($i % 3) + 1;
+            $gender = $faker->randomElement($genders);
+            $status = $faker->randomElement($statuses);
+
+            // Head of household always married, spouse always married, child always single
+            if ($status === 'head_of_household') {
+                $marital_status = 'married';
+            } elseif ($status === 'spouse') {
+                $marital_status = 'married';
+            } else {
+                $marital_status = 'single';
+            }
+
+            // Head of household and spouse: adult, child: < 22
+            if ($status === 'child') {
+                $date_of_birth = $faker->dateTimeBetween('-22 years', '-5 years')->format('Y-m-d');
+            } else {
+                $date_of_birth = $faker->dateTimeBetween('-65 years', '-23 years')->format('Y-m-d');
+            }
+
+            $occupation = $faker->jobTitle();
+            $position = $faker->optional(0.5)->jobTitle();
+
+            $citizens[] = [
+                'full_name' => $faker->name($gender),
+                'nik' => (string)($nikBase + $i),
+                'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
                 'profile_picture' => null,
-                'address' => 'Jl. Merdeka No. 123, RT 01/RW 01, Desa Sukamaju',
-                'date_of_birth' => '1980-05-15',
-                'occupation' => 'Petani',
-                'position' => null,
-                'religion' => 'islam',
-                'marital_status' => 'married',
-                'gender' => 'male',
-                'status' => 'head_of_household',
-                'family_id' => 1,
+                'address' => $faker->address,
+                'date_of_birth' => $date_of_birth,
+                'occupation' => $occupation,
+                'position' => $position,
+                'religion' => $faker->randomElement($religions),
+                'marital_status' => $marital_status,
+                'gender' => $gender,
+                'status' => $status,
+                'family_id' => $family_id,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            // Keluarga 1 - Istri
-            [
-                'full_name' => 'Siti Aminah',
-                'nik' => '3201010101000002',
-                'phone_number' => '081234567891',
-                'profile_picture' => null,
-                'address' => 'Jl. Merdeka No. 123, RT 01/RW 01, Desa Sukamaju',
-                'date_of_birth' => '1985-08-20',
-                'occupation' => 'Ibu Rumah Tangga',
-                'position' => null,
-                'religion' => 'islam',
-                'marital_status' => 'married',
-                'gender' => 'female',
-                'status' => 'spouse',
-                'family_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 1 - Anak 1
-            [
-                'full_name' => 'Muhammad Rizki',
-                'nik' => '3201010101000003',
-                'phone_number' => null,
-                'profile_picture' => null,
-                'address' => 'Jl. Merdeka No. 123, RT 01/RW 01, Desa Sukamaju',
-                'date_of_birth' => '2010-12-10',
-                'occupation' => 'Pelajar',
-                'position' => null,
-                'religion' => 'islam',
-                'marital_status' => 'single',
-                'gender' => 'male',
-                'status' => 'child',
-                'family_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 1 - Anak 2
-            [
-                'full_name' => 'Siti Fatimah',
-                'nik' => '3201010101000004',
-                'phone_number' => null,
-                'profile_picture' => null,
-                'address' => 'Jl. Merdeka No. 123, RT 01/RW 01, Desa Sukamaju',
-                'date_of_birth' => '2012-03-05',
-                'occupation' => 'Pelajar',
-                'position' => null,
-                'religion' => 'islam',
-                'marital_status' => 'single',
-                'gender' => 'female',
-                'status' => 'child',
-                'family_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 2 - Kepala Keluarga
-            [
-                'full_name' => 'Budi Santoso',
-                'nik' => '3201010101000005',
-                'phone_number' => '081234567892',
-                'profile_picture' => null,
-                'address' => 'Jl. Sudirman No. 456, RT 02/RW 01, Desa Sukamaju',
-                'date_of_birth' => '1975-03-25',
-                'occupation' => 'Pedagang',
-                'position' => 'Pemilik Toko',
-                'religion' => 'islam',
-                'marital_status' => 'married',
-                'gender' => 'male',
-                'status' => 'head_of_household',
-                'family_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 2 - Istri
-            [
-                'full_name' => 'Rina Wati',
-                'nik' => '3201010101000006',
-                'phone_number' => '081234567893',
-                'profile_picture' => null,
-                'address' => 'Jl. Sudirman No. 456, RT 02/RW 01, Desa Sukamaju',
-                'date_of_birth' => '1982-07-18',
-                'occupation' => 'Pedagang',
-                'position' => 'Kasir',
-                'religion' => 'islam',
-                'marital_status' => 'married',
-                'gender' => 'female',
-                'status' => 'spouse',
-                'family_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 2 - Anak
-            [
-                'full_name' => 'Andi Pratama',
-                'nik' => '3201010101000007',
-                'phone_number' => null,
-                'profile_picture' => null,
-                'address' => 'Jl. Sudirman No. 456, RT 02/RW 01, Desa Sukamaju',
-                'date_of_birth' => '2008-09-14',
-                'occupation' => 'Pelajar',
-                'position' => null,
-                'religion' => 'islam',
-                'marital_status' => 'single',
-                'gender' => 'male',
-                'status' => 'child',
-                'family_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 3 - Kepala Keluarga
-            [
-                'full_name' => 'Sari Indah',
-                'nik' => '3201010101000008',
-                'phone_number' => '081234567894',
-                'profile_picture' => null,
-                'address' => 'Jl. Pahlawan No. 789, RT 03/RW 02, Desa Sukamaju',
-                'date_of_birth' => '1988-11-30',
-                'occupation' => 'Guru',
-                'position' => 'Guru SD',
-                'religion' => 'christian',
-                'marital_status' => 'widowed',
-                'gender' => 'female',
-                'status' => 'head_of_household',
-                'family_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 3 - Anak 1
-            [
-                'full_name' => 'Sarah Putri',
-                'nik' => '3201010101000009',
-                'phone_number' => null,
-                'profile_picture' => null,
-                'address' => 'Jl. Pahlawan No. 789, RT 03/RW 02, Desa Sukamaju',
-                'date_of_birth' => '2015-04-22',
-                'occupation' => 'Pelajar',
-                'position' => null,
-                'religion' => 'christian',
-                'marital_status' => 'single',
-                'gender' => 'female',
-                'status' => 'child',
-                'family_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Keluarga 3 - Anak 2
-            [
-                'full_name' => 'David Kristian',
-                'nik' => '3201010101000010',
-                'phone_number' => null,
-                'profile_picture' => null,
-                'address' => 'Jl. Pahlawan No. 789, RT 03/RW 02, Desa Sukamaju',
-                'date_of_birth' => '2017-01-18',
-                'occupation' => 'Pelajar',
-                'position' => null,
-                'religion' => 'christian',
-                'marital_status' => 'single',
-                'gender' => 'male',
-                'status' => 'child',
-                'family_id' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
+            ];
+        }
 
         DB::table('citizens')->insert($citizens);
     }
