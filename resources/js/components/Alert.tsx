@@ -4,13 +4,53 @@ import { useEffect, useState } from 'react';
 export interface AlertProps {
     type: 'success' | 'error' | 'warning' | 'info';
     message: React.ReactNode;
+    errors?: Record<string, any>; // New prop for error object
     onClose?: () => void;
     autoClose?: boolean;
     duration?: number;
 }
 
-export default function Alert({ type, message, onClose, autoClose = true, duration = 5000 }: AlertProps) {
+export default function Alert({ type, message, errors, onClose, autoClose = true, duration = 5000 }: AlertProps) {
     const [isVisible, setIsVisible] = useState(true);
+
+    // Format error messages if errors prop is provided
+    const formatErrorMessage = () => {
+        if (!errors) return null;
+
+        const errorEntries = Object.entries(errors);
+
+        if (errorEntries.length === 0) {
+            return null;
+        }
+
+        // If only one error with one message, return simple format
+        if (errorEntries.length === 1) {
+            const [field, msgs] = errorEntries[0];
+            if (Array.isArray(msgs) && msgs.length === 1) {
+                return (
+                    <div>
+                        <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                        <div className="text-sm">{msgs[0]}</div>
+                    </div>
+                );
+            }
+        }
+
+        // Multiple errors or multiple messages per field - use list format
+        return (
+            <div>
+                <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                <ul className="list-inside list-disc text-sm">
+                    {errorEntries.map(([field, msgs]) =>
+                        Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs}</li>,
+                    )}
+                </ul>
+            </div>
+        );
+    };
+
+    // Use formatted error message if errors prop is provided, otherwise use regular message
+    const displayMessage = errors ? formatErrorMessage() : message;
 
     useEffect(() => {
         if (autoClose) {
@@ -79,7 +119,7 @@ export default function Alert({ type, message, onClose, autoClose = true, durati
                 <div className="flex items-start">
                     <div className="flex-shrink-0">{styles.icon}</div>
                     <div className="ml-3 flex-1">
-                        <div className="text-sm font-medium">{message}</div>
+                        <div className="text-sm font-medium">{displayMessage}</div>
                     </div>
                     <div className="ml-4 flex-shrink-0">
                         <button

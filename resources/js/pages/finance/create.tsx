@@ -36,7 +36,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     const [remainingBalance, setRemainingBalance] = useState<string>('');
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [currentBalance, setCurrentBalance] = useState<number>(initialBalance);
-    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: React.ReactNode } | null>(null);
+    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: React.ReactNode; errors?: Record<string, any> } | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -112,17 +112,8 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                 console.error('Validation asdadasderrors:', errors);
                 setAlert({
                     type: 'error',
-                    message: (
-                        <div>
-                            <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
-                            <ul className="list-inside list-disc text-sm text-red-800">
-                                {errors &&
-                                    Object.entries(errors).map(([field, msgs]) =>
-                                        Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs}</li>,
-                                    )}
-                            </ul>
-                        </div>
-                    ),
+                    message: '',
+                    errors: errors,
                 });
             },
         });
@@ -134,7 +125,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                 <Header showBackButton title="Tambah Transaksi Keuangan" icon="💰" />
 
                 {/* Alert */}
-                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="p-4 lg:p-6">
                     <div className="mx-auto max-w-7xl">
@@ -243,7 +234,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         value={data.user_id}
                                         prefix={<CircleUserRound className="h-5 w-5" />}
                                         onChange={(v) => setData('user_id', v)}
-                                        options={users.map((user: User) => ({ value: user.id, label: user.citizen.full_name }))}
+                                        options={users.map((user: User) => ({ value: user.id, label: user.citizen?.full_name || '' }))}
                                         placeholder="Pilih penanggung jawab"
                                         required
                                     />

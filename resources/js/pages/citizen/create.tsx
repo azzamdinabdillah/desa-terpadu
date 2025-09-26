@@ -58,21 +58,8 @@ function CreateCitizenPage() {
                 onError: (errors) => {
                     setAlert({
                         type: 'error',
-                        message: (
-                            <div>
-                                <div className="mb-1 font-semibold">Terjadi kesalahan saat memperbarui data:</div>
-                                <ul className="list-inside list-disc text-sm text-red-800">
-                                    {errors &&
-                                        Object.entries(errors).map(([field, msgs]) =>
-                                            Array.isArray(msgs) ? (
-                                                msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>)
-                                            ) : (
-                                                <li key={field}>{msgs}</li>
-                                            ),
-                                        )}
-                                </ul>
-                            </div>
-                        ),
+                        message: '',
+                        errors: errors,
                     });
                 },
             });
@@ -86,21 +73,8 @@ function CreateCitizenPage() {
                 onError: (errors) => {
                     setAlert({
                         type: 'error',
-                        message: (
-                            <div>
-                                <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
-                                <ul className="list-inside list-disc text-sm text-red-800">
-                                    {errors &&
-                                        Object.entries(errors).map(([field, msgs]) =>
-                                            Array.isArray(msgs) ? (
-                                                msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>)
-                                            ) : (
-                                                <li key={field}>{msgs}</li>
-                                            ),
-                                        )}
-                                </ul>
-                            </div>
-                        ),
+                        message: '', // Empty message when using errors prop
+                        errors: errors,
                     });
                 },
             });
@@ -169,7 +143,7 @@ function CreateCitizenPage() {
             <div>
                 <Header showBackButton title={isEdit ? 'Edit Data Warga' : 'Tambah Data Warga'} />
 
-                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage
