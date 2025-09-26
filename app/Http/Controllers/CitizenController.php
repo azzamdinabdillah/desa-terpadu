@@ -205,4 +205,18 @@ class CitizenController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat memperbarui data warga: ' . $e->getMessage());
         }
     }
+
+    public function destroy(Citizen $citizen)
+    {
+        try {
+            $citizenName = $citizen->full_name;
+            $citizen->delete();
+
+            return redirect()->route('citizens.index')
+                ->with('success', "Data warga {$citizenName} berhasil dihapus!");
+                
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghapus data warga: ' . $e->getMessage());
+        }
+    }
 } 

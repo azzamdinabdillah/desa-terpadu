@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -40,6 +41,9 @@ function CitizenPage() {
     const [searchTerm, setSearchTerm] = useState(filters.q || '');
     const [gender, setGender] = useState(filters.gender || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [citizenToDelete, setCitizenToDelete] = useState<CitizenType | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (flash?.success) {
@@ -76,6 +80,33 @@ function CitizenPage() {
         if (url) {
             router.visit(url, { preserveState: true, replace: true });
         }
+    };
+
+    const handleDeleteClick = (citizen: CitizenType) => {
+        setCitizenToDelete(citizen);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (citizenToDelete) {
+            setIsDeleting(true);
+            router.delete(`/citizens/${citizenToDelete.id}`, {
+                onSuccess: () => {
+                    setShowDeleteModal(false);
+                    setCitizenToDelete(null);
+                    setIsDeleting(false);
+                },
+                onError: () => {
+                    setIsDeleting(false);
+                },
+            });
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setCitizenToDelete(null);
+        setIsDeleting(false);
     };
 
     const columns = useMemo(
@@ -170,7 +201,7 @@ function CitizenPage() {
                         <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
                             <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" onClick={() => router.delete(`/citizens/${item.id}`)}>
+                        <Button variant="ghost" onClick={() => handleDeleteClick(item)}>
                             <Trash className="h-4 w-4" />
                         </Button>
                     </div>
@@ -254,6 +285,17 @@ function CitizenPage() {
                         onChange={handlePageChange}
                     />
                 </div>
+
+                <ConfirmationModal
+                    isOpen={showDeleteModal}
+                    onClose={handleDeleteCancel}
+                    onConfirm={handleDeleteConfirm}
+                    title="Konfirmasi Hapus Data Warga"
+                    message={`Apakah Anda yakin ingin menghapus data warga "${citizenToDelete?.full_name}"? Tindakan ini tidak dapat dibatalkan.`}
+                    confirmText="Ya, Hapus"
+                    cancelText="Batal"
+                    isLoading={isDeleting}
+                />
             </div>
         </BaseLayouts>
     );
