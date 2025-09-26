@@ -41,6 +41,7 @@ Route::get('/announcement', [AnnouncementController::class, 'index'])->name('ann
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 Route::get('/families', [FamilyController::class, 'index'])->name('family.index');
+Route::get('/families/{family}', [FamilyController::class, 'show'])->name('family.show');
 
 Route::middleware('auth')->group(function () {
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');

@@ -92,8 +92,7 @@ function Family() {
     };
 
     const handleViewClick = (family: Family) => {
-        setViewModalData(family);
-        setViewModalOpen(true);
+        router.visit(`/families/${family.id}`);
     };
 
     const handleViewClose = () => {

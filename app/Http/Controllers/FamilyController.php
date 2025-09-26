@@ -34,4 +34,22 @@ class FamilyController extends Controller
             ],
         ]);
     }
+
+    public function show(Family $family)
+    {
+        $family->load('citizens');
+
+        
+        // Pisahkan anggota keluarga berdasarkan status
+        $headOfHousehold = $family->citizens->where('status', 'head_of_household')->first();
+        $spouse = $family->citizens->where('status', 'spouse')->first();
+        $children = $family->citizens->where('status', 'child')->values(); // Convert to array with sequential keys
+        
+        return Inertia::render('family/detail', [
+            'family' => $family,
+            'headOfHousehold' => $headOfHousehold,
+            'spouse' => $spouse,
+            'children' => $children,
+        ]);
+    }
 }
