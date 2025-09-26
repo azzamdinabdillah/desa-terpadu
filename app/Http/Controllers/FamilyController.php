@@ -78,4 +78,33 @@ class FamilyController extends Controller
             'children' => $children,
         ]);
     }
+
+    public function edit(Family $family)
+    {
+        return Inertia::render('family/create', [
+            'family' => $family,
+            'isEdit' => true,
+        ]);
+    }
+
+    public function update(Request $request, Family $family)
+    {
+        $validated = $request->validate([
+            'family_name' => 'required|string|max:255',
+            'kk_number' => 'required|string|max:16|unique:families,kk_number,' . $family->id,
+        ], [
+            'family_name.required' => 'Nama keluarga harus diisi.',
+            'family_name.string' => 'Nama keluarga harus berupa teks.',
+            'family_name.max' => 'Nama keluarga maksimal 255 karakter.',
+            'kk_number.required' => 'Nomor KK harus diisi.',
+            'kk_number.string' => 'Nomor KK harus berupa teks.',
+            'kk_number.max' => 'Nomor KK maksimal 16 karakter.',
+            'kk_number.unique' => 'Nomor KK sudah digunakan.',
+        ]);
+
+        $family->update($validated);
+
+        return redirect()->route('family.index')
+            ->with('success', 'Data keluarga berhasil diperbarui.');
+    }
 }

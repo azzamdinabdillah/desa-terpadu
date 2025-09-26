@@ -13,41 +13,66 @@ interface CreateFamilyPageProps {
         success?: string;
         error?: string;
     };
+    family?: {
+        id: number;
+        family_name: string;
+        kk_number: string;
+    };
+    isEdit?: boolean;
     [key: string]: unknown;
 }
 
 function CreateFamilyPage() {
-    const { flash } = usePage().props as unknown as CreateFamilyPageProps;
+    const { flash, family, isEdit } = usePage().props as unknown as CreateFamilyPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const { data, setData, post, processing, errors } = useForm({
-        family_name: '',
-        kk_number: '',
+    const { data, setData, post, put, processing, errors } = useForm({
+        family_name: family?.family_name || '',
+        kk_number: family?.kk_number || '',
     });
 
     // Handle form submission
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/families', {
-            onSuccess: () => {
-                setAlert({
-                    type: 'success',
-                    message: 'Data keluarga berhasil ditambahkan.',
-                });
-                // Clear form after successful submission
-                setData({
-                    family_name: '',
-                    kk_number: '',
-                });
-            },
-            onError: (errors: any) => {
-                setAlert({
-                    type: 'error',
-                    message: '',
-                    errors: errors,
-                });
-            },
-        });
+
+        if (isEdit && family) {
+            put(`/families/${family.id}`, {
+                onSuccess: () => {
+                    setAlert({
+                        type: 'success',
+                        message: 'Data keluarga berhasil diperbarui.',
+                    });
+                },
+                onError: (errors: any) => {
+                    setAlert({
+                        type: 'error',
+                        message: '',
+                        errors: errors,
+                    });
+                },
+            });
+        } else {
+            post('/families', {
+                onSuccess: () => {
+                    setAlert({
+                        type: 'success',
+                        message: 'Data keluarga berhasil ditambahkan.',
+                    });
+                    // Clear form after successful submission
+                    setData({
+                        family_name: '',
+                        kk_number: '',
+                    });
+                },
+                onError: (errors: any) => {
+                    setAlert({
+                        type: 'error',
+                        message: '',
+                        errors: errors,
+                    });
+                },
+            });
+        }
     };
 
     // Handle flash messages
@@ -79,7 +104,10 @@ function CreateFamilyPage() {
         <BaseLayouts>
             <Header />
             <div className="p-6">
-                <HeaderPage title="Tambah Data Keluarga" description="Tambahkan data keluarga baru ke dalam sistem" />
+                <HeaderPage
+                    title={isEdit ? 'Edit Data Keluarga' : 'Tambah Data Keluarga'}
+                    description={isEdit ? 'Perbarui data keluarga yang sudah ada' : 'Tambahkan data keluarga baru ke dalam sistem'}
+                />
 
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
@@ -108,7 +136,7 @@ function CreateFamilyPage() {
                                 Batal
                             </Button>
                             <Button type="submit" variant="primary" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
-                                <span>{processing ? 'Menyimpan...' : 'Simpan'}</span>
+                                <span>{processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui' : 'Simpan'}</span>
                             </Button>
                         </div>
                     </form>

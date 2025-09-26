@@ -48,6 +48,8 @@ Route::get('/families/{family}', [FamilyController::class, 'show'])
 Route::middleware('auth')->group(function () {
     Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/families', [FamilyController::class, 'store'])->name('family.store');
+    Route::get('/families/{family}/edit', [FamilyController::class, 'edit'])->name('family.edit');
+    Route::put('/families/{family}', [FamilyController::class, 'update'])->name('family.update');
 
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
 Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');

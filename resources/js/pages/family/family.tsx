@@ -185,7 +185,7 @@ function Family() {
                                       <Eye className="h-4 w-4" />
                                   </Button>
                                   <Button
-                                      onClick={() => router.visit(`/family/${item.id}/edit`)}
+                                      onClick={() => router.visit(`/families/${item.id}/edit`)}
                                       variant="ghost"
                                       size="sm"
                                       className="text-blue-600 hover:text-blue-800"
