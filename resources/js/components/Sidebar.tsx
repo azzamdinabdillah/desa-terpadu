@@ -38,8 +38,7 @@ const menuItems: MenuItem[] = [
         icon: <Users className="h-5 w-5" />,
         submenu: [
             { id: 'data-warga', label: 'Data Penduduk', href: '/citizens' },
-            { id: 'kartu-keluarga', label: 'Kartu Keluarga', href: '/warga/kk' },
-            { id: 'surat-keterangan', label: 'Surat Keterangan', href: '/warga/surat' },
+            { id: 'data-keluarga', label: 'Keluarga', href: '/families' },
         ],
     },
     {

@@ -16,6 +16,7 @@ class Family extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'family_name',
         'kk_number',
     ];
 
