@@ -10,7 +10,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, IdCard, MapPin, Phone, Plus, Search, User, Users } from 'lucide-react';
+import { Calendar, Edit, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface CitizenPageProps {
@@ -158,6 +158,21 @@ function CitizenPage() {
                     <div className="flex w-full items-center gap-2">
                         <Users className="h-4 w-4 text-green-600" />
                         <span className="w-full text-sm text-green-900">{item.family.family_name || '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'action',
+                header: 'Aksi',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
+                            <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" onClick={() => router.delete(`/citizens/${item.id}`)}>
+                            <Trash className="h-4 w-4" />
+                        </Button>
                     </div>
                 ),
             },

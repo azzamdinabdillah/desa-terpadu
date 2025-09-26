@@ -57,6 +57,8 @@ Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'd
 
 Route::get('/citizens/create', [CitizenController::class, 'create'])->name('citizens.create');
 Route::post('/citizens', [CitizenController::class, 'store'])->name('citizens.store');
+Route::get('/citizens/{citizen}/edit', [CitizenController::class, 'edit'])->name('citizens.edit');
+Route::put('/citizens/{citizen}', [CitizenController::class, 'update'])->name('citizens.update');
 });
 
 

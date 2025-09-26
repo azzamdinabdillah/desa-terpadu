@@ -14,8 +14,26 @@ interface Family {
     family_name: string;
 }
 
+interface Citizen {
+    id: number;
+    full_name: string;
+    nik: string;
+    phone_number: string;
+    address: string;
+    date_of_birth: string;
+    occupation: string;
+    position: string;
+    religion: string;
+    marital_status: string;
+    gender: string;
+    status: string;
+    family_id: number;
+}
+
 interface CreateCitizenPageProps {
     families: Family[];
+    citizen?: Citizen;
+    isEdit?: boolean;
     flash?: {
         success?: string;
         error?: string;
@@ -24,22 +42,22 @@ interface CreateCitizenPageProps {
 }
 
 function CreateCitizenPage() {
-    const { families, flash } = usePage().props as unknown as CreateCitizenPageProps;
+    const { families, citizen, isEdit, flash } = usePage().props as unknown as CreateCitizenPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const { data, setData, post, processing } = useForm({
-        full_name: '',
-        nik: '',
-        phone_number: '',
-        address: '',
-        date_of_birth: '',
-        occupation: '',
-        position: '',
-        religion: 'placeholder',
-        marital_status: 'placeholder',
-        gender: 'placeholder',
-        status: 'placeholder',
-        family_id: 'placeholder',
+    const { data, setData, post, put, processing } = useForm({
+        full_name: citizen?.full_name || '',
+        nik: citizen?.nik || '',
+        phone_number: citizen?.phone_number || '',
+        address: citizen?.address || '',
+        date_of_birth: citizen?.date_of_birth ? citizen.date_of_birth.slice(0, 10) : '',
+        occupation: citizen?.occupation || '',
+        position: citizen?.position || '',
+        religion: citizen?.religion || 'placeholder',
+        marital_status: citizen?.marital_status || 'placeholder',
+        gender: citizen?.gender || 'placeholder',
+        status: citizen?.status || 'placeholder',
+        family_id: citizen?.family_id?.toString() || 'placeholder',
     });
 
     // Handle form submission
@@ -49,29 +67,63 @@ function CreateCitizenPage() {
         // Filter out placeholder values and convert to empty strings for backend
         const submitData = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, value === 'placeholder' ? '' : value]));
 
-        post('/citizens', {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                // Success handled by flash message
-            },
-            onError: (errors) => {
-                setAlert({
-                    type: 'error',
-                    message: (
-                        <div>
-                            <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
-                            <ul className="list-inside list-disc text-sm text-red-800">
-                                {errors &&
-                                    Object.entries(errors).map(([field, msgs]) =>
-                                        Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs}</li>,
-                                    )}
-                            </ul>
-                        </div>
-                    ),
-                });
-            },
-        });
+        if (isEdit && citizen) {
+            put(`/citizens/${citizen.id}`, {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Success handled by flash message
+                },
+                onError: (errors) => {
+                    setAlert({
+                        type: 'error',
+                        message: (
+                            <div>
+                                <div className="mb-1 font-semibold">Terjadi kesalahan saat memperbarui data:</div>
+                                <ul className="list-inside list-disc text-sm text-red-800">
+                                    {errors &&
+                                        Object.entries(errors).map(([field, msgs]) =>
+                                            Array.isArray(msgs) ? (
+                                                msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>)
+                                            ) : (
+                                                <li key={field}>{msgs}</li>
+                                            ),
+                                        )}
+                                </ul>
+                            </div>
+                        ),
+                    });
+                },
+            });
+        } else {
+            post('/citizens', {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Success handled by flash message
+                },
+                onError: (errors) => {
+                    setAlert({
+                        type: 'error',
+                        message: (
+                            <div>
+                                <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                                <ul className="list-inside list-disc text-sm text-red-800">
+                                    {errors &&
+                                        Object.entries(errors).map(([field, msgs]) =>
+                                            Array.isArray(msgs) ? (
+                                                msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>)
+                                            ) : (
+                                                <li key={field}>{msgs}</li>
+                                            ),
+                                        )}
+                                </ul>
+                            </div>
+                        ),
+                    });
+                },
+            });
+        }
     };
 
     // Handle cancel
@@ -134,12 +186,17 @@ function CreateCitizenPage() {
     return (
         <BaseLayouts>
             <div>
-                <Header showBackButton title="Tambah Data Warga" />
+                <Header showBackButton title={isEdit ? 'Edit Data Warga' : 'Tambah Data Warga'} />
 
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
-                    <HeaderPage title="Tambah Data Warga Baru" description="Isi form di bawah ini untuk menambahkan data warga baru ke sistem" />
+                    <HeaderPage
+                        title={isEdit ? 'Edit Data Warga' : 'Tambah Data Warga Baru'}
+                        description={
+                            isEdit ? 'Perbarui data warga yang sudah ada' : 'Isi form di bawah ini untuk menambahkan data warga baru ke sistem'
+                        }
+                    />
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Personal Information Section */}
@@ -283,7 +340,7 @@ function CreateCitizenPage() {
                                 iconPosition="left"
                                 className="w-full sm:w-auto"
                             >
-                                {processing ? 'Menyimpan...' : 'Simpan Data'}
+                                {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Data' : 'Simpan Data'}
                             </Button>
                         </div>
                     </form>
