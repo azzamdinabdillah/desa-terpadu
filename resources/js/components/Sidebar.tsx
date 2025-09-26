@@ -48,12 +48,6 @@ const menuItems: MenuItem[] = [
         href: '/announcement',
     },
     {
-        id: 'settings',
-        label: 'Pengaturan',
-        icon: <Settings className="h-5 w-5" />,
-        href: '/settings',
-    },
-    {
         id: 'login',
         label: 'Login',
         icon: <LogIn className="h-5 w-5" />,
@@ -107,58 +101,68 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
             {/* Navigation */}
             <nav className="flex-1 space-y-2 p-4">
-                {menuItems.map((item) => (
-                    <div key={item.id}>
-                        {item.submenu ? (
-                            <Collapsible.Root
-                                open={openMenus.includes(item.id) || shouldMenuBeOpen(item.submenu)}
-                                onOpenChange={() => toggleMenu(item.id)}
-                            >
-                                <Collapsible.Trigger
-                                    className={`flex w-full items-center justify-between rounded-lg p-3 text-left transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
-                                        shouldMenuBeOpen(item.submenu) ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
+                {menuItems
+                    .filter((item) => {
+                        // Hide login menu when user is authenticated
+                        if (item.id === 'login' && isAuthenticated) {
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map((item) => (
+                        <div key={item.id}>
+                            {item.submenu ? (
+                                <Collapsible.Root
+                                    open={openMenus.includes(item.id) || shouldMenuBeOpen(item.submenu)}
+                                    onOpenChange={() => toggleMenu(item.id)}
+                                >
+                                    <Collapsible.Trigger
+                                        className={`flex w-full items-center justify-between rounded-lg p-3 text-left transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
+                                            shouldMenuBeOpen(item.submenu) ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
+                                        }`}
+                                    >
+                                        <div className="flex items-center space-x-3">
+                                            <div className={`${shouldMenuBeOpen(item.submenu) ? 'text-green-800' : 'text-green-700'}`}>
+                                                {item.icon}
+                                            </div>
+                                            <span className="text-sm font-medium">{item.label}</span>
+                                        </div>
+                                        {openMenus.includes(item.id) || shouldMenuBeOpen(item.submenu) ? (
+                                            <ChevronDown className="h-4 w-4 text-green-600" />
+                                        ) : (
+                                            <ChevronRight className="h-4 w-4 text-green-600" />
+                                        )}
+                                    </Collapsible.Trigger>
+
+                                    <Collapsible.Content className="mt-2 ml-4 space-y-1">
+                                        {item.submenu.map((subitem) => (
+                                            <a
+                                                key={subitem.id}
+                                                href={subitem.href}
+                                                className={`block rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-900 hover:shadow-sm ${
+                                                    isSubmenuActive(subitem.href)
+                                                        ? 'bg-green-200 font-semibold text-green-900 shadow-sm'
+                                                        : 'text-green-700'
+                                                }`}
+                                            >
+                                                {subitem.label}
+                                            </a>
+                                        ))}
+                                    </Collapsible.Content>
+                                </Collapsible.Root>
+                            ) : (
+                                <a
+                                    href={item.href}
+                                    className={`flex items-center space-x-3 rounded-lg p-3 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
+                                        isActive(item.href || '') ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
                                     }`}
                                 >
-                                    <div className="flex items-center space-x-3">
-                                        <div className={`${shouldMenuBeOpen(item.submenu) ? 'text-green-800' : 'text-green-700'}`}>{item.icon}</div>
-                                        <span className="text-sm font-medium">{item.label}</span>
-                                    </div>
-                                    {openMenus.includes(item.id) || shouldMenuBeOpen(item.submenu) ? (
-                                        <ChevronDown className="h-4 w-4 text-green-600" />
-                                    ) : (
-                                        <ChevronRight className="h-4 w-4 text-green-600" />
-                                    )}
-                                </Collapsible.Trigger>
-
-                                <Collapsible.Content className="mt-2 ml-4 space-y-1">
-                                    {item.submenu.map((subitem) => (
-                                        <a
-                                            key={subitem.id}
-                                            href={subitem.href}
-                                            className={`block rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-900 hover:shadow-sm ${
-                                                isSubmenuActive(subitem.href)
-                                                    ? 'bg-green-200 font-semibold text-green-900 shadow-sm'
-                                                    : 'text-green-700'
-                                            }`}
-                                        >
-                                            {subitem.label}
-                                        </a>
-                                    ))}
-                                </Collapsible.Content>
-                            </Collapsible.Root>
-                        ) : (
-                            <a
-                                href={item.href}
-                                className={`flex items-center space-x-3 rounded-lg p-3 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
-                                    isActive(item.href || '') ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
-                                }`}
-                            >
-                                <div className={`${isActive(item.href || '') ? 'text-green-800' : 'text-green-700'}`}>{item.icon}</div>
-                                <span className="text-sm font-medium">{item.label}</span>
-                            </a>
-                        )}
-                    </div>
-                ))}
+                                    <div className={`${isActive(item.href || '') ? 'text-green-800' : 'text-green-700'}`}>{item.icon}</div>
+                                    <span className="text-sm font-medium">{item.label}</span>
+                                </a>
+                            )}
+                        </div>
+                    ))}
             </nav>
 
             {/* User Profile Section */}

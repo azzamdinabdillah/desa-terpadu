@@ -55,7 +55,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                     <HeaderPage title={family.family_name} description={`Detail informasi keluarga ${family.family_name}`} total={totalMembers} />
 
                     {/* Family Info Card */}
-                    <div className="mb-8 rounded-xl border border-green-200 bg-green-50 p-8 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
+                    <div className="mb-8 rounded-xl border border-green-200 bg-green-50 p-6 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
                         <div className="flex items-center justify-between">
                             <div className="flex-1">
                                 <div className="mb-4 flex items-center gap-3">
@@ -123,7 +123,13 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-purple-900 capitalize">{headOfHousehold.gender}</span>
+                                                    <span className="ml-2 font-medium text-purple-900 capitalize">
+                                                        {headOfHousehold.gender === 'male'
+                                                            ? 'Laki-laki'
+                                                            : headOfHousehold.gender === 'female'
+                                                            ? 'Perempuan'
+                                                            : headOfHousehold.gender}
+                                                    </span>
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Tanggal Lahir:</span>
@@ -257,7 +263,9 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-green-900 capitalize">{child.gender}</span>
+                                                    <span className="ml-2 font-medium text-green-900 capitalize">
+                                                        {child.gender === 'male' ? 'Laki-laki' : child.gender === 'female' ? 'Perempuan' : '-'}
+                                                    </span>
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Tanggal Lahir:</span>

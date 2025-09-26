@@ -186,46 +186,46 @@ function Announcement() {
                     </div>
                 ),
             },
-            ...(isAdmin
-                ? [
-                      {
-                          key: 'actions',
-                          header: <span className="float-right">Aksi</span>,
-                          className: 'text-right whitespace-nowrap',
-                          cell: (item: Announcement) => (
-                              <div className="flex items-center justify-end gap-2">
-                                  <Button
-                                      onClick={() => handleViewClick(item)}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-green-600 hover:text-green-800"
-                                      title="Lihat Detail"
-                                  >
-                                      <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                      onClick={() => router.visit(`/announcement/${item.id}/edit`)}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-blue-600 hover:text-blue-800"
-                                      title="Edit Pengumuman"
-                                  >
-                                      <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                      onClick={() => handleDeleteClick(item)}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-red-600 hover:text-red-800"
-                                      title="Hapus Pengumuman"
-                                  >
-                                      <Trash2 className="h-4 w-4" />
-                                  </Button>
-                              </div>
-                          ),
-                      },
-                  ]
-                : []),
+            {
+                key: 'actions',
+                header: <span className="float-right">Aksi</span>,
+                className: 'text-right whitespace-nowrap',
+                cell: (item: Announcement) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            onClick={() => handleViewClick(item)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-600 hover:text-green-800"
+                            title="Lihat Detail"
+                        >
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                        {isAdmin && (
+                            <>
+                                <Button
+                                    onClick={() => router.visit(`/announcement/${item.id}/edit`)}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-blue-600 hover:text-blue-800"
+                                    title="Edit Pengumuman"
+                                >
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    onClick={() => handleDeleteClick(item)}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-800"
+                                    title="Hapus Pengumuman"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                ),
+            },
         ],
         [setSelectedImage, isAdmin],
     );
