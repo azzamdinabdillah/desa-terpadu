@@ -187,7 +187,13 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-blue-900 capitalize">{spouse.gender}</span>
+                                                    <span className="ml-2 font-medium text-blue-900">
+                                                        {spouse.gender === 'male'
+                                                            ? 'Laki-laki'
+                                                            : spouse.gender === 'female'
+                                                            ? 'Perempuan'
+                                                            : '-'}
+                                                    </span>
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Tanggal Lahir:</span>

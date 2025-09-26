@@ -40,10 +40,11 @@ function CreateFamilyPage() {
                     kk_number: '',
                 });
             },
-            onError: () => {
+            onError: (errors: any) => {
                 setAlert({
                     type: 'error',
-                    message: 'Terjadi kesalahan saat menambahkan data keluarga.',
+                    message: '',
+                    errors: errors,
                 });
             },
         });
@@ -80,11 +81,7 @@ function CreateFamilyPage() {
             <div className="p-6">
                 <HeaderPage title="Tambah Data Keluarga" description="Tambahkan data keluarga baru ke dalam sistem" />
 
-                {alert && (
-                    <div className="mb-6">
-                        <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
-                    </div>
-                )}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -110,8 +107,7 @@ function CreateFamilyPage() {
                             <Button type="button" variant="outline" onClick={() => router.visit('/families')} disabled={processing}>
                                 Batal
                             </Button>
-                            <Button type="submit" variant="primary" disabled={processing} className="flex items-center space-x-2">
-                                <Save className="h-4 w-4" />
+                            <Button type="submit" variant="primary" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
                                 <span>{processing ? 'Menyimpan...' : 'Simpan'}</span>
                             </Button>
                         </div>

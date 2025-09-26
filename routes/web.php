@@ -41,11 +41,14 @@ Route::get('/announcement', [AnnouncementController::class, 'index'])->name('ann
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 Route::get('/families', [FamilyController::class, 'index'])->name('family.index');
-Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');
-Route::post('/families', [FamilyController::class, 'store'])->name('family.store');
-Route::get('/families/{family}', [FamilyController::class, 'show'])->name('family.show');
+Route::get('/families/{family}', [FamilyController::class, 'show'])
+    ->where('family', '[0-9]+')
+    ->name('family.show');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');
+    Route::post('/families', [FamilyController::class, 'store'])->name('family.store');
+
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
 Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
 Route::get('/finance/{id}/edit', [FinanceController::class, 'edit'])->name('finance.edit');
