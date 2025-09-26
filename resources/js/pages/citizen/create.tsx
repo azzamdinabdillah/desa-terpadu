@@ -5,34 +5,15 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { CitizenType } from '@/types/citizen/citizenType';
+import { FamilyType } from '@/types/familyType';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Briefcase, Save, User, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface Family {
-    id: number;
-    family_name: string;
-}
-
-interface Citizen {
-    id: number;
-    full_name: string;
-    nik: string;
-    phone_number: string;
-    address: string;
-    date_of_birth: string;
-    occupation: string;
-    position: string;
-    religion: string;
-    marital_status: string;
-    gender: string;
-    status: string;
-    family_id: number;
-}
-
 interface CreateCitizenPageProps {
-    families: Family[];
-    citizen?: Citizen;
+    families: FamilyType[];
+    citizen?: CitizenType;
     isEdit?: boolean;
     flash?: {
         success?: string;

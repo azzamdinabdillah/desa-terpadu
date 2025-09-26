@@ -9,7 +9,11 @@ export interface CitizenType {
     gender?: string;
     date_of_birth?: string;
     occupation?: string;
+    position: string;
     status?: string;
     profile_picture?: string | null;
+    religion?: string;
+    marital_status?: string;
+    family_id: number;
     family: FamilyType;
 }
