@@ -8,6 +8,7 @@ import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
@@ -38,6 +39,7 @@ interface CitizenPageProps {
 
 function CitizenPage() {
     const { citizens, filters, flash } = usePage().props as unknown as CitizenPageProps;
+    const { isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState(filters.q || '');
     const [gender, setGender] = useState(filters.gender || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
@@ -192,21 +194,26 @@ function CitizenPage() {
                     </div>
                 ),
             },
-            {
-                key: 'action',
-                header: 'Aksi',
-                className: 'whitespace-nowrap',
-                cell: (item: CitizenType) => (
-                    <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
-                            <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" onClick={() => handleDeleteClick(item)}>
-                            <Trash className="h-4 w-4" />
-                        </Button>
-                    </div>
-                ),
-            },
+            // hanya admin yang bisa lihat
+            ...(isAdmin
+                ? [
+                      {
+                          key: 'action',
+                          header: 'Aksi',
+                          className: 'whitespace-nowrap',
+                          cell: (item: CitizenType) => (
+                              <div className="flex items-center gap-2">
+                                  <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
+                                      <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" onClick={() => handleDeleteClick(item)}>
+                                      <Trash className="h-4 w-4" />
+                                  </Button>
+                              </div>
+                          ),
+                      },
+                  ]
+                : []),
         ],
         [],
     );
@@ -250,9 +257,11 @@ function CitizenPage() {
                                 placeholder="Pilih gender"
                             />
 
-                            <Button onClick={() => router.visit('/citizens/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
-                                Tambah Data Warga
-                            </Button>
+                            {isAdmin && (
+                                <Button onClick={() => router.visit('/citizens/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                    Tambah Data Warga
+                                </Button>
+                            )}
                         </div>
                     </div>
 
