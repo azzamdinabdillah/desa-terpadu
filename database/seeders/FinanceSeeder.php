@@ -164,7 +164,5 @@ class FinanceSeeder extends Seeder
                 'proof_image' => $faker->randomElement($proofImages),
             ]);
         }
-
-        $this->command->info('Finance seeder completed successfully!');
     }
 }

@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             // Warga dengan akun
             [
                 'citizen_id' => 1, // Ahmad Susanto
-                'email' => 'ahmad.susanto@email.com',
+                'email' => 'admin@gmail.com',
                 'password' => Hash::make('123'),
                 'role' => 'admin',
                 'status' => 'active',

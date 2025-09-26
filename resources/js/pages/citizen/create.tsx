@@ -254,6 +254,8 @@ function CreateCitizenPage() {
                                 <Select
                                     label="Keluarga"
                                     value={data.family_id}
+                                    enableSearch
+                                    searchPlaceholder="Cari keluarga"
                                     onChange={(value) => setData('family_id', value)}
                                     options={familyOptions}
                                     required
