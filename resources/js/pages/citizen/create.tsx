@@ -172,6 +172,7 @@ function CreateCitizenPage() {
 
                                 <InputField
                                     label="NIK"
+                                    type='number'
                                     value={data.nik}
                                     onChange={(value) => setData('nik', value)}
                                     placeholder="Masukkan NIK (16 digit)"
@@ -180,10 +181,10 @@ function CreateCitizenPage() {
 
                                 <InputField
                                     label="Nomor Telepon"
+                                    type='number'
                                     value={data.phone_number}
                                     onChange={(value) => setData('phone_number', value)}
                                     placeholder="Masukkan nomor telepon"
-                                    type="tel"
                                 />
 
                                 <InputField

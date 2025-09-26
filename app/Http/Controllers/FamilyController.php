@@ -35,6 +35,32 @@ class FamilyController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('family/create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'family_name' => 'required|string|max:255',
+            'kk_number' => 'required|string|max:16|unique:families,kk_number',
+        ], [
+            'family_name.required' => 'Nama keluarga harus diisi.',
+            'family_name.string' => 'Nama keluarga harus berupa teks.',
+            'family_name.max' => 'Nama keluarga maksimal 255 karakter.',
+            'kk_number.required' => 'Nomor KK harus diisi.',
+            'kk_number.string' => 'Nomor KK harus berupa teks.',
+            'kk_number.max' => 'Nomor KK maksimal 16 karakter.',
+            'kk_number.unique' => 'Nomor KK sudah digunakan.',
+        ]);
+
+        $family = Family::create($validated);
+
+        return redirect()->route('family.index')
+            ->with('success', 'Data keluarga berhasil ditambahkan.');
+    }
+
     public function show(Family $family)
     {
         $family->load('citizens');

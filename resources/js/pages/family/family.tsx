@@ -239,7 +239,7 @@ function Family() {
 
                         {isAdmin && (
                             <div className="flex flex-wrap gap-2">
-                                <Button onClick={() => router.visit('/family/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button onClick={() => router.visit('/families/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
                                     Tambah Keluarga
                                 </Button>
                             </div>
