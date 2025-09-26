@@ -107,4 +107,16 @@ class FamilyController extends Controller
         return redirect()->route('family.index')
             ->with('success', 'Data keluarga berhasil diperbarui.');
     }
+
+    public function destroy(Family $family)
+    {
+        // Hapus semua warga yang terkait dengan keluarga ini
+        $family->citizens()->delete();
+        
+        // Hapus keluarga
+        $family->delete();
+
+        return redirect()->route('family.index')
+            ->with('success', 'Data keluarga berhasil dihapus.');
+    }
 }

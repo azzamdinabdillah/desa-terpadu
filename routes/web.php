@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/families', [FamilyController::class, 'store'])->name('family.store');
     Route::get('/families/{family}/edit', [FamilyController::class, 'edit'])->name('family.edit');
     Route::put('/families/{family}', [FamilyController::class, 'update'])->name('family.update');
+    Route::delete('/families/{family}', [FamilyController::class, 'destroy'])->name('family.destroy');
 
 Route::get('/finance/create', [FinanceController::class, 'create'])->name('finance.create');
 Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');

@@ -107,7 +107,7 @@ function Family() {
 
     const handleDeleteConfirm = () => {
         if (deleteModalData) {
-            router.delete(`/family/${deleteModalData.id}`, {
+            router.delete(`/families/${deleteModalData.id}`, {
                 onSuccess: () => {
                     setDeleteModalOpen(false);
                     setDeleteModalData(null);
@@ -327,7 +327,12 @@ function Family() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <p className="mb-2 text-sm text-gray-700">Apakah Anda yakin ingin menghapus keluarga berikut?</p>
+                                    <p className="mb-1 text-sm text-gray-700">
+                                        Apakah Anda yakin ingin menghapus keluarga berikut?
+                                    </p>
+                                    <p className="mb-2 text-sm text-red-600 font-semibold">
+                                        Peringatan: Menghapus data keluarga ini juga akan menghapus semua data yang berkaitan dengan keluarga ini, termasuk seluruh anggota keluarga yang terdaftar.
+                                    </p>
                                     {deleteModalData && (
                                         <div className="rounded-lg border border-red-200 bg-red-50 p-3">
                                             <h3 className="font-medium text-red-900">{deleteModalData.family_name}</h3>
