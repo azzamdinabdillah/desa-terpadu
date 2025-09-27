@@ -10,12 +10,12 @@ import { Baby, Calendar, Home, MapPin, User, Users } from 'lucide-react';
 interface FamilyDetailProps {
     family: FamilyType;
     headOfHousehold: CitizenType | null;
-    spouse: CitizenType | null;
+    spouses: CitizenType[];
     children: CitizenType[];
 }
 
-export default function FamilyDetail({ family, headOfHousehold, spouse, children }: FamilyDetailProps) {
-    const totalMembers = (headOfHousehold ? 1 : 0) + (spouse ? 1 : 0) + children.length;
+export default function FamilyDetail({ family, headOfHousehold, spouses, children }: FamilyDetailProps) {
+    const totalMembers = (headOfHousehold ? 1 : 0) + spouses.length + children.length;
 
     return (
         <BaseLayouts>
@@ -133,18 +133,21 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                         </div>
                     )}
 
-                    {/* Spouse Section */}
-                    {spouse && (
+                    {/* Spouses Section */}
+                    {spouses.length > 0 && (
                         <div className="mb-8">
                             <h2 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
                                 <User className="mr-2 h-5 w-5 text-blue-600" />
-                                Pasangan
+                                Pasangan ({spouses.length} orang)
                             </h2>
 
-                            <div className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
-                                <div className="p-6">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                {spouses.map((spouse) => (
+                                    <div
+                                        key={spouse.id}
+                                        className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
+                                    >
+                                        <div className="p-6">
                                             <div className="mb-4 flex items-center gap-3">
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-200 shadow-md">
                                                     <User className="h-6 w-6 text-blue-800" />
@@ -155,14 +158,16 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 </div>
                                             </div>
 
-                                            <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+                                            <div className="space-y-2 text-sm">
                                                 <div>
                                                     <span className="text-gray-500">NIK:</span>
                                                     <span className="ml-2 font-medium text-blue-900">{spouse.nik}</span>
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-blue-900">{getGenderLabel(spouse.gender || '')}</span>
+                                                    <span className="ml-2 font-medium text-blue-900 capitalize">
+                                                        {getGenderLabel(spouse.gender || '')}
+                                                    </span>
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Tanggal Lahir:</span>
@@ -189,7 +194,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -261,7 +266,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                     )}
 
                     {/* No family members message */}
-                    {!headOfHousehold && !spouse && children.length === 0 && (
+                    {!headOfHousehold && spouses.length === 0 && children.length === 0 && (
                         <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
                             <Users className="mx-auto mb-4 h-12 w-12 text-gray-400" />
                             <h3 className="mb-2 text-lg font-medium text-gray-900">Belum Ada Anggota Keluarga</h3>

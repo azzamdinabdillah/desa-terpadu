@@ -105,6 +105,19 @@ class CitizenController extends Controller
                 'profile_picture.max' => 'Ukuran gambar maksimal 2MB.',
             ]);
 
+            // Check if trying to add head of household to family that already has one
+            if ($validated['status'] === 'head_of_household') {
+                $existingHead = Citizen::where('family_id', $validated['family_id'])
+                    ->where('status', 'head_of_household')
+                    ->first();
+                
+                if ($existingHead) {
+                    return back()->withErrors([
+                        'status' => 'Keluarga ini sudah memiliki kepala keluarga. Silakan pilih status lain.'
+                    ])->withInput();
+                }
+            }
+
             $citizen = new Citizen();
             $citizen->full_name = $validated['full_name'];
             $citizen->nik = $validated['nik'];
@@ -196,6 +209,20 @@ class CitizenController extends Controller
                 'profile_picture.mimes' => 'Gambar harus berupa file: jpeg, png, jpg, gif.',
                 'profile_picture.max' => 'Ukuran gambar maksimal 2MB.',
             ]);
+
+            // Check if trying to make this citizen head of household in a family that already has one
+            if ($validated['status'] === 'head_of_household') {
+                $existingHead = Citizen::where('family_id', $validated['family_id'])
+                    ->where('status', 'head_of_household')
+                    ->where('id', '!=', $citizen->id) // Exclude current citizen from check
+                    ->first();
+                
+                if ($existingHead) {
+                    return back()->withErrors([
+                        'status' => 'Keluarga ini sudah memiliki kepala keluarga. Silakan pilih status lain.'
+                    ])->withInput();
+                }
+            }
 
             $citizen->full_name = $validated['full_name'];
             $citizen->nik = $validated['nik'];

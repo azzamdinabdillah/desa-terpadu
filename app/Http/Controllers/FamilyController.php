@@ -68,13 +68,13 @@ class FamilyController extends Controller
         
         // Pisahkan anggota keluarga berdasarkan status
         $headOfHousehold = $family->citizens->where('status', 'head_of_household')->first();
-        $spouse = $family->citizens->where('status', 'spouse')->first();
+        $spouse = $family->citizens->where('status', 'spouse')->values();
         $children = $family->citizens->where('status', 'child')->values(); // Convert to array with sequential keys
         
         return Inertia::render('family/detail', [
             'family' => $family,
             'headOfHousehold' => $headOfHousehold,
-            'spouse' => $spouse,
+            'spouses' => $spouse,
             'children' => $children,
         ]);
     }
