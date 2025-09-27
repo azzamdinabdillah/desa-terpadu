@@ -24,30 +24,33 @@ function Login() {
         }
     }, [props?.flash?.success, props?.flash?.error]);
 
-    // Show all validation errors in an alert as well (mirror finance create pattern)
+    // Handle validation errors - same pattern as announcement
     useEffect(() => {
         const entries = Object.entries(errors || {});
         if (entries.length) {
             setAlert({
                 type: 'error',
-                message: (
-                    <div>
-                        <div className="mb-1 font-semibold">Terjadi kesalahan validasi:</div>
-                        <ul className="list-inside list-disc text-sm text-red-800">
-                            {entries.map(([field, msgs]) =>
-                                Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs as any}</li>,
-                            )}
-                        </ul>
-                    </div>
-                ),
+                message: '',
+                errors: errors,
             });
         }
     }, [errors]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
         post('/login', {
-            onError: () => {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                // Success handled by flash message
+            },
+            onError: (errors: any) => {
+                setAlert({
+                    type: 'error',
+                    message: '',
+                    errors: errors,
+                });
                 setData('password', '');
             },
         });
@@ -56,7 +59,7 @@ function Login() {
     return (
         <div className="flex min-h-screen items-center justify-center bg-green-50 p-4">
             <div className="w-full max-w-md">
-                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
                 <div className="mb-6 text-center">
                     <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-700 text-white">
                         <span className="text-xl">🌾</span>
@@ -74,7 +77,6 @@ function Login() {
                             value={data.email}
                             onChange={(v) => setData('email', v)}
                             required
-                            error={errors.email}
                         />
                         <InputField
                             label="Kata Sandi"
@@ -83,7 +85,6 @@ function Login() {
                             value={data.password}
                             onChange={(v) => setData('password', v)}
                             required
-                            error={errors.password}
                             suffix={
                                 <button
                                     type="button"

@@ -1,72 +1,18 @@
-import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { getGenderLabel, getStatusLabel, getReligionLabel, getMaritalStatusLabel } from '@/lib/utils';
+import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel } from '@/lib/utils';
+import { CitizenType } from '@/types/citizen/citizenType';
 import { Head, router } from '@inertiajs/react';
-import { ArrowLeft, Briefcase, Calendar, Edit, Home, MapPin, Phone, User, Users } from 'lucide-react';
+import { Briefcase, Calendar, Home, MapPin, Phone, User, Users } from 'lucide-react';
 import React from 'react';
 
-interface Citizen {
-    id: number;
-    full_name: string;
-    nik: string;
-    phone_number?: string;
-    address: string;
-    date_of_birth: string;
-    occupation: string;
-    position?: string;
-    religion: string;
-    marital_status: string;
-    gender: string;
-    status: string;
-    profile_picture?: string;
-    family?: {
-        id: number;
-        family_name: string;
-        address: string;
-    };
-}
-
 interface Props {
-    citizen: Citizen;
+    citizen: CitizenType;
 }
 
 const DetailCitizen: React.FC<Props> = ({ citizen }) => {
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    };
-
-    const getAge = (dateOfBirth: string) => {
-        const today = new Date();
-        const birthDate = new Date(dateOfBirth);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        return age;
-    };
-
-    const getStatusBadgeColor = (status: string) => {
-        switch (status) {
-            case 'head_of_household':
-                return 'bg-blue-100 text-blue-800';
-            case 'spouse':
-                return 'bg-green-100 text-green-800';
-            case 'child':
-                return 'bg-purple-100 text-purple-800';
-            default:
-                return 'bg-gray-100 text-gray-800';
-        }
-    };
-
     return (
         <BaseLayouts>
             <Head title={`Detail Warga - ${citizen.full_name}`} />
@@ -75,11 +21,7 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                 <Header showBackButton title="Detail Data Warga" icon="👤" />
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
-
-                    <HeaderPage
-                        title="Detail Warga"
-                        description="Detail data warga"
-                    />
+                    <HeaderPage title="Detail Warga" description="Detail data warga" />
 
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Profile Card */}
@@ -98,18 +40,16 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                         )}
                                     </div>
                                     <h2 className="mb-2 text-xl font-bold text-green-900">{citizen.full_name}</h2>
-                                    <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(citizen.status)}`}>
-                                        {getStatusLabel(citizen.status)}
-                                    </span>
+                                    <StatusBadge status={citizen.status || ''} />
                                 </div>
                                 <div className="mt-6 space-y-3">
                                     <div className="flex items-center rounded-lg bg-white/70 p-2 text-sm text-green-700">
                                         <Calendar className="mr-2 h-4 w-4 text-green-600" />
-                                        <span>{getAge(citizen.date_of_birth)} tahun</span>
+                                        <span>{calculateAge(citizen.date_of_birth || '')} tahun</span>
                                     </div>
                                     <div className="flex items-center rounded-lg bg-white/70 p-2 text-sm text-green-700">
                                         <User className="mr-2 h-4 w-4 text-green-600" />
-                                        <span>{getGenderLabel(citizen.gender)}</span>
+                                        <span>{getGenderLabel(citizen.gender || '')}</span>
                                     </div>
                                     {citizen.phone_number && (
                                         <div className="flex items-center rounded-lg bg-white/70 p-2 text-sm text-green-700">
@@ -138,15 +78,17 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                     </div>
                                     <div className="rounded-lg bg-white/70 p-4">
                                         <label className="text-sm font-medium text-green-600">Tanggal Lahir</label>
-                                        <p className="mt-1 text-sm font-semibold text-green-900">{formatDate(citizen.date_of_birth)}</p>
+                                        <p className="mt-1 text-sm font-semibold text-green-900">{formatDate(citizen.date_of_birth || '')}</p>
                                     </div>
                                     <div className="rounded-lg bg-white/70 p-4">
                                         <label className="text-sm font-medium text-green-600">Agama</label>
-                                        <p className="mt-1 text-sm font-semibold text-green-900">{getReligionLabel(citizen.religion)}</p>
+                                        <p className="mt-1 text-sm font-semibold text-green-900">{getReligionLabel(citizen.religion || '')}</p>
                                     </div>
                                     <div className="rounded-lg bg-white/70 p-4">
                                         <label className="text-sm font-medium text-green-600">Status Pernikahan</label>
-                                        <p className="mt-1 text-sm font-semibold text-green-900">{getMaritalStatusLabel(citizen.marital_status)}</p>
+                                        <p className="mt-1 text-sm font-semibold text-green-900">
+                                            {getMaritalStatusLabel(citizen.marital_status || '')}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

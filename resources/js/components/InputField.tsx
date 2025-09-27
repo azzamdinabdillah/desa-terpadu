@@ -9,6 +9,7 @@ type InputFieldProps = {
     placeholder?: string;
     readOnly?: boolean;
     helperText?: string;
+    error?: string;
     containerClassName?: string;
     inputClassName?: string;
     variant?: 'default' | 'muted';
@@ -31,6 +32,7 @@ export default function InputField({
     placeholder,
     readOnly = false,
     helperText,
+    error,
     containerClassName = '',
     inputClassName = '',
     variant = 'default',
@@ -45,6 +47,9 @@ export default function InputField({
     required = false,
 }: InputFieldProps) {
     const wrapperBg = variant === 'muted' ? 'bg-green-50' : 'bg-white';
+    const borderColor = error
+        ? 'border-red-300 focus-within:border-red-600 focus-within:ring-red-200'
+        : 'border-green-300 focus-within:border-green-600 focus-within:ring-green-200';
 
     const displayedValue = formatValue ? (value ? formatValue(value) : '') : value;
 
@@ -56,10 +61,12 @@ export default function InputField({
 
     return (
         <div className={containerClassName}>
-            {label && <label className="mb-2 block text-sm font-medium text-green-800">{label} {required && <span className="text-red-500">*</span>}</label>}
-            <div
-                className={`flex overflow-hidden rounded-lg border border-green-300 ${wrapperBg} shadow-sm transition focus-within:border-green-600 focus-within:ring-2 focus-within:ring-green-200`}
-            >
+            {label && (
+                <label className="mb-2 block text-sm font-medium text-green-800">
+                    {label} {required && <span className="text-red-500">*</span>}
+                </label>
+            )}
+            <div className={`flex overflow-hidden rounded-lg border ${borderColor} ${wrapperBg} shadow-sm transition focus-within:ring-2`}>
                 {prefix && <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">{prefix}</div>}
                 {as === 'textarea' ? (
                     <textarea
@@ -86,7 +93,8 @@ export default function InputField({
                 )}
                 {suffix && <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">{suffix}</div>}
             </div>
-            {helperText && <p className="mt-1 text-xs text-green-700">{helperText}</p>}
+            {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            {helperText && !error && <p className="mt-1 text-xs text-green-700">{helperText}</p>}
         </div>
     );
 }

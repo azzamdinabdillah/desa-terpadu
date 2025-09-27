@@ -8,21 +8,13 @@ import Pagination, { Paginated } from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
+import { Announcement as AnnouncementType } from '@/types/citizen/announcement';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Calendar, Edit, Eye, FileText, Image as ImageIcon, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-interface Announcement {
-    id: number;
-    title: string;
-    description: string;
-    image?: string | null;
-    created_at: string;
-    updated_at: string;
-}
-
-type PaginationData = Paginated<Announcement>;
+type PaginationData = Paginated<AnnouncementType>;
 
 interface Props {
     flash?: {
@@ -61,10 +53,10 @@ function Announcement() {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
-    const [viewModalData, setViewModalData] = useState<Announcement | null>(null);
+    const [viewModalData, setViewModalData] = useState<AnnouncementType | null>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [deleteModalData, setDeleteModalData] = useState<Announcement | null>(null);
+    const [deleteModalData, setDeleteModalData] = useState<AnnouncementType | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -98,7 +90,7 @@ function Announcement() {
         }
     };
 
-    const handleViewClick = (announcement: Announcement) => {
+    const handleViewClick = (announcement: AnnouncementType) => {
         setViewModalData(announcement);
         setViewModalOpen(true);
     };
@@ -108,7 +100,7 @@ function Announcement() {
         setViewModalData(null);
     };
 
-    const handleDeleteClick = (announcement: Announcement) => {
+    const handleDeleteClick = (announcement: AnnouncementType) => {
         setDeleteModalData(announcement);
         setDeleteModalOpen(true);
     };
@@ -138,7 +130,7 @@ function Announcement() {
             {
                 key: 'title',
                 header: 'Judul',
-                cell: (item: Announcement) => (
+                cell: (item: AnnouncementType) => (
                     <div className="flex items-center gap-2">
                         <FileText className="h-4 w-4 flex-shrink-0 text-green-600" />
                         <div className="min-w-0 flex-1">
@@ -150,7 +142,7 @@ function Announcement() {
             {
                 key: 'description',
                 header: 'Deskripsi',
-                cell: (item: Announcement) => (
+                cell: (item: AnnouncementType) => (
                     <p className="max-w-md truncate text-sm text-green-900">
                         {item.description?.length > 80 ? `${item.description.substring(0, 80)}...` : item.description}
                     </p>
@@ -160,7 +152,7 @@ function Announcement() {
                 key: 'image',
                 header: 'Gambar',
                 className: 'whitespace-nowrap',
-                cell: (item: Announcement) =>
+                cell: (item: AnnouncementType) =>
                     item.image ? (
                         <Button
                             onClick={() => setSelectedImage(item.image as string)}
@@ -179,7 +171,7 @@ function Announcement() {
                 key: 'created_at',
                 header: 'Tanggal',
                 className: 'whitespace-nowrap',
-                cell: (item: Announcement) => (
+                cell: (item: AnnouncementType) => (
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-600" />
                         <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
@@ -190,7 +182,7 @@ function Announcement() {
                 key: 'actions',
                 header: <span className="float-right">Aksi</span>,
                 className: 'text-right whitespace-nowrap',
-                cell: (item: Announcement) => (
+                cell: (item: AnnouncementType) => (
                     <div className="flex items-center justify-end gap-2">
                         <Button
                             onClick={() => handleViewClick(item)}

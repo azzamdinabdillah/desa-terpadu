@@ -195,28 +195,28 @@ function CitizenPage() {
                 ),
             },
             // hanya admin yang bisa lihat
-            ...(isAdmin
-                ? [
-                      {
-                          key: 'action',
-                          header: 'Aksi',
-                          className: 'whitespace-nowrap',
-                          cell: (item: CitizenType) => (
-                              <div className="flex items-center gap-2">
-                                  <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}`)}>
-                                      <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
-                                      <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button variant="ghost" onClick={() => handleDeleteClick(item)}>
-                                      <Trash className="h-4 w-4" />
-                                  </Button>
-                              </div>
-                          ),
-                      },
-                  ]
-                : []),
+            {
+                key: 'action',
+                header: 'Aksi',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}`)}>
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                        {isAdmin && (
+                            <>
+                                <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" onClick={() => handleDeleteClick(item)}>
+                                    <Trash className="h-4 w-4" />
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                ),
+            },
         ],
         [],
     );

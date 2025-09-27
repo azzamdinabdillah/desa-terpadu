@@ -8,21 +8,13 @@ import Pagination, { Paginated } from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
+import { FamilyType } from '@/types/familyType';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Calendar, Edit, Eye, Home, Plus, Search, Trash2, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-interface Family {
-    id: number;
-    family_name: string;
-    kk_number: string;
-    created_at: string;
-    updated_at: string;
-    citizens_count: number;
-}
-
-type PaginationData = Paginated<Family>;
+type PaginationData = Paginated<FamilyType>;
 
 interface Props {
     flash?: {
@@ -55,9 +47,9 @@ function Family() {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
-    const [viewModalData, setViewModalData] = useState<Family | null>(null);
+    const [viewModalData, setViewModalData] = useState<FamilyType | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [deleteModalData, setDeleteModalData] = useState<Family | null>(null);
+    const [deleteModalData, setDeleteModalData] = useState<FamilyType | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -91,7 +83,7 @@ function Family() {
         }
     };
 
-    const handleViewClick = (family: Family) => {
+    const handleViewClick = (family: FamilyType) => {
         router.visit(`/families/${family.id}`);
     };
 
@@ -100,7 +92,7 @@ function Family() {
         setViewModalData(null);
     };
 
-    const handleDeleteClick = (family: Family) => {
+    const handleDeleteClick = (family: FamilyType) => {
         setDeleteModalData(family);
         setDeleteModalOpen(true);
     };
@@ -130,7 +122,7 @@ function Family() {
             {
                 key: 'family_name',
                 header: 'Nama Keluarga',
-                cell: (item: Family) => (
+                cell: (item: FamilyType) => (
                     <div className="flex items-center gap-2">
                         <Home className="h-4 w-4 flex-shrink-0 text-green-600" />
                         <div className="min-w-0 flex-1">
@@ -143,13 +135,13 @@ function Family() {
                 key: 'kk_number',
                 header: 'Nomor KK',
                 className: 'whitespace-nowrap',
-                cell: (item: Family) => <p className="font-mono text-sm text-green-900">{item.kk_number}</p>,
+                cell: (item: FamilyType) => <p className="font-mono text-sm text-green-900">{item.kk_number}</p>,
             },
             {
                 key: 'citizens_count',
                 header: 'Jumlah Anggota',
                 className: 'whitespace-nowrap',
-                cell: (item: Family) => (
+                cell: (item: FamilyType) => (
                     <div className="flex items-center gap-2">
                         <Users className="h-4 w-4 text-green-600" />
                         <span className="text-sm font-medium text-green-900">{item.citizens_count} orang</span>
@@ -160,53 +152,53 @@ function Family() {
                 key: 'created_at',
                 header: 'Tanggal Dibuat',
                 className: 'whitespace-nowrap',
-                cell: (item: Family) => (
+                cell: (item: FamilyType) => (
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
+                        <span className="text-sm text-green-900">{formatDate(item.created_at || '')}</span>
                     </div>
                 ),
             },
-            ...(isAdmin
-                ? [
-                      {
-                          key: 'actions',
-                          header: <span className="float-right">Aksi</span>,
-                          className: 'text-right whitespace-nowrap',
-                          cell: (item: Family) => (
-                              <div className="flex items-center justify-end gap-2">
-                                  <Button
-                                      onClick={() => handleViewClick(item)}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-green-600 hover:text-green-800"
-                                      title="Lihat Detail"
-                                  >
-                                      <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                      onClick={() => router.visit(`/families/${item.id}/edit`)}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-blue-600 hover:text-blue-800"
-                                      title="Edit Keluarga"
-                                  >
-                                      <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                      onClick={() => handleDeleteClick(item)}
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-red-600 hover:text-red-800"
-                                      title="Hapus Keluarga"
-                                  >
-                                      <Trash2 className="h-4 w-4" />
-                                  </Button>
-                              </div>
-                          ),
-                      },
-                  ]
-                : []),
+            {
+                key: 'actions',
+                header: <span className="float-right">Aksi</span>,
+                className: 'text-right whitespace-nowrap',
+                cell: (item: FamilyType) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            onClick={() => handleViewClick(item)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-600 hover:text-green-800"
+                            title="Lihat Detail"
+                        >
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                        {isAdmin && (
+                            <>
+                                <Button
+                                    onClick={() => router.visit(`/families/${item.id}/edit`)}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-blue-600 hover:text-blue-800"
+                                    title="Edit Keluarga"
+                                >
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    onClick={() => handleDeleteClick(item)}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-800"
+                                    title="Hapus Keluarga"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                ),
+            },
         ],
         [isAdmin],
     );
@@ -296,14 +288,14 @@ function Family() {
                                         <div className="flex items-center gap-2 text-sm text-green-700">
                                             <Users className="h-4 w-4" />
                                             <span className="font-medium">Jumlah Anggota Keluarga:</span>
-                                            <span>{viewModalData.citizens_count} orang</span>
+                                            <span>{viewModalData.citizens_count || 0} orang</span>
                                         </div>
 
                                         {/* Date */}
                                         <div className="flex items-center gap-2 text-sm text-green-700">
                                             <Calendar className="h-4 w-4" />
                                             <span className="font-medium">Tanggal Dibuat:</span>
-                                            <span>{formatDate(viewModalData.created_at)}</span>
+                                            <span>{formatDate(viewModalData.created_at || '')}</span>
                                         </div>
                                     </div>
                                 )}
@@ -327,17 +319,16 @@ function Family() {
                                 </div>
 
                                 <div className="mb-6">
-                                    <p className="mb-1 text-sm text-gray-700">
-                                        Apakah Anda yakin ingin menghapus keluarga berikut?
-                                    </p>
-                                    <p className="mb-2 text-sm text-red-600 font-semibold">
-                                        Peringatan: Menghapus data keluarga ini juga akan menghapus semua data yang berkaitan dengan keluarga ini, termasuk seluruh anggota keluarga yang terdaftar.
+                                    <p className="mb-1 text-sm text-gray-700">Apakah Anda yakin ingin menghapus keluarga berikut?</p>
+                                    <p className="mb-2 text-sm font-semibold text-red-600">
+                                        Peringatan: Menghapus data keluarga ini juga akan menghapus semua data yang berkaitan dengan keluarga ini,
+                                        termasuk seluruh anggota keluarga yang terdaftar.
                                     </p>
                                     {deleteModalData && (
                                         <div className="rounded-lg border border-red-200 bg-red-50 p-3">
                                             <h3 className="font-medium text-red-900">{deleteModalData.family_name}</h3>
                                             <p className="mt-1 text-sm text-red-700">Nomor KK: {deleteModalData.kk_number}</p>
-                                            <p className="mt-1 text-sm text-red-700">Anggota: {deleteModalData.citizens_count} orang</p>
+                                            <p className="mt-1 text-sm text-red-700">Anggota: {deleteModalData.citizens_count || 0} orang</p>
                                         </div>
                                     )}
                                 </div>

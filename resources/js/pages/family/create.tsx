@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { FamilyType } from '@/types/familyType';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -13,11 +14,7 @@ interface CreateFamilyPageProps {
         success?: string;
         error?: string;
     };
-    family?: {
-        id: number;
-        family_name: string;
-        kk_number: string;
-    };
+    family?: FamilyType;
     isEdit?: boolean;
     [key: string]: unknown;
 }

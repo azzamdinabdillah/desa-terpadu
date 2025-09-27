@@ -12,6 +12,7 @@ interface Finance {
     amount: number;
     note: string;
     user: User;
+    user_id: number;
     proof_image: string;
     created_at: string;
     remaining_balance: number;

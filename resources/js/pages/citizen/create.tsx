@@ -10,6 +10,7 @@ import { FamilyType } from '@/types/familyType';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Briefcase, Save, User, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { genderOptions, religionOptions, maritalStatusOptions, statusOptions } from '@/lib/options';
 
 interface CreateCitizenPageProps {
     families: FamilyType[];
@@ -104,36 +105,6 @@ function CreateCitizenPage() {
     }, [flash]);
 
     // Options for select fields
-    const religionOptions = [
-        { value: 'placeholder', label: 'Pilih Agama' },
-        { value: 'islam', label: 'Islam' },
-        { value: 'christian', label: 'Kristen' },
-        { value: 'catholic', label: 'Katolik' },
-        { value: 'hindu', label: 'Hindu' },
-        { value: 'buddhist', label: 'Buddha' },
-        { value: 'confucian', label: 'Konghucu' },
-    ];
-
-    const maritalStatusOptions = [
-        { value: 'placeholder', label: 'Pilih Status Pernikahan' },
-        { value: 'single', label: 'Belum Menikah' },
-        { value: 'married', label: 'Menikah' },
-        { value: 'widowed', label: 'Janda/Duda' },
-    ];
-
-    const genderOptions = [
-        { value: 'placeholder', label: 'Pilih Jenis Kelamin' },
-        { value: 'male', label: 'Laki-laki' },
-        { value: 'female', label: 'Perempuan' },
-    ];
-
-    const statusOptions = [
-        { value: 'placeholder', label: 'Pilih Status dalam Keluarga' },
-        { value: 'head_of_household', label: 'Kepala Keluarga' },
-        { value: 'spouse', label: 'Istri/Suami' },
-        { value: 'child', label: 'Anak' },
-    ];
-
     const familyOptions = [
         { value: 'placeholder', label: 'Pilih Keluarga' },
         ...families.map((family) => ({
@@ -241,7 +212,7 @@ function CreateCitizenPage() {
                                     accept="image/*"
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
-                                        setData('profile_picture', file);
+                                        setData('profile_picture', file || null);
                                     }}
                                     className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-green-700 hover:file:bg-green-100"
                                 />

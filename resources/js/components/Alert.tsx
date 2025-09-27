@@ -23,13 +23,16 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
             return null;
         }
 
+        // Check if this is a login page by looking at specific error fields
+        const isLoginError = errorEntries.some(([field]) => field === 'email' || field === 'password');
+
         // If only one error with one message, return simple format
         if (errorEntries.length === 1) {
             const [field, msgs] = errorEntries[0];
             if (Array.isArray(msgs) && msgs.length === 1) {
                 return (
                     <div>
-                        <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                        <div className="mb-1 font-semibold">{isLoginError ? 'Gagal masuk ke sistem:' : 'Terjadi kesalahan saat menyimpan data:'}</div>
                         <div className="text-sm">{msgs[0]}</div>
                     </div>
                 );
@@ -39,7 +42,7 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
         // Multiple errors or multiple messages per field - use list format
         return (
             <div>
-                <div className="mb-1 font-semibold">Terjadi kesalahan saat menyimpan data:</div>
+                <div className="mb-1 font-semibold">{isLoginError ? 'Gagal masuk ke sistem:' : 'Terjadi kesalahan saat menyimpan data:'}</div>
                 <ul className="list-inside list-disc text-sm">
                     {errorEntries.map(([field, msgs]) =>
                         Array.isArray(msgs) ? msgs.map((msg, idx) => <li key={field + idx}>{msg}</li>) : <li key={field}>{msgs}</li>,

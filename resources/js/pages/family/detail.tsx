@@ -1,12 +1,11 @@
-
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { Head } from '@inertiajs/react';
-import { ArrowLeft, Baby, Calendar, Home, MapPin, User, Users } from 'lucide-react';
-import { FamilyType } from '@/types/familyType';
+import { calculateAge, formatDate, getGenderLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
-import { formatDate, getGenderLabel } from '@/lib/utils';
+import { FamilyType } from '@/types/familyType';
+import { Head } from '@inertiajs/react';
+import { Baby, Calendar, Home, MapPin, User, Users } from 'lucide-react';
 
 interface FamilyDetailProps {
     family: FamilyType;
@@ -16,32 +15,6 @@ interface FamilyDetailProps {
 }
 
 export default function FamilyDetail({ family, headOfHousehold, spouse, children }: FamilyDetailProps) {
-    const calculateAge = (birthDate: string) => {
-        const today = new Date();
-        const birth = new Date(birthDate);
-        let age = today.getFullYear() - birth.getFullYear();
-        const monthDiff = today.getMonth() - birth.getMonth();
-
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-            age--;
-        }
-
-        return age;
-    };
-
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'head_of_household':
-                return 'Kepala Keluarga';
-            case 'spouse':
-                return 'Pasangan';
-            case 'child':
-                return 'Anak';
-            default:
-                return status;
-        }
-    };
-
     const totalMembers = (headOfHousehold ? 1 : 0) + (spouse ? 1 : 0) + children.length;
 
     return (
@@ -130,8 +103,8 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 <div>
                                                     <span className="text-gray-500">Tanggal Lahir:</span>
                                                     <span className="ml-2 font-medium text-purple-900">
-                                                        {formatDate(headOfHousehold.date_of_birth || '')} ({calculateAge(headOfHousehold.date_of_birth || '')}{' '}
-                                                        tahun)
+                                                        {formatDate(headOfHousehold.date_of_birth || '')} (
+                                                        {calculateAge(headOfHousehold.date_of_birth || '')} tahun)
                                                     </span>
                                                 </div>
                                                 <div>
@@ -189,9 +162,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-blue-900">
-                                                        {getGenderLabel(spouse.gender || '')}
-                                                    </span>
+                                                    <span className="ml-2 font-medium text-blue-900">{getGenderLabel(spouse.gender || '')}</span>
                                                 </div>
                                                 <div>
                                                     <span className="text-gray-500">Tanggal Lahir:</span>

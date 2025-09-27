@@ -58,11 +58,8 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                 let newBalance = currentBalance;
 
                 if (data.type === 'income') {
-                    console.log('income');
-
                     newBalance = currentBalance + amountValue;
                 } else if (data.type === 'expense') {
-                    console.log('expense');
                     newBalance = currentBalance - amountValue;
                 }
 

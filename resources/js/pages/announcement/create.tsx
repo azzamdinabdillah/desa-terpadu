@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { Announcement } from '@/types/citizen/announcement';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -13,12 +14,7 @@ interface Props {
         success?: string;
         error?: string;
     };
-    announcement?: {
-        id: number;
-        title: string;
-        description: string;
-        image?: string;
-    };
+    announcement?: Announcement;
     isEdit?: boolean;
     [key: string]: any;
 }

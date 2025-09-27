@@ -5,6 +5,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField, { formatters, parsers } from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { Finance } from '@/types/finance/financeTypes';
 import { User } from '@/types/user/userTypes';
 import { useForm, usePage } from '@inertiajs/react';
 import { CalendarDays, CircleUserRound } from 'lucide-react';
@@ -20,15 +21,7 @@ interface Props {
 }
 
 interface EditFinanceProps {
-    finance: {
-        id: number;
-        date: string;
-        type: 'income' | 'expense';
-        amount: number;
-        note: string;
-        user_id: number;
-        proof_image: string | null;
-    };
+    finance: Finance;
     currentBalance: number;
 }
 
