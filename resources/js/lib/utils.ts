@@ -37,3 +37,52 @@ export function formatDate(dateString: string): string {
         year: 'numeric',
     });
 }
+
+export const getStatusLabel = (status: string) => {
+    switch (status) {
+        case 'head_of_household':
+            return 'Kepala Keluarga';
+        case 'spouse':
+            return 'Istri/Suami';
+        case 'child':
+            return 'Anak';
+        default:
+            return status;
+    }
+};
+
+export const getGenderLabel = (gender: string) => {
+    return gender === 'male' ? 'Laki-laki' : 'Perempuan';
+};
+
+export const getMaritalStatusLabel = (status: string) => {
+    switch (status) {
+        case 'single':
+            return 'Belum Menikah';
+        case 'married':
+            return 'Menikah';
+        case 'widowed':
+            return 'Janda/Duda';
+        default:
+            return status;
+    }
+};
+
+export const getReligionLabel = (religion: string) => {
+    switch (religion) {
+        case 'islam':
+            return 'Islam';
+        case 'christian':
+            return 'Kristen';
+        case 'catholic':
+            return 'Katolik';
+        case 'hindu':
+            return 'Hindu';
+        case 'buddhist':
+            return 'Buddha';
+        case 'confucian':
+            return 'Konghucu';
+        default:
+            return religion;
+    }
+};

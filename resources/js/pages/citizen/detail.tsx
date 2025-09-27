@@ -2,6 +2,7 @@ import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { getGenderLabel, getStatusLabel, getReligionLabel, getMaritalStatusLabel } from '@/lib/utils';
 import { Head, router } from '@inertiajs/react';
 import { ArrowLeft, Briefcase, Calendar, Edit, Home, MapPin, Phone, User, Users } from 'lucide-react';
 import React from 'react';
@@ -63,55 +64,6 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                 return 'bg-purple-100 text-purple-800';
             default:
                 return 'bg-gray-100 text-gray-800';
-        }
-    };
-
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'head_of_household':
-                return 'Kepala Keluarga';
-            case 'spouse':
-                return 'Istri/Suami';
-            case 'child':
-                return 'Anak';
-            default:
-                return status;
-        }
-    };
-
-    const getGenderLabel = (gender: string) => {
-        return gender === 'male' ? 'Laki-laki' : 'Perempuan';
-    };
-
-    const getMaritalStatusLabel = (status: string) => {
-        switch (status) {
-            case 'single':
-                return 'Belum Menikah';
-            case 'married':
-                return 'Menikah';
-            case 'widowed':
-                return 'Janda/Duda';
-            default:
-                return status;
-        }
-    };
-
-    const getReligionLabel = (religion: string) => {
-        switch (religion) {
-            case 'islam':
-                return 'Islam';
-            case 'christian':
-                return 'Kristen';
-            case 'catholic':
-                return 'Katolik';
-            case 'hindu':
-                return 'Hindu';
-            case 'buddhist':
-                return 'Buddha';
-            case 'confucian':
-                return 'Konghucu';
-            default:
-                return religion;
         }
     };
 

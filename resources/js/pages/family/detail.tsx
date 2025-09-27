@@ -1,12 +1,12 @@
-import Button from '@/components/Button';
+
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { ArrowLeft, Baby, Calendar, Home, MapPin, User, Users } from 'lucide-react';
 import { FamilyType } from '@/types/familyType';
 import { CitizenType } from '@/types/citizen/citizenType';
-import { formatDate } from '@/lib/utils';
+import { formatDate, getGenderLabel } from '@/lib/utils';
 
 interface FamilyDetailProps {
     family: FamilyType;
@@ -124,11 +124,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
                                                     <span className="ml-2 font-medium text-purple-900 capitalize">
-                                                        {headOfHousehold.gender === 'male'
-                                                            ? 'Laki-laki'
-                                                            : headOfHousehold.gender === 'female'
-                                                            ? 'Perempuan'
-                                                            : headOfHousehold.gender}
+                                                        {getGenderLabel(headOfHousehold.gender || '')}
                                                     </span>
                                                 </div>
                                                 <div>
@@ -194,11 +190,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
                                                     <span className="ml-2 font-medium text-blue-900">
-                                                        {spouse.gender === 'male'
-                                                            ? 'Laki-laki'
-                                                            : spouse.gender === 'female'
-                                                            ? 'Perempuan'
-                                                            : '-'}
+                                                        {getGenderLabel(spouse.gender || '')}
                                                     </span>
                                                 </div>
                                                 <div>
@@ -264,7 +256,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouse, children
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
                                                     <span className="ml-2 font-medium text-green-900 capitalize">
-                                                        {child.gender === 'male' ? 'Laki-laki' : child.gender === 'female' ? 'Perempuan' : '-'}
+                                                        {getGenderLabel(child.gender || '')}
                                                     </span>
                                                 </div>
                                                 <div>

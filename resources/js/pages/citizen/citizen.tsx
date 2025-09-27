@@ -9,7 +9,7 @@ import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
-import { formatDate } from '@/lib/utils';
+import { formatDate, getGenderLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
 import { Calendar, Edit, Eye, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
@@ -148,15 +148,7 @@ function CitizenPage() {
                 header: 'Jenis Kelamin',
                 className: 'whitespace-nowrap',
                 cell: (item: CitizenType) => {
-                    let genderLabel = '-';
-                    if (item.gender === 'male') {
-                        genderLabel = 'Laki-laki';
-                    } else if (item.gender === 'female') {
-                        genderLabel = 'Perempuan';
-                    } else if (item.gender) {
-                        genderLabel = item.gender;
-                    }
-                    return <span className="text-sm text-green-900 capitalize">{genderLabel}</span>;
+                    return <span className="text-sm text-green-900 capitalize">{getGenderLabel(item.gender || '')}</span>;
                 },
             },
             {
