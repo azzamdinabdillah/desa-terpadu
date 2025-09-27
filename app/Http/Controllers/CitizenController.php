@@ -236,6 +236,15 @@ class CitizenController extends Controller
         }
     }
 
+    public function show(Citizen $citizen)
+    {
+        $citizen->load('family');
+        
+        return Inertia::render('citizen/detail', [
+            'citizen' => $citizen
+        ]);
+    }
+
     public function destroy(Citizen $citizen)
     {
         try {

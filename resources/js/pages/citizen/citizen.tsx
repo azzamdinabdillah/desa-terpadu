@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Edit, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
+import { Calendar, Edit, Eye, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface CitizenPageProps {
@@ -123,10 +123,10 @@ function CitizenPage() {
                             <img
                                 src={`/storage/${item.profile_picture}`}
                                 alt={item.full_name}
-                                className="h-8 w-8 rounded-full object-cover border border-green-200"
+                                className="h-8 w-8 rounded-full border border-green-200 object-cover"
                             />
                         ) : (
-                            <Users className="h-8 w-8 text-green-600 bg-green-50 rounded-full p-1.5 border border-green-200" />
+                            <Users className="h-8 w-8 rounded-full border border-green-200 bg-green-50 p-1.5 text-green-600" />
                         )}
                         <span className="text-sm text-green-900">{item.full_name}</span>
                     </div>
@@ -211,6 +211,9 @@ function CitizenPage() {
                           className: 'whitespace-nowrap',
                           cell: (item: CitizenType) => (
                               <div className="flex items-center gap-2">
+                                  <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}`)}>
+                                      <Eye className="h-4 w-4" />
+                                  </Button>
                                   <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
                                       <Edit className="h-4 w-4" />
                                   </Button>

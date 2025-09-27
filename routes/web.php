@@ -40,6 +40,7 @@ Route::get('/', function () {
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
+Route::get('/citizens/{citizen}', [CitizenController::class, 'show'])->name('citizens.show');
 Route::get('/families', [FamilyController::class, 'index'])->name('family.index');
 Route::get('/families/{family}', [FamilyController::class, 'show'])
     ->where('family', '[0-9]+')
