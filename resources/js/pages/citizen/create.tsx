@@ -39,6 +39,7 @@ function CreateCitizenPage() {
         gender: citizen?.gender || 'placeholder',
         status: citizen?.status || 'placeholder',
         family_id: citizen?.family_id?.toString() || 'placeholder',
+        profile_picture: null as File | null,
     });
 
     // Handle form submission
@@ -49,7 +50,9 @@ function CreateCitizenPage() {
         const submitData = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, value === 'placeholder' ? '' : value]));
 
         if (isEdit && citizen) {
-            put(`/citizens/${citizen.id}`, {
+            post(`/citizens/${citizen.id}`, {
+                ...submitData,
+                method: 'put',
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
@@ -65,6 +68,7 @@ function CreateCitizenPage() {
             });
         } else {
             post('/citizens', {
+                ...submitData,
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
@@ -172,7 +176,7 @@ function CreateCitizenPage() {
 
                                 <InputField
                                     label="NIK"
-                                    type='number'
+                                    type="number"
                                     value={data.nik}
                                     onChange={(value) => setData('nik', value)}
                                     placeholder="Masukkan NIK (16 digit)"
@@ -181,7 +185,7 @@ function CreateCitizenPage() {
 
                                 <InputField
                                     label="Nomor Telepon"
-                                    type='number'
+                                    type="number"
                                     value={data.phone_number}
                                     onChange={(value) => setData('phone_number', value)}
                                     placeholder="Masukkan nomor telepon"
@@ -228,6 +232,29 @@ function CreateCitizenPage() {
                                     rows={3}
                                     required
                                 />
+                            </div>
+
+                            <div className="mt-6">
+                                <label className="mb-2 block text-sm font-medium text-gray-700">Foto Profil</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        setData('profile_picture', file);
+                                    }}
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-green-700 hover:file:bg-green-100"
+                                />
+                                {citizen?.profile_picture && (
+                                    <div className="mt-2">
+                                        <p className="text-sm text-gray-600">Foto saat ini:</p>
+                                        <img
+                                            src={`/storage/${citizen.profile_picture}`}
+                                            alt="Foto profil"
+                                            className="mt-1 h-20 w-20 rounded-lg object-cover"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
 

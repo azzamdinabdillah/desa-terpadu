@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CitizenController extends Controller
@@ -74,6 +75,7 @@ class CitizenController extends Controller
                 'gender' => 'required|string|in:male,female',
                 'status' => 'required|string|in:head_of_household,spouse,child',
                 'family_id' => 'required|exists:families,id',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ], [
                 'full_name.required' => 'Nama lengkap wajib diisi.',
                 'full_name.max' => 'Nama lengkap maksimal 255 karakter.',
@@ -98,6 +100,9 @@ class CitizenController extends Controller
                 'status.in' => 'Status dalam keluarga yang dipilih tidak valid.',
                 'family_id.required' => 'Keluarga wajib dipilih.',
                 'family_id.exists' => 'Keluarga yang dipilih tidak ditemukan.',
+                'profile_picture.image' => 'File yang diupload harus berupa gambar.',
+                'profile_picture.mimes' => 'Gambar harus berupa file: jpeg, png, jpg, gif.',
+                'profile_picture.max' => 'Ukuran gambar maksimal 2MB.',
             ]);
 
             $citizen = new Citizen();
@@ -113,6 +118,14 @@ class CitizenController extends Controller
             $citizen->gender = $validated['gender'];
             $citizen->status = $validated['status'];
             $citizen->family_id = $validated['family_id'];
+
+            // Handle upload profile picture
+            if ($request->hasFile('profile_picture')) {
+                $file = $request->file('profile_picture');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('citizen_photos', $filename, 'public');
+                $citizen->profile_picture = $path;
+            }
 
             $citizen->save();
 
@@ -154,6 +167,7 @@ class CitizenController extends Controller
                 'gender' => 'required|string|in:male,female',
                 'status' => 'required|string|in:head_of_household,spouse,child',
                 'family_id' => 'required|exists:families,id',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ], [
                 'full_name.required' => 'Nama lengkap wajib diisi.',
                 'full_name.max' => 'Nama lengkap maksimal 255 karakter.',
@@ -178,6 +192,9 @@ class CitizenController extends Controller
                 'status.in' => 'Status dalam keluarga yang dipilih tidak valid.',
                 'family_id.required' => 'Keluarga wajib dipilih.',
                 'family_id.exists' => 'Keluarga yang dipilih tidak ditemukan.',
+                'profile_picture.image' => 'File yang diupload harus berupa gambar.',
+                'profile_picture.mimes' => 'Gambar harus berupa file: jpeg, png, jpg, gif.',
+                'profile_picture.max' => 'Ukuran gambar maksimal 2MB.',
             ]);
 
             $citizen->full_name = $validated['full_name'];
@@ -192,6 +209,19 @@ class CitizenController extends Controller
             $citizen->gender = $validated['gender'];
             $citizen->status = $validated['status'];
             $citizen->family_id = $validated['family_id'];
+
+            // Handle upload profile picture
+            if ($request->hasFile('profile_picture')) {
+                // Delete old picture if exists
+                if ($citizen->profile_picture && Storage::disk('public')->exists($citizen->profile_picture)) {
+                    Storage::disk('public')->delete($citizen->profile_picture);
+                }
+                
+                $file = $request->file('profile_picture');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('citizen_photos', $filename, 'public');
+                $citizen->profile_picture = $path;
+            }
 
             $citizen->save();
 

@@ -119,7 +119,15 @@ function CitizenPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: CitizenType) => (
                     <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-green-600" />
+                        {item.profile_picture ? (
+                            <img
+                                src={`/storage/${item.profile_picture}`}
+                                alt={item.full_name}
+                                className="h-8 w-8 rounded-full object-cover border border-green-200"
+                            />
+                        ) : (
+                            <Users className="h-8 w-8 text-green-600 bg-green-50 rounded-full p-1.5 border border-green-200" />
+                        )}
                         <span className="text-sm text-green-900">{item.full_name}</span>
                     </div>
                 ),
