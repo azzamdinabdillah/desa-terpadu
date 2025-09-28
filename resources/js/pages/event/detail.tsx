@@ -1,7 +1,9 @@
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
 import { Head, Link } from '@inertiajs/react';
@@ -21,59 +23,6 @@ interface EventDetailProps {
 }
 
 const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
-    const formatDate = (date: string) => {
-        return new Date(date).toLocaleDateString('id-ID', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
-
-    const getStatusBadge = (status: string) => {
-        const statusClasses = {
-            pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            ongoing: 'bg-green-100 text-green-800 border-green-200',
-            finished: 'bg-green-100 text-green-800 border-green-200',
-        };
-
-        const statusText = {
-            pending: 'Menunggu',
-            ongoing: 'Berlangsung',
-            finished: 'Selesai',
-        };
-
-        return (
-            <span
-                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${statusClasses[status as keyof typeof statusClasses]}`}
-            >
-                {statusText[status as keyof typeof statusText]}
-            </span>
-        );
-    };
-
-    const getTypeBadge = (type: string) => {
-        const typeClasses = {
-            public: 'bg-green-100 text-green-800 border-green-200',
-            restricted: 'bg-orange-100 text-orange-800 border-orange-200',
-        };
-
-        const typeText = {
-            public: 'Umum',
-            restricted: 'Terbatas',
-        };
-
-        return (
-            <span
-                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${typeClasses[type as keyof typeof typeClasses]}`}
-            >
-                {typeText[type as keyof typeof typeText]}
-            </span>
-        );
-    };
-
     return (
         <BaseLayouts>
             <Head title={`Detail Event - ${event.event_name}`} />
@@ -91,8 +40,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                 <div className="mb-4 flex items-start justify-between">
                                     <div>
                                         <div className="mb-4 flex items-center space-x-4">
-                                            {getStatusBadge(event.status)}
-                                            {getTypeBadge(event.type)}
+                                            <StatusBadge status={event.status} type="event-status" />
+                                            <StatusBadge status={event.type} type="event-type" />
                                         </div>
                                     </div>
                                     {event.flyer && (
@@ -117,7 +66,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                         </div>
                                         <div>
                                             <h4 className="font-semibold text-green-900">Tanggal Mulai</h4>
-                                            <p className="text-green-700">{formatDate(event.date_start)}</p>
+                                            <p className="text-green-700">{formatDateTime(event.date_start)}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-3">
@@ -126,7 +75,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                         </div>
                                         <div>
                                             <h4 className="font-semibold text-green-900">Tanggal Selesai</h4>
-                                            <p className="text-green-700">{formatDate(event.date_end)}</p>
+                                            <p className="text-green-700">{formatDateTime(event.date_end)}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-3">
@@ -231,11 +180,15 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                 <div className="space-y-3">
                                     <div>
                                         <span className="text-sm font-medium text-green-500">Status</span>
-                                        <div className="mt-1">{getStatusBadge(event.status)}</div>
+                                        <div className="mt-1">
+                                            <StatusBadge status={event.status} type="event-status" />
+                                        </div>
                                     </div>
                                     <div>
                                         <span className="text-sm font-medium text-green-500">Tipe</span>
-                                        <div className="mt-1">{getTypeBadge(event.type)}</div>
+                                        <div className="mt-1">
+                                            <StatusBadge status={event.type} type="event-type" />
+                                        </div>
                                     </div>
                                     {event.type === 'restricted' && (
                                         <>
@@ -253,7 +206,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     )}
                                     <div>
                                         <span className="text-sm font-medium text-green-500">Dibuat</span>
-                                        <p className="text-sm text-green-900">{formatDate(event.created_at)}</p>
+                                        <p className="text-sm text-green-900">{formatDateTime(event.created_at)}</p>
                                     </div>
                                 </div>
                             </div>

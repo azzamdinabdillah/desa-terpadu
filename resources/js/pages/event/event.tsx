@@ -7,39 +7,10 @@ import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
+import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
 import { Calendar, Clock, Eye, MapPin, Search, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-
-interface EventType {
-    id: number;
-    event_name: string;
-    description: string | null;
-    date_start: string;
-    date_end: string;
-    location: string;
-    flyer: string | null;
-    status: 'pending' | 'ongoing' | 'finished';
-    type: 'public' | 'restricted';
-    max_participants: number | null;
-    created_by: CitizenType;
-    // createdBy: CitizenType;
-    participants: Array<{
-        id: number;
-        citizen_id: number;
-        citizen: {
-            id: number;
-            full_name: string;
-        };
-    }>;
-    documentations: Array<{
-        id: number;
-        caption: string | null;
-        path: string;
-    }>;
-    created_at: string;
-    updated_at: string;
-}
 
 interface EventPageProps {
     events: EventType[];
@@ -198,7 +169,7 @@ function EventPage() {
                         <div className="flex items-center gap-2">
                             <Users className="h-4 w-4 text-green-600" />
                             <span className="text-sm text-green-900">
-                                {item.participants.length}
+                                {item.participants?.length}
                                 {item.max_participants && ` / ${item.max_participants}`}
                             </span>
                         </div>
@@ -208,7 +179,7 @@ function EventPage() {
                 key: 'createdBy',
                 header: 'Dibuat Oleh',
                 className: 'whitespace-nowrap',
-                cell: (item: EventType) => <span className="text-sm text-green-900">{item.created_by.full_name}</span>,
+                cell: (item: EventType) => <span className="text-sm text-green-900">{item.createdBy?.full_name}</span>,
             },
             {
                 key: 'action',

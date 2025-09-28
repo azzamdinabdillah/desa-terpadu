@@ -28,13 +28,42 @@ export function formatCurrency(amount: number, includeCurrency: boolean = true):
 /**
  * Format date string to Indonesian locale format
  * @param dateString - The date string to format
+ * @param includeTime - Whether to include time (default: false)
+ * @param includeWeekday - Whether to include weekday (default: false)
  * @returns Formatted date string in Indonesian format
  */
-export function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('id-ID', {
+export function formatDate(dateString: string, includeTime: boolean = false, includeWeekday: boolean = false): string {
+    const options: Intl.DateTimeFormatOptions = {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
+    };
+
+    if (includeWeekday) {
+        options.weekday = 'long';
+    }
+
+    if (includeTime) {
+        options.hour = '2-digit';
+        options.minute = '2-digit';
+    }
+
+    return new Date(dateString).toLocaleDateString('id-ID', options);
+}
+
+/**
+ * Format date string to Indonesian locale format with full date and time
+ * @param dateString - The date string to format
+ * @returns Formatted date string with weekday, date, and time in Indonesian format
+ */
+export function formatDateTime(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
     });
 }
 

@@ -11,7 +11,7 @@ export interface EventType {
     status: 'pending' | 'ongoing' | 'finished';
     type: 'public' | 'restricted';
     max_participants?: number | null;
-    created_by: number;
+    created_by: number | CitizenType;
     created_at: string;
     updated_at: string;
     createdBy?: CitizenType;
