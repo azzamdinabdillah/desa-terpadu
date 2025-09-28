@@ -47,6 +47,8 @@ Route::get('/families/{family}', [FamilyController::class, 'show'])
     ->where('family', '[0-9]+')
     ->name('family.show');
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}/register', [EventController::class, 'register'])->name('events.register');
+Route::post('/events/{event}/register', [EventController::class, 'storeRegistration'])->name('events.register.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');

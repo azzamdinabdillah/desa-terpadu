@@ -8,7 +8,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Eye, MapPin, Search, Users } from 'lucide-react';
+import { Calendar, Clock, Eye, MapPin, Search, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventType {
@@ -125,19 +125,21 @@ function EventPage() {
                         <img
                             src={`/storage/${item.flyer}`}
                             alt={item.event_name}
-                            className="h-12 w-12 rounded object-cover border border-green-200"
+                            className="h-12 w-12 rounded border border-green-200 object-cover"
                         />
                     ) : (
-                        <span className="text-xs text-green-400 italic">Tidak ada</span>
+                        <img
+                            src="https://placehold.co/48x48?text=No+Image"
+                            alt="Tidak ada flyer"
+                            className="h-12 w-12 rounded border border-green-100 object-cover opacity-60"
+                        />
                     ),
             },
             {
                 key: 'description',
                 header: 'Deskripsi',
                 className: 'max-w-xs', // Batasi lebar kolom
-                cell: (item: EventType) => (
-                    <span className="block max-w-xs truncate text-sm text-green-900">{item.description || '-'}</span>
-                ),
+                cell: (item: EventType) => <span className="block max-w-xs truncate text-sm text-green-900">{item.description || '-'}</span>,
             },
             {
                 key: 'date_start',
@@ -214,9 +216,19 @@ function EventPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: EventType) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}`)}>
+                        <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}`)} title="Lihat Detail">
                             <Eye className="h-4 w-4" />
                         </Button>
+                        {item.type !== 'public' && (
+                            <Button
+                                variant="ghost"
+                                onClick={() => router.visit(`/events/${item.id}/register`)}
+                                title="Daftar Event"
+                                className="text-green-600 hover:bg-green-50 hover:text-green-700"
+                            >
+                                <UserPlus className="h-4 w-4" />
+                            </Button>
+                        )}
                     </div>
                 ),
             },
