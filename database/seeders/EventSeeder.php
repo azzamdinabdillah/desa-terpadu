@@ -15,6 +15,7 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
+        // Randomize created_by from 1-12 for each event
         $events = [
             [
                 'event_name' => 'Gotong Royong Bersih Desa',
@@ -26,7 +27,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'public',
                 'max_participants' => null,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Pelatihan Keterampilan Menjahit',
@@ -38,7 +39,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'restricted',
                 'max_participants' => 20,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Posyandu Balita',
@@ -50,7 +51,7 @@ class EventSeeder extends Seeder
                 'status' => 'ongoing',
                 'type' => 'public',
                 'max_participants' => null,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Lomba Kebersihan Antar RT',
@@ -62,7 +63,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'public',
                 'max_participants' => null,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Rapat Koordinasi PKK',
@@ -74,7 +75,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'restricted',
                 'max_participants' => 15,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Festival Budaya Desa',
@@ -86,7 +87,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'public',
                 'max_participants' => null,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Pelatihan Digital Marketing',
@@ -98,7 +99,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'restricted',
                 'max_participants' => 25,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Kegiatan Olahraga Bersama',
@@ -110,7 +111,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'public',
                 'max_participants' => null,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Workshop Pertanian Organik',
@@ -122,7 +123,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'public',
                 'max_participants' => 30,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
             [
                 'event_name' => 'Rapat Evaluasi Program Desa',
@@ -134,7 +135,7 @@ class EventSeeder extends Seeder
                 'status' => 'pending',
                 'type' => 'restricted',
                 'max_participants' => 20,
-                'created_by' => 1,
+                'created_by' => rand(1, 4),
             ],
         ];
 

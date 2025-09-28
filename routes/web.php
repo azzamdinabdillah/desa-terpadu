@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\CitizenController;
 use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\EventController;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,7 @@ Route::get('/families', [FamilyController::class, 'index'])->name('family.index'
 Route::get('/families/{family}', [FamilyController::class, 'show'])
     ->where('family', '[0-9]+')
     ->name('family.show');
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');

@@ -45,6 +45,14 @@ class Event extends Model
     /**
      * Get the user who created this event.
      */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(Citizen::class, 'created_by');
+    }
+
+    /**
+     * Get the user who created this event (alias for createdBy).
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -60,6 +68,14 @@ class Event extends Model
 
     /**
      * Get the documentation for this event.
+     */
+    public function documentations(): HasMany
+    {
+        return $this->hasMany(EventsDocumentation::class);
+    }
+
+    /**
+     * Get the documentation for this event (alias for documentations).
      */
     public function documentation(): HasMany
     {
