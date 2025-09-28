@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -22,7 +23,7 @@ interface Props {
 function CreateAnnouncement() {
     const { flash, announcement, isEdit } = usePage<Props>().props;
     const [alert, setAlert] = useState<AlertProps | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
 
     const { data, setData, post, put, processing } = useForm({
         title: announcement?.title || '',
@@ -40,7 +41,7 @@ function CreateAnnouncement() {
             });
 
             if (announcement.image) {
-                setImagePreview(`/storage/${announcement.image}`);
+                setPreview(`/storage/${announcement.image}`);
             }
         }
     }, [isEdit, announcement, setData]);
@@ -57,20 +58,6 @@ function CreateAnnouncement() {
             setAlert({ type: 'error', message: flash.error });
         }
     }, [flash]);
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setData('image', file);
-
-            // Create preview
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setImagePreview(e.target?.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -117,8 +104,8 @@ function CreateAnnouncement() {
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage
-                        title={isEdit ? "Edit Pengumuman" : "Tambah Pengumuman Baru"}
-                        description={isEdit ? "Ubah data pengumuman desa sesuai kebutuhan." : "Lengkapi data pengumuman desa dengan benar."}
+                        title={isEdit ? 'Edit Pengumuman' : 'Tambah Pengumuman Baru'}
+                        description={isEdit ? 'Ubah data pengumuman desa sesuai kebutuhan.' : 'Lengkapi data pengumuman desa dengan benar.'}
                     />
                     {/* Form */}
                     <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
@@ -154,28 +141,15 @@ function CreateAnnouncement() {
 
                             {/* Image Upload */}
                             <div>
-                                <label htmlFor="image" className="mb-2 block text-sm font-medium text-green-900">
-                                    Gambar Pengumuman
-                                </label>
-                                <input
-                                    id="image"
-                                    type="file"
+                                <FileUpload
+                                    label="Gambar Pengumuman"
                                     accept="image/*"
-                                    onChange={handleImageChange}
-                                    className="block w-full text-sm text-green-600 file:mr-4 file:rounded-lg file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-green-700 hover:file:bg-green-100"
+                                    maxSize={5}
+                                    file={data.image}
+                                    preview={preview}
+                                    onChange={(file) => setData('image', file)}
+                                    onPreviewChange={setPreview}
                                 />
-
-                                {/* Image Preview */}
-                                {imagePreview && (
-                                    <div className="mt-4">
-                                        <p className="mb-2 text-sm font-medium text-green-900">Preview Gambar:</p>
-                                        <img
-                                            src={imagePreview}
-                                            alt="Preview"
-                                            className="h-48 w-full rounded-lg border border-green-300 object-cover"
-                                        />
-                                    </div>
-                                )}
                             </div>
 
                             {/* Submit Buttons */}

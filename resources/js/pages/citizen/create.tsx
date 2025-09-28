@@ -1,16 +1,17 @@
 ﻿import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { genderOptions, maritalStatusOptions, religionOptions, statusOptions } from '@/lib/options';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { FamilyType } from '@/types/familyType';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { Briefcase, Save, User, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { genderOptions, religionOptions, maritalStatusOptions, statusOptions } from '@/lib/options';
 
 interface CreateCitizenPageProps {
     families: FamilyType[];
@@ -26,6 +27,7 @@ interface CreateCitizenPageProps {
 function CreateCitizenPage() {
     const { families, citizen, isEdit, flash } = usePage().props as unknown as CreateCitizenPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
 
     const { data, setData, post, put, processing } = useForm({
         full_name: citizen?.full_name || '',
@@ -90,6 +92,13 @@ function CreateCitizenPage() {
     const handleCancel = () => {
         router.visit('/citizens');
     };
+
+    // Set initial preview for existing profile picture
+    useEffect(() => {
+        if (citizen?.profile_picture) {
+            setPreview(`/storage/${citizen.profile_picture}`);
+        }
+    }, [citizen?.profile_picture]);
 
     // Show flash messages
     useEffect(() => {
@@ -206,26 +215,15 @@ function CreateCitizenPage() {
                             </div>
 
                             <div className="mt-6">
-                                <label className="mb-2 block text-sm font-medium text-gray-700">Foto Profil</label>
-                                <input
-                                    type="file"
+                                <FileUpload
+                                    label="Foto Profil"
                                     accept="image/*"
-                                    onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        setData('profile_picture', file || null);
-                                    }}
-                                    className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-green-700 hover:file:bg-green-100"
+                                    maxSize={5}
+                                    file={data.profile_picture}
+                                    preview={preview}
+                                    onChange={(file) => setData('profile_picture', file)}
+                                    onPreviewChange={setPreview}
                                 />
-                                {citizen?.profile_picture && (
-                                    <div className="mt-2">
-                                        <p className="text-sm text-gray-600">Foto saat ini:</p>
-                                        <img
-                                            src={`/storage/${citizen.profile_picture}`}
-                                            alt="Foto profil"
-                                            className="mt-1 h-20 w-20 rounded-lg object-cover"
-                                        />
-                                    </div>
-                                )}
                             </div>
                         </div>
 
