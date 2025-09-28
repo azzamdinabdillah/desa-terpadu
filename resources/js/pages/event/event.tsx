@@ -4,6 +4,8 @@ import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
+import Pagination from '@/components/Pagination';
+import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
@@ -12,7 +14,21 @@ import { Calendar, Clock, Eye, MapPin, Plus, Search, UserPlus, Users } from 'luc
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventPageProps {
-    events: EventType[];
+    events: {
+        data: EventType[];
+        current_page: number;
+        per_page: number;
+        total: number;
+        last_page: number;
+        prev_page_url: string | null;
+        next_page_url: string | null;
+        links: { url: string | null; label: string; active: boolean }[];
+    };
+    filters: {
+        q?: string;
+        status?: string;
+        type?: string;
+    };
     flash?: {
         success?: string;
         error?: string;
@@ -21,10 +37,11 @@ interface EventPageProps {
 }
 
 function EventPage() {
-    const { events, flash } = usePage().props as unknown as EventPageProps;
-    const [searchTerm, setSearchTerm] = useState('');
+    const { events, filters, flash } = usePage().props as unknown as EventPageProps;
+    const [searchTerm, setSearchTerm] = useState(filters.q || '');
+    const [status, setStatus] = useState(filters.status || 'all');
+    const [type, setType] = useState(filters.type || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
-    const [filteredEvents, setFilteredEvents] = useState<EventType[]>(events);
 
     useEffect(() => {
         if (flash?.success) {
@@ -34,19 +51,43 @@ function EventPage() {
         }
     }, [flash]);
 
-    useEffect(() => {
-        const filtered = events.filter(
-            (event) =>
-                event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (event.description && event.description.toLowerCase().includes(searchTerm.toLowerCase())),
+    const handleSearch = () => {
+        router.get(
+            '/events',
+            {
+                q: searchTerm,
+                status: status === 'all' ? undefined : status,
+                type: type === 'all' ? undefined : type,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            },
         );
-        setFilteredEvents(filtered);
-    }, [searchTerm, events]);
+    };
 
     useEffect(() => {
-        console.log(filteredEvents[0].created_by);
-    }, [filteredEvents]);
+        const handler = setTimeout(() => {
+            if (searchTerm !== (filters.q || '') || (filters.status || 'all') !== status || (filters.type || 'all') !== type) {
+                router.get(
+                    '/events',
+                    {
+                        q: searchTerm,
+                        status: status === 'all' ? undefined : status,
+                        type: type === 'all' ? undefined : type,
+                    },
+                    { preserveState: true, replace: true },
+                );
+            }
+        }, 300);
+        return () => clearTimeout(handler);
+    }, [searchTerm, status, type]);
+
+    const handlePageChange = (url: string) => {
+        if (url) {
+            router.visit(url, { preserveState: true, replace: true });
+        }
+    };
 
     const getStatusBadge = (status: string) => {
         const statusConfig = {
@@ -214,7 +255,7 @@ function EventPage() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
-                    <HeaderPage title="Data Event" description="Daftar seluruh event desa" search={searchTerm} total={filteredEvents.length} />
+                    <HeaderPage title="Data Event" description="Daftar seluruh event desa" search={filters?.q ?? ''} total={events.total} />
 
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="relative max-w-md flex-1">
@@ -226,10 +267,39 @@ function EventPage() {
                                 placeholder="Cari event (nama, lokasi, deskripsi)..."
                                 value={searchTerm}
                                 onChange={(value) => setSearchTerm(value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                 inputClassName="pl-10"
                             />
                         </div>
-                        <div className="flex gap-2">
+
+                        <div className="flex flex-wrap gap-2">
+                            <Select
+                                label=""
+                                value={status}
+                                onChange={(val) => setStatus(val)}
+                                options={[
+                                    { value: 'all', label: 'Semua Status' },
+                                    { value: 'pending', label: 'Menunggu' },
+                                    { value: 'ongoing', label: 'Berlangsung' },
+                                    { value: 'finished', label: 'Selesai' },
+                                ]}
+                                className="min-w-[160px]"
+                                placeholder="Pilih status"
+                            />
+
+                            <Select
+                                label=""
+                                value={type}
+                                onChange={(val) => setType(val)}
+                                options={[
+                                    { value: 'all', label: 'Semua Tipe' },
+                                    { value: 'public', label: 'Umum' },
+                                    { value: 'restricted', label: 'Terbatas' },
+                                ]}
+                                className="min-w-[160px]"
+                                placeholder="Pilih tipe"
+                            />
+
                             <Button
                                 icon={<Plus className="h-4 w-4" />}
                                 iconPosition="left"
@@ -243,7 +313,7 @@ function EventPage() {
 
                     <DataTable
                         columns={columns}
-                        data={filteredEvents}
+                        data={events.data}
                         emptyMessage={
                             <div>
                                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
@@ -251,10 +321,23 @@ function EventPage() {
                                 </div>
                                 <h3 className="mb-2 text-lg font-semibold text-green-900">Tidak ada data event</h3>
                                 <p className="mb-6 text-green-700">
-                                    {searchTerm ? 'Tidak ada event yang sesuai dengan pencarian Anda.' : 'Belum ada data event yang tercatat.'}
+                                    {filters.q || (filters.status && filters.status !== 'all') || (filters.type && filters.type !== 'all')
+                                        ? 'Tidak ada event yang sesuai dengan pencarian atau filter Anda.'
+                                        : 'Belum ada data event yang tercatat.'}
                                 </p>
                             </div>
                         }
+                    />
+
+                    <Pagination
+                        page={events.current_page}
+                        perPage={events.per_page}
+                        total={events.total}
+                        lastPage={events.last_page}
+                        prevUrl={events.prev_page_url}
+                        nextUrl={events.next_page_url}
+                        links={events.links}
+                        onChange={handlePageChange}
                     />
                 </div>
             </div>

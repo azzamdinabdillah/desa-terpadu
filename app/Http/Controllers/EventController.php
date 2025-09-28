@@ -13,14 +13,43 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with(['createdBy', 'participants', 'documentations'])
+        $search = $request->string('q')->toString();
+        $status = $request->string('status')->toString();
+        $type = $request->string('type')->toString();
+
+        $query = Event::query();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('event_name', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status !== '') {
+            $query->where('status', $status);
+        }
+
+        if ($type !== '') {
+            $query->where('type', $type);
+        }
+
+        $events = $query->with(['createdBy', 'participants', 'documentations'])
             ->orderBy('date_start', 'desc')
-            ->get();
+            ->paginate(10)
+            ->onEachSide(0)
+            ->withQueryString();
 
         return Inertia::render('event/event', [
-            'events' => $events
+            'events' => $events,
+            'filters' => [
+                'q' => $search,
+                'status' => $status,
+                'type' => $type,
+            ],
         ]);
     }
 
