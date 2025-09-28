@@ -1,10 +1,11 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, UserCheck } from 'lucide-react';
+import { Calendar, Clock, MapPin, User } from 'lucide-react';
 import { useState } from 'react';
 
 interface EventType {
@@ -69,6 +70,48 @@ function EventRegisterPage() {
         });
     };
 
+    const getStatusBadge = (status: string) => {
+        const statusClasses = {
+            pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+            ongoing: 'bg-green-100 text-green-800 border-green-200',
+            finished: 'bg-green-100 text-green-800 border-green-200',
+        };
+
+        const statusText = {
+            pending: 'Menunggu',
+            ongoing: 'Berlangsung',
+            finished: 'Selesai',
+        };
+
+        return (
+            <span
+                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${statusClasses[status as keyof typeof statusClasses]}`}
+            >
+                {statusText[status as keyof typeof statusText]}
+            </span>
+        );
+    };
+
+    const getTypeBadge = (type: string) => {
+        const typeClasses = {
+            public: 'bg-green-100 text-green-800 border-green-200',
+            restricted: 'bg-orange-100 text-orange-800 border-orange-200',
+        };
+
+        const typeText = {
+            public: 'Umum',
+            restricted: 'Terbatas',
+        };
+
+        return (
+            <span
+                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${typeClasses[type as keyof typeof typeClasses]}`}
+            >
+                {typeText[type as keyof typeof typeText]}
+            </span>
+        );
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -101,83 +144,75 @@ function EventRegisterPage() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
-                    {/* Breadcrumb */}
-                    <nav className="mb-6 flex items-center space-x-2 text-sm">
-                        <button onClick={() => router.visit('/events')} className="text-green-600 hover:text-green-700 hover:underline">
-                            Daftar Event
-                        </button>
-                        <span className="text-gray-400">/</span>
-                        <span className="text-gray-600">Pendaftaran</span>
-                    </nav>
+                    <HeaderPage title="Pendaftaran Event" description="Pendaftaran Event" />
 
                     {/* Event Information Card */}
-                    <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
-                            {/* Event Image */}
-                            <div className="flex-shrink-0 self-center sm:self-start">
-                                {event.flyer ? (
-                                    <img
-                                        src={`/storage/${event.flyer}`}
-                                        alt={event.event_name}
-                                        className="h-24 w-24 rounded-lg border border-gray-200 object-cover"
-                                    />
-                                ) : (
-                                    <div className="flex h-24 w-24 items-center justify-center rounded-lg border border-gray-200 bg-green-100">
-                                        <Calendar className="h-12 w-12 text-green-600" />
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Event Details */}
-                            <div className="flex-1 space-y-4">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-gray-900">{event.event_name}</h1>
-                                    {event.description && <p className="mt-2 text-gray-600">{event.description}</p>}
+                    <div className="mb-8 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                        <div className="mb-4 flex items-start justify-between">
+                            <div>
+                                <div className="flex items-center space-x-4">
+                                    {getStatusBadge(event.status)}
+                                    {getTypeBadge(event.type)}
                                 </div>
+                            </div>
+                            {event.flyer && (
+                                <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
+                                    <img src={`/storage/${event.flyer}`} alt={event.event_name} className="h-full w-full object-cover" />
+                                </div>
+                            )}
+                        </div>
 
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <div className="flex items-center gap-3">
-                                        <Clock className="h-5 w-5 flex-shrink-0 text-green-600" />
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-900">Tanggal Mulai</p>
-                                            <p className="text-sm text-gray-600">{formatDate(event.date_start)}</p>
-                                        </div>
-                                    </div>
+                        {event.description && (
+                            <div className="mb-6">
+                                <h3 className="mb-2 text-lg font-semibold text-green-900">Deskripsi</h3>
+                                <p className="leading-relaxed text-green-700">{event.description}</p>
+                            </div>
+                        )}
 
-                                    <div className="flex items-center gap-3">
-                                        <Clock className="h-5 w-5 flex-shrink-0 text-green-600" />
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-900">Tanggal Selesai</p>
-                                            <p className="text-sm text-gray-600">{formatDate(event.date_end)}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <MapPin className="h-5 w-5 flex-shrink-0 text-green-600" />
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-900">Lokasi</p>
-                                            <p className="text-sm text-gray-600">{event.location}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <UserCheck className="h-5 w-5 flex-shrink-0 text-green-600" />
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-900">Jumlah Peserta</p>
-                                            <p className="text-sm text-gray-600">
-                                                {event.participants.length}
-                                                {event.max_participants && ` / ${event.max_participants}`}
-                                            </p>
-                                        </div>
-                                    </div>
+                        {/* Event Details */}
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div className="flex items-center space-x-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                                    <Calendar className="h-5 w-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-green-900">Tanggal Mulai</h4>
+                                    <p className="text-green-700">{formatDate(event.date_start)}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                                    <Clock className="h-5 w-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-green-900">Tanggal Selesai</h4>
+                                    <p className="text-green-700">{formatDate(event.date_end)}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                                    <MapPin className="h-5 w-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-green-900">Lokasi</h4>
+                                    <p className="text-green-700">{event.location}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                                    <User className="h-5 w-5 text-green-600" />
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-green-900">Dibuat Oleh</h4>
+                                    <p className="text-green-700">{event.created_by?.full_name || 'Tidak diketahui'}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Registration Form */}
-                    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        <h2 className="mb-6 text-xl font-semibold text-gray-900">Form Pendaftaran</h2>
+                    <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                        <h2 className="mb-6 text-xl font-semibold text-green-900">Form Pendaftaran</h2>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
@@ -198,10 +233,7 @@ function EventRegisterPage() {
                                     Kembali ke Daftar Event
                                 </Button>
 
-                                <Button
-                                    type="submit"
-                                    disabled={isLoading || nik.length !== 16}
-                                >
+                                <Button type="submit" disabled={isLoading || nik.length !== 16}>
                                     {isLoading ? 'Mendaftar...' : 'Daftar Event'}
                                 </Button>
                             </div>

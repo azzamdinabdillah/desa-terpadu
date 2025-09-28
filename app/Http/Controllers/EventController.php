@@ -25,6 +25,22 @@ class EventController extends Controller
     }
 
     /**
+     * Display the specified event.
+     */
+    public function show(Event $event)
+    {
+        $event->load([
+            'createdBy', 
+            'participants.citizen', 
+            'documentations'
+        ]);
+
+        return Inertia::render('event/detail', [
+            'event' => $event
+        ]);
+    }
+
+    /**
      * Show the registration page for an event.
      */
     public function register(Event $event)
