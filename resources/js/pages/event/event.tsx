@@ -6,10 +6,9 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
-import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Eye, MapPin, Search, UserPlus, Users } from 'lucide-react';
+import { Calendar, Clock, Eye, MapPin, Plus, Search, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventPageProps {
@@ -229,6 +228,16 @@ function EventPage() {
                                 onChange={(value) => setSearchTerm(value)}
                                 inputClassName="pl-10"
                             />
+                        </div>
+                        <div className="flex gap-2">
+                            <Button
+                                icon={<Plus className="h-4 w-4" />}
+                                iconPosition="left"
+                                variant="primary"
+                                onClick={() => router.visit('/events/create')}
+                            >
+                                Tambah Event
+                            </Button>
                         </div>
                     </div>
 

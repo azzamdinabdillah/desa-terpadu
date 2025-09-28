@@ -25,6 +25,14 @@ class EventController extends Controller
     }
 
     /**
+     * Show the form for creating a new event.
+     */
+    public function create()
+    {
+        return Inertia::render('event/create');
+    }
+
+    /**
      * Display the specified event.
      */
     public function show(Event $event)
