@@ -1,3 +1,4 @@
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -6,9 +7,9 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Calendar, Clock, MapPin, User, Users } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface EventDetailProps {
     event: EventType & {
@@ -20,14 +21,31 @@ interface EventDetailProps {
         }>;
         documentations: EventsDocumentationType[];
     };
+    flash?: {
+        success?: string;
+        error?: string;
+    };
 }
 
 const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
+    const { flash } = usePage().props as unknown as EventDetailProps;
+    const [alert, setAlert] = useState<AlertProps | null>(null);
+
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
+
     return (
         <BaseLayouts>
             <Head title={`Detail Event - ${event.event_name}`} />
             <div>
                 <Header title="Detail Event" icon="🎉" showBackButton={true} />
+
+                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
                     <HeaderPage title={event.event_name} description="Detail lengkap event desa" />
@@ -40,8 +58,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                 <div className="mb-4 flex items-start justify-between">
                                     <div>
                                         <div className="mb-4 flex items-center space-x-4">
-                                            <StatusBadge status={event.status} type="event-status" />
-                                            <StatusBadge status={event.type} type="event-type" />
+                                            <StatusBadge type="status" value={event.status} />
+                                            <StatusBadge type="eventType" value={event.type} />
                                         </div>
                                     </div>
                                     {event.flyer && (
@@ -181,13 +199,13 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     <div>
                                         <span className="text-sm font-medium text-green-500">Status</span>
                                         <div className="mt-1">
-                                            <StatusBadge status={event.status} type="event-status" />
+                                            <StatusBadge type="status" value={event.status} />
                                         </div>
                                     </div>
                                     <div>
                                         <span className="text-sm font-medium text-green-500">Tipe</span>
                                         <div className="mt-1">
-                                            <StatusBadge status={event.type} type="event-type" />
+                                            <StatusBadge type="eventType" value={event.type} />
                                         </div>
                                     </div>
                                     {event.type === 'restricted' && (

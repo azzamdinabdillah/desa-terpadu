@@ -9,7 +9,7 @@ import { formatDateTime } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface EventRegisterPageProps {
     event: EventType;
@@ -26,13 +26,13 @@ function EventRegisterPage() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useState(() => {
+    useEffect(() => {
         if (flash?.success) {
             setAlert({ type: 'success', message: flash.success });
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
         }
-    });
+    }, [flash]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -73,8 +73,8 @@ function EventRegisterPage() {
                         <div className="mb-4 flex items-start justify-between">
                             <div>
                                 <div className="flex items-center space-x-4">
-                                    <StatusBadge status={event.status} type="event-status" />
-                                    <StatusBadge status={event.type} type="event-type" />
+                                    <StatusBadge type="status" value={event.status} />
+                                    <StatusBadge type="eventType" value={event.type} />
                                 </div>
                             </div>
                             {event.flyer && (
@@ -141,7 +141,7 @@ function EventRegisterPage() {
                                 <InputField
                                     label="Nomor Induk Kependudukan (NIK)"
                                     id="nik"
-                                    type="text"
+                                    type="number"
                                     placeholder="Masukkan NIK Anda (16 digit)"
                                     value={nik}
                                     onChange={setNik}

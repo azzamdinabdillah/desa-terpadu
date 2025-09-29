@@ -215,6 +215,7 @@ class EventController extends Controller
             'citizen_id' => $citizen->id
         ]);
 
-        return back()->with('success', 'Pendaftaran berhasil! Anda telah terdaftar untuk event ini.');
+        return redirect()->route('events.show', $event->id)
+            ->with('success', 'Pendaftaran berhasil! Anda telah terdaftar untuk event ini.');
     }
 }

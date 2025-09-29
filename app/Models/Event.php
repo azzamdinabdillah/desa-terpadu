@@ -47,14 +47,6 @@ class Event extends Model
      */
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(Citizen::class, 'created_by');
-    }
-
-    /**
-     * Get the user who created this event (alias for createdBy).
-     */
-    public function creator(): BelongsTo
-    {
         return $this->belongsTo(User::class, 'created_by');
     }
 
