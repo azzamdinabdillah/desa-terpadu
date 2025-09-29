@@ -260,7 +260,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                             {event.type === 'restricted' && (
                                 <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                                     <h3 className="mb-4 text-lg font-semibold text-green-900">Aksi Cepat</h3>
-                                    <div className="space-y-3">
+                                    <div className="flex flex-col gap-2">
                                         <Link href={`/events/${event.id}/register`}>
                                             <Button className="w-full">Daftar Event</Button>
                                         </Link>

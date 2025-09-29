@@ -7,6 +7,7 @@ use App\Models\Citizen;
 use App\Models\EventParticipant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -60,6 +61,17 @@ class EventController extends Controller
     public function create()
     {
         return Inertia::render('event/create');
+    }
+
+    /**
+     * Show the form for editing the specified event.
+     */
+    public function edit(Event $event)
+    {
+        return Inertia::render('event/create', [
+            'event' => $event,
+            'isEdit' => true
+        ]);
     }
 
     /**
@@ -137,6 +149,96 @@ class EventController extends Controller
             Event::create($data);
 
             return redirect()->route('events.index')->with('success', 'Event berhasil dibuat!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+        }
+    }
+
+    /**
+     * Update the specified event in storage.
+     */
+    public function update(Request $request, Event $event)
+    {
+        // Define base validation rules
+        $rules = [
+            'event_name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
+            'location' => 'required|string|max:255',
+            'flyer' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+            'type' => 'required|in:public,restricted',
+        ];
+
+        // Add conditional validation for max_participants
+        if ($request->type === 'restricted') {
+            $rules['max_participants'] = 'required|integer|min:1';
+        } else {
+            $rules['max_participants'] = 'nullable|integer|min:1';
+        }
+
+        // Check if max_participants is being reduced below current participants
+        if ($request->type === 'restricted' && $request->max_participants) {
+            $currentParticipants = EventParticipant::where('event_id', $event->id)->count();
+            if ($request->max_participants < $currentParticipants) {
+                return redirect()->back()->withErrors([
+                    'max_participants' => "Jumlah peserta maksimal tidak boleh kurang dari {$currentParticipants} (jumlah peserta yang sudah terdaftar)."
+                ]);
+            }
+        }
+
+        $request->validate($rules, [
+            'event_name.required' => 'Nama event wajib diisi.',
+            'event_name.string' => 'Nama event harus berupa teks.',
+            'event_name.max' => 'Nama event maksimal 255 karakter.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'description.max' => 'Deskripsi maksimal 2000 karakter.',
+            'date_start.required' => 'Tanggal mulai wajib diisi.',
+            'date_start.date' => 'Format tanggal mulai tidak valid.',
+            'date_end.required' => 'Tanggal selesai wajib diisi.',
+            'date_end.date' => 'Format tanggal selesai tidak valid.',
+            'date_end.after' => 'Tanggal selesai harus setelah tanggal mulai.',
+            'location.required' => 'Lokasi wajib diisi.',
+            'location.string' => 'Lokasi harus berupa teks.',
+            'location.max' => 'Lokasi maksimal 255 karakter.',
+            'flyer.file' => 'Flyer harus berupa file.',
+            'flyer.mimes' => 'Flyer harus berupa file jpeg, png, jpg, atau pdf.',
+            'flyer.max' => 'Ukuran file flyer maksimal 10MB.',
+            'type.required' => 'Tipe event wajib dipilih.',
+            'type.in' => 'Tipe event tidak valid.',
+            'max_participants.required' => 'Jumlah peserta maksimal wajib diisi untuk event terbatas.',
+            'max_participants.integer' => 'Jumlah peserta maksimal harus berupa angka.',
+            'max_participants.min' => 'Jumlah peserta maksimal minimal 1.',
+        ]);
+
+        try {
+            $data = [
+                'event_name' => $request->event_name,
+                'description' => $request->description,
+                'date_start' => $request->date_start,
+                'date_end' => $request->date_end,
+                'location' => $request->location,
+                'type' => $request->type,
+                'max_participants' => $request->max_participants,
+            ];
+
+            // Handle file upload
+            if ($request->hasFile('flyer')) {
+                // Delete old flyer if exists
+                if ($event->flyer && Storage::disk('public')->exists($event->flyer)) {
+                    Storage::disk('public')->delete($event->flyer);
+                }
+                
+                $file = $request->file('flyer');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('event_flyers', $filename, 'public');
+                $data['flyer'] = $path;
+            }
+
+            $event->update($data);
+
+            return redirect()->route('events.index')->with('success', 'Event berhasil diperbarui!');
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');

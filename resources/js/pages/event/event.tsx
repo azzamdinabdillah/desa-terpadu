@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Eye, MapPin, Plus, Search, Settings, UserPlus, Users } from 'lucide-react';
+import { Calendar, Clock, Eye, MapPin, Pencil, Plus, Search, Settings, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventPageProps {
@@ -48,7 +48,7 @@ function EventPage() {
 
     useEffect(() => {
         console.log(events.data[0]);
-        
+
         if (flash?.success) {
             setAlert({ type: 'success', message: flash.success });
         } else if (flash?.error) {
@@ -218,6 +218,15 @@ function EventPage() {
                         <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}`)} title="Lihat Detail">
                             <Eye className="h-4 w-4" />
                         </Button>
+                        {isAdmin && (
+                            <Button
+                                variant="ghost"
+                                onClick={() => router.visit(`/events/${item.id}/edit`)}
+                                title="Edit Event"
+                            >
+                                <Pencil className="h-4 w-4" />
+                            </Button>
+                        )}
                         <Button
                             variant="ghost"
                             onClick={() => router.visit(`/events/${item.id}/change-status`)}

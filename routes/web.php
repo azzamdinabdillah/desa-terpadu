@@ -57,6 +57,9 @@ Route::post('/events/{event}/change-status', [EventController::class, 'updateSta
 Route::middleware('auth')->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+    Route::post('/events/{event}', [EventController::class, 'update'])->name('events.update.post');
 
     Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/families', [FamilyController::class, 'store'])->name('family.store');

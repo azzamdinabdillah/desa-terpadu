@@ -15,21 +15,34 @@ interface Props {
         success?: string;
         error?: string;
     };
+    event?: {
+        id: number;
+        event_name: string;
+        description: string;
+        date_start: string;
+        date_end: string;
+        location: string;
+        flyer: string | null;
+        status: 'pending' | 'ongoing' | 'finished';
+        type: 'public' | 'restricted';
+        max_participants: number | null;
+    };
+    isEdit?: boolean;
     [key: string]: any;
 }
 
 export default function CreateEvent() {
-    const { flash } = usePage<Props>().props;
-    const { data, setData, post, reset, processing, errors } = useForm({
-        event_name: '',
-        description: '',
-        date_start: '',
-        date_end: '',
-        location: '',
+    const { flash, event, isEdit } = usePage<Props>().props;
+    const { data, setData, post, put, reset, processing, errors } = useForm({
+        event_name: event?.event_name || '',
+        description: event?.description || '',
+        date_start: event?.date_start ? new Date(event.date_start).toISOString().slice(0, 16) : '',
+        date_end: event?.date_end ? new Date(event.date_end).toISOString().slice(0, 16) : '',
+        location: event?.location || '',
         flyer: null as File | null,
-        status: 'pending' as 'pending' | 'ongoing' | 'finished',
-        type: 'public' as 'public' | 'restricted',
-        max_participants: '',
+        status: event?.status || ('pending' as 'pending' | 'ongoing' | 'finished'),
+        type: event?.type || ('public' as 'public' | 'restricted'),
+        max_participants: event?.max_participants?.toString() || '',
     });
 
     const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
@@ -48,6 +61,13 @@ export default function CreateEvent() {
         }
     }, [flash]);
 
+    // Set flyer preview for edit mode
+    useEffect(() => {
+        if (isEdit && event?.flyer) {
+            setFlyerPreview(`/storage/${event.flyer}`);
+        }
+    }, [isEdit, event?.flyer]);
+
     const handleFileChange = (file: File | null) => {
         setData('flyer', file);
     };
@@ -61,34 +81,63 @@ export default function CreateEvent() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/events', {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                handleCancel();
-            },
-            onError: (errors) => {
-                console.error('Validation errors:', errors);
-                setAlert({
-                    type: 'error',
-                    message: '',
-                    errors: errors,
-                });
-            },
-        });
+        const submitData = {
+            ...data,
+            _method: isEdit ? 'PUT' : 'POST',
+        };
+
+        if (isEdit) {
+            post(`/events/${event?.id}`, {
+                preserveState: true,
+                preserveScroll: true,
+                ...submitData,
+                method: 'put',
+                onSuccess: () => {
+                    handleCancel();
+                },
+                onError: (errors) => {
+                    console.error('Validation errors:', errors);
+                    setAlert({
+                        type: 'error',
+                        message: '',
+                        errors: errors,
+                    });
+                },
+            });
+        } else {
+            post('/events', {
+                preserveState: true,
+                preserveScroll: true,
+                ...submitData,
+                onSuccess: () => {
+                    handleCancel();
+                },
+                onError: (errors) => {
+                    console.error('Validation errors:', errors);
+                    setAlert({
+                        type: 'error',
+                        message: '',
+                        errors: errors,
+                    });
+                },
+            });
+        }
     };
 
     return (
         <BaseLayouts>
-            <Head title="Tambah Event" />
+            <Head title={isEdit ? 'Edit Event' : 'Tambah Event'} />
             <div className="min-h-screen bg-green-50">
-                <Header title="Tambah Event" icon="🎉" showBackButton={true} />
+                <Header title={isEdit ? 'Edit Event' : 'Tambah Event'} icon="🎉" showBackButton={true} />
 
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
-                    <HeaderPage title="Tambah Event Baru" description="Buat event baru untuk warga desa" />
+                    <HeaderPage
+                        title={isEdit ? 'Edit Event' : 'Tambah Event Baru'}
+                        description={isEdit ? 'Ubah informasi event yang sudah ada' : 'Buat event baru untuk warga desa'}
+                    />
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -213,19 +262,21 @@ export default function CreateEvent() {
                                         </div>
                                     )}
 
-                                    {/* Status */}
-                                    <div>
-                                        <Select
-                                            label="Status Event"
-                                            value={data.status}
-                                            onChange={(value) => setData('status', value as 'pending' | 'ongoing' | 'finished')}
-                                            options={[
-                                                { value: 'pending', label: 'Menunggu (Belum dimulai)' },
-                                                { value: 'ongoing', label: 'Berlangsung' },
-                                                { value: 'finished', label: 'Selesai' },
-                                            ]}
-                                        />
-                                    </div>
+                                    {/* Status - Only show in create mode */}
+                                    {!isEdit && (
+                                        <div>
+                                            <Select
+                                                label="Status Event"
+                                                value={data.status}
+                                                onChange={(value) => setData('status', value as 'pending' | 'ongoing' | 'finished')}
+                                                options={[
+                                                    { value: 'pending', label: 'Menunggu (Belum dimulai)' },
+                                                    { value: 'ongoing', label: 'Berlangsung' },
+                                                    { value: 'finished', label: 'Selesai' },
+                                                ]}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -259,7 +310,7 @@ export default function CreateEvent() {
                                 Batal
                             </Button>
                             <Button icon={<Save className="h-4 w-4" />} iconPosition="left" type="submit" variant="primary" disabled={processing}>
-                                {processing ? 'Menyimpan...' : 'Simpan Event'}
+                                {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Event' : 'Simpan Event'}
                             </Button>
                         </div>
                     </form>
