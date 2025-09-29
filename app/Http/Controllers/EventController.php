@@ -38,7 +38,7 @@ class EventController extends Controller
             $query->where('type', $type);
         }
 
-        $events = $query->with(['createdBy', 'participants', 'documentations'])
+        $events = $query->with(['createdBy.citizen', 'participants', 'documentations'])
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->onEachSide(0)

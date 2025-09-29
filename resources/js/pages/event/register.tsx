@@ -144,7 +144,7 @@ function EventRegisterPage() {
                                 </div>
                                 <div>
                                     <h4 className="font-semibold text-green-900">Dibuat Oleh</h4>
-                                    <p className="text-green-700">{event.createdBy?.full_name || 'Tidak diketahui'}</p>
+                                    <p className="text-green-700">{event.created_by?.citizen.full_name || 'Tidak diketahui'}</p>
                                 </div>
                             </div>
                         </div>

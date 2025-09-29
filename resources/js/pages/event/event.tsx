@@ -47,6 +47,8 @@ function EventPage() {
     const { isAdmin } = useAuth();
 
     useEffect(() => {
+        console.log(events.data[0]);
+        
         if (flash?.success) {
             setAlert({ type: 'success', message: flash.success });
         } else if (flash?.error) {
@@ -205,7 +207,7 @@ function EventPage() {
                 key: 'createdBy',
                 header: 'Dibuat Oleh',
                 className: 'whitespace-nowrap',
-                cell: (item: EventType) => <span className="text-sm text-green-900">{item.createdBy?.full_name}</span>,
+                cell: (item: EventType) => <span className="text-sm text-green-900">{item.created_by?.citizen.full_name}</span>,
             },
             {
                 key: 'action',
