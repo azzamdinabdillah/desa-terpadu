@@ -6,7 +6,9 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
+import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
@@ -42,6 +44,7 @@ function EventPage() {
     const [status, setStatus] = useState(filters.status || 'all');
     const [type, setType] = useState(filters.type || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const { isAdmin } = useAuth();
 
     useEffect(() => {
         if (flash?.success) {
@@ -87,29 +90,6 @@ function EventPage() {
         if (url) {
             router.visit(url, { preserveState: true, replace: true });
         }
-    };
-
-    const getStatusBadge = (status: string) => {
-        const statusConfig = {
-            pending: { label: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
-            ongoing: { label: 'Berlangsung', className: 'bg-green-100 text-green-800' },
-            finished: { label: 'Selesai', className: 'bg-gray-100 text-gray-800' },
-        };
-
-        const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
-
-        return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className}`}>{config.label}</span>;
-    };
-
-    const getTypeBadge = (type: string) => {
-        const typeConfig = {
-            public: { label: 'Umum', className: 'bg-blue-100 text-blue-800' },
-            restricted: { label: 'Terbatas', className: 'bg-red-100 text-red-800' },
-        };
-
-        const config = typeConfig[type as keyof typeof typeConfig] || typeConfig.public;
-
-        return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className}`}>{config.label}</span>;
     };
 
     const columns = useMemo(
@@ -188,13 +168,13 @@ function EventPage() {
                 key: 'status',
                 header: 'Status',
                 className: 'whitespace-nowrap',
-                cell: (item: EventType) => getStatusBadge(item.status),
+                cell: (item: EventType) => <StatusBadge type="status" value={item.status} />,
             },
             {
                 key: 'type',
                 header: 'Tipe',
                 className: 'whitespace-nowrap',
-                cell: (item: EventType) => getTypeBadge(item.type),
+                cell: (item: EventType) => <StatusBadge type="eventType" value={item.type} />,
             },
             // Hanya tampilkan kolom peserta jika tipe event bukan 'public' (umum)
             {
@@ -300,14 +280,16 @@ function EventPage() {
                                 placeholder="Pilih tipe"
                             />
 
-                            <Button
-                                icon={<Plus className="h-4 w-4" />}
-                                iconPosition="left"
-                                variant="primary"
-                                onClick={() => router.visit('/events/create')}
-                            >
-                                Tambah Event
-                            </Button>
+                            {isAdmin && (
+                                <Button
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                    variant="primary"
+                                    onClick={() => router.visit('/events/create')}
+                                >
+                                    Tambah Event
+                                </Button>
+                            )}
                         </div>
                     </div>
 

@@ -46,13 +46,16 @@ Route::get('/families', [FamilyController::class, 'index'])->name('family.index'
 Route::get('/families/{family}', [FamilyController::class, 'show'])
     ->where('family', '[0-9]+')
     ->name('family.show');
+
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
-Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
-Route::get('/events/{event}/register', [EventController::class, 'register'])->name('events.register');
+Route::get('/events/{event}', [EventController::class, 'show'])->where('event', '[0-9]+')->name('events.show');
+Route::get('/events/{event}/register', [EventController::class, 'register'])->where('event', '[0-9]+')->name('events.register');
 Route::post('/events/{event}/register', [EventController::class, 'storeRegistration'])->name('events.register.store');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+
     Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/families', [FamilyController::class, 'store'])->name('family.store');
     Route::get('/families/{family}/edit', [FamilyController::class, 'edit'])->name('family.edit');

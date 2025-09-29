@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Citizen;
 use App\Models\EventParticipant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -38,7 +39,7 @@ class EventController extends Controller
         }
 
         $events = $query->with(['createdBy', 'participants', 'documentations'])
-            ->orderBy('date_start', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->onEachSide(0)
             ->withQueryString();
@@ -59,6 +60,87 @@ class EventController extends Controller
     public function create()
     {
         return Inertia::render('event/create');
+    }
+
+    /**
+     * Store a newly created event in storage.
+     */
+    public function store(Request $request)
+    {
+        // Define base validation rules
+        $rules = [
+            'event_name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'date_start' => 'required|date|after:now',
+            'date_end' => 'required|date|after:date_start',
+            'location' => 'required|string|max:255',
+            'flyer' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+            'status' => 'required|in:pending,ongoing,finished',
+            'type' => 'required|in:public,restricted',
+        ];
+
+        // Add conditional validation for max_participants
+        if ($request->type === 'restricted') {
+            $rules['max_participants'] = 'required|integer|min:1';
+        } else {
+            $rules['max_participants'] = 'nullable|integer|min:1';
+        }
+
+        $request->validate($rules, [
+            'event_name.required' => 'Nama event wajib diisi.',
+            'event_name.string' => 'Nama event harus berupa teks.',
+            'event_name.max' => 'Nama event maksimal 255 karakter.',
+            'description.string' => 'Deskripsi harus berupa teks.',
+            'description.max' => 'Deskripsi maksimal 2000 karakter.',
+            'date_start.required' => 'Tanggal mulai wajib diisi.',
+            'date_start.date' => 'Format tanggal mulai tidak valid.',
+            'date_start.after' => 'Tanggal mulai harus setelah waktu sekarang.',
+            'date_end.required' => 'Tanggal selesai wajib diisi.',
+            'date_end.date' => 'Format tanggal selesai tidak valid.',
+            'date_end.after' => 'Tanggal selesai harus setelah tanggal mulai.',
+            'location.required' => 'Lokasi wajib diisi.',
+            'location.string' => 'Lokasi harus berupa teks.',
+            'location.max' => 'Lokasi maksimal 255 karakter.',
+            'flyer.file' => 'Flyer harus berupa file.',
+            'flyer.mimes' => 'Flyer harus berupa file jpeg, png, jpg, atau pdf.',
+            'flyer.max' => 'Ukuran file flyer maksimal 10MB.',
+            'status.required' => 'Status event wajib dipilih.',
+            'status.in' => 'Status event tidak valid.',
+            'type.required' => 'Tipe event wajib dipilih.',
+            'type.in' => 'Tipe event tidak valid.',
+            'max_participants.required' => 'Jumlah peserta maksimal wajib diisi untuk event terbatas.',
+            'max_participants.integer' => 'Jumlah peserta maksimal harus berupa angka.',
+            'max_participants.min' => 'Jumlah peserta maksimal minimal 1.',
+        ]);
+
+        try {
+            $data = [
+                'event_name' => $request->event_name,
+                'description' => $request->description,
+                'date_start' => $request->date_start,
+                'date_end' => $request->date_end,
+                'location' => $request->location,
+                'status' => $request->status,
+                'type' => $request->type,
+                'max_participants' => $request->max_participants,
+                'created_by' => Auth::id(), // Set the current user as creator
+            ];
+
+            // Handle file upload
+            if ($request->hasFile('flyer')) {
+                $file = $request->file('flyer');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('event_flyers', $filename, 'public');
+                $data['flyer'] = $path;
+            }
+
+            Event::create($data);
+
+            return redirect()->route('events.index')->with('success', 'Event berhasil dibuat!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+        }
     }
 
     /**
