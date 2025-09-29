@@ -226,7 +226,7 @@ function EventPage() {
                         >
                             <Settings className="h-4 w-4" />
                         </Button>
-                        {item.type !== 'public' && item.status === 'pending' && (
+                        {item.type !== 'public' && item.status === 'pending' && !isAdmin && (
                             <Button
                                 variant="ghost"
                                 onClick={() => router.visit(`/events/${item.id}/register`)}

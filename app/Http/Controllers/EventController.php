@@ -164,7 +164,7 @@ class EventController extends Controller
      */
     public function register(Event $event)
     {
-        $event->load(['createdBy', 'participants.citizen', 'documentations']);
+        $event->load(['createdBy.citizen', 'participants.citizen', 'documentations']);
 
         return Inertia::render('event/register', [
             'event' => $event

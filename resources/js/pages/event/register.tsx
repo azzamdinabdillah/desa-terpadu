@@ -61,7 +61,7 @@ function EventRegisterPage() {
     return (
         <BaseLayouts>
             <div className="min-h-screen bg-gray-50">
-                <Header title="Pendaftaran Event" icon="📝" />
+                <Header showBackButton title="Pendaftaran Event" icon="📝" />
 
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
 
