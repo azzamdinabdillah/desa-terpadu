@@ -88,6 +88,12 @@ export default function InputField({
                         onKeyDown={onKeyDown}
                         placeholder={placeholder}
                         readOnly={readOnly}
+                        onWheel={(e) => {
+                            // Prevent number input from changing value on scroll
+                            if (type === 'number') {
+                                e.currentTarget.blur();
+                            }
+                        }}
                         className={`w-full bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
                     />
                 )}

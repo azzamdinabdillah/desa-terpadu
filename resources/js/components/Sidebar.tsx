@@ -19,7 +19,7 @@ interface MenuItem {
     }[];
 }
 
-const menuItems: MenuItem[] = [
+export const menuItems: MenuItem[] = [
     {
         id: 'dashboard',
         label: 'Dashboard',
