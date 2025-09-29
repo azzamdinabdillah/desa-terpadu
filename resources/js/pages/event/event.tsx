@@ -117,6 +117,12 @@ function EventPage() {
                             src={`/storage/${item.flyer}`}
                             alt={item.event_name}
                             className="h-12 w-12 rounded border border-green-200 object-cover"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = 'https://placehold.co/48x48?text=No+Image';
+                                target.alt = 'Flyer tidak tersedia';
+                                target.className = 'h-12 w-12 rounded border border-green-100 object-cover opacity-60';
+                            }}
                         />
                     ) : (
                         <img

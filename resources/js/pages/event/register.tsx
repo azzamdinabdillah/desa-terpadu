@@ -77,9 +77,27 @@ function EventRegisterPage() {
                                     <StatusBadge type="eventType" value={event.type} />
                                 </div>
                             </div>
-                            {event.flyer && (
+                            {event.flyer ? (
                                 <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
-                                    <img src={`/storage/${event.flyer}`} alt={event.event_name} className="h-full w-full object-cover" />
+                                    <img
+                                        src={`/storage/${event.flyer}`}
+                                        alt={event.event_name}
+                                        className="h-full w-full object-cover"
+                                        onError={(e) => {
+                                            const target = e.target as HTMLImageElement;
+                                            target.src = 'https://placehold.co/48x48?text=No+Image';
+                                            target.alt = 'Flyer tidak tersedia';
+                                            target.className = 'h-full w-full object-cover opacity-60';
+                                        }}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
+                                    <img
+                                        src="https://placehold.co/48x48?text=No+Image"
+                                        alt="Flyer tidak tersedia"
+                                        className="h-full w-full object-cover opacity-60"
+                                    />
                                 </div>
                             )}
                         </div>

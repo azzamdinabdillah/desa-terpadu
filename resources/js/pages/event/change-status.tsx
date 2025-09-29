@@ -157,10 +157,33 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                         <div className="space-y-6 lg:col-span-1">
                             <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                                 <h3 className="mb-4 text-lg font-semibold text-green-900">Informasi Event</h3>
+                                {event.flyer ? (
+                                    <div className="mb-4 flex justify-center">
+                                        <img
+                                            src={`/storage/${event.flyer}`}
+                                            alt={event.event_name}
+                                            className="h-40 w-full rounded-lg border border-green-200 object-cover"
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = 'https://placehold.co/48x48?text=No+Image';
+                                                target.alt = 'Flyer tidak tersedia';
+                                                target.className = 'h-40 w-full object-cover rounded-lg border border-green-200 opacity-60';
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="mb-4 flex justify-center">
+                                        <img
+                                            src="https://placehold.co/48x48?text=No+Image"
+                                            alt="Flyer tidak tersedia"
+                                            className="h-40 w-full rounded-lg border border-green-200 object-cover opacity-60"
+                                        />
+                                    </div>
+                                )}
                                 <div className="space-y-4">
                                     <div>
                                         <h4 className="font-semibold text-green-900">{event.event_name}</h4>
-                                        <p className="mt-1 text-sm text-green-700">{event.description}</p>
+                                        <p className="mt-1 text-sm leading-relaxed text-green-700">{event.description}</p>
                                     </div>
 
                                     <div className="space-y-3">

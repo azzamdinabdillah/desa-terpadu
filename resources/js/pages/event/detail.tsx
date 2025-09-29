@@ -64,9 +64,27 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                             <StatusBadge type="eventType" value={event.type} />
                                         </div>
                                     </div>
-                                    {event.flyer && (
+                                    {event.flyer ? (
                                         <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
-                                            <img src={`/storage/${event.flyer}`} alt={event.event_name} className="h-full w-full object-cover" />
+                                            <img
+                                                src={`/storage/${event.flyer}`}
+                                                alt={event.event_name}
+                                                className="h-full w-full object-cover"
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.src = 'https://placehold.co/48x48?text=No+Image';
+                                                    target.alt = 'Flyer tidak tersedia';
+                                                    target.className = 'h-full w-full object-cover opacity-60';
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
+                                            <img
+                                                src="https://placehold.co/48x48?text=No+Image"
+                                                alt="Flyer tidak tersedia"
+                                                className="h-full w-full object-cover opacity-60"
+                                            />
                                         </div>
                                     )}
                                 </div>
@@ -180,6 +198,13 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                                             alt={doc.caption || 'Dokumentasi'}
                                                             className="h-32 w-full cursor-pointer rounded object-cover transition-transform hover:scale-105"
                                                             onClick={() => setSelectedDocumentation(doc)}
+                                                            onError={(e) => {
+                                                                const target = e.target as HTMLImageElement;
+                                                                target.src = 'https://placehold.co/48x48?text=No+Image';
+                                                                target.alt = 'Dokumentasi tidak tersedia';
+                                                                target.className =
+                                                                    'h-32 w-full cursor-pointer rounded object-cover transition-transform hover:scale-105 opacity-60';
+                                                            }}
                                                         />
                                                     </div>
                                                 )}
@@ -290,6 +315,12 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                                 src={`/storage/${selectedDocumentation.path}`}
                                                 alt={selectedDocumentation.caption || 'Dokumentasi'}
                                                 className="h-full w-full rounded-lg border border-green-200 object-contain"
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.src = 'https://placehold.co/48x48?text=No+Image';
+                                                    target.alt = 'Dokumentasi tidak tersedia';
+                                                    target.className = 'h-full w-full rounded-lg border border-green-200 object-contain opacity-60';
+                                                }}
                                             />
                                         </div>
 
