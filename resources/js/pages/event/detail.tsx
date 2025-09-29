@@ -8,7 +8,8 @@ import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Settings, User, Users } from 'lucide-react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { Calendar, Clock, MapPin, Settings, User, Users, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface EventDetailProps {
@@ -30,6 +31,7 @@ interface EventDetailProps {
 const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
     const { flash } = usePage().props as unknown as EventDetailProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [selectedDocumentation, setSelectedDocumentation] = useState<EventsDocumentationType | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -176,7 +178,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                                         <img
                                                             src={`/storage/${doc.path}`}
                                                             alt={doc.caption || 'Dokumentasi'}
-                                                            className="h-32 w-full rounded object-cover"
+                                                            className="h-32 w-full cursor-pointer rounded object-cover transition-transform hover:scale-105"
+                                                            onClick={() => setSelectedDocumentation(doc)}
                                                         />
                                                     </div>
                                                 )}
@@ -248,10 +251,9 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                             {/* Back to Events - Always show */}
                             <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                                 <h3 className="mb-4 text-lg font-semibold text-green-900">Navigasi</h3>
-                                <div className="space-y-3">
+                                <div className="flex flex-col gap-2">
                                     <Link href={`/events/${event.id}/change-status`}>
-                                        <Button className="w-full">
-                                            <Settings className="mr-2 h-4 w-4" />
+                                        <Button className="w-full" icon={<Settings className="mr-2 h-4 w-4" />} iconPosition="left">
                                             Ubah Status Event
                                         </Button>
                                     </Link>
@@ -265,6 +267,54 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                         </div>
                     </div>
                 </div>
+
+                {/* Image Modal */}
+                <Dialog.Root open={!!selectedDocumentation} onOpenChange={() => setSelectedDocumentation(null)}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-4xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                            <div className="flex items-center justify-between border-b border-green-200 p-4">
+                                <Dialog.Title className="text-lg font-semibold text-green-900">Detail Dokumentasi</Dialog.Title>
+                                <Dialog.Close asChild>
+                                    <button className="rounded-lg p-2 text-green-700 hover:bg-green-50">
+                                        <X className="h-5 w-5" />
+                                    </button>
+                                </Dialog.Close>
+                            </div>
+
+                            <div className="p-4">
+                                {selectedDocumentation && (
+                                    <div className="space-y-4">
+                                        <div className="max-h-[60vh] overflow-hidden">
+                                            <img
+                                                src={`/storage/${selectedDocumentation.path}`}
+                                                alt={selectedDocumentation.caption || 'Dokumentasi'}
+                                                className="h-full w-full rounded-lg border border-green-200 object-contain"
+                                            />
+                                        </div>
+
+                                        <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                                            <h4 className="mb-2 text-lg font-semibold text-green-900">
+                                                {selectedDocumentation.caption || 'Dokumentasi Event'}
+                                            </h4>
+                                            <p className="text-sm text-green-700">
+                                                <span className="font-medium">Ditambahkan pada:</span>{' '}
+                                                {new Date(selectedDocumentation.created_at).toLocaleDateString('id-ID', {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
             </div>
         </BaseLayouts>
     );

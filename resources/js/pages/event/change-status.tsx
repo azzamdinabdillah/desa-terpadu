@@ -17,6 +17,7 @@ interface ChangeStatusProps {
         success?: string;
         error?: string;
     };
+    [key: string]: any;
 }
 
 export default function ChangeStatus({ event }: ChangeStatusProps) {
