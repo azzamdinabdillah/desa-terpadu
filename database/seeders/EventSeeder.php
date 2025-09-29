@@ -36,7 +36,7 @@ class EventSeeder extends Seeder
                 'date_end' => Carbon::now()->addDays(14)->setTime(16, 0),
                 'location' => 'Balai Desa',
                 'flyer' => 'pelatihan-menjahit-flyer.jpg',
-                'status' => 'pending',
+                'status' => 'finished',
                 'type' => 'restricted',
                 'max_participants' => 20,
                 'created_by' => rand(1, 4),

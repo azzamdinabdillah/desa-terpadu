@@ -8,7 +8,7 @@ import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, User, Users } from 'lucide-react';
+import { Calendar, Clock, MapPin, Settings, User, Users } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface EventDetailProps {
@@ -171,17 +171,16 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                                         {event.documentations.map((doc) => (
                                             <div key={doc.id} className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                                {doc.file_path && (
+                                                {doc.path && (
                                                     <div className="mb-3">
                                                         <img
-                                                            src={`/storage/${doc.file_path}`}
-                                                            alt={doc.description || 'Dokumentasi'}
+                                                            src={`/storage/${doc.path}`}
+                                                            alt={doc.caption || 'Dokumentasi'}
                                                             className="h-32 w-full rounded object-cover"
                                                         />
                                                     </div>
                                                 )}
-                                                <h4 className="mb-1 font-medium text-green-900">{doc.title}</h4>
-                                                {doc.description && <p className="mb-2 text-sm text-green-600">{doc.description}</p>}
+                                                <h4 className="mb-1 font-medium text-green-900">{doc.caption}</h4>
                                                 <p className="text-xs text-green-500">{new Date(doc.created_at).toLocaleDateString('id-ID')}</p>
                                             </div>
                                         ))}
@@ -250,6 +249,12 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                             <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                                 <h3 className="mb-4 text-lg font-semibold text-green-900">Navigasi</h3>
                                 <div className="space-y-3">
+                                    <Link href={`/events/${event.id}/change-status`}>
+                                        <Button className="w-full">
+                                            <Settings className="mr-2 h-4 w-4" />
+                                            Ubah Status Event
+                                        </Button>
+                                    </Link>
                                     <Link href="/events">
                                         <Button variant="outline" className="w-full">
                                             Kembali ke Daftar Event

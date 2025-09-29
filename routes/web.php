@@ -51,6 +51,8 @@ Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/{event}', [EventController::class, 'show'])->where('event', '[0-9]+')->name('events.show');
 Route::get('/events/{event}/register', [EventController::class, 'register'])->where('event', '[0-9]+')->name('events.register');
 Route::post('/events/{event}/register', [EventController::class, 'storeRegistration'])->name('events.register.store');
+Route::get('/events/{event}/change-status', [EventController::class, 'changeStatus'])->where('event', '[0-9]+')->name('events.change-status');
+Route::post('/events/{event}/change-status', [EventController::class, 'updateStatus'])->where('event', '[0-9]+')->name('events.change-status.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');

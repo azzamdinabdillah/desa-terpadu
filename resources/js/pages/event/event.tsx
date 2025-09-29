@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Eye, MapPin, Plus, Search, UserPlus, Users } from 'lucide-react';
+import { Calendar, Clock, Eye, MapPin, Plus, Search, Settings, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventPageProps {
@@ -210,7 +210,15 @@ function EventPage() {
                         <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}`)} title="Lihat Detail">
                             <Eye className="h-4 w-4" />
                         </Button>
-                        {item.type !== 'public' && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => router.visit(`/events/${item.id}/change-status`)}
+                            title="Ubah Status"
+                            className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                        >
+                            <Settings className="h-4 w-4" />
+                        </Button>
+                        {item.type !== 'public' && item.status === 'pending' && (
                             <Button
                                 variant="ghost"
                                 onClick={() => router.visit(`/events/${item.id}/register`)}

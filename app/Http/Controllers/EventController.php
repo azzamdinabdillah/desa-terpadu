@@ -218,4 +218,72 @@ class EventController extends Controller
         return redirect()->route('events.show', $event->id)
             ->with('success', 'Pendaftaran berhasil! Anda telah terdaftar untuk event ini.');
     }
+
+    /**
+     * Show the form for changing event status.
+     */
+    public function changeStatus(Event $event)
+    {
+        $event->load(['createdBy', 'participants.citizen', 'documentations']);
+
+        return Inertia::render('event/change-status', [
+            'event' => $event
+        ]);
+    }
+
+    /**
+     * Update the event status and handle documentation upload.
+     */
+    public function updateStatus(Request $request, Event $event)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,ongoing,finished',
+            'documentation_files.*' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
+            'documentation_captions.*' => 'nullable|string|max:1000',
+        ], [
+            'status.required' => 'Status event wajib dipilih.',
+            'status.in' => 'Status event tidak valid.',
+            'documentation_files.*.file' => 'File dokumentasi harus berupa file.',
+            'documentation_files.*.mimes' => 'File dokumentasi harus berupa jpeg, png, jpg, atau pdf.',
+            'documentation_files.*.max' => 'Ukuran file dokumentasi maksimal 10MB.',
+            'documentation_captions.*.string' => 'Caption dokumentasi harus berupa teks.',
+            'documentation_captions.*.max' => 'Caption dokumentasi maksimal 1000 karakter.',
+        ]);
+
+        try {
+            // Update event status
+            $event->update([
+                'status' => $request->status
+            ]);
+
+            // Handle documentation upload if provided
+            if ($request->hasFile('documentation_files')) {
+                $files = $request->file('documentation_files');
+                $captions = $request->input('documentation_captions', []);
+                
+                foreach ($files as $index => $file) {
+                    $filename = time() . '_' . $index . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('event_documentations', $filename, 'public');
+                    
+                    // Get caption for this file (if exists)
+                    $caption = isset($captions[$index]) ? $captions[$index] : '';
+                    
+                    // Create documentation record for each file
+                    \App\Models\EventsDocumentation::create([
+                        'event_id' => $event->id,
+                        'caption' => $caption,
+                        'path' => $path,
+                        'uploaded_by' => Auth::id(),
+                    ]);
+                }
+            }
+
+            return redirect()->route('events.show', $event->id)
+                ->with('success', 'Status event berhasil diubah dan dokumentasi berhasil diupload!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+        }
+    }
 }

@@ -26,9 +26,9 @@ export interface EventType {
 export interface EventsDocumentationType {
     id: number;
     event_id: number;
-    title: string;
-    description?: string;
-    file_path?: string | null;
+    caption: string;
+    path: string;
+    uploaded_by: number;
     created_at: string;
     updated_at: string;
 }
