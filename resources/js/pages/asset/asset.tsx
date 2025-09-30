@@ -1,3 +1,5 @@
+import Alert, { AlertProps } from '@/components/Alert';
+import Button from '@/components/Button';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -6,10 +8,11 @@ import Pagination, { Paginated } from '@/components/Pagination';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { isAdmin } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { Asset } from '@/types/assetType';
 import { router, usePage } from '@inertiajs/react';
-import { Package, Search } from 'lucide-react';
+import { Package, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type PaginationData = Paginated<Asset>;
@@ -21,14 +24,28 @@ interface AssetPageProps {
         condition?: string;
         status?: string;
     };
+    flash?: {
+        success?: string;
+        error?: string;
+    };
     [key: string]: any;
 }
 
 export default function AssetPage() {
-    const { assets, filters } = usePage<AssetPageProps>().props;
+    const { assets, filters, flash } = usePage<AssetPageProps>().props;
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [conditionFilter, setConditionFilter] = useState(filters.condition || 'all');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
+    const [alert, setAlert] = useState<AlertProps | null>(null);
+
+    // Handle flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
 
     // Handle search with debounce
     useEffect(() => {
@@ -114,6 +131,9 @@ export default function AssetPage() {
             <div>
                 <Header title="Manajemen Asset Desa" icon="📦" />
 
+                {/* Alert */}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
+
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
                     <HeaderPage title="Data Asset" description="Kelola data asset desa" search={filters?.search ?? ''} total={assets.total} />
 
@@ -160,6 +180,12 @@ export default function AssetPage() {
                                 className="min-w-[180px]"
                                 placeholder="Pilih status"
                             />
+
+                            {isAdmin && (
+                                <Button onClick={() => router.visit('/assets/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                    Tambah Asset
+                                </Button>
+                            )}
                         </div>
                     </div>
 

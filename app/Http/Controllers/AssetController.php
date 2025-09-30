@@ -11,6 +11,9 @@ class AssetController extends Controller
     /**
      * Display a listing of the resource.
      */
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         $search = $request->string('search')->toString();
@@ -44,14 +47,88 @@ class AssetController extends Controller
         // Pagination
         $assets = $query->paginate(10)->onEachSide(0)->withQueryString();
 
-        return Inertia::render('asset/asset', [
+        return inertia('asset/asset', [
             'assets' => $assets,
             'filters' => [
                 'search' => $search,
                 'condition' => $condition,
                 'status' => $status,
             ],
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
         ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $nextCode = $this->generateAssetCode();
+        
+        return inertia('asset/create', [
+            'nextCode' => $nextCode,
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
+        ]);
+    }
+
+    /**
+     * Generate unique asset code
+     */
+    private function generateAssetCode()
+    {
+        // Get the latest asset code
+        $latestAsset = Asset::orderBy('code', 'desc')->first();
+        
+        if (!$latestAsset) {
+            // If no assets exist, start with AST-001
+            return 'AST-001';
+        }
+        
+        // Extract the number from the latest code
+        $latestCode = $latestAsset->code;
+        if (preg_match('/AST-(\d+)/', $latestCode, $matches)) {
+            $nextNumber = intval($matches[1]) + 1;
+            return 'AST-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        }
+        
+        // Fallback if format doesn't match
+        return 'AST-001';
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'asset_name' => 'required|string|max:255',
+            'condition' => 'required|in:good,fair,bad',
+            'status' => 'required|in:idle,onloan',
+            'notes' => 'nullable|string',
+        ], [
+            'asset_name.required' => 'Nama asset wajib diisi.',
+            'asset_name.string' => 'Nama asset harus berupa teks.',
+            'asset_name.max' => 'Nama asset maksimal 255 karakter.',
+            'condition.required' => 'Kondisi asset wajib dipilih.',
+            'condition.in' => 'Kondisi asset harus berupa: baik, cukup, atau buruk.',
+            'status.required' => 'Status asset wajib dipilih.',
+            'status.in' => 'Status asset harus berupa: tersedia atau dipinjam.',
+            'notes.string' => 'Catatan harus berupa teks.',
+        ]);
+
+        // Generate unique asset code
+        $validated['code'] = $this->generateAssetCode();
+
+        Asset::create($validated);
+
+        return redirect()->route('assets.index')
+            ->with('success', 'Asset berhasil ditambahkan dengan kode: ' . $validated['code']);
     }
 }
 

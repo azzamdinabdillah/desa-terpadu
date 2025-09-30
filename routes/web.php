@@ -91,6 +91,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/citizens/{citizen}', [CitizenController::class, 'update'])->name('citizens.update');
     Route::post('/citizens/{citizen}', [CitizenController::class, 'update'])->name('citizens.update.post');
     Route::delete('/citizens/{citizen}', [CitizenController::class, 'destroy'])->name('citizens.destroy');
+
+    Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
+    Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
 });
 
 
