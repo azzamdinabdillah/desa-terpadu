@@ -1,5 +1,5 @@
 interface StatusBadgeProps {
-    type: 'status' | 'eventType';
+    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus';
     value: string;
     className?: string;
 }
@@ -16,10 +16,45 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         restricted: { label: 'Terbatas', className: 'bg-red-100 text-red-800' },
     };
 
-    const config =
-        type === 'status'
-            ? statusConfig[value as keyof typeof statusConfig] || statusConfig.pending
-            : typeConfig[value as keyof typeof typeConfig] || typeConfig.public;
+    const assetConditionConfig = {
+        good: { label: 'Baik', className: 'bg-green-100 text-green-800' },
+        fair: { label: 'Cukup', className: 'bg-yellow-100 text-yellow-800' },
+        bad: { label: 'Buruk', className: 'bg-red-100 text-red-800' },
+    };
+
+    const assetStatusConfig = {
+        idle: { label: 'Tersedia', className: 'bg-green-100 text-green-800' },
+        onloan: { label: 'Dipinjam', className: 'bg-orange-100 text-orange-800' },
+    };
+
+    const loanStatusConfig = {
+        pending: { label: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
+        approved: { label: 'Disetujui', className: 'bg-blue-100 text-blue-800' },
+        active: { label: 'Aktif', className: 'bg-green-100 text-green-800' },
+        returned: { label: 'Dikembalikan', className: 'bg-gray-100 text-gray-800' },
+        rejected: { label: 'Ditolak', className: 'bg-red-100 text-red-800' },
+    };
+
+    let config;
+    switch (type) {
+        case 'status':
+            config = statusConfig[value as keyof typeof statusConfig] || statusConfig.pending;
+            break;
+        case 'eventType':
+            config = typeConfig[value as keyof typeof typeConfig] || typeConfig.public;
+            break;
+        case 'assetCondition':
+            config = assetConditionConfig[value as keyof typeof assetConditionConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'assetStatus':
+            config = assetStatusConfig[value as keyof typeof assetStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'loanStatus':
+            config = loanStatusConfig[value as keyof typeof loanStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        default:
+            config = { label: value, className: 'bg-gray-100 text-gray-800' };
+    }
 
     return (
         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className} ${className}`}>

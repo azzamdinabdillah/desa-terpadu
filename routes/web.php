@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetLoanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\CitizenController;
@@ -40,6 +42,8 @@ Route::get('/', function () {
 
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
+Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 Route::get('/citizens/{citizen}', [CitizenController::class, 'show'])->where('citizen', '[0-9]+')->name('citizens.show');
 Route::get('/families', [FamilyController::class, 'index'])->name('family.index');
