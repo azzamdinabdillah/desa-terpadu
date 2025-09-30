@@ -135,7 +135,7 @@ export default function AssetPage() {
                 </div>
             ),
         },
-    ]);
+    ], [isAdmin]);
 
     return (
         <BaseLayouts>

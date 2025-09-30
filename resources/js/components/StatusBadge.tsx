@@ -28,9 +28,8 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
     };
 
     const loanStatusConfig = {
-        pending: { label: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
-        approved: { label: 'Disetujui', className: 'bg-blue-100 text-blue-800' },
-        active: { label: 'Aktif', className: 'bg-green-100 text-green-800' },
+        waiting_approval: { label: 'Menunggu Persetujuan', className: 'bg-yellow-100 text-yellow-800' },
+        on_loan: { label: 'Sedang Dipinjam', className: 'bg-green-100 text-green-800' },
         returned: { label: 'Dikembalikan', className: 'bg-gray-100 text-gray-800' },
         rejected: { label: 'Ditolak', className: 'bg-red-100 text-red-800' },
     };
@@ -57,7 +56,7 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
     }
 
     return (
-        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className} ${className}`}>
+        <span className={`inline-flex whitespace-nowrap items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className} ${className}`}>
             {config.label}
         </span>
     );

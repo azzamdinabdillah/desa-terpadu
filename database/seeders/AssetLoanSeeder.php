@@ -27,7 +27,7 @@ class AssetLoanSeeder extends Seeder
             [
                 'asset_id' => $assets[0]->id,
                 'citizen_id' => $citizens[0]->id,
-                'status' => 'active',
+                'status' => 'on_loan',
                 'reason' => 'Untuk keperluan rapat RT/RW',
                 'note' => 'Pinjaman untuk rapat bulanan',
                 'borrowed_at' => now()->subDays(5),
@@ -46,14 +46,14 @@ class AssetLoanSeeder extends Seeder
             [
                 'asset_id' => $assets[2]->id,
                 'citizen_id' => $citizens[2]->id,
-                'status' => 'pending',
+                'status' => 'waiting_approval',
                 'reason' => 'Untuk presentasi acara desa',
                 'note' => 'Menunggu persetujuan kepala desa',
             ],
             [
                 'asset_id' => $assets[3]->id,
                 'citizen_id' => $citizens[0]->id,
-                'status' => 'approved',
+                'status' => 'on_loan',
                 'reason' => 'Untuk acara pernikahan warga',
                 'note' => 'Sudah disetujui, siap diambil',
                 'borrowed_at' => now()->subDays(1),
@@ -81,7 +81,7 @@ class AssetLoanSeeder extends Seeder
      */
     private function updateAssetStatus(): void
     {
-        $activeLoans = AssetLoan::whereIn('status', ['active', 'approved'])->get();
+        $activeLoans = AssetLoan::whereIn('status', ['on_loan'])->get();
         
         foreach ($activeLoans as $loan) {
             $loan->asset->update(['status' => 'onloan']);

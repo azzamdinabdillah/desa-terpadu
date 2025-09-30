@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('asset_id')->constrained('assets')->onDelete('cascade');
             $table->foreignId('citizen_id')->constrained('citizens')->onDelete('cascade');
-            $table->enum('status', ['pending', 'approved', 'active', 'returned', 'rejected'])->default('pending');
+            $table->enum('status', [
+                'waiting_approval',
+                'rejected',
+                'on_loan',
+                'returned'
+            ])->default('waiting_approval');
             $table->text('reason');
             $table->text('note')->nullable();
             $table->timestamp('borrowed_at')->nullable();
