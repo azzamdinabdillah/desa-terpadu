@@ -9,22 +9,35 @@ import { ArrowLeft, Package, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface CreateAssetPageProps {
-    nextCode: string;
+    nextCode?: string;
+    asset?: {
+        id: number;
+        code: string;
+        asset_name: string;
+        condition: 'good' | 'fair' | 'bad';
+        status: 'idle' | 'onloan';
+        notes?: string;
+    };
     flash?: {
         success?: string;
         error?: string;
     };
+    [key: string]: any;
 }
 
 export default function CreateAssetPage() {
-    const { nextCode, flash } = usePage<CreateAssetPageProps>().props;
+    const { nextCode, asset, flash } = usePage<CreateAssetPageProps>().props;
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const { data, setData, post, processing, errors } = useForm({
-        asset_name: '',
-        condition: 'good' as 'good' | 'fair' | 'bad',
-        status: 'idle' as 'idle' | 'onloan',
-        notes: '',
+    // Determine if we're in edit mode
+    const isEditMode = !!asset;
+    const currentCode = isEditMode ? asset.code : nextCode;
+
+    const { data, setData, post, put, processing, errors } = useForm({
+        asset_name: asset?.asset_name || '',
+        condition: asset?.condition || ('good' as 'good' | 'fair' | 'bad'),
+        status: asset?.status || ('idle' as 'idle' | 'onloan'),
+        notes: asset?.notes || '',
     });
 
     // Handle flash messages
@@ -55,20 +68,37 @@ export default function CreateAssetPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/assets', {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                // Success handled by flash message
-            },
-            onError: (errors) => {
-                setAlert({
-                    type: 'error',
-                    message: '',
-                    errors: errors,
-                });
-            },
-        });
+        if (isEditMode) {
+            put(`/assets/${asset.id}`, {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Success handled by flash message
+                },
+                onError: (errors) => {
+                    setAlert({
+                        type: 'error',
+                        message: '',
+                        errors: errors,
+                    });
+                },
+            });
+        } else {
+            post('/assets', {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Success handled by flash message
+                },
+                onError: (errors) => {
+                    setAlert({
+                        type: 'error',
+                        message: '',
+                        errors: errors,
+                    });
+                },
+            });
+        }
     };
 
     const handleCancel = () => {
@@ -84,7 +114,12 @@ export default function CreateAssetPage() {
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
-                    <HeaderPage title="Tambah Asset Baru" description="Tambah asset baru ke dalam sistem desa" search="" total={0} />
+                    <HeaderPage
+                        title={isEditMode ? 'Edit Asset' : 'Tambah Asset Baru'}
+                        description={isEditMode ? 'Edit informasi asset yang ada' : 'Tambah asset baru ke dalam sistem desa'}
+                        search=""
+                        total={0}
+                    />
 
                     {/* Back Button */}
                     <div className="mb-6">
@@ -114,12 +149,12 @@ export default function CreateAssetPage() {
                                     <InputField
                                         label="Kode Asset"
                                         type="text"
-                                        value={nextCode}
+                                        value={currentCode || ''}
                                         onChange={() => {}}
                                         readOnly={true}
                                         variant="muted"
                                         suffix={<Package className="h-4 w-4 text-green-400" />}
-                                        helperText="Kode asset akan di-generate otomatis oleh sistem"
+                                        helperText={isEditMode ? 'Kode asset tidak dapat diubah' : 'Kode asset akan di-generate otomatis oleh sistem'}
                                     />
                                 </div>
 
@@ -197,12 +232,12 @@ export default function CreateAssetPage() {
                                     {processing ? (
                                         <>
                                             <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                            Menyimpan...
+                                            {isEditMode ? 'Mengupdate...' : 'Menyimpan...'}
                                         </>
                                     ) : (
                                         <>
                                             <Save className="h-4 w-4" />
-                                            Simpan Asset
+                                            {isEditMode ? 'Update Asset' : 'Simpan Asset'}
                                         </>
                                     )}
                                 </button>

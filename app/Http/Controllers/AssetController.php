@@ -130,6 +130,47 @@ class AssetController extends Controller
         return redirect()->route('assets.index')
             ->with('success', 'Asset berhasil ditambahkan dengan kode: ' . $validated['code']);
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Asset $asset)
+    {
+        return inertia('asset/create', [
+            'asset' => $asset,
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Asset $asset)
+    {
+        $validated = $request->validate([
+            'asset_name' => 'required|string|max:255',
+            'condition' => 'required|in:good,fair,bad',
+            'status' => 'required|in:idle,onloan',
+            'notes' => 'nullable|string',
+        ], [
+            'asset_name.required' => 'Nama asset wajib diisi.',
+            'asset_name.string' => 'Nama asset harus berupa teks.',
+            'asset_name.max' => 'Nama asset maksimal 255 karakter.',
+            'condition.required' => 'Kondisi asset wajib dipilih.',
+            'condition.in' => 'Kondisi asset harus berupa: baik, cukup, atau buruk.',
+            'status.required' => 'Status asset wajib dipilih.',
+            'status.in' => 'Status asset harus berupa: tersedia atau dipinjam.',
+            'notes.string' => 'Catatan harus berupa teks.',
+        ]);
+
+        $asset->update($validated);
+
+        return redirect()->route('assets.index')
+            ->with('success', 'Asset dengan kode ' . $asset->code . ' berhasil diperbarui');
+    }
 }
 
 

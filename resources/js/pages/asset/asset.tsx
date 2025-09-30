@@ -8,11 +8,11 @@ import Pagination, { Paginated } from '@/components/Pagination';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { isAdmin } from '@/lib/auth';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { Asset } from '@/types/assetType';
 import { router, usePage } from '@inertiajs/react';
-import { Package, Plus, Search } from 'lucide-react';
+import { Edit, Package, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type PaginationData = Paginated<Asset>;
@@ -37,6 +37,7 @@ export default function AssetPage() {
     const [conditionFilter, setConditionFilter] = useState(filters.condition || 'all');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const { isAdmin } = useAuth();
 
     // Handle flash messages
     useEffect(() => {
@@ -90,41 +91,51 @@ export default function AssetPage() {
         }
     };
 
-    const columns: Column<Asset>[] = useMemo(
-        () => [
-            {
-                key: 'code',
-                header: 'Kode Asset',
-                cell: (asset) => <div className="text-sm font-medium text-green-900">{asset.code}</div>,
-            },
-            {
-                key: 'asset_name',
-                header: 'Nama Asset',
-                cell: (asset) => <div className="text-sm text-green-900">{asset.asset_name}</div>,
-            },
-            {
-                key: 'condition',
-                header: 'Kondisi',
-                cell: (asset) => <StatusBadge type="assetCondition" value={asset.condition} />,
-            },
-            {
-                key: 'status',
-                header: 'Status',
-                cell: (asset) => <StatusBadge type="assetStatus" value={asset.status} />,
-            },
-            {
-                key: 'notes',
-                header: 'Catatan',
-                cell: (asset) => <div className="max-w-xs truncate text-sm text-green-900">{asset.notes || '-'}</div>,
-            },
-            {
-                key: 'created_at',
-                header: 'Dibuat',
-                cell: (asset) => <div className="text-sm text-green-700">{formatDate(asset.created_at)}</div>,
-            },
-        ],
-        [],
-    );
+    const columns: Column<Asset>[] = useMemo(() => [
+        {
+            key: 'code',
+            header: 'Kode Asset',
+            cell: (asset) => <div className="text-sm font-medium text-green-900">{asset.code}</div>,
+        },
+        {
+            key: 'asset_name',
+            header: 'Nama Asset',
+            cell: (asset) => <div className="text-sm text-green-900">{asset.asset_name}</div>,
+        },
+        {
+            key: 'condition',
+            header: 'Kondisi',
+            cell: (asset) => <StatusBadge type="assetCondition" value={asset.condition} />,
+        },
+        {
+            key: 'status',
+            header: 'Status',
+            cell: (asset) => <StatusBadge type="assetStatus" value={asset.status} />,
+        },
+        {
+            key: 'notes',
+            header: 'Catatan',
+            cell: (asset) => <div className="max-w-xs truncate text-sm text-green-900">{asset.notes || '-'}</div>,
+        },
+        {
+            key: 'created_at',
+            header: 'Dibuat',
+            cell: (asset) => <div className="text-sm text-green-700">{formatDate(asset.created_at)}</div>,
+        },
+        {
+            key: 'actions',
+            header: 'Aksi',
+            cell: (asset) => (
+                <div className="flex items-center gap-2">
+                    {isAdmin && (
+                        <Button onClick={() => router.visit(`/assets/${asset.id}/edit`)} icon={<Edit className="h-4 w-4" />} iconPosition="left">
+                            Edit
+                        </Button>
+                    )}
+                </div>
+            ),
+        },
+    ]);
 
     return (
         <BaseLayouts>
