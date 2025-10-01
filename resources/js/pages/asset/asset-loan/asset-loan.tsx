@@ -8,40 +8,12 @@ import Pagination, { Paginated } from '@/components/Pagination';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
+import { AssetLoan } from '@/types/assetLoanType';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Calendar, CheckCircle, Clock, Package, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-
-interface Asset {
-    id: number;
-    code: string;
-    asset_name: string;
-}
-
-interface Citizen {
-    id: number;
-    full_name: string;
-    nik: string;
-}
-
-interface AssetLoan {
-    id: number;
-    asset_id: number;
-    citizen_id: number;
-    status: 'waiting_approval' | 'rejected' | 'on_loan' | 'returned';
-    reason: string;
-    note?: string;
-    image_before_loan?: string;
-    image_after_loan?: string;
-    borrowed_at?: string;
-    expected_return_date?: string;
-    returned_at?: string;
-    created_at: string;
-    updated_at: string;
-    asset: Asset;
-    citizen: Citizen;
-}
 
 type AssetLoanPagination = Paginated<AssetLoan>;
 
@@ -61,6 +33,7 @@ export default function AssetLoanPage() {
     const { assetLoans, filters, flash } = usePage().props as unknown as AssetLoanPageProps;
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
+    const { isAdmin } = useAuth();
     const [alert, setAlert] = useState<{
         type: 'success' | 'error' | 'warning' | 'info';
         message: React.ReactNode;
@@ -249,24 +222,26 @@ export default function AssetLoanPage() {
                 header: 'Diajukan',
                 cell: (loan) => <div className="text-sm whitespace-nowrap text-green-700">{formatDate(loan.created_at)}</div>,
             },
-            {
-                key: 'actions',
-                header: 'Aksi',
-                cell: (loan) => (
-                    <div className="flex gap-2">
-                        {loan.status === 'waiting_approval' && (
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => router.visit(`/asset-loans/${loan.id}/approval`)}
-                                icon={<CheckCircle className="h-4 w-4" />}
-                            >
-                                Review
-                            </Button>
-                        )}
-                    </div>
-                ),
-            },
+            ...(isAdmin ? [
+                {
+                    key: 'actions',
+                    header: 'Aksi',
+                    cell: (loan : AssetLoan) => (
+                        <div className="flex gap-2">
+                            {loan.status === 'waiting_approval' && (
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={() => router.visit(`/asset-loans/${loan.id}/approval`)}
+                                    icon={<CheckCircle className="h-4 w-4" />}
+                                >
+                                    Review
+                                </Button>
+                            )}
+                        </div>
+                    ),
+                },
+            ] : []),
         );
 
         return baseColumns;
@@ -290,11 +265,6 @@ export default function AssetLoanPage() {
                         description="Kelola data peminjaman asset desa"
                         search={filters?.search ?? ''}
                         total={assetLoans.total}
-                        actionButton={{
-                            label: 'Ajukan Peminjaman',
-                            href: '/asset-loans/create',
-                            icon: 'plus',
-                        }}
                     />
 
                     {/* Search and Filter */}

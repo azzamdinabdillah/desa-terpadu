@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             AnnouncementSeeder::class,
             EventSeeder::class,
             EventParticipantSeeder::class,
-            // AssetSeeder::class,
+            AssetSeeder::class,
             // AssetLoanSeeder::class,
             // EventsDocumentationSeeder::class,
         ]);
