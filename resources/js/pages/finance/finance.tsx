@@ -9,7 +9,7 @@ import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Finance as FinanceType } from '@/types/finance/financeTypes';
+import { Finance as FinanceType, Summary } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Calendar, Edit, FileText, Image as ImageIcon, Plus, Search, Trash2, TrendingDown, TrendingUp, User, Wallet } from 'lucide-react';
@@ -20,7 +20,13 @@ interface Props {
         success?: string;
         error?: string;
     };
-    [key: string]: any;
+    filters: {
+        search?: string;
+        type?: string;
+    };
+    finances: FinanceType;
+    summary: Summary;
+    [key: string]: unknown;
 }
 
 function Finance() {
@@ -64,7 +70,7 @@ function Finance() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, filterType]);
+    }, [searchTerm, filterType, filters.search, filters.type]);
 
     const handleFilterChange = (type: string) => {
         setFilterType(type);
@@ -167,7 +173,7 @@ function Finance() {
                 cell: (item: FinanceType) => (
                     <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900">{(item as any).user?.citizen?.full_name || item.user?.email}</span>
+                        <span className="text-sm text-green-900">{item.user?.citizen?.full_name || item.user?.email}</span>
                     </div>
                 ),
             },
@@ -329,7 +335,7 @@ function Finance() {
                     {/* Finance Table */}
                     <DataTable
                         columns={columns}
-                        data={finances.data}
+                        data={finances.data || []}
                         emptyMessage={
                             <div>
                                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">

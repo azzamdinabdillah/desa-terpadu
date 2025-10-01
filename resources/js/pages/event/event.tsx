@@ -47,8 +47,6 @@ function EventPage() {
     const { isAdmin } = useAuth();
 
     useEffect(() => {
-        console.log(events.data[0]);
-
         if (flash?.success) {
             setAlert({ type: 'success', message: flash.success });
         } else if (flash?.error) {
@@ -86,7 +84,7 @@ function EventPage() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, status, type]);
+    }, [searchTerm, status, type, filters.q, filters.status, filters.type]);
 
     const handlePageChange = (url: string) => {
         if (url) {
@@ -249,7 +247,7 @@ function EventPage() {
                 ),
             },
         ],
-        [],
+        [isAdmin],
     );
 
     return (

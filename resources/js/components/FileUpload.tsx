@@ -17,7 +17,7 @@ export default function FileUpload({
     required = false,
     accept = 'image/*,.pdf',
     maxSize = 10,
-    file,
+    // file,
     preview,
     onChange,
     onPreviewChange,

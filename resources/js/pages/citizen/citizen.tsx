@@ -76,7 +76,7 @@ function CitizenPage() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, gender]);
+    }, [searchTerm, gender, filters.q, filters.gender]);
 
     const handlePageChange = (url: string) => {
         if (url) {
@@ -218,7 +218,7 @@ function CitizenPage() {
                 ),
             },
         ],
-        [],
+        [isAdmin],
     );
 
     return (

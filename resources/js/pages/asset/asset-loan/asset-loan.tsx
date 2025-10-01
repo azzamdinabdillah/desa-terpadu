@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
@@ -34,11 +34,7 @@ export default function AssetLoanPage() {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
     const { isAdmin } = useAuth();
-    const [alert, setAlert] = useState<{
-        type: 'success' | 'error' | 'warning' | 'info';
-        message: React.ReactNode;
-        errors?: Record<string, any>;
-    } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -72,7 +68,7 @@ export default function AssetLoanPage() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, statusFilter]);
+    }, [searchTerm, statusFilter, filters.search, filters.status]);
 
     const handleSearch = () => {
         router.get(
@@ -245,7 +241,7 @@ export default function AssetLoanPage() {
         );
 
         return baseColumns;
-    }, [assetLoans.data]);
+    }, [assetLoans.data, isAdmin]);
 
     return (
         <BaseLayouts>

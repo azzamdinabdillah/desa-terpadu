@@ -17,7 +17,7 @@ interface Props {
     };
     announcement?: Announcement;
     isEdit?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 function CreateAnnouncement() {
@@ -25,7 +25,7 @@ function CreateAnnouncement() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
 
-    const { data, setData, post, put, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         title: announcement?.title || '',
         description: announcement?.description || '',
         image: null as File | null,
@@ -69,7 +69,7 @@ function CreateAnnouncement() {
             onSuccess: () => {
                 // Success handled by flash message
             },
-            onError: (errors: any) => {
+            onError: (errors: Record<string, string | string[]>) => {
                 setAlert({
                     type: 'error',
                     message: '',

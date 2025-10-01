@@ -1,3 +1,4 @@
+import { PageProps } from '@/types/index.d';
 import { router, usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -36,7 +37,7 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
         return submenu.some((item) => isSubmenuActive(item.href));
     };
 
-    const { props } = usePage() as any;
+    const { props } = usePage<PageProps>();
     const isAuthenticated = !!props?.auth?.user;
 
     return (
@@ -163,7 +164,7 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
 const Header: React.FC<HeaderProps> = ({
     title = 'Dashboard Desa',
     icon = '🌾',
-    showMobileMenuSpace = true,
+    // showMobileMenuSpace = true,
     className = '',
     showBackButton = false,
 }) => {

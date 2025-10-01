@@ -1,6 +1,7 @@
+import { PageProps } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { Bell, Building, Calendar, ChevronDown, ChevronRight, CircleDollarSign, Home, LogIn, Settings, User, Users } from 'lucide-react';
+import { Bell, Building, Calendar, ChevronDown, ChevronRight, CircleDollarSign, Home, LogIn, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -94,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         return submenu.some((item) => isSubmenuActive(item.href));
     };
 
-    const { props } = usePage() as any;
+    const { props } = usePage<PageProps>();
     const isAuthenticated = !!props?.auth?.user;
 
     return (

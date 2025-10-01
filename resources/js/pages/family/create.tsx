@@ -23,7 +23,7 @@ function CreateFamilyPage() {
     const { flash, family, isEdit } = usePage().props as unknown as CreateFamilyPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, put, processing } = useForm({
         family_name: family?.family_name || '',
         kk_number: family?.kk_number || '',
     });
@@ -40,7 +40,7 @@ function CreateFamilyPage() {
                         message: 'Data keluarga berhasil diperbarui.',
                     });
                 },
-                onError: (errors: any) => {
+                onError: (errors: Record<string, string | string[]>) => {
                     setAlert({
                         type: 'error',
                         message: '',
@@ -61,7 +61,7 @@ function CreateFamilyPage() {
                         kk_number: '',
                     });
                 },
-                onError: (errors: any) => {
+                onError: (errors: Record<string, string | string[]>) => {
                     setAlert({
                         type: 'error',
                         message: '',

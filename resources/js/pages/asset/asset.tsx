@@ -29,7 +29,7 @@ interface AssetPageProps {
         success?: string;
         error?: string;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default function AssetPage() {
@@ -102,7 +102,7 @@ export default function AssetPage() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, conditionFilter, statusFilter]);
+    }, [searchTerm, conditionFilter, statusFilter, filters.search, filters.condition, filters.status]);
 
     const handleSearch = () => {
         router.get(
@@ -195,7 +195,7 @@ export default function AssetPage() {
                 ),
             },
         ],
-        [isAdmin, handleDeleteAsset],
+        [isAdmin],
     );
 
     return (

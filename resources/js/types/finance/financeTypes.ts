@@ -1,9 +1,5 @@
 import type { Paginated, PaginationLink } from '@/components/Pagination';
-interface User {
-    id: number;
-    name: string;
-    email: string;
-}
+import type { User } from '../user/userTypes';
 
 interface Finance {
     id: number;
@@ -12,6 +8,8 @@ interface Finance {
     amount: number;
     note: string;
     user: User;
+    total?: number;
+    data?: Finance[];
     user_id: number;
     proof_image: string;
     created_at: string;

@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -17,7 +17,7 @@ interface ChangeStatusProps {
         success?: string;
         error?: string;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default function ChangeStatus({ event }: ChangeStatusProps) {
@@ -31,11 +31,7 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
     >([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [alert, setAlert] = useState<{
-        type: 'success' | 'error' | 'warning' | 'info';
-        message: React.ReactNode;
-        errors?: Record<string, any>;
-    } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -127,6 +123,7 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
             setAlert({
                 type: 'error',
                 message: 'Terjadi kesalahan saat mengirim data.',
+                errors: error as Record<string, string | string[]>,
             });
             setIsSubmitting(false);
         }

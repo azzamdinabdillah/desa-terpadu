@@ -1,5 +1,12 @@
+import { User } from './user/userTypes';
+
 export interface Auth {
     user: User;
+}
+
+export interface PageProps {
+    auth?: Auth;
+    [key: string]: unknown;
 }
 
 export interface SharedData {

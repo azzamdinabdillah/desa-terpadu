@@ -1,3 +1,6 @@
+import { Asset } from "./assetType";
+import { CitizenType } from "./citizen/citizenType";
+
 export interface AssetLoan {
     id: number;
     asset_id: number;
@@ -13,5 +16,5 @@ export interface AssetLoan {
     created_at: string;
     updated_at: string;
     asset: Asset;
-    citizen: Citizen;
+    citizen: CitizenType;
 }

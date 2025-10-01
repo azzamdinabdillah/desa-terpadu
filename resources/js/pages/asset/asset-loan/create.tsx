@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -33,7 +33,7 @@ interface CreateAssetLoanPageProps {
 }
 
 export default function CreateAssetLoanPage() {
-    const { assets, citizens, flash } = usePage().props as unknown as CreateAssetLoanPageProps;
+    const { assets, flash } = usePage().props as unknown as CreateAssetLoanPageProps;
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nik: '',
@@ -43,11 +43,7 @@ export default function CreateAssetLoanPage() {
         expected_return_date: '',
     });
 
-    const [alert, setAlert] = useState<{
-        type: 'success' | 'error' | 'warning' | 'info';
-        message: React.ReactNode;
-        errors?: Record<string, any>;
-    } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Handle flash messages
     useEffect(() => {

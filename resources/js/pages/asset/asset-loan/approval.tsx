@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
@@ -58,11 +58,7 @@ export default function ApprovalPage() {
         image_before_loan: null as File | null,
     });
 
-    const [alert, setAlert] = useState<{
-        type: 'success' | 'error' | 'warning' | 'info';
-        message: React.ReactNode;
-        errors?: Record<string, any>;
-    } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     const [imagePreview, setImagePreview] = useState<string | null>(assetLoan.image_before_loan ? `/storage/${assetLoan.image_before_loan}` : null);
 
@@ -176,7 +172,7 @@ export default function ApprovalPage() {
                                 <Select
                                     label="Status Persetujuan"
                                     value={data.status}
-                                    onChange={(value) => setData('status', value as any)}
+                                    onChange={(value) => setData('status', value as 'waiting_approval' | 'rejected' | 'on_loan' | 'returned')}
                                     options={statusOptions}
                                     required
                                     error={errors.status}

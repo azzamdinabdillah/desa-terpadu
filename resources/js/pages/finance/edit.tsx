@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -17,7 +17,7 @@ interface Props {
         success?: string;
         error?: string;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 interface EditFinanceProps {
@@ -27,7 +27,7 @@ interface EditFinanceProps {
 
 function EditFinance({ finance, currentBalance: initialBalance }: EditFinanceProps) {
     const { users, flash } = usePage<Props>().props;
-    const { data, setData, put, post, reset } = useForm({
+    const { data, setData, post, reset } = useForm({
         date: finance.date ? finance.date.substring(0, 10) : '',
         type: finance.type,
         amount: finance.amount.toString(),
@@ -38,7 +38,7 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
     const [remainingBalance, setRemainingBalance] = useState<string>('');
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [currentBalance, setCurrentBalance] = useState<number>(initialBalance);
-    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: React.ReactNode; errors?: Record<string, any> } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -60,11 +60,9 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
                 let newBalance = currentBalance;
 
                 if (data.type === 'income') {
-                    console.log('income');
 
                     newBalance = currentBalance + amountValue;
                 } else if (data.type === 'expense') {
-                    console.log('expense');
                     newBalance = currentBalance - amountValue;
                 }
 
@@ -78,7 +76,7 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
             // Show current balance when no amount or type is selected
             setRemainingBalance(currentBalance.toString());
         }
-    }, [data.amount, data.type, currentBalance]);
+    }, [data.amount, data.type, currentBalance, data.note]);
 
     // Update current balance when initialBalance changes
     useEffect(() => {
@@ -114,7 +112,6 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
                 handleCancel();
             },
             onError: (errors) => {
-                console.error('Validation errors:', errors);
                 setAlert({
                     type: 'error',
                     message: '',

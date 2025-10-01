@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
@@ -17,7 +17,7 @@ interface Props {
         success?: string;
         error?: string;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 interface CreateFinanceProps {
@@ -37,11 +37,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     const [remainingBalance, setRemainingBalance] = useState<string>('');
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [currentBalance, setCurrentBalance] = useState<number>(initialBalance);
-    const [alert, setAlert] = useState<{
-        type: 'success' | 'error' | 'warning' | 'info';
-        message: React.ReactNode;
-        errors?: Record<string, any>;
-    } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Handle flash messages
     useEffect(() => {
@@ -78,7 +74,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
             // Show current balance when no amount or type is selected
             setRemainingBalance(currentBalance.toString());
         }
-    }, [data.amount, data.type, currentBalance]);
+    }, [data.amount, data.type, currentBalance, data.note]);
 
     // Update current balance when initialBalance changes
     useEffect(() => {
@@ -104,7 +100,6 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                 handleCancel();
             },
             onError: (errors) => {
-                console.error('Validation asdadasderrors:', errors);
                 setAlert({
                     type: 'error',
                     message: '',

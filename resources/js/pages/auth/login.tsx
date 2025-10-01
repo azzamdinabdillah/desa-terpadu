@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [alert, setAlert] = useState<AlertProps | null>(null);
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
         remember: true,
@@ -45,7 +45,7 @@ function Login() {
             onSuccess: () => {
                 // Success handled by flash message
             },
-            onError: (errors: any) => {
+            onError: (errors: Record<string, string | string[]>) => {
                 setAlert({
                     type: 'error',
                     message: '',

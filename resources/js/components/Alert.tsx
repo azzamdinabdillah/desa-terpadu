@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 export interface AlertProps {
     type: 'success' | 'error' | 'warning' | 'info';
     message: React.ReactNode;
-    errors?: Record<string, any>; // New prop for error object
+    errors?: Record<string, string | string[]>;
     onClose?: () => void;
     autoClose?: boolean;
     duration?: number;
@@ -28,7 +28,7 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
 
         // If only one error with one message, return simple format
         if (errorEntries.length === 1) {
-            const [field, msgs] = errorEntries[0];
+            const [msgs] = errorEntries[0];
             if (Array.isArray(msgs) && msgs.length === 1) {
                 return (
                     <div>

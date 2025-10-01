@@ -1,4 +1,4 @@
-import Alert from '@/components/Alert';
+import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
@@ -28,12 +28,12 @@ interface Props {
         max_participants: number | null;
     };
     isEdit?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default function CreateEvent() {
     const { flash, event, isEdit } = usePage<Props>().props;
-    const { data, setData, post, put, reset, processing, errors } = useForm({
+    const { data, setData, post, reset, processing, errors } = useForm({
         event_name: event?.event_name || '',
         description: event?.description || '',
         date_start: event?.date_start ? new Date(event.date_start).toISOString().slice(0, 16) : '',
@@ -46,11 +46,7 @@ export default function CreateEvent() {
     });
 
     const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
-    const [alert, setAlert] = useState<{
-        type: 'success' | 'error' | 'warning' | 'info';
-        message: React.ReactNode;
-        errors?: Record<string, any>;
-    } | null>(null);
+    const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Handle flash messages
     useEffect(() => {

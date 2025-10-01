@@ -77,16 +77,6 @@ const formatGender = (gender: string): string => {
     return gender === 'male' ? 'Laki-laki' : 'Perempuan';
 };
 
-// Helper function to format date
-const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-    });
-};
-
 // Main App Component
 const WelcomePage: React.FC<WelcomePageProps> = ({ citizens, filters }) => {
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
@@ -109,7 +99,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ citizens, filters }) => {
         }, 300);
 
         return () => clearTimeout(timeoutId);
-    }, [searchQuery]);
+    }, [searchQuery, filters.search]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -134,10 +124,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ citizens, filters }) => {
                     <Header
                         title="Dashboard Desa"
                         icon="🌾"
-                        onSettingsClick={() => {
-                            // Handle settings click - you can add your logic here
-                            console.log('Settings clicked from Dashboard Desa');
-                        }}
+                       
                     />
 
                     {/* Page Content */}

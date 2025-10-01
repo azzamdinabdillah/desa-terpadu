@@ -24,7 +24,7 @@ interface CreateAssetPageProps {
         success?: string;
         error?: string;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export default function CreateAssetPage() {
@@ -36,7 +36,7 @@ export default function CreateAssetPage() {
     const isEditMode = !!asset;
     const currentCode = isEditMode ? asset.code : nextCode;
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         asset_name: asset?.asset_name || '',
         condition: asset?.condition || ('good' as 'good' | 'fair' | 'bad'),
         status: asset?.status || ('idle' as 'idle' | 'onloan'),
@@ -86,7 +86,7 @@ export default function CreateAssetPage() {
             onSuccess: () => {
                 // Success handled by flash message
             },
-            onError: (errors: any) => {
+            onError: (errors: Record<string, string | string[]>) => {
                 setAlert({
                     type: 'error',
                     message: '',

@@ -25,7 +25,7 @@ interface Props {
     filters: {
         search?: string;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 function Family() {
@@ -47,7 +47,7 @@ function Family() {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
-    const [viewModalData, setViewModalData] = useState<FamilyType | null>(null);
+    const [viewModalData] = useState<FamilyType | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<FamilyType | null>(null);
 
@@ -72,7 +72,7 @@ function Family() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm]);
+    }, [searchTerm, filters.search]);
 
     const handlePageChange = (url: string) => {
         if (url) {
@@ -87,10 +87,10 @@ function Family() {
         router.visit(`/families/${family.id}`);
     };
 
-    const handleViewClose = () => {
-        setViewModalOpen(false);
-        setViewModalData(null);
-    };
+    // const handleViewClose = () => {
+    //     setViewModalOpen(false);
+    //     setViewModalData(null);
+    // };
 
     const handleDeleteClick = (family: FamilyType) => {
         setDeleteModalData(family);

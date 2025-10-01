@@ -28,7 +28,7 @@ interface Props {
     summary: {
         total: number;
     };
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 function Announcement() {
@@ -42,9 +42,6 @@ function Announcement() {
             prev_page_url: undefined,
             next_page_url: undefined,
             links: [],
-        },
-        summary = {
-            total: 0,
         },
         filters = {},
         flash,
@@ -79,7 +76,7 @@ function Announcement() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm]);
+    }, [searchTerm, filters.search]);
 
     const handlePageChange = (url: string) => {
         if (url) {
@@ -95,10 +92,10 @@ function Announcement() {
         setViewModalOpen(true);
     };
 
-    const handleViewClose = () => {
-        setViewModalOpen(false);
-        setViewModalData(null);
-    };
+        // const handleViewClose = () => {
+        //     setViewModalOpen(false);
+        //     setViewModalData(null);
+        // };
 
     const handleDeleteClick = (announcement: AnnouncementType) => {
         setDeleteModalData(announcement);

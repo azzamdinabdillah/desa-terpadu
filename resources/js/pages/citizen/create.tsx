@@ -29,7 +29,7 @@ function CreateCitizenPage() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
 
-    const { data, setData, post, put, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         full_name: citizen?.full_name || '',
         nik: citizen?.nik || '',
         phone_number: citizen?.phone_number || '',
