@@ -16,7 +16,7 @@ interface Finance {
     remaining_balance: number;
 }
 
-type PaginatedFinances = Paginated<Finance>;
+export type PaginatedFinances = Paginated<Finance>;
 
 interface Summary {
     totalIncome: number;

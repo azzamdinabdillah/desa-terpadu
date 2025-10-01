@@ -9,7 +9,7 @@ import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Finance as FinanceType, Summary } from '@/types/finance/financeTypes';
+import { Finance as FinanceType, PaginatedFinances, Summary } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Calendar, Edit, FileText, Image as ImageIcon, Plus, Search, Trash2, TrendingDown, TrendingUp, User, Wallet } from 'lucide-react';
@@ -24,7 +24,7 @@ interface Props {
         search?: string;
         type?: string;
     };
-    finances: FinanceType;
+    finances: PaginatedFinances;
     summary: Summary;
     [key: string]: unknown;
 }
