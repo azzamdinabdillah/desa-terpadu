@@ -23,6 +23,8 @@ return new class extends Migration
             ])->default('waiting_approval');
             $table->text('reason');
             $table->text('note')->nullable();
+            $table->string('image_before_loan')->nullable();
+            $table->string('image_after_loan')->nullable();
             $table->timestamp('borrowed_at')->nullable();
             $table->timestamp('expected_return_date')->nullable();
             $table->timestamp('returned_at')->nullable();

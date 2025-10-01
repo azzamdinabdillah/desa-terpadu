@@ -1,3 +1,4 @@
+import Button from '@/components/Button';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -8,7 +9,7 @@ import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Package, Search } from 'lucide-react';
+import { Calendar, Clock, Package, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Asset {
@@ -185,6 +186,11 @@ export default function AssetLoanPage() {
                         description="Kelola data peminjaman asset desa"
                         search={filters?.search ?? ''}
                         total={assetLoans.total}
+                        actionButton={{
+                            label: 'Ajukan Peminjaman',
+                            href: '/asset-loans/create',
+                            icon: 'plus',
+                        }}
                     />
 
                     {/* Search and Filter */}
@@ -218,6 +224,10 @@ export default function AssetLoanPage() {
                                 className="min-w-[200px]"
                                 placeholder="Pilih status"
                             />
+
+                            <Button onClick={() => router.visit('/asset-loans/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                Ajukan Peminjaman
+                            </Button>
                         </div>
                     </div>
 

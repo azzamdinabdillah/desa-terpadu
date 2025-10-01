@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('asset_name');
+            $table->string('image')->nullable();
             $table->enum('condition', ['good', 'fair', 'bad'])->default('good');
             $table->enum('status', ['idle', 'onloan'])->default('idle');
             $table->text('notes')->nullable();

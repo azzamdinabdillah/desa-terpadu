@@ -41,11 +41,16 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
+
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
+Route::get('/asset-loans/create', [AssetLoanController::class, 'create'])->name('asset-loans.create');
+
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 Route::get('/citizens/{citizen}', [CitizenController::class, 'show'])->where('citizen', '[0-9]+')->name('citizens.show');
+
 Route::get('/families', [FamilyController::class, 'index'])->name('family.index');
 Route::get('/families/{family}', [FamilyController::class, 'show'])
     ->where('family', '[0-9]+')
@@ -96,6 +101,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
     Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])->name('assets.edit');
     Route::put('/assets/{asset}', [AssetController::class, 'update'])->name('assets.update');
+
+    Route::post('/asset-loans', [AssetLoanController::class, 'store'])->name('asset-loans.store');
 });
 
 
