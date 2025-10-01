@@ -201,6 +201,41 @@ class AssetController extends Controller
         return redirect()->route('assets.index')
             ->with('success', 'Asset dengan kode ' . $asset->code . ' berhasil diperbarui');
     }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Asset $asset)
+    {
+        // Delete asset image if exists
+        if ($asset->image && Storage::disk('public')->exists($asset->image)) {
+            Storage::disk('public')->delete($asset->image);
+        }
+
+        // Delete all related asset loan images before deleting the asset
+        // This prevents orphaned files in storage since cascade delete will remove the records
+        $assetLoans = $asset->assetLoans;
+        foreach ($assetLoans as $loan) {
+            // Delete image_before_loan if exists
+            if ($loan->image_before_loan && Storage::disk('public')->exists($loan->image_before_loan)) {
+                Storage::disk('public')->delete($loan->image_before_loan);
+            }
+            
+            // Delete image_after_loan if exists
+            if ($loan->image_after_loan && Storage::disk('public')->exists($loan->image_after_loan)) {
+                Storage::disk('public')->delete($loan->image_after_loan);
+            }
+        }
+
+        // Store asset code for success message
+        $assetCode = $asset->code;
+
+        // Delete the asset (this will cascade delete all related asset_loans)
+        $asset->delete();
+
+        return redirect()->route('assets.index')
+            ->with('success', 'Asset dengan kode ' . $assetCode . ' berhasil dihapus');
+    }
 }
 
 

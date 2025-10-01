@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -12,7 +13,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { Asset } from '@/types/assetType';
 import { router, usePage } from '@inertiajs/react';
-import { Edit, Package, Plus, Search } from 'lucide-react';
+import { Edit, Package, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type PaginationData = Paginated<Asset>;
@@ -37,6 +38,9 @@ export default function AssetPage() {
     const [conditionFilter, setConditionFilter] = useState(filters.condition || 'all');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { isAdmin } = useAuth();
 
     // Handle flash messages
@@ -47,6 +51,36 @@ export default function AssetPage() {
             setAlert({ type: 'error', message: flash.error });
         }
     }, [flash]);
+
+    // Handle delete asset
+    const handleDeleteAsset = (asset: Asset) => {
+        setAssetToDelete(asset);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (assetToDelete) {
+            setIsDeleting(true);
+            router.delete(`/assets/${assetToDelete.id}`, {
+                onSuccess: () => {
+                    setShowDeleteModal(false);
+                    setAssetToDelete(null);
+                    setIsDeleting(false);
+                    setAlert({ type: 'success', message: 'Asset berhasil dihapus' });
+                },
+                onError: () => {
+                    setIsDeleting(false);
+                    setAlert({ type: 'error', message: 'Gagal menghapus asset' });
+                },
+            });
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setAssetToDelete(null);
+        setIsDeleting(false);
+    };
 
     // Handle search with debounce
     useEffect(() => {
@@ -144,14 +178,24 @@ export default function AssetPage() {
                 cell: (asset) => (
                     <div className="flex items-center gap-2">
                         {isAdmin && (
-                            <Button variant='ghost' onClick={() => router.visit(`/assets/${asset.id}/edit`)} icon={<Edit className="h-4 w-4" />} iconPosition="left">
-                            </Button>
+                            <>
+                                <Button variant="ghost" onClick={() => router.visit(`/assets/${asset.id}/edit`)}>
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => handleDeleteAsset(asset)}
+                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </>
                         )}
                     </div>
                 ),
             },
         ],
-        [isAdmin],
+        [isAdmin, handleDeleteAsset],
     );
 
     return (
@@ -276,6 +320,18 @@ export default function AssetPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Delete Confirmation Modal */}
+                <ConfirmationModal
+                    isOpen={showDeleteModal}
+                    onClose={handleDeleteCancel}
+                    onConfirm={handleDeleteConfirm}
+                    title="Konfirmasi Hapus Asset"
+                    message={`Apakah Anda yakin ingin menghapus asset "${assetToDelete?.asset_name}" dengan kode ${assetToDelete?.code}? Tindakan ini tidak dapat dibatalkan.`}
+                    confirmText="Ya, Hapus"
+                    cancelText="Batal"
+                    isLoading={isDeleting}
+                />
             </div>
         </BaseLayouts>
     );
