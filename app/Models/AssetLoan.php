@@ -19,6 +19,8 @@ class AssetLoan extends Model
         'borrowed_at',
         'expected_return_date',
         'returned_at',
+        'image_before_loan',
+        'image_after_loan',
     ];
 
     protected $casts = [

@@ -182,7 +182,6 @@ class AssetLoanController extends Controller
             $imagePath = $request->file('image_before_loan')->store('asset_loans', 'public');
         }
 
-        // dd($imagePath);
         // Update asset loan
         $assetLoan->update([
             'status' => $validated['status'],

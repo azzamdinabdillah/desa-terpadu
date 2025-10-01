@@ -299,26 +299,6 @@ export default function AssetPage() {
                         onChange={handlePageChange}
                     />
 
-                    <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-4">
-                        <div className="flex">
-                            <div className="flex-shrink-0">
-                                <Package className="h-5 w-5 text-green-400" />
-                            </div>
-                            <div className="ml-3">
-                                <h3 className="text-sm font-medium text-green-800">Informasi Status Asset</h3>
-                                <div className="mt-2 text-sm text-green-700">
-                                    <ul className="list-disc space-y-1 pl-5">
-                                        <li>
-                                            <strong>Tersedia:</strong> Asset dapat dipinjam
-                                        </li>
-                                        <li>
-                                            <strong>Dipinjam:</strong> Asset sedang dipinjam oleh warga
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Delete Confirmation Modal */}
