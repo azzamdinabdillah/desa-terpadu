@@ -1,3 +1,4 @@
+import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
@@ -9,7 +10,7 @@ import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Package, Plus, Search } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Package, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Asset {
@@ -31,6 +32,8 @@ interface AssetLoan {
     status: 'waiting_approval' | 'rejected' | 'on_loan' | 'returned';
     reason: string;
     note?: string;
+    image_before_loan?: string;
+    image_after_loan?: string;
     borrowed_at?: string;
     expected_return_date?: string;
     returned_at?: string;
@@ -48,12 +51,38 @@ interface AssetLoanPageProps {
         search?: string;
         status?: string;
     };
+    flash?: {
+        success?: string;
+        error?: string;
+    };
 }
 
 export default function AssetLoanPage() {
-    const { assetLoans, filters } = usePage().props as unknown as AssetLoanPageProps;
+    const { assetLoans, filters, flash } = usePage().props as unknown as AssetLoanPageProps;
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
+    const [alert, setAlert] = useState<{
+        type: 'success' | 'error' | 'warning' | 'info';
+        message: React.ReactNode;
+        errors?: Record<string, any>;
+    } | null>(null);
+
+    // Handle flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({
+                type: 'success',
+                message: flash.success,
+            });
+            setTimeout(() => setAlert(null), 5000);
+        }
+        if (flash?.error) {
+            setAlert({
+                type: 'error',
+                message: flash.error,
+            });
+        }
+    }, [flash]);
 
     // Debounced search/filter
     useEffect(() => {
@@ -94,8 +123,11 @@ export default function AssetLoanPage() {
         return new Date(expectedReturnDate) < new Date();
     };
 
-    const columns: Column<AssetLoan>[] = useMemo(
-        () => [
+    const columns: Column<AssetLoan>[] = useMemo(() => {
+        // Check if we should show the image column based on current data
+        const shouldShowImageColumn = assetLoans.data.some((loan) => loan.status === 'on_loan' || loan.status === 'returned');
+
+        const baseColumns: Column<AssetLoan>[] = [
             {
                 key: 'asset',
                 header: 'Asset',
@@ -106,6 +138,54 @@ export default function AssetLoanPage() {
                     </div>
                 ),
             },
+        ];
+
+        // Only add image column if there are loans with on_loan or returned status
+        if (shouldShowImageColumn) {
+            baseColumns.push({
+                key: 'image',
+                header: 'Gambar',
+                cell: (loan) => {
+                    // Show image_before_loan for on_loan status
+                    if (loan.status === 'on_loan' && loan.image_before_loan) {
+                        return (
+                            <div className="flex justify-center">
+                                <img
+                                    src={`/storage/${loan.image_before_loan}`}
+                                    alt="Gambar sebelum pinjam"
+                                    className="h-16 w-16 rounded-lg border border-green-200 object-cover"
+                                />
+                            </div>
+                        );
+                    }
+
+                    // Show image_after_loan for returned status
+                    if (loan.status === 'returned' && loan.image_after_loan) {
+                        return (
+                            <div className="flex justify-center">
+                                <img
+                                    src={`/storage/${loan.image_after_loan}`}
+                                    alt="Gambar setelah kembali"
+                                    className="h-16 w-16 rounded-lg border border-green-200 object-cover"
+                                />
+                            </div>
+                        );
+                    }
+
+                    // Show placeholder if no image available or wrong status
+                    return (
+                        <div className="flex justify-center">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-green-200 bg-green-100">
+                                <Package className="h-6 w-6 text-green-400" />
+                            </div>
+                        </div>
+                    );
+                },
+            });
+        }
+
+        // Add the remaining columns
+        baseColumns.push(
             {
                 key: 'citizen',
                 header: 'Peminjam',
@@ -134,7 +214,7 @@ export default function AssetLoanPage() {
                 cell: (loan) => <div className="max-w-xs truncate text-sm text-green-900">{loan.reason}</div>,
             },
             {
-                key: 'reason',
+                key: 'note',
                 header: 'Pesan Dari Admin',
                 cell: (loan) => <div className="max-w-xs truncate text-sm text-green-900">{loan.note}</div>,
             },
@@ -169,9 +249,28 @@ export default function AssetLoanPage() {
                 header: 'Diajukan',
                 cell: (loan) => <div className="text-sm whitespace-nowrap text-green-700">{formatDate(loan.created_at)}</div>,
             },
-        ],
-        [],
-    );
+            {
+                key: 'actions',
+                header: 'Aksi',
+                cell: (loan) => (
+                    <div className="flex gap-2">
+                        {loan.status === 'waiting_approval' && (
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => router.visit(`/asset-loans/${loan.id}/approval`)}
+                                icon={<CheckCircle className="h-4 w-4" />}
+                            >
+                                Review
+                            </Button>
+                        )}
+                    </div>
+                ),
+            },
+        );
+
+        return baseColumns;
+    }, [assetLoans.data]);
 
     return (
         <BaseLayouts>
@@ -181,6 +280,11 @@ export default function AssetLoanPage() {
                 <Header title="Manajemen Peminjaman Asset" icon="📋" />
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                    {alert && (
+                        <div className="mb-6">
+                            <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />
+                        </div>
+                    )}
                     <HeaderPage
                         title="Data Peminjaman Asset"
                         description="Kelola data peminjaman asset desa"

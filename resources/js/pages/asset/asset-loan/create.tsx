@@ -36,7 +36,7 @@ export default function CreateAssetLoanPage() {
     const { assets, citizens, flash } = usePage().props as unknown as CreateAssetLoanPageProps;
 
     const { data, setData, post, processing, errors, reset } = useForm({
-        citizen_id: '',
+        nik: '',
         asset_id: '',
         reason: '',
         borrowed_at: '',
@@ -72,10 +72,6 @@ export default function CreateAssetLoanPage() {
         post('/asset-loans', {
             onSuccess: () => {
                 reset();
-                setAlert({
-                    type: 'success',
-                    message: 'Pengajuan peminjaman asset berhasil diajukan!',
-                });
             },
             onError: (errors) => {
                 setAlert({
@@ -120,11 +116,11 @@ export default function CreateAssetLoanPage() {
                                 <div>
                                     <InputField
                                         label="Nomor Induk Kependudukan (NIK)"
-                                        value={data.citizen_id}
-                                        onChange={(value) => setData('citizen_id', value)}
+                                        value={data.nik}
+                                        onChange={(value) => setData('nik', value)}
                                         placeholder="Masukkan NIK peminjam"
                                         required
-                                        error={errors.citizen_id}
+                                        error={errors.nik}
                                         type="number"
                                         helperText="Masukkan NIK sesuai KTP"
                                     />

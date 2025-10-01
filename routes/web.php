@@ -47,6 +47,7 @@ Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
 Route::get('/asset-loans/create', [AssetLoanController::class, 'create'])->name('asset-loans.create');
+Route::get('/asset-loans/{assetLoan}/approval', [AssetLoanController::class, 'edit'])->name('asset-loans.edit');
 
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 Route::get('/citizens/{citizen}', [CitizenController::class, 'show'])->where('citizen', '[0-9]+')->name('citizens.show');
@@ -105,6 +106,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/assets/{asset}', [AssetController::class, 'destroy'])->name('assets.destroy');
 
     Route::post('/asset-loans', [AssetLoanController::class, 'store'])->name('asset-loans.store');
+    Route::put('/asset-loans/{assetLoan}', [AssetLoanController::class, 'update'])->name('asset-loans.update');
+    Route::post('/asset-loans/{assetLoan}', [AssetLoanController::class, 'update'])->name('asset-loans.update.post');
 });
 
 
