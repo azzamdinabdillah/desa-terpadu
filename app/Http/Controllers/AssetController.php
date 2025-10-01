@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AssetController extends Controller
@@ -111,6 +112,7 @@ class AssetController extends Controller
             'condition' => 'required|in:good,fair,bad',
             'status' => 'required|in:idle,onloan',
             'notes' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'asset_name.required' => 'Nama asset wajib diisi.',
             'asset_name.string' => 'Nama asset harus berupa teks.',
@@ -120,10 +122,21 @@ class AssetController extends Controller
             'status.required' => 'Status asset wajib dipilih.',
             'status.in' => 'Status asset harus berupa: tersedia atau dipinjam.',
             'notes.string' => 'Catatan harus berupa teks.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Gambar harus berformat JPEG, PNG, JPG, atau GIF.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         // Generate unique asset code
         $validated['code'] = $this->generateAssetCode();
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('assets', $filename, 'public');
+            $validated['image'] = $path;
+        }
 
         Asset::create($validated);
 
@@ -155,6 +168,7 @@ class AssetController extends Controller
             'condition' => 'required|in:good,fair,bad',
             'status' => 'required|in:idle,onloan',
             'notes' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'asset_name.required' => 'Nama asset wajib diisi.',
             'asset_name.string' => 'Nama asset harus berupa teks.',
@@ -164,7 +178,23 @@ class AssetController extends Controller
             'status.required' => 'Status asset wajib dipilih.',
             'status.in' => 'Status asset harus berupa: tersedia atau dipinjam.',
             'notes.string' => 'Catatan harus berupa teks.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Gambar harus berformat JPEG, PNG, JPG, atau GIF.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($asset->image && Storage::disk('public')->exists($asset->image)) {
+                Storage::disk('public')->delete($asset->image);
+            }
+
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('assets', $filename, 'public');
+            $validated['image'] = $path;
+        }
 
         $asset->update($validated);
 

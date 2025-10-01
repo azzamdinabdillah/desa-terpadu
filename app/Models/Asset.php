@@ -16,6 +16,7 @@ class Asset extends Model
         'condition',
         'status',
         'notes',
+        'image',
     ];
 
     protected $casts = [

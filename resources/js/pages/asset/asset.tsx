@@ -91,51 +91,68 @@ export default function AssetPage() {
         }
     };
 
-    const columns: Column<Asset>[] = useMemo(() => [
-        {
-            key: 'code',
-            header: 'Kode Asset',
-            cell: (asset) => <div className="text-sm font-medium text-green-900">{asset.code}</div>,
-        },
-        {
-            key: 'asset_name',
-            header: 'Nama Asset',
-            cell: (asset) => <div className="text-sm text-green-900">{asset.asset_name}</div>,
-        },
-        {
-            key: 'condition',
-            header: 'Kondisi',
-            cell: (asset) => <StatusBadge type="assetCondition" value={asset.condition} />,
-        },
-        {
-            key: 'status',
-            header: 'Status',
-            cell: (asset) => <StatusBadge type="assetStatus" value={asset.status} />,
-        },
-        {
-            key: 'notes',
-            header: 'Catatan',
-            cell: (asset) => <div className="max-w-xs truncate text-sm text-green-900">{asset.notes || '-'}</div>,
-        },
-        {
-            key: 'created_at',
-            header: 'Dibuat',
-            cell: (asset) => <div className="text-sm text-green-700">{formatDate(asset.created_at)}</div>,
-        },
-        {
-            key: 'actions',
-            header: 'Aksi',
-            cell: (asset) => (
-                <div className="flex items-center gap-2">
-                    {isAdmin && (
-                        <Button onClick={() => router.visit(`/assets/${asset.id}/edit`)} icon={<Edit className="h-4 w-4" />} iconPosition="left">
-                            Edit
-                        </Button>
-                    )}
-                </div>
-            ),
-        },
-    ], [isAdmin]);
+    const columns: Column<Asset>[] = useMemo(
+        () => [
+            {
+                key: 'code',
+                header: 'Kode Asset',
+                cell: (asset) => <div className="text-sm font-medium text-green-900">{asset.code}</div>,
+            },
+            {
+                key: 'image',
+                header: 'Gambar',
+                cell: (asset) => (
+                    <div className="flex items-center">
+                        {asset.image ? (
+                            <img src={`/storage/${asset.image}`} alt={asset.asset_name} className="h-12 w-12 rounded-md object-cover" />
+                        ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-md bg-green-100">
+                                <Package className="h-6 w-6 text-green-400" />
+                            </div>
+                        )}
+                    </div>
+                ),
+            },
+            {
+                key: 'asset_name',
+                header: 'Nama Asset',
+                cell: (asset) => <div className="text-sm text-green-900">{asset.asset_name}</div>,
+            },
+            {
+                key: 'condition',
+                header: 'Kondisi',
+                cell: (asset) => <StatusBadge type="assetCondition" value={asset.condition} />,
+            },
+            {
+                key: 'status',
+                header: 'Status',
+                cell: (asset) => <StatusBadge type="assetStatus" value={asset.status} />,
+            },
+            {
+                key: 'notes',
+                header: 'Catatan',
+                cell: (asset) => <div className="max-w-xs truncate text-sm text-green-900">{asset.notes || '-'}</div>,
+            },
+            {
+                key: 'created_at',
+                header: 'Dibuat',
+                cell: (asset) => <div className="text-sm text-green-700">{formatDate(asset.created_at)}</div>,
+            },
+            {
+                key: 'actions',
+                header: 'Aksi',
+                cell: (asset) => (
+                    <div className="flex items-center gap-2">
+                        {isAdmin && (
+                            <Button variant='ghost' onClick={() => router.visit(`/assets/${asset.id}/edit`)} icon={<Edit className="h-4 w-4" />} iconPosition="left">
+                            </Button>
+                        )}
+                    </div>
+                ),
+            },
+        ],
+        [isAdmin],
+    );
 
     return (
         <BaseLayouts>

@@ -101,6 +101,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
     Route::get('/assets/{asset}/edit', [AssetController::class, 'edit'])->name('assets.edit');
     Route::put('/assets/{asset}', [AssetController::class, 'update'])->name('assets.update');
+    Route::post('/assets/{asset}', [AssetController::class, 'update'])->name('assets.update.post');
 
     Route::post('/asset-loans', [AssetLoanController::class, 'store'])->name('asset-loans.store');
 });

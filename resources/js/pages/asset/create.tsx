@@ -1,4 +1,5 @@
 import Alert, { AlertProps } from '@/components/Alert';
+import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -17,6 +18,7 @@ interface CreateAssetPageProps {
         condition: 'good' | 'fair' | 'bad';
         status: 'idle' | 'onloan';
         notes?: string;
+        image?: string;
     };
     flash?: {
         success?: string;
@@ -28,6 +30,7 @@ interface CreateAssetPageProps {
 export default function CreateAssetPage() {
     const { nextCode, asset, flash } = usePage<CreateAssetPageProps>().props;
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
 
     // Determine if we're in edit mode
     const isEditMode = !!asset;
@@ -38,7 +41,15 @@ export default function CreateAssetPage() {
         condition: asset?.condition || ('good' as 'good' | 'fair' | 'bad'),
         status: asset?.status || ('idle' as 'idle' | 'onloan'),
         notes: asset?.notes || '',
+        image: null as File | null,
     });
+
+    // Set preview for edit mode
+    useEffect(() => {
+        if (isEditMode && asset?.image) {
+            setPreview(`/storage/${asset.image}`);
+        }
+    }, [isEditMode, asset]);
 
     // Handle flash messages
     useEffect(() => {
@@ -68,36 +79,30 @@ export default function CreateAssetPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        const submitOptions = {
+            forceFormData: true,
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                // Success handled by flash message
+            },
+            onError: (errors: any) => {
+                setAlert({
+                    type: 'error',
+                    message: '',
+                    errors: errors,
+                });
+            },
+        };
+
         if (isEditMode) {
-            put(`/assets/${asset.id}`, {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    // Success handled by flash message
-                },
-                onError: (errors) => {
-                    setAlert({
-                        type: 'error',
-                        message: '',
-                        errors: errors,
-                    });
-                },
+            // Use POST with method spoofing for file uploads
+            post(`/assets/${asset.id}`, {
+                ...submitOptions,
+                method: 'put',
             });
         } else {
-            post('/assets', {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    // Success handled by flash message
-                },
-                onError: (errors) => {
-                    setAlert({
-                        type: 'error',
-                        message: '',
-                        errors: errors,
-                    });
-                },
-            });
+            post('/assets', submitOptions);
         }
     };
 
@@ -213,6 +218,20 @@ export default function CreateAssetPage() {
                                     placeholder="Masukkan catatan tambahan (opsional)"
                                     helperText="Informasi tambahan tentang asset (opsional)"
                                 />
+                            </div>
+
+                            {/* Image Upload */}
+                            <div>
+                                <FileUpload
+                                    label="Gambar Asset"
+                                    accept="image/*"
+                                    maxSize={2}
+                                    file={data.image}
+                                    preview={preview}
+                                    onChange={(file) => setData('image', file)}
+                                    onPreviewChange={setPreview}
+                                />
+                                <p className="mt-1 text-xs text-green-600">Upload gambar asset untuk dokumentasi (opsional)</p>
                             </div>
 
                             {/* Action Buttons */}

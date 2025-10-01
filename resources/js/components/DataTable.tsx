@@ -43,7 +43,7 @@ export default function DataTable<T>({
                             {columns.map((col) => (
                                 <th
                                     key={col.key}
-                                    className={`px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase ${col.className || ''}`}
+                                    className={`whitespace-nowrap px-6 py-3 text-left text-xs font-medium tracking-wider text-green-800 uppercase ${col.className || ''}`}
                                 >
                                     {col.header}
                                 </th>
@@ -54,7 +54,7 @@ export default function DataTable<T>({
                         {data.map((row, idx) => (
                             <tr key={idx} className="hover:bg-green-50">
                                 {columns.map((col) => (
-                                    <td key={col.key} className={`px-6 py-4 ${col.className || ''}`}>
+                                    <td key={col.key} className={`whitespace-nowrap px-6 py-4 ${col.className || ''}`}>
                                         {col.cell(row)}
                                     </td>
                                 ))}
