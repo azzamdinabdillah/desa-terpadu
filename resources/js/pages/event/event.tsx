@@ -145,7 +145,7 @@ function EventPage() {
                 cell: (item: EventType) => (
                     <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900">{formatDate(item.date_start)}</span>
+                        <span className="text-sm text-green-900">{formatDate(item.date_start, true)}</span>
                     </div>
                 ),
             },
@@ -156,7 +156,7 @@ function EventPage() {
                 cell: (item: EventType) => (
                     <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900">{formatDate(item.date_end)}</span>
+                        <span className="text-sm text-green-900">{formatDate(item.date_end, true)}</span>
                     </div>
                 ),
             },
@@ -217,11 +217,7 @@ function EventPage() {
                             <Eye className="h-4 w-4" />
                         </Button>
                         {isAdmin && (
-                            <Button
-                                variant="ghost"
-                                onClick={() => router.visit(`/events/${item.id}/edit`)}
-                                title="Edit Event"
-                            >
+                            <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}/edit`)} title="Edit Event">
                                 <Pencil className="h-4 w-4" />
                             </Button>
                         )}

@@ -17,6 +17,9 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
+        // Update event statuses based on current date FIRST
+        $this->updateEventStatuses();
+        
         $search = $request->string('q')->toString();
         $status = $request->string('status')->toString();
         $type = $request->string('type')->toString();
@@ -53,6 +56,28 @@ class EventController extends Controller
                 'type' => $type,
             ],
         ]);
+    }
+
+
+    /**
+     * Update event statuses based on current date.
+     */
+    private function updateEventStatuses(): void
+    {
+        $now = now();
+        
+        // Update events that should be finished FIRST (highest priority)
+        Event::where('date_end', '<', $now)
+            ->update(['status' => 'finished']);
+            
+        // Update events that should be ongoing (only if not finished)
+        Event::where('date_start', '<=', $now)
+            ->where('date_end', '>=', $now)
+            ->update(['status' => 'ongoing']);
+            
+        // Update events that should be pending (only if not finished or ongoing)
+        Event::where('date_start', '>', $now)
+            ->update(['status' => 'pending']);
     }
 
     /**

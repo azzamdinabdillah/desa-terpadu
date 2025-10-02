@@ -139,6 +139,22 @@ class Event extends Model
     }
 
     /**
+     * Get the current status based on dates.
+     */
+    public function getCurrentStatus(): string
+    {
+        $now = now();
+        
+        if ($now < $this->date_start) {
+            return 'pending';
+        } elseif ($now >= $this->date_start && $now <= $this->date_end) {
+            return 'ongoing';
+        } else {
+            return 'finished';
+        }
+    }
+
+    /**
      * Scope to get only pending events.
      */
     public function scopePending($query)

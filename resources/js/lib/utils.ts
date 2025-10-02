@@ -128,3 +128,14 @@ export const getReligionLabel = (religion: string) => {
             return religion;
     }
 };
+
+/**
+ * Format date string for datetime-local input in Asia/Jakarta timezone
+ * @param dateString - The date string to format
+ * @returns Formatted date string for datetime-local input (YYYY-MM-DDTHH:mm)
+ */
+export function formatDateForInput(dateString: string): string {
+    const date = new Date(dateString);
+    // Convert to Asia/Jakarta timezone and format for datetime-local input
+    return date.toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16);
+}

@@ -6,6 +6,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { formatDateForInput } from '@/lib/utils';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Calendar, MapPin, Save, Upload, Users } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -36,8 +37,8 @@ export default function CreateEvent() {
     const { data, setData, post, reset, processing, errors } = useForm({
         event_name: event?.event_name || '',
         description: event?.description || '',
-        date_start: event?.date_start ? new Date(event.date_start).toISOString().slice(0, 16) : '',
-        date_end: event?.date_end ? new Date(event.date_end).toISOString().slice(0, 16) : '',
+        date_start: event?.date_start ? formatDateForInput(event.date_start) : '',
+        date_end: event?.date_end ? formatDateForInput(event.date_end) : '',
         location: event?.location || '',
         flyer: null as File | null,
         status: event?.status || ('pending' as 'pending' | 'ongoing' | 'finished'),
