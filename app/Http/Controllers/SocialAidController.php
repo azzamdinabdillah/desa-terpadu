@@ -57,4 +57,20 @@ class SocialAidController extends Controller
             'summary' => $summary,
         ]);
     }
+
+    /**
+     * Display the specified social aid program.
+     */
+    public function show(SocialAidProgram $socialAid)
+    {
+        $program = $socialAid->load([
+            'recipients.citizen',
+            'recipients.family',
+            'recipients.performedBy'
+        ]);
+
+        return Inertia::render('social-aid/detail', [
+            'program' => $program,
+        ]);
+    }
 }

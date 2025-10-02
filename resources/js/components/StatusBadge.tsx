@@ -9,6 +9,8 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         pending: { label: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
         ongoing: { label: 'Berlangsung', className: 'bg-green-100 text-green-800' },
         finished: { label: 'Selesai', className: 'bg-gray-100 text-gray-800' },
+        collected: { label: 'Sudah Diambil', className: 'bg-green-100 text-green-800' },
+        not_collected: { label: 'Belum Diambil', className: 'bg-gray-100 text-gray-800' },
     };
 
     const typeConfig = {

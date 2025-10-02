@@ -19,8 +19,8 @@ export interface SocialAidProgram {
 export interface SocialAidRecipient {
     id: number;
     program_id: number;
-    citizen_id: number;
-    family_id: number;
+    citizen_id?: number | null;
+    family_id?: number | null;
     status: 'collected' | 'not_collected';
     collected_at?: string | null;
     notes?: string | null;
@@ -32,12 +32,16 @@ export interface SocialAidRecipient {
         full_name: string;
         nik: string;
         phone_number?: string;
-    };
+    } | null;
     family?: {
         id: number;
         family_name: string;
         kk_number?: string;
-    };
+    } | null;
+    performed_by?: {
+        id: number;
+        name: string;
+    } | null;
 }
 
 export interface SocialAidSummary {
