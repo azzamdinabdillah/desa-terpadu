@@ -1,0 +1,50 @@
+import type { Paginated } from '@/components/Pagination';
+
+export interface SocialAidProgram {
+    id: number;
+    program_name: string;
+    period: string;
+    image?: string | null;
+    type: 'individual' | 'household' | 'public';
+    quota: number;
+    description?: string | null;
+    location: string;
+    created_at: string;
+    updated_at: string;
+    recipients_count?: number;
+    collected_count?: number;
+    not_collected_count?: number;
+}
+
+export interface SocialAidRecipient {
+    id: number;
+    program_id: number;
+    citizen_id: number;
+    family_id: number;
+    status: 'collected' | 'not_collected';
+    collected_at?: string | null;
+    notes?: string | null;
+    created_at: string;
+    updated_at: string;
+    program?: SocialAidProgram;
+    citizen?: {
+        id: number;
+        full_name: string;
+        nik: string;
+        phone_number?: string;
+    };
+    family?: {
+        id: number;
+        family_name: string;
+        kk_number?: string;
+    };
+}
+
+export interface SocialAidSummary {
+    total_programs: number;
+    total_individual: number;
+    total_household: number;
+    total_public: number;
+}
+
+export type PaginatedSocialAidPrograms = Paginated<SocialAidProgram>;

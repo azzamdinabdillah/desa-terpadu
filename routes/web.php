@@ -8,6 +8,7 @@ use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\CitizenController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\SocialAidController;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,8 @@ Route::get('/', function () {
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+
+Route::get('/social-aid', [SocialAidController::class, 'index'])->name('social-aid.index');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');

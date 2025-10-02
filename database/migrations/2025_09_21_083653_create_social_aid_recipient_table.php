@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('program_id')->constrained('social_aid_programs')->onDelete('cascade');
             $table->enum('status', ['collected', 'not_collected'])->default('not_collected');
             $table->text('note')->nullable();
+            $table->string('image_proof')->nullable();
             $table->foreignId('performed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('collected_at')->nullable();
             $table->timestamps();

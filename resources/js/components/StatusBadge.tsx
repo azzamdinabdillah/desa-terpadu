@@ -1,5 +1,5 @@
 interface StatusBadgeProps {
-    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus';
+    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus' | 'socialAidType';
     value: string;
     className?: string;
 }
@@ -34,6 +34,12 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         rejected: { label: 'Ditolak', className: 'bg-red-100 text-red-800' },
     };
 
+    const socialAidTypeConfig = {
+        individual: { label: 'Individu', className: 'bg-blue-100 text-blue-800' },
+        household: { label: 'Keluarga', className: 'bg-green-100 text-green-800' },
+        public: { label: 'Publik', className: 'bg-purple-100 text-purple-800' },
+    };
+
     let config;
     switch (type) {
         case 'status':
@@ -51,12 +57,17 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         case 'loanStatus':
             config = loanStatusConfig[value as keyof typeof loanStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
             break;
+        case 'socialAidType':
+            config = socialAidTypeConfig[value as keyof typeof socialAidTypeConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
         default:
             config = { label: value, className: 'bg-gray-100 text-gray-800' };
     }
 
     return (
-        <span className={`inline-flex whitespace-nowrap items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className} ${className}`}>
+        <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${config.className} ${className}`}
+        >
             {config.label}
         </span>
     );

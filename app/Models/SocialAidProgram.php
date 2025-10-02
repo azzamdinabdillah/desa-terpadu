@@ -18,6 +18,7 @@ class SocialAidProgram extends Model
     protected $fillable = [
         'program_name',
         'period',
+        'image',
         'type',
         'quota',
         'description',

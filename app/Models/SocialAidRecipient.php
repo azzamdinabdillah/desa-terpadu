@@ -21,6 +21,7 @@ class SocialAidRecipient extends Model
         'program_id',
         'status',
         'note',
+        'image_proof',
         'performed_by',
         'collected_at',
     ];

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('program_name');
             $table->string('period');
+            $table->string('image')->nullable();
             $table->enum('type', ['individual', 'household', 'public']);
             $table->integer('quota');
             $table->text('description')->nullable();
