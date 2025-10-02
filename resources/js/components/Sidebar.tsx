@@ -58,7 +58,10 @@ export const menuItems: MenuItem[] = [
         id: 'social-aid',
         label: 'Bantuan Sosial',
         icon: <HandHeart className="h-5 w-5" />,
-        href: '/social-aid',
+        submenu: [
+            { id: 'social-aid-programs', label: 'Program Bantuan', href: '/social-aid' },
+            { id: 'social-aid-recipients', label: 'Penerima Bantuan', href: '/social-aid/recipients' },
+        ],
     },
     {
         id: 'asset',

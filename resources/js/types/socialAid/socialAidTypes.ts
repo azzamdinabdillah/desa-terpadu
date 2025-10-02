@@ -52,3 +52,4 @@ export interface SocialAidSummary {
 }
 
 export type PaginatedSocialAidPrograms = Paginated<SocialAidProgram>;
+export type PaginatedSocialAidRecipients = Paginated<SocialAidRecipient>;
