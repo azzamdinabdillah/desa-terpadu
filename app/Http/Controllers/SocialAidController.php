@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SocialAidProgram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class SocialAidController extends Controller
@@ -178,6 +179,99 @@ class SocialAidController extends Controller
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan program bantuan sosial: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for editing the specified social aid program.
+     */
+    public function edit(SocialAidProgram $socialAid)
+    {
+        return Inertia::render('social-aid/create', [
+            'program' => $socialAid,
+            'isEdit' => true,
+        ]);
+    }
+
+    /**
+     * Update the specified social aid program in storage.
+     */
+    public function update(Request $request, SocialAidProgram $socialAid)
+    {
+        try {
+            $rules = [
+                'program_name' => 'required|string|max:255',
+                'period' => 'required|string|max:255',
+                'type' => 'required|in:individual,household,public',
+                'date_start' => 'required|date',
+                'date_end' => 'required|date|after:date_start',
+                'quota' => 'required|integer|min:1',
+                'description' => 'nullable|string',
+                'location' => 'required|string|max:255',
+            ];
+
+            // Only validate image if it's present in the request
+            if ($request->hasFile('image')) {
+                $rules['image'] = 'image|mimes:jpeg,png,jpg,gif|max:2048';
+            }
+
+            $validated = $request->validate($rules, [
+                'program_name.required' => 'Nama program wajib diisi.',
+                'program_name.max' => 'Nama program maksimal 255 karakter.',
+                'period.required' => 'Periode wajib diisi.',
+                'type.required' => 'Tipe program wajib dipilih.',
+                'type.in' => 'Tipe program tidak valid.',
+                'date_start.required' => 'Tanggal mulai wajib diisi.',
+                'date_start.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
+                'date_end.required' => 'Tanggal selesai wajib diisi.',
+                'date_end.date' => 'Tanggal selesai harus berupa tanggal yang valid.',
+                'date_end.after' => 'Tanggal selesai harus setelah tanggal mulai.',
+                'quota.required' => 'Kuota wajib diisi.',
+                'quota.integer' => 'Kuota harus berupa angka.',
+                'quota.min' => 'Kuota minimal 1.',
+                'location.required' => 'Lokasi wajib diisi.',
+                'location.max' => 'Lokasi maksimal 255 karakter.',
+                'image.image' => 'File harus berupa gambar.',
+                'image.mimes' => 'Gambar harus berformat JPEG, PNG, JPG, atau GIF.',
+                'image.max' => 'Ukuran gambar maksimal 2MB.',
+            ]);
+
+            $data = $validated;
+            
+            // Set status automatically based on dates
+            $now = now();
+            $dateStart = \Carbon\Carbon::parse($data['date_start']);
+            $dateEnd = \Carbon\Carbon::parse($data['date_end']);
+            
+            if ($dateStart > $now) {
+                $data['status'] = 'pending';
+            } elseif ($dateEnd < $now) {
+                $data['status'] = 'completed';
+            } else {
+                $data['status'] = 'ongoing';
+            }
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($socialAid->image && Storage::disk('public')->exists($socialAid->image)) {
+                    Storage::disk('public')->delete($socialAid->image);
+                }
+                
+                $imagePath = $request->file('image')->store('social-aid', 'public');
+                $data['image'] = $imagePath;
+            }
+            // If no new image uploaded, don't update the image field at all
+
+            $socialAid->update($data);
+
+            return redirect()->route('social-aid.index')->with('success', 'Program bantuan sosial berhasil diperbarui!');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return back with validation errors for Inertia
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui program bantuan sosial: ' . $e->getMessage());
         }
     }
 }

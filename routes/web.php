@@ -117,6 +117,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/social-aid/create', [SocialAidController::class, 'create'])->name('social-aid.create');
     Route::post('/social-aid', [SocialAidController::class, 'store'])->name('social-aid.store');
+    Route::get('/social-aid/{socialAid}/edit', [SocialAidController::class, 'edit'])->name('social-aid.edit');
+    Route::put('/social-aid/{socialAid}', [SocialAidController::class, 'update'])->name('social-aid.update');
+    Route::post('/social-aid/{socialAid}', [SocialAidController::class, 'update'])->name('social-aid.update.post');
 });
 
 // Auth

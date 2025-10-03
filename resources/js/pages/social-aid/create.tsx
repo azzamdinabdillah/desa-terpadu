@@ -17,26 +17,46 @@ interface SocialAidCreatePageProps {
         error?: string;
     };
     errors?: Record<string, string>;
+    program?: {
+        id: number;
+        program_name: string;
+        period: string;
+        type: string;
+        date_start: string;
+        date_end: string;
+        quota: number;
+        description: string;
+        location: string;
+        image?: string;
+    };
+    isEdit?: boolean;
     [key: string]: unknown;
 }
 
 function SocialAidCreatePage() {
-    const { flash } = usePage<SocialAidCreatePageProps>().props;
+    const { flash, program, isEdit } = usePage<SocialAidCreatePageProps>().props;
     const { isAdmin } = useAuth();
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    const { data, setData, post, processing } = useForm({
-        program_name: '',
-        period: '',
-        type: 'individual',
-        date_start: '',
-        date_end: '',
-        quota: '',
-        description: '',
-        location: '',
+    const { data, setData, post, put, processing } = useForm({
+        program_name: program?.program_name || '',
+        period: program?.period || '',
+        type: program?.type || 'individual',
+        date_start: program?.date_start || '',
+        date_end: program?.date_end || '',
+        quota: program?.quota?.toString() || '',
+        description: program?.description || '',
+        location: program?.location || '',
         image: null as File | null,
     });
+
+    // Set image preview for edit mode
+    useEffect(() => {
+        if (isEdit && program?.image) {
+            setImagePreview(`/storage/${program.image}`);
+        }
+    }, [isEdit, program?.image]);
 
     // Handle flash messages
     useEffect(() => {
@@ -54,7 +74,7 @@ function SocialAidCreatePage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/social-aid', {
+        const submitData = {
             forceFormData: true,
             preserveState: true,
             preserveScroll: true,
@@ -68,7 +88,18 @@ function SocialAidCreatePage() {
                     errors: errors,
                 });
             },
-        });
+        };
+
+        if (isEdit && program) {
+            // Use POST with method spoofing for file uploads
+            post(`/social-aid/${program.id}`, {
+                ...submitData,
+                ...data,
+                method: 'put',
+            });
+        } else {
+            post('/social-aid', submitData);
+        }
     };
 
     const programTypes = [
@@ -93,14 +124,18 @@ function SocialAidCreatePage() {
     return (
         <BaseLayouts>
             <div>
-                <Header showBackButton title="Buat Program Bantuan Sosial" icon="🤝" />
+                <Header showBackButton title={isEdit ? 'Edit Program Bantuan Sosial' : 'Buat Program Bantuan Sosial'} icon="🤝" />
 
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage
-                        title="Buat Program Bantuan Sosial"
-                        description="Buat program bantuan sosial. Status program akan otomatis diatur berdasarkan tanggal mulai dan selesai."
+                        title={isEdit ? 'Edit Program Bantuan Sosial' : 'Buat Program Bantuan Sosial'}
+                        description={
+                            isEdit
+                                ? 'Edit program bantuan sosial. Status program akan otomatis diatur berdasarkan tanggal mulai dan selesai.'
+                                : 'Buat program bantuan sosial. Status program akan otomatis diatur berdasarkan tanggal mulai dan selesai.'
+                        }
                     />
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Program Information Card */}
@@ -234,7 +269,7 @@ function SocialAidCreatePage() {
                                 Batal
                             </Button>
                             <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
-                                {processing ? 'Menyimpan...' : 'Simpan Program'}
+                                {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Program' : 'Simpan Program'}
                             </Button>
                         </div>
                     </form>
