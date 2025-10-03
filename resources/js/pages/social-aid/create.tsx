@@ -2,6 +2,7 @@ import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
@@ -30,6 +31,9 @@ function SocialAidCreatePage() {
         program_name: '',
         period: '',
         type: 'individual',
+        status: 'pending',
+        date_start: '',
+        date_end: '',
         quota: '',
         description: '',
         location: '',
@@ -72,6 +76,9 @@ function SocialAidCreatePage() {
         submitData.append('program_name', formData.program_name);
         submitData.append('period', formData.period);
         submitData.append('type', formData.type);
+        submitData.append('status', formData.status);
+        submitData.append('date_start', formData.date_start);
+        submitData.append('date_end', formData.date_end);
         submitData.append('quota', formData.quota);
         submitData.append('description', formData.description);
         submitData.append('location', formData.location);
@@ -99,6 +106,12 @@ function SocialAidCreatePage() {
         { value: 'public', label: 'Publik', description: 'Program untuk umum' },
     ];
 
+    const statusOptions = [
+        { value: 'pending', label: 'Menunggu', description: 'Program belum dimulai' },
+        { value: 'ongoing', label: 'Berlangsung', description: 'Program sedang berjalan' },
+        { value: 'completed', label: 'Selesai', description: 'Program telah selesai' },
+    ];
+
     if (!isAdmin) {
         return (
             <BaseLayouts>
@@ -120,6 +133,10 @@ function SocialAidCreatePage() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
+                    <HeaderPage
+                        title="Buat Program Bantuan Sosial"
+                        description="Buat program bantuan sosial"
+                    />
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Program Information Card */}
                         <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
@@ -165,6 +182,43 @@ function SocialAidCreatePage() {
                                         options={programTypes}
                                         placeholder="Pilih tipe program"
                                         error={errors?.type}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Status */}
+                                <div>
+                                    <Select
+                                        label="Status Program"
+                                        value={formData.status}
+                                        onChange={(value) => handleInputChange('status', value)}
+                                        options={statusOptions}
+                                        placeholder="Pilih status program"
+                                        error={errors?.status}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Date Start */}
+                                <div>
+                                    <InputField
+                                        label="Tanggal Mulai"
+                                        type="date"
+                                        value={formData.date_start}
+                                        onChange={(value) => handleInputChange('date_start', value)}
+                                        error={errors?.date_start}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Date End */}
+                                <div>
+                                    <InputField
+                                        label="Tanggal Selesai"
+                                        type="date"
+                                        value={formData.date_end}
+                                        onChange={(value) => handleInputChange('date_end', value)}
+                                        error={errors?.date_end}
                                         required
                                     />
                                 </div>

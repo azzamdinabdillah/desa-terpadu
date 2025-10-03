@@ -2,6 +2,7 @@ import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
@@ -128,6 +129,10 @@ function SocialAidDetailPage() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                    <HeaderPage
+                        title="Detail Program Bantuan Sosial"
+                        description='Detail program bantuan sosial'
+                    />
                     {/* Program Information Card */}
                     <div className="mb-8 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                         <div className="mb-6 flex items-start justify-between">
@@ -151,9 +156,12 @@ function SocialAidDetailPage() {
                                 )}
                                 <div>
                                     <h1 className="mb-2 text-2xl font-bold text-green-900">{program.program_name}</h1>
-                                    <div className="flex items-center gap-4 text-sm text-green-700">
+                                    <div className="flex flex-wrap items-center gap-4 text-sm text-green-700">
                                         <div className="flex items-center gap-1">
                                             <StatusBadge type="socialAidType" value={program.type} />
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <StatusBadge type="socialAidStatus" value={program.status} />
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <Calendar className="h-4 w-4" />
@@ -249,6 +257,18 @@ function SocialAidDetailPage() {
                                     <div className="flex justify-between">
                                         <span>Tipe Program:</span>
                                         <span className="font-medium">{getTypeLabel(program.type)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Status:</span>
+                                        <StatusBadge type="socialAidStatus" value={program.status} />
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Tanggal Mulai:</span>
+                                        <span className="font-medium">{formatDate(program.date_start)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Tanggal Selesai:</span>
+                                        <span className="font-medium">{formatDate(program.date_end)}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>Dibuat:</span>

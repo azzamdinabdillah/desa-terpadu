@@ -1,5 +1,5 @@
 interface StatusBadgeProps {
-    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus' | 'socialAidType';
+    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus' | 'socialAidType' | 'socialAidStatus';
     value: string;
     className?: string;
 }
@@ -42,6 +42,12 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         public: { label: 'Publik', className: 'bg-purple-100 text-purple-800' },
     };
 
+    const socialAidStatusConfig = {
+        pending: { label: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
+        ongoing: { label: 'Berlangsung', className: 'bg-green-100 text-green-800' },
+        completed: { label: 'Selesai', className: 'bg-gray-100 text-gray-800' },
+    };
+
     let config;
     switch (type) {
         case 'status':
@@ -61,6 +67,9 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
             break;
         case 'socialAidType':
             config = socialAidTypeConfig[value as keyof typeof socialAidTypeConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'socialAidStatus':
+            config = socialAidStatusConfig[value as keyof typeof socialAidStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
             break;
         default:
             config = { label: value, className: 'bg-gray-100 text-gray-800' };

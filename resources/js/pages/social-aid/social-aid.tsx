@@ -10,9 +10,9 @@ import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
-import { PaginatedSocialAidPrograms, SocialAidProgram, SocialAidSummary } from '@/types/socialAid/socialAidTypes';
+import { PaginatedSocialAidPrograms, SocialAidProgram } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Circle, CheckCircle, Edit, Eye, HandHeart, MapPin, Plus, Search } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Edit, Eye, HandHeart, MapPin, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidPageProps {
@@ -97,6 +97,12 @@ function SocialAidPage() {
                 cell: (item: SocialAidProgram) => <StatusBadge type="socialAidType" value={item.type} />,
             },
             {
+                key: 'status',
+                header: 'Status',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidProgram) => <StatusBadge type="socialAidStatus" value={item.status} />,
+            },
+            {
                 key: 'period',
                 header: 'Periode',
                 className: 'whitespace-nowrap',
@@ -104,6 +110,17 @@ function SocialAidPage() {
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-600" />
                         <span className="text-sm text-green-900">{item.period}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'date_range',
+                header: 'Tanggal',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidProgram) => (
+                    <div className="text-sm">
+                        <div className="text-green-900">{formatDate(item.date_start)}</div>
+                        <div className="text-xs text-green-600">s/d {formatDate(item.date_end)}</div>
                     </div>
                 ),
             },

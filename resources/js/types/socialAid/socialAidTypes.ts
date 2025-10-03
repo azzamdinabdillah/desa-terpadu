@@ -6,9 +6,13 @@ export interface SocialAidProgram {
     period: string;
     image?: string | null;
     type: 'individual' | 'household' | 'public';
+    status: 'pending' | 'ongoing' | 'completed';
+    date_start: string;
+    date_end: string;
     quota: number;
     description?: string | null;
     location: string;
+    created_by: number;
     created_at: string;
     updated_at: string;
     recipients_count?: number;

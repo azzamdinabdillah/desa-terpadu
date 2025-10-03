@@ -88,8 +88,33 @@ class SocialAidController extends Controller
      */
     public function store(Request $request)
     {
-        // For now, just return a success message
-        // The actual store implementation will be added later
+        $request->validate([
+            'program_name' => 'required|string|max:255',
+            'period' => 'required|string|max:255',
+            'type' => 'required|in:individual,household,public',
+            'status' => 'required|in:pending,ongoing,completed',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
+            'quota' => 'required|integer|min:1',
+            'description' => 'nullable|string',
+            'location' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $data = $request->only([
+            'program_name', 'period', 'type', 'status', 'date_start', 
+            'date_end', 'quota', 'description', 'location'
+        ]);
+        
+        $data['created_by'] = auth()->id();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('announcements', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        SocialAidProgram::create($data);
+
         return redirect()->route('social-aid.index')->with('success', 'Program bantuan sosial berhasil dibuat!');
     }
 }
