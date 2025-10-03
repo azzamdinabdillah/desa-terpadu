@@ -9,10 +9,33 @@ use Inertia\Inertia;
 class SocialAidController extends Controller
 {
     /**
+     * Update social aid program statuses automatically based on dates.
+     */
+    private function updateSocialAidStatuses(): void
+    {
+        $now = now();
+        
+        // Update programs that should be completed FIRST (highest priority)
+        SocialAidProgram::where('date_end', '<', $now)
+            ->update(['status' => 'completed']);
+            
+        // Update programs that should be ongoing (only if not completed)
+        SocialAidProgram::where('date_start', '<=', $now)
+            ->where('date_end', '>=', $now)
+            ->update(['status' => 'ongoing']);
+            
+        // Update programs that should be pending (only if not completed or ongoing)
+        SocialAidProgram::where('date_start', '>', $now)
+            ->update(['status' => 'pending']);
+    }
+
+    /**
      * Display the social aid programs page.
      */
     public function index(Request $request)
     {
+        // Update statuses before displaying
+        $this->updateSocialAidStatuses();
         $query = SocialAidProgram::withCount(['recipients', 'recipients as collected_count' => function ($q) {
             $q->where('status', 'collected');
         }, 'recipients as not_collected_count' => function ($q) {
@@ -64,6 +87,9 @@ class SocialAidController extends Controller
      */
     public function show(SocialAidProgram $socialAid)
     {
+        // Update statuses before displaying
+        $this->updateSocialAidStatuses();
+        
         $program = $socialAid->load([
             'recipients.citizen',
             'recipients.family',
