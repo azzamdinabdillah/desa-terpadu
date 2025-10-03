@@ -56,6 +56,13 @@ function CreateRecipientPage() {
         label: `${program.program_name} (${program.period})`,
     }));
 
+    // Quota counters (existing from DB + new selections)
+    const existingCount = selectedProgramData?.recipients_count ?? 0;
+    const newSelectedCount = recipients.filter((r) => r.citizen_id || r.family_id).length;
+    const quota = selectedProgramData?.quota ?? 0;
+    const totalSelectedWithExisting = existingCount + newSelectedCount;
+    const remainingSlots = quota ? Math.max(quota - totalSelectedWithExisting, 0) : 0;
+
     // Check if there are any recipients with data
     const hasRecipientsWithData = recipients.some(
         (recipient) => recipient.citizen_id || recipient.family_id || (recipient.note && recipient.note.trim() !== ''),
@@ -86,6 +93,14 @@ function CreateRecipientPage() {
     };
 
     const addRecipient = () => {
+        const quota = selectedProgramData?.quota ?? 0;
+        const existingCount = selectedProgramData?.recipients_count ?? 0;
+        const currentNewCount = recipients.filter((r) => r.citizen_id || r.family_id).length;
+        const remaining = quota ? Math.max(quota - existingCount, 0) : 0;
+        if (quota && currentNewCount >= remaining) {
+            setAlert({ type: 'error', message: 'Jumlah penerima sudah mencapai kuota program (tidak ada sisa kuota).' });
+            return;
+        }
         const newId = (recipients.length + 1).toString();
         setRecipients([
             ...recipients,
@@ -153,6 +168,14 @@ function CreateRecipientPage() {
         }
 
         const validRecipients = recipients.filter((recipient) => recipient.citizen_id || recipient.family_id);
+
+        // Enforce quota on client side before submit (include existing recipients)
+        const quota = selectedProgramData?.quota ?? 0;
+        const existingCount = selectedProgramData?.recipients_count ?? 0;
+        if (quota && existingCount + validRecipients.length > quota) {
+            setAlert({ type: 'error', message: 'Jumlah penerima melebihi kuota program.' });
+            return;
+        }
 
         if (validRecipients.length === 0) {
             setAlert({ type: 'error', message: 'Minimal pilih satu penerima bantuan' });
@@ -233,7 +256,15 @@ function CreateRecipientPage() {
                         {/* Recipients Section */}
                         <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                             <div className="mb-4 flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-green-900">Penerima Bantuan Sosial</h3>
+                                <div className="flex items-center gap-3">
+                                    <h3 className="text-lg font-semibold text-green-900">Penerima Bantuan Sosial</h3>
+                                    {selectedProgram && (
+                                        <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
+                                            Kuota&nbsp;:&nbsp;
+                                            {totalSelectedWithExisting}/{quota}
+                                        </span>
+                                    )}
+                                </div>
                                 {selectedProgram && (
                                     <Button
                                         onClick={addRecipient}
@@ -241,6 +272,8 @@ function CreateRecipientPage() {
                                         icon={<Plus className="h-4 w-4" />}
                                         iconPosition="left"
                                         size="sm"
+                                        disabled={Boolean(quota && remainingSlots === 0)}
+                                        className={quota && remainingSlots === 0 ? 'cursor-not-allowed opacity-50' : ''}
                                     >
                                         Tambah Penerima
                                     </Button>

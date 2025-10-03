@@ -84,8 +84,9 @@ class SocialAidRecipientController extends Controller
     public function create()
     {
         // Get all programs (exclude public type)
-        $programs = SocialAidProgram::select('id', 'program_name', 'period', 'type')
+        $programs = SocialAidProgram::select('id', 'program_name', 'period', 'type', 'quota')
             ->where('type', '!=', 'public')
+            ->withCount('recipients')
             ->orderBy('program_name')
             ->get();
 
@@ -182,6 +183,15 @@ class SocialAidRecipientController extends Controller
         }
 
         DB::transaction(function () use ($filtered, $program) {
+            // Ensure quota is not exceeded (race-condition safe)
+            $existingCount = SocialAidRecipient::where('program_id', $program->id)
+                ->lockForUpdate()
+                ->count();
+            $incoming = count($filtered);
+            if ($existingCount + $incoming > (int) $program->quota) {
+                abort(redirect()->back()->with('error', 'Jumlah penerima melebihi kuota program.')->withInput());
+            }
+
             $now = now();
             $rows = array_map(function ($r) use ($program, $now) {
                 return [
