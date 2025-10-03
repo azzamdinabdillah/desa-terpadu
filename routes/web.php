@@ -114,6 +114,9 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/asset-loans/{assetLoan}', [AssetLoanController::class, 'update'])->name('asset-loans.update');
     Route::post('/asset-loans/{assetLoan}', [AssetLoanController::class, 'update'])->name('asset-loans.update.post');
+
+    Route::get('/social-aid/create', [SocialAidController::class, 'create'])->name('social-aid.create');
+    Route::post('/social-aid', [SocialAidController::class, 'store'])->name('social-aid.store');
 });
 
 // Auth

@@ -74,4 +74,22 @@ class SocialAidController extends Controller
             'program' => $program,
         ]);
     }
+
+    /**
+     * Show the form for creating a new social aid program.
+     */
+    public function create()
+    {
+        return Inertia::render('social-aid/create');
+    }
+
+    /**
+     * Store a newly created social aid program in storage.
+     */
+    public function store(Request $request)
+    {
+        // For now, just return a success message
+        // The actual store implementation will be added later
+        return redirect()->route('social-aid.index')->with('success', 'Program bantuan sosial berhasil dibuat!');
+    }
 }

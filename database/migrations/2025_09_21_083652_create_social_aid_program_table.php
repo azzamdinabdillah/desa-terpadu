@@ -17,9 +17,13 @@ return new class extends Migration
             $table->string('period');
             $table->string('image')->nullable();
             $table->enum('type', ['individual', 'household', 'public']);
+            $table->enum('status', ['pending', 'ongoing', 'completed']);
+            $table->date('date_start');
+            $table->date('date_end');
             $table->integer('quota');
             $table->text('description')->nullable();
             $table->string('location');
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
