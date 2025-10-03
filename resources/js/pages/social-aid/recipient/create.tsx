@@ -48,7 +48,7 @@ function CreateRecipientPage() {
     }, [flash?.success, flash?.error]);
 
     // Get selected program details
-    const selectedProgramData = programs.find((p) => p.id.toString() === selectedProgram);    
+    const selectedProgramData = programs.find((p) => p.id.toString() === selectedProgram);
 
     // Prepare program options
     const programOptions = programs.map((program) => ({
@@ -176,11 +176,24 @@ function CreateRecipientPage() {
             return;
         }
 
-        // TODO: Implement store functionality
-        console.log('Selected Program:', selectedProgram);
-        console.log('Recipients:', validRecipients);
-
-        setAlert({ type: 'success', message: 'Fitur store akan diimplementasikan nanti' });
+        router.post(
+            '/social-aid/recipients',
+            {
+                program_id: parseInt(selectedProgram),
+                recipients: validRecipients.map((r) => ({
+                    citizen_id: r.citizen_id ?? undefined,
+                    family_id: r.family_id ?? undefined,
+                    note: r.note ?? undefined,
+                })),
+            },
+            {
+                preserveScroll: true,
+                onError: (errors) => {
+                    const firstError = typeof errors === 'object' ? Object.values(errors)[0] : null;
+                    setAlert({ type: 'error', message: (firstError as string) || 'Gagal menyimpan penerima bantuan sosial' });
+                },
+            },
+        );
     };
 
     return (
@@ -266,7 +279,7 @@ function CreateRecipientPage() {
                                                                 const isSelected = recipients.some(
                                                                     (r) => r.id !== recipient.id && r.citizen_id === citizen.id,
                                                                 );
-                                                                
+
                                                                 return {
                                                                     value: citizen.id.toString(),
                                                                     label: `${citizen.full_name} (${citizen.nik})${isSelected ? ' - Sudah dipilih' : ''}`,
