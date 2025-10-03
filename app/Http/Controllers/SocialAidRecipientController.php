@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\SocialAidRecipient;
 use App\Models\SocialAidProgram;
+use App\Models\Citizen;
+use App\Models\Family;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -72,6 +74,34 @@ class SocialAidRecipientController extends Controller
                 'program_id' => $request->program_id,
                 'status' => $request->status,
             ],
+        ]);
+    }
+
+    /**
+     * Show the form for creating new social aid recipients.
+     */
+    public function create()
+    {
+        // Get all programs (exclude public type)
+        $programs = SocialAidProgram::select('id', 'program_name', 'period', 'type')
+            ->where('type', '!=', 'public')
+            ->orderBy('program_name')
+            ->get();
+
+        // Get all citizens
+        $citizens = Citizen::select('id', 'full_name', 'nik', 'phone_number')
+            ->orderBy('full_name')
+            ->get();
+
+        // Get all families
+        $families = Family::select('id', 'family_name', 'kk_number')
+            ->orderBy('family_name')
+            ->get();
+
+        return Inertia::render('social-aid/recipient/create', [
+            'programs' => $programs,
+            'citizens' => $citizens,
+            'families' => $families,
         ]);
     }
 }

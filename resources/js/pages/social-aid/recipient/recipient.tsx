@@ -13,7 +13,7 @@ import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, CheckCircle, Circle, Eye, Filter, HandHeart, Search, Users, X } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Eye, Filter, HandHeart, Plus, Search, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidRecipientPageProps {
@@ -285,6 +285,14 @@ function SocialAidRecipientPage() {
                                 placeholder="Filter berdasarkan status"
                                 className="w-48"
                             />
+
+                            <Button
+                                onClick={() => router.visit('/social-aid/recipients/create')}
+                                icon={<Plus className="h-4 w-4" />}
+                                iconPosition="left"
+                            >
+                                Tambah Penerima
+                            </Button>
                         </div>
                     </div>
 
