@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -12,7 +13,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { PaginatedSocialAidPrograms, SocialAidProgram } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Circle, Edit, Eye, HandHeart, MapPin, Plus, Search } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Edit, Eye, HandHeart, MapPin, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidPageProps {
@@ -41,6 +42,8 @@ function SocialAidPage() {
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
     const [selectedType, setSelectedType] = useState(filters.type || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteProgram, setDeleteProgram] = useState<SocialAidProgram | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -75,6 +78,32 @@ function SocialAidPage() {
         if (total === 0) return 0;
         const collected = program.collected_count || 0;
         return Math.round((collected / total) * 100);
+    };
+
+    const handleDelete = (program: SocialAidProgram) => {
+        setDeleteProgram(program);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (deleteProgram) {
+            router.delete(`/social-aid/${deleteProgram.id}`, {
+                onSuccess: () => {
+                    setShowDeleteModal(false);
+                    setDeleteProgram(null);
+                },
+                onError: (errors) => {
+                    setAlert({ type: 'error', message: 'Gagal menghapus program bantuan sosial' });
+                    setShowDeleteModal(false);
+                    setDeleteProgram(null);
+                },
+            });
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setDeleteProgram(null);
     };
 
     const columns = useMemo(
@@ -218,7 +247,9 @@ function SocialAidPage() {
                 cell: (item: SocialAidProgram) => (
                     <div className="flex items-center gap-2">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                            <span className="text-xs font-medium text-green-600">{item.created_by?.citizen?.full_name?.charAt(0)?.toUpperCase() || 'U'}</span>
+                            <span className="text-xs font-medium text-green-600">
+                                {item.created_by?.citizen?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                            </span>
                         </div>
                         <span className="text-sm text-green-900">{item.created_by?.citizen?.full_name || 'Unknown'}</span>
                     </div>
@@ -234,9 +265,18 @@ function SocialAidPage() {
                             <Eye className="h-4 w-4" />
                         </Button>
                         {isAdmin && (
-                            <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.id}/edit`)}>
-                                <Edit className="h-4 w-4" />
-                            </Button>
+                            <>
+                                <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.id}/edit`)}>
+                                    <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => handleDelete(item)}
+                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </>
                         )}
                     </div>
                 ),
@@ -341,6 +381,28 @@ function SocialAidPage() {
                     />
                 </div>
             </div>
+
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={handleDeleteCancel}
+                onConfirm={handleDeleteConfirm}
+                title="Konfirmasi Hapus Program Bantuan Sosial"
+                message={
+                    deleteProgram ? (
+                        <div>
+                            <p className="mb-2">
+                                Apakah Anda yakin ingin menghapus program{' '}
+                                <span className="font-semibold text-red-900">"{deleteProgram.program_name}"</span>?
+                            </p>
+                            <p className="text-sm text-gray-600">Semua data penerima dan file terkait akan dihapus secara permanen.</p>
+                        </div>
+                    ) : (
+                        'Apakah Anda yakin ingin menghapus program bantuan sosial ini?'
+                    )
+                }
+                confirmText="Hapus"
+                cancelText="Batal"
+            />
         </BaseLayouts>
     );
 }

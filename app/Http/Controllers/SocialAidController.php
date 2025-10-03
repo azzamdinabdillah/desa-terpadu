@@ -274,4 +274,34 @@ class SocialAidController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat memperbarui program bantuan sosial: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Remove the specified social aid program from storage.
+     */
+    public function destroy(SocialAidProgram $socialAid)
+    {
+        // Delete social aid program image if exists
+        if ($socialAid->image && Storage::disk('public')->exists($socialAid->image)) {
+            Storage::disk('public')->delete($socialAid->image);
+        }
+
+        // Delete all related recipient images before deleting the program
+        // This prevents orphaned files in storage since cascade delete will remove the records
+        $recipients = $socialAid->recipients;
+        foreach ($recipients as $recipient) {
+            // Delete image_proof if exists
+            if ($recipient->image_proof && Storage::disk('public')->exists($recipient->image_proof)) {
+                Storage::disk('public')->delete($recipient->image_proof);
+            }
+        }
+
+        // Store program name for success message
+        $programName = $socialAid->program_name;
+
+        // Delete the program (this will cascade delete all related recipients)
+        $socialAid->delete();
+
+        return redirect()->route('social-aid.index')
+            ->with('success', 'Program bantuan sosial "' . $programName . '" berhasil dihapus');
+    }
 }

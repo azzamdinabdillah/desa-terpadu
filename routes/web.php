@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/social-aid/{socialAid}/edit', [SocialAidController::class, 'edit'])->name('social-aid.edit');
     Route::put('/social-aid/{socialAid}', [SocialAidController::class, 'update'])->name('social-aid.update');
     Route::post('/social-aid/{socialAid}', [SocialAidController::class, 'update'])->name('social-aid.update.post');
+    Route::delete('/social-aid/{socialAid}', [SocialAidController::class, 'destroy'])->name('social-aid.destroy');
 });
 
 // Auth
