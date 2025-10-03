@@ -37,7 +37,7 @@ class SocialAidController extends Controller
     {
         // Update statuses before displaying
         $this->updateSocialAidStatuses();
-        $query = SocialAidProgram::with(['createdBy as creator'])
+        $query = SocialAidProgram::with(['createdBy.citizen'])
             ->withCount(['recipients', 'recipients as collected_count' => function ($q) {
                 $q->where('status', 'collected');
             }, 'recipients as not_collected_count' => function ($q) {

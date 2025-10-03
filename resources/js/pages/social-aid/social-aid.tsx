@@ -218,9 +218,9 @@ function SocialAidPage() {
                 cell: (item: SocialAidProgram) => (
                     <div className="flex items-center gap-2">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                            <span className="text-xs font-medium text-green-600">{item.creator?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+                            <span className="text-xs font-medium text-green-600">{item.created_by?.citizen?.full_name?.charAt(0)?.toUpperCase() || 'U'}</span>
                         </div>
-                        <span className="text-sm text-green-900">{item.creator?.name || 'Unknown'}</span>
+                        <span className="text-sm text-green-900">{item.created_by?.citizen?.full_name || 'Unknown'}</span>
                     </div>
                 ),
             },

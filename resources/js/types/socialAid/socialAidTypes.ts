@@ -1,4 +1,5 @@
 import type { Paginated } from '@/components/Pagination';
+import type { CitizenType } from '../citizen/citizenType';
 
 export interface SocialAidProgram {
     id: number;
@@ -12,16 +13,14 @@ export interface SocialAidProgram {
     quota: number;
     description?: string | null;
     location: string;
-    created_by: number;
     created_at: string;
     updated_at: string;
     recipients_count?: number;
     collected_count?: number;
     not_collected_count?: number;
-    creator?: {
-        id: number;
-        name: string;
-    } | null;
+    created_by?: {
+        citizen: CitizenType;
+    };
 }
 
 export interface SocialAidRecipient {
