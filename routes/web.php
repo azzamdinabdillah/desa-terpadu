@@ -9,6 +9,7 @@ use App\Http\Controllers\CitizenController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SocialAidController;
+use App\Http\Controllers\SocialAidRecipientController;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
@@ -46,7 +47,7 @@ Route::get('/announcement', [AnnouncementController::class, 'index'])->name('ann
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 
 Route::get('/social-aid', [SocialAidController::class, 'index'])->name('social-aid.index');
-Route::get('/social-aid/recipients', [SocialAidController::class, 'recipients'])->name('social-aid.recipients');
+Route::get('/social-aid/recipients', [SocialAidRecipientController::class, 'index'])->name('social-aid.recipients');
 Route::get('/social-aid/{socialAid}', [SocialAidController::class, 'show'])->where('socialAid', '[0-9]+')->name('social-aid.show');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');

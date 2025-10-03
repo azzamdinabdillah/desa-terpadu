@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, CheckCircle, Circle, Edit, HandHeart, MapPin, Users } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Edit, HandHeart, MapPin, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidDetailPageProps {
@@ -264,30 +264,32 @@ function SocialAidDetailPage() {
                     </div>
 
                     {/* Recipients Table */}
-                    <div className="rounded-lg border border-green-200 bg-white shadow-sm">
-                        <div className="border-b border-green-200 p-6">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-xl font-bold text-green-900">Daftar Penerima Bantuan</h2>
-                                <span className="text-sm text-green-600">{totalRecipients} penerima terdaftar</span>
+                    {program.type !== 'public' ? (
+                        <div className="rounded-lg border border-green-200 bg-white shadow-sm">
+                            <div className="border-b border-green-200 p-6">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-xl font-bold text-green-900">Daftar Penerima Bantuan</h2>
+                                    <span className="text-sm text-green-600">{totalRecipients} penerima terdaftar</span>
+                                </div>
+                            </div>
+
+                            <div className="p-6">
+                                <DataTable
+                                    columns={recipientColumns}
+                                    data={program.recipients || []}
+                                    emptyMessage={
+                                        <div>
+                                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                                                <Users className="h-8 w-8 text-green-600" />
+                                            </div>
+                                            <h3 className="mb-2 text-lg font-semibold text-green-900">Belum ada penerima bantuan</h3>
+                                            <p className="mb-6 text-green-700">Program ini belum memiliki penerima bantuan yang terdaftar.</p>
+                                        </div>
+                                    }
+                                />
                             </div>
                         </div>
-
-                        <div className="p-6">
-                            <DataTable
-                                columns={recipientColumns}
-                                data={program.recipients || []}
-                                emptyMessage={
-                                    <div>
-                                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                                            <Users className="h-8 w-8 text-green-600" />
-                                        </div>
-                                        <h3 className="mb-2 text-lg font-semibold text-green-900">Belum ada penerima bantuan</h3>
-                                        <p className="mb-6 text-green-700">Program ini belum memiliki penerima bantuan yang terdaftar.</p>
-                                    </div>
-                                }
-                            />
-                        </div>
-                    </div>
+                    ) : null}
                 </div>
             </div>
         </BaseLayouts>
