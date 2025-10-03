@@ -6,28 +6,17 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { CitizenType } from '@/types/citizen/citizenType';
+import { FamilyType } from '@/types/familyType';
 import { SocialAidProgram } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
 import { Minus, Plus, UserCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface Citizen {
-    id: number;
-    full_name: string;
-    nik: string;
-    phone_number?: string;
-}
-
-interface Family {
-    id: number;
-    family_name: string;
-    kk_number?: string;
-}
-
 interface CreateRecipientPageProps {
     programs: SocialAidProgram[];
-    citizens: Citizen[];
-    families: Family[];
+    citizens: CitizenType[];
+    families: FamilyType[];
     flash?: {
         success?: string;
         error?: string;
@@ -59,7 +48,7 @@ function CreateRecipientPage() {
     }, [flash?.success, flash?.error]);
 
     // Get selected program details
-    const selectedProgramData = programs.find((p) => p.id.toString() === selectedProgram);
+    const selectedProgramData = programs.find((p) => p.id.toString() === selectedProgram);    
 
     // Prepare program options
     const programOptions = programs.map((program) => ({
@@ -277,6 +266,7 @@ function CreateRecipientPage() {
                                                                 const isSelected = recipients.some(
                                                                     (r) => r.id !== recipient.id && r.citizen_id === citizen.id,
                                                                 );
+                                                                
                                                                 return {
                                                                     value: citizen.id.toString(),
                                                                     label: `${citizen.full_name} (${citizen.nik})${isSelected ? ' - Sudah dipilih' : ''}`,
