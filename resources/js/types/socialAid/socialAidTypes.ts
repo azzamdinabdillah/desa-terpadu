@@ -18,6 +18,10 @@ export interface SocialAidProgram {
     recipients_count?: number;
     collected_count?: number;
     not_collected_count?: number;
+    creator?: {
+        id: number;
+        name: string;
+    } | null;
 }
 
 export interface SocialAidRecipient {

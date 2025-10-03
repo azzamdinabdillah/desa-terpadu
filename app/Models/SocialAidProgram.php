@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SocialAidProgram extends Model
 {
@@ -20,9 +21,13 @@ class SocialAidProgram extends Model
         'period',
         'image',
         'type',
+        'status',
+        'date_start',
+        'date_end',
         'quota',
         'description',
         'location',
+        'created_by',
     ];
 
     /**
@@ -31,6 +36,14 @@ class SocialAidProgram extends Model
     public function recipients(): HasMany
     {
         return $this->hasMany(SocialAidRecipient::class, 'program_id');
+    }
+
+    /**
+     * Get the user who created this program.
+     */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**

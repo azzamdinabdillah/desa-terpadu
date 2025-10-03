@@ -7,7 +7,7 @@ import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
-import { router, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { Calendar, HandHeart, MapPin, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -21,17 +21,15 @@ interface SocialAidCreatePageProps {
 }
 
 function SocialAidCreatePage() {
-    const { flash, errors } = usePage<SocialAidCreatePageProps>().props;
+    const { flash } = usePage<SocialAidCreatePageProps>().props;
     const { isAdmin } = useAuth();
     const [alert, setAlert] = useState<AlertProps | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    // Form state
-    const [formData, setFormData] = useState({
+    const { data, setData, post, processing } = useForm({
         program_name: '',
         period: '',
         type: 'individual',
-        status: 'pending',
         date_start: '',
         date_end: '',
         quota: '',
@@ -40,62 +38,35 @@ function SocialAidCreatePage() {
         image: null as File | null,
     });
 
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-
+    // Handle flash messages
     useEffect(() => {
         if (flash?.success) {
             setAlert({ type: 'success', message: flash.success });
+            // Redirect to social aid list after success
+            setTimeout(() => {
+                router.visit('/social-aid');
+            }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
         }
-    }, [flash?.success, flash?.error]);
-
-    const handleInputChange = (field: string, value: string) => {
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-    };
-
-    const handleFileChange = (file: File | null) => {
-        setFormData((prev) => ({
-            ...prev,
-            image: file,
-        }));
-    };
-
-    const handlePreviewChange = (preview: string | null) => {
-        setImagePreview(preview);
-    };
+    }, [flash]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        const submitData = new FormData();
-        submitData.append('program_name', formData.program_name);
-        submitData.append('period', formData.period);
-        submitData.append('type', formData.type);
-        submitData.append('status', formData.status);
-        submitData.append('date_start', formData.date_start);
-        submitData.append('date_end', formData.date_end);
-        submitData.append('quota', formData.quota);
-        submitData.append('description', formData.description);
-        submitData.append('location', formData.location);
-
-        if (formData.image) {
-            submitData.append('image', formData.image);
-        }
-
-        router.post('/social-aid', submitData, {
+        post('/social-aid', {
+            forceFormData: true,
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
-                setAlert({ type: 'success', message: 'Program bantuan sosial berhasil dibuat!' });
+                // Success handled by flash message
             },
-            onError: () => {
-                setAlert({ type: 'error', message: 'Terjadi kesalahan saat membuat program bantuan sosial.' });
-            },
-            onFinish: () => {
-                setIsSubmitting(false);
+            onError: (errors: Record<string, string | string[]>) => {
+                setAlert({
+                    type: 'error',
+                    message: '',
+                    errors: errors,
+                });
             },
         });
     };
@@ -104,12 +75,6 @@ function SocialAidCreatePage() {
         { value: 'individual', label: 'Individu', description: 'Program untuk individu' },
         { value: 'household', label: 'Keluarga', description: 'Program untuk keluarga' },
         { value: 'public', label: 'Publik', description: 'Program untuk umum' },
-    ];
-
-    const statusOptions = [
-        { value: 'pending', label: 'Menunggu', description: 'Program belum dimulai' },
-        { value: 'ongoing', label: 'Berlangsung', description: 'Program sedang berjalan' },
-        { value: 'completed', label: 'Selesai', description: 'Program telah selesai' },
     ];
 
     if (!isAdmin) {
@@ -130,12 +95,12 @@ function SocialAidCreatePage() {
             <div>
                 <Header showBackButton title="Buat Program Bantuan Sosial" icon="🤝" />
 
-                {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage
                         title="Buat Program Bantuan Sosial"
-                        description="Buat program bantuan sosial"
+                        description="Buat program bantuan sosial. Status program akan otomatis diatur berdasarkan tanggal mulai dan selesai."
                     />
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Program Information Card */}
@@ -152,10 +117,9 @@ function SocialAidCreatePage() {
                                 <div className="lg:col-span-2">
                                     <InputField
                                         label="Nama Program"
-                                        value={formData.program_name}
-                                        onChange={(value) => handleInputChange('program_name', value)}
+                                        value={data.program_name}
+                                        onChange={(value) => setData('program_name', value)}
                                         placeholder="Masukkan nama program bantuan sosial"
-                                        error={errors?.program_name}
                                         required
                                     />
                                 </div>
@@ -164,11 +128,10 @@ function SocialAidCreatePage() {
                                 <div>
                                     <InputField
                                         label="Periode"
-                                        value={formData.period}
-                                        onChange={(value) => handleInputChange('period', value)}
+                                        value={data.period}
+                                        onChange={(value) => setData('period', value)}
                                         placeholder="Contoh: Januari - Maret 2024"
                                         prefix={<Calendar className="h-4 w-4 text-green-500" />}
-                                        error={errors?.period}
                                         required
                                     />
                                 </div>
@@ -177,24 +140,10 @@ function SocialAidCreatePage() {
                                 <div>
                                     <Select
                                         label="Tipe Program"
-                                        value={formData.type}
-                                        onChange={(value) => handleInputChange('type', value)}
+                                        value={data.type}
+                                        onChange={(value) => setData('type', value)}
                                         options={programTypes}
                                         placeholder="Pilih tipe program"
-                                        error={errors?.type}
-                                        required
-                                    />
-                                </div>
-
-                                {/* Status */}
-                                <div>
-                                    <Select
-                                        label="Status Program"
-                                        value={formData.status}
-                                        onChange={(value) => handleInputChange('status', value)}
-                                        options={statusOptions}
-                                        placeholder="Pilih status program"
-                                        error={errors?.status}
                                         required
                                     />
                                 </div>
@@ -204,9 +153,8 @@ function SocialAidCreatePage() {
                                     <InputField
                                         label="Tanggal Mulai"
                                         type="date"
-                                        value={formData.date_start}
-                                        onChange={(value) => handleInputChange('date_start', value)}
-                                        error={errors?.date_start}
+                                        value={data.date_start}
+                                        onChange={(value) => setData('date_start', value)}
                                         required
                                     />
                                 </div>
@@ -216,9 +164,8 @@ function SocialAidCreatePage() {
                                     <InputField
                                         label="Tanggal Selesai"
                                         type="date"
-                                        value={formData.date_end}
-                                        onChange={(value) => handleInputChange('date_end', value)}
-                                        error={errors?.date_end}
+                                        value={data.date_end}
+                                        onChange={(value) => setData('date_end', value)}
                                         required
                                     />
                                 </div>
@@ -228,10 +175,9 @@ function SocialAidCreatePage() {
                                     <InputField
                                         label="Kuota"
                                         type="number"
-                                        value={formData.quota}
-                                        onChange={(value) => handleInputChange('quota', value)}
+                                        value={data.quota}
+                                        onChange={(value) => setData('quota', value)}
                                         placeholder="Masukkan jumlah kuota"
-                                        error={errors?.quota}
                                         required
                                     />
                                 </div>
@@ -240,11 +186,10 @@ function SocialAidCreatePage() {
                                 <div>
                                     <InputField
                                         label="Lokasi"
-                                        value={formData.location}
-                                        onChange={(value) => handleInputChange('location', value)}
+                                        value={data.location}
+                                        onChange={(value) => setData('location', value)}
                                         placeholder="Masukkan lokasi program"
                                         prefix={<MapPin className="h-4 w-4 text-green-500" />}
-                                        error={errors?.location}
                                         required
                                     />
                                 </div>
@@ -254,12 +199,11 @@ function SocialAidCreatePage() {
                             <div className="mt-6">
                                 <InputField
                                     label="Deskripsi Program"
-                                    value={formData.description}
-                                    onChange={(value) => handleInputChange('description', value)}
+                                    value={data.description}
+                                    onChange={(value) => setData('description', value)}
                                     placeholder="Masukkan deskripsi program bantuan sosial..."
                                     as="textarea"
                                     rows={4}
-                                    error={errors?.description}
                                 />
                             </div>
                         </div>
@@ -277,10 +221,10 @@ function SocialAidCreatePage() {
                                 label="Gambar Program"
                                 accept="image/*"
                                 maxSize={2}
-                                file={formData.image}
+                                file={data.image}
                                 preview={imagePreview}
-                                onChange={handleFileChange}
-                                onPreviewChange={handlePreviewChange}
+                                onChange={(file) => setData('image', file)}
+                                onPreviewChange={setImagePreview}
                             />
                         </div>
 
@@ -289,8 +233,8 @@ function SocialAidCreatePage() {
                             <Button type="button" variant="secondary" onClick={() => router.visit('/social-aid')}>
                                 Batal
                             </Button>
-                            <Button type="submit" disabled={isSubmitting} icon={<Save className="h-4 w-4" />} iconPosition="left">
-                                {isSubmitting ? 'Menyimpan...' : 'Simpan Program'}
+                            <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
+                                {processing ? 'Menyimpan...' : 'Simpan Program'}
                             </Button>
                         </div>
                     </form>

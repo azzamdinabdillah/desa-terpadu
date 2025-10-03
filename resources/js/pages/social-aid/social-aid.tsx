@@ -80,6 +80,26 @@ function SocialAidPage() {
     const columns = useMemo(
         () => [
             {
+                key: 'image',
+                header: 'Gambar',
+                className: 'whitespace-nowrap w-20',
+                cell: (item: SocialAidProgram) => (
+                    <div className="flex justify-center">
+                        {item.image ? (
+                            <img
+                                src={`/storage/${item.image}`}
+                                alt={item.program_name}
+                                className="h-12 w-12 rounded-lg border border-green-200 object-cover"
+                            />
+                        ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-200 bg-green-100">
+                                <HandHeart className="h-6 w-6 text-green-600" />
+                            </div>
+                        )}
+                    </div>
+                ),
+            },
+            {
                 key: 'program_name',
                 header: 'Nama Program',
                 className: 'whitespace-nowrap',
@@ -188,6 +208,19 @@ function SocialAidPage() {
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-600" />
                         <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'created_by',
+                header: 'Pembuat',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidProgram) => (
+                    <div className="flex items-center gap-2">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                            <span className="text-xs font-medium text-green-600">{item.creator?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
+                        </div>
+                        <span className="text-sm text-green-900">{item.creator?.name || 'Unknown'}</span>
                     </div>
                 ),
             },
