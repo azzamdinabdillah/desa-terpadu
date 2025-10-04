@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Circle, Edit, HandHeart, MapPin, Users } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Edit, Eye, FileImage, HandHeart, MapPin, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidDetailPageProps {
@@ -63,16 +63,11 @@ function SocialAidDetailPage() {
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                             <Users className="h-4 w-4 text-green-600" />
                         </div>
-                        <span className="text-sm font-medium text-green-900">{item.citizen?.full_name || item.family?.family_name || '-'}</span>
+                        <div>
+                            <span className="text-sm font-medium text-green-900">{item.citizen?.full_name || item.family?.family_name || '-'}</span>
+                            <div className="text-xs text-green-600">{item.citizen?.nik || item.family?.kk_number || '-'}</div>
+                        </div>
                     </div>
-                ),
-            },
-            {
-                key: 'identity',
-                header: 'Identitas',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => (
-                    <span className="text-sm text-green-900">{item.citizen?.nik || item.family?.kk_number || '-'}</span>
                 ),
             },
             {
@@ -85,7 +80,7 @@ function SocialAidDetailPage() {
                 key: 'status',
                 header: 'Status',
                 className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => <StatusBadge type="status" value={item.status === 'collected' ? 'collected' : 'not_collected'} />,
+                cell: (item: SocialAidRecipient) => <StatusBadge type="status" value={item.status} />,
             },
             {
                 key: 'collected_at',
@@ -108,9 +103,73 @@ function SocialAidDetailPage() {
                 ),
             },
             {
+                key: 'performed_by',
+                header: 'Ditangani Oleh',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidRecipient) => <span className="text-sm text-green-900">{item.performed_by?.citizen?.full_name || '-'}</span>,
+            },
+            {
                 key: 'notes',
                 header: 'Catatan',
-                cell: (item: SocialAidRecipient) => <span className="block max-w-xs truncate text-sm text-green-900">{item.notes || '-'}</span>,
+                cell: (item: SocialAidRecipient) => <span className="block max-w-xs truncate text-sm text-green-900">{item.note || '-'}</span>,
+            },
+            {
+                key: 'image_proof',
+                header: 'Foto Bukti',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidRecipient) => (
+                    <div className="flex items-center justify-center">
+                        {item.image_proof ? (
+                            <div className="group relative">
+                                <img
+                                    src={`/storage/${item.image_proof}`}
+                                    alt="Bukti penerimaan"
+                                    className="h-10 w-10 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                    onClick={() => {
+                                        // Open image in new tab
+                                        window.open(`/storage/${item.image_proof}`, '_blank');
+                                    }}
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = 'https://placehold.co/48x48?text=No+Image';
+                                        target.alt = 'Flyer tidak tersedia';
+                                        target.className = 'h-12 w-12 rounded border border-green-100 object-cover opacity-60';
+                                    }}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
+                                <FileImage className="h-4 w-4 text-gray-400" />
+                            </div>
+                        )}
+                    </div>
+                ),
+            },
+            {
+                key: 'created_at',
+                header: 'Dibuat',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidRecipient) => (
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'actions',
+                header: 'Aksi',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidRecipient) => (
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/recipients/${item.id}/action`)} title="Action Penerima">
+                            <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.program_id}`)} title="Lihat Program">
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                    </div>
+                ),
             },
         ],
         [],
@@ -129,10 +188,7 @@ function SocialAidDetailPage() {
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
 
                 <div className="mx-auto max-w-7xl p-4 lg:p-8">
-                    <HeaderPage
-                        title="Detail Program Bantuan Sosial"
-                        description='Detail program bantuan sosial'
-                    />
+                    <HeaderPage title="Detail Program Bantuan Sosial" description="Detail program bantuan sosial" />
                     {/* Program Information Card */}
                     <div className="mb-8 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                         <div className="mb-6 flex items-start justify-between">

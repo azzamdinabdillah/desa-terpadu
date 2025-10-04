@@ -96,7 +96,7 @@ class SocialAidController extends Controller
         $program = $socialAid->load([
             'recipients.citizen',
             'recipients.family',
-            'recipients.performedBy'
+            'recipients.performedBy.citizen'
         ]);
 
         return Inertia::render('social-aid/detail', [
@@ -199,13 +199,16 @@ class SocialAidController extends Controller
     public function update(Request $request, SocialAidProgram $socialAid)
     {
         try {
+            // Get current recipients count
+            $currentRecipientsCount = $socialAid->total_recipients_count;
+            
             $rules = [
                 'program_name' => 'required|string|max:255',
                 'period' => 'required|string|max:255',
                 'type' => 'required|in:individual,household,public',
                 'date_start' => 'required|date',
                 'date_end' => 'required|date|after:date_start',
-                'quota' => 'required|integer|min:1',
+                'quota' => 'required|integer|min:' . $currentRecipientsCount,
                 'description' => 'nullable|string',
                 'location' => 'required|string|max:255',
             ];
@@ -228,7 +231,7 @@ class SocialAidController extends Controller
                 'date_end.after' => 'Tanggal selesai harus setelah tanggal mulai.',
                 'quota.required' => 'Kuota wajib diisi.',
                 'quota.integer' => 'Kuota harus berupa angka.',
-                'quota.min' => 'Kuota minimal 1.',
+                'quota.min' => 'Kuota tidak boleh kurang dari ' . $currentRecipientsCount . ' (jumlah penerima yang sudah ada).',
                 'location.required' => 'Lokasi wajib diisi.',
                 'location.max' => 'Lokasi maksimal 255 karakter.',
                 'image.image' => 'File harus berupa gambar.',

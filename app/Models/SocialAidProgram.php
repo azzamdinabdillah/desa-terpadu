@@ -63,6 +63,14 @@ class SocialAidProgram extends Model
     }
 
     /**
+     * Get total recipients count (all statuses).
+     */
+    public function getTotalRecipientsCountAttribute(): int
+    {
+        return $this->recipients()->count();
+    }
+
+    /**
      * Get collection rate percentage.
      */
     public function getCollectionRateAttribute(): float
