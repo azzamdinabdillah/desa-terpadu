@@ -13,7 +13,7 @@ import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, CheckCircle, Circle, Edit, Eye, FileImage, Filter, HandHeart, Plus, Search, Users, X } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Eye, FileImage, Filter, HandHeart, Plus, Search, StickyNote, Trash2, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidRecipientPageProps {
@@ -60,6 +60,9 @@ function SocialAidRecipientPage() {
     const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
     const [tempSelectedProgram, setTempSelectedProgram] = useState(filters.program_id || 'all_programs');
     const [programSearchQuery, setProgramSearchQuery] = useState('');
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [recipientToDelete, setRecipientToDelete] = useState<SocialAidRecipient | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (flash?.success) {
@@ -112,6 +115,33 @@ function SocialAidRecipientPage() {
 
     const handleClearProgramFilter = () => {
         setTempSelectedProgram('all_programs');
+    };
+
+    // Handle delete functionality
+    const handleDeleteClick = (recipient: SocialAidRecipient) => {
+        setRecipientToDelete(recipient);
+        setDeleteModalOpen(true);
+    };
+
+    const handleDeleteClose = () => {
+        setDeleteModalOpen(false);
+        setRecipientToDelete(null);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (!recipientToDelete) return;
+
+        setIsDeleting(true);
+        router.delete(`/social-aid/recipients/${recipientToDelete.id}`, {
+            onSuccess: () => {
+                setDeleteModalOpen(false);
+                setRecipientToDelete(null);
+                setIsDeleting(false);
+            },
+            onError: () => {
+                setIsDeleting(false);
+            },
+        });
     };
 
     // Filter programs based on search query
@@ -262,11 +292,21 @@ function SocialAidRecipientPage() {
                 cell: (item: SocialAidRecipient) => (
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" onClick={() => router.visit(`/social-aid/recipients/${item.id}/action`)} title="Action Penerima">
-                            <Edit className="h-4 w-4" />
+                            <StickyNote className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.program_id}`)} title="Lihat Program">
                             <Eye className="h-4 w-4" />
                         </Button>
+                        {isAdmin && (
+                            <Button
+                                variant="ghost"
+                                onClick={() => handleDeleteClick(item)}
+                                title="Hapus Penerima"
+                                className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        )}
                     </div>
                 ),
             },
@@ -475,6 +515,48 @@ function SocialAidRecipientPage() {
                                         Terapkan Filter
                                     </Button>
                                 </div>
+                            </div>
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
+
+                {/* Delete Confirmation Modal */}
+                <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
+                            <div className="justify_center mx-auto mb-4 flex h-12 w-12 items-center rounded-full border-2 border-red-200 bg-red-100">
+                                <Trash2 className="h-6 w-6 text-red-600" />
+                            </div>
+                            <div className="text-center">
+                                <Dialog.Title className="mb-2 text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
+                                <Dialog.Description className="mb-4 text-sm text-red-700">
+                                    Apakah Anda yakin ingin menghapus penerima bantuan sosial ini?
+                                </Dialog.Description>
+                                {recipientToDelete && (
+                                    <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-left">
+                                        <p className="text-sm font-medium text-red-900">Detail Penerima:</p>
+                                        <p className="text-sm text-red-800">
+                                            {recipientToDelete.citizen?.full_name || recipientToDelete.family?.family_name} -{' '}
+                                            {recipientToDelete.program?.program_name}
+                                        </p>
+                                        <p className="mt-1 text-xs text-red-600">Tindakan ini tidak dapat dibatalkan.</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex justify-end gap-3">
+                                <Button
+                                    onClick={handleDeleteClose}
+                                    variant="outline"
+                                    className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                                    disabled={isDeleting}
+                                >
+                                    Batal
+                                </Button>
+                                <Button onClick={handleDeleteConfirm} variant="red" disabled={isDeleting}>
+                                    {isDeleting ? 'Menghapus...' : 'Hapus'}
+                                </Button>
                             </div>
                         </Dialog.Content>
                     </Dialog.Portal>

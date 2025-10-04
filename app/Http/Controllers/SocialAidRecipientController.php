@@ -7,6 +7,7 @@ use App\Models\SocialAidProgram;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -257,7 +258,7 @@ class SocialAidRecipientController extends Controller
         $updateData = [
             'status' => $validated['status'],
             'note' => $validated['note'],
-            'performed_by' => auth()->id(),
+            'performed_by' => Auth::user()->id,
         ];
 
         // Handle collected_at based on status
@@ -288,5 +289,25 @@ class SocialAidRecipientController extends Controller
 
         return redirect()->route('social-aid.recipients')
             ->with('success', 'Status penerima bansos berhasil diperbarui.');
+    }
+
+    /**
+     * Delete a social aid recipient.
+     */
+    public function destroy(SocialAidRecipient $recipient)
+    {
+        // Delete image proof if exists
+        if ($recipient->image_proof) {
+            $imagePath = storage_path('app/public/' . $recipient->image_proof);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Delete the recipient
+        $recipient->delete();
+
+        return redirect()->route('social-aid.recipients')
+            ->with('success', 'Penerima bantuan sosial berhasil dihapus.');
     }
 }
