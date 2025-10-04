@@ -164,21 +164,33 @@ class SocialAidRecipientController extends Controller
 
         // Check duplicates against DB for the same program
         if ($program->type === 'individual' && !empty($citizenIds)) {
-            $existingCitizenIds = SocialAidRecipient::where('program_id', $program->id)
+            $existingRecipients = SocialAidRecipient::where('program_id', $program->id)
                 ->whereIn('citizen_id', $citizenIds)
-                ->pluck('citizen_id')
-                ->all();
-            if (!empty($existingCitizenIds)) {
-                return back()->with('error', 'Beberapa warga sudah terdaftar sebagai penerima pada program ini.')->withInput();
+                ->with('citizen:id,full_name,nik')
+                ->get();
+            
+            if ($existingRecipients->isNotEmpty()) {
+                $existingList = $existingRecipients->map(function ($recipient) {
+                    return '• ' . $recipient->citizen->full_name . ' (NIK: ' . $recipient->citizen->nik . ')';
+                })->join("\n");
+                
+                $errorMessage = "Beberapa warga sudah terdaftar sebagai penerima pada program ini:\n\n" . $existingList;
+                return back()->with('error', $errorMessage)->withInput();
             }
         }
         if ($program->type === 'household' && !empty($familyIds)) {
-            $existingFamilyIds = SocialAidRecipient::where('program_id', $program->id)
+            $existingRecipients = SocialAidRecipient::where('program_id', $program->id)
                 ->whereIn('family_id', $familyIds)
-                ->pluck('family_id')
-                ->all();
-            if (!empty($existingFamilyIds)) {
-                return back()->with('error', 'Beberapa keluarga sudah terdaftar sebagai penerima pada program ini.')->withInput();
+                ->with('family:id,family_name,kk_number')
+                ->get();
+            
+            if ($existingRecipients->isNotEmpty()) {
+                $existingList = $existingRecipients->map(function ($recipient) {
+                    return '• ' . $recipient->family->family_name . ' (KK: ' . $recipient->family->kk_number . ')';
+                })->join("\n");
+                
+                $errorMessage = "Beberapa keluarga sudah terdaftar sebagai penerima pada program ini:\n\n" . $existingList;
+                return back()->with('error', $errorMessage)->withInput();
             }
         }
 

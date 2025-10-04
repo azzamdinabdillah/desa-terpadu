@@ -39,13 +39,36 @@ function CreateRecipientPage() {
     const [showProgramChangeModal, setShowProgramChangeModal] = useState(false);
     const [pendingProgramId, setPendingProgramId] = useState<string>('');
 
+    // Function to format error message with list support
+    const formatErrorMessage = (message: string) => {
+        // Check if message contains newlines and bullet points (list format)
+        if (message.includes('\n') && message.includes('•')) {
+            const lines = message.split('\n').filter((line) => line.trim());
+            const title = lines[0];
+            const listItems = lines.slice(1).map((line) => line.replace('• ', '').trim());
+
+            return (
+                <div>
+                    <div className="mb-2 font-semibold">{title}</div>
+                    <ul className="list-inside list-disc space-y-1 text-sm">
+                        {listItems.map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        }
+
+        return message;
+    };
+
     useEffect(() => {
         if (flash?.success) {
             setAlert({ type: 'success', message: flash.success });
         } else if (flash?.error) {
-            setAlert({ type: 'error', message: flash.error });
+            setAlert({ type: 'error', message: formatErrorMessage(flash.error) });
         }
-    }, [flash?.success, flash?.error]);
+    }, [flash?.success, flash?.error, flash]);
 
     // Get selected program details
     const selectedProgramData = programs.find((p) => p.id.toString() === selectedProgram);
@@ -212,8 +235,11 @@ function CreateRecipientPage() {
             {
                 preserveScroll: true,
                 onError: (errors) => {
+                    console.log(errors);
+                    
                     const firstError = typeof errors === 'object' ? Object.values(errors)[0] : null;
-                    setAlert({ type: 'error', message: (firstError as string) || 'Gagal menyimpan penerima bantuan sosial' });
+                    const errorMessage = (firstError as string) || 'Gagal menyimpan penerima bantuan sosial';
+                    setAlert({ type: 'error', message: formatErrorMessage(errorMessage) });
                 },
             },
         );
