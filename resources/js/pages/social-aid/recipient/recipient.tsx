@@ -13,7 +13,7 @@ import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, CheckCircle, Circle, Eye, Filter, HandHeart, Plus, Search, Users, X } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Edit, Eye, FileImage, Filter, HandHeart, Plus, Search, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidRecipientPageProps {
@@ -124,6 +124,10 @@ function SocialAidRecipientPage() {
         return programs.filter((program) => program.program_name.toLowerCase().includes(query) || program.period.toLowerCase().includes(query));
     }, [programs, programSearchQuery]);
 
+    useEffect(() => {
+        console.log(recipients);
+    }, [recipients]);
+
     // Prepare program options for filter
     const programOptions = useMemo(() => {
         const options = [{ value: 'all_programs', label: 'Semua Program' }];
@@ -201,12 +205,44 @@ function SocialAidRecipientPage() {
                 key: 'performed_by',
                 header: 'Ditangani Oleh',
                 className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => <span className="text-sm text-green-900">{item.performed_by?.name || '-'}</span>,
+                cell: (item: SocialAidRecipient) => <span className="text-sm text-green-900">{item.performed_by?.citizen?.full_name || '-'}</span>,
             },
             {
                 key: 'notes',
                 header: 'Catatan',
-                cell: (item: SocialAidRecipient) => <span className="block max-w-xs truncate text-sm text-green-900">{item.notes || '-'}</span>,
+                cell: (item: SocialAidRecipient) => <span className="block max-w-xs truncate text-sm text-green-900">{item.note || '-'}</span>,
+            },
+            {
+                key: 'image_proof',
+                header: 'Foto Bukti',
+                className: 'whitespace-nowrap',
+                cell: (item: SocialAidRecipient) => (
+                    <div className="flex items-center justify-center">
+                        {item.image_proof ? (
+                            <div className="group relative">
+                                <img
+                                    src={`/storage/${item.image_proof}`}
+                                    alt="Bukti penerimaan"
+                                    className="h-10 w-10 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                    onClick={() => {
+                                        // Open image in new tab
+                                        window.open(`/storage/${item.image_proof}`, '_blank');
+                                    }}
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = 'https://placehold.co/48x48?text=No+Image';
+                                        target.alt = 'Flyer tidak tersedia';
+                                        target.className = 'h-12 w-12 rounded border border-green-100 object-cover opacity-60';
+                                    }}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
+                                <FileImage className="h-4 w-4 text-gray-400" />
+                            </div>
+                        )}
+                    </div>
+                ),
             },
             {
                 key: 'created_at',
@@ -225,7 +261,10 @@ function SocialAidRecipientPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: SocialAidRecipient) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.program_id}`)}>
+                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/recipients/${item.id}/action`)} title="Action Penerima">
+                            <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.program_id}`)} title="Lihat Program">
                             <Eye className="h-4 w-4" />
                         </Button>
                     </div>

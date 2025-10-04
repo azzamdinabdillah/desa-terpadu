@@ -30,7 +30,8 @@ export interface SocialAidRecipient {
     family_id?: number | null;
     status: 'collected' | 'not_collected';
     collected_at?: string | null;
-    notes?: string | null;
+    note?: string | null;
+    image_proof?: string | null;
     created_at: string;
     updated_at: string;
     program?: SocialAidProgram;
@@ -46,8 +47,7 @@ export interface SocialAidRecipient {
         kk_number?: string;
     } | null;
     performed_by?: {
-        id: number;
-        name: string;
+        citizen: CitizenType;
     } | null;
 }
 

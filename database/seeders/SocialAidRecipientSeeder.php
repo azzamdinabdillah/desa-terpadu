@@ -30,14 +30,15 @@ class SocialAidRecipientSeeder extends Seeder
                 $selectedFamilies = $families->random(min($program->quota, $families->count()));
                 
                 foreach ($selectedFamilies as $family) {
+                    $status = fake()->randomElement(['collected', 'not_collected']);
                     $recipients[] = [
                         'family_id' => $family->id,
                         'citizen_id' => null,
                         'program_id' => $program->id,
-                        'status' => fake()->randomElement(['collected', 'not_collected']),
+                        'status' => $status,
                         'note' => fake()->optional(0.3)->sentence(),
                         'performed_by' => fake()->randomElement($users->pluck('id')->toArray()),
-                        'collected_at' => fake()->optional(0.5)->dateTimeBetween('-30 days', 'now'),
+                        'collected_at' => $status === 'collected' ? fake()->dateTimeBetween('-30 days', 'now') : null,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
@@ -47,14 +48,15 @@ class SocialAidRecipientSeeder extends Seeder
                 $selectedCitizens = $citizens->random(min($program->quota, $citizens->count()));
                 
                 foreach ($selectedCitizens as $citizen) {
+                    $status = fake()->randomElement(['collected', 'not_collected']);
                     $recipients[] = [
                         'family_id' => null,
                         'citizen_id' => $citizen->id,
                         'program_id' => $program->id,
-                        'status' => fake()->randomElement(['collected', 'not_collected']),
+                        'status' => $status,
                         'note' => fake()->optional(0.3)->sentence(),
                         'performed_by' => fake()->randomElement($users->pluck('id')->toArray()),
-                        'collected_at' => fake()->optional(0.5)->dateTimeBetween('-30 days', 'now'),
+                        'collected_at' => $status === 'collected' ? fake()->dateTimeBetween('-30 days', 'now') : null,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
@@ -62,14 +64,15 @@ class SocialAidRecipientSeeder extends Seeder
             } else {
                 // For public programs, no specific family or citizen
                 for ($i = 0; $i < $program->quota; $i++) {
+                    $status = fake()->randomElement(['collected', 'not_collected']);
                     $recipients[] = [
                         'family_id' => null,
                         'citizen_id' => null,
                         'program_id' => $program->id,
-                        'status' => fake()->randomElement(['collected', 'not_collected']),
+                        'status' => $status,
                         'note' => fake()->optional(0.3)->sentence(),
                         'performed_by' => fake()->randomElement($users->pluck('id')->toArray()),
-                        'collected_at' => fake()->optional(0.5)->dateTimeBetween('-30 days', 'now'),
+                        'collected_at' => $status === 'collected' ? fake()->dateTimeBetween('-30 days', 'now') : null,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];

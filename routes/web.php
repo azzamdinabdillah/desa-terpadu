@@ -50,6 +50,8 @@ Route::get('/social-aid', [SocialAidController::class, 'index'])->name('social-a
 Route::get('/social-aid/recipients', [SocialAidRecipientController::class, 'index'])->name('social-aid.recipients');
 Route::get('/social-aid/recipients/create', [SocialAidRecipientController::class, 'create'])->name('social-aid.recipients.create');
 Route::post('/social-aid/recipients', [SocialAidRecipientController::class, 'store'])->name('social-aid.recipients.store');
+Route::get('/social-aid/recipients/{recipient}/action', [SocialAidRecipientController::class, 'action'])->name('social-aid.recipients.action');
+Route::post('/social-aid/recipients/{recipient}/action', [SocialAidRecipientController::class, 'updateAction'])->name('social-aid.recipients.action.update');
 Route::get('/social-aid/{socialAid}', [SocialAidController::class, 'show'])->where('socialAid', '[0-9]+')->name('social-aid.show');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');

@@ -21,7 +21,7 @@ class SocialAidRecipientController extends Controller
             'program',
             'citizen',
             'family',
-            'performedBy'
+            'performedBy.citizen'
         ])->whereHas('program', function ($q) {
             $q->where('type', '!=', 'public');
         });
@@ -222,5 +222,71 @@ class SocialAidRecipientController extends Controller
 
         return redirect()->route('social-aid.recipients')
             ->with('success', 'Penerima bantuan sosial berhasil ditambahkan.');
+    }
+
+    /**
+     * Show the form for performing action on social aid recipient.
+     */
+    public function action(SocialAidRecipient $recipient)
+    {
+        $recipient->load([
+            'program',
+            'citizen',
+            'family',
+            'performedBy.citizen'
+        ]);
+
+        return Inertia::render('social-aid/recipient/action', [
+            'recipient' => $recipient,
+        ]);
+    }
+
+    /**
+     * Update the social aid recipient action.
+     */
+    public function updateAction(Request $request, SocialAidRecipient $recipient)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:collected,not_collected'],
+            'note' => ['nullable', 'string', 'max:1000'],
+            'collected_at' => ['nullable', 'date'],
+            'image_proof' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        ]);
+
+        // Prepare update data
+        $updateData = [
+            'status' => $validated['status'],
+            'note' => $validated['note'],
+            'performed_by' => auth()->id(),
+        ];
+
+        // Handle collected_at based on status
+        if ($validated['status'] === 'collected') {
+            $updateData['collected_at'] = $validated['collected_at'] ?: now();
+        } else {
+            $updateData['collected_at'] = null;
+        }
+
+        // Handle image upload
+        if ($request->hasFile('image_proof')) {
+            // Delete old image if exists
+            if ($recipient->image_proof) {
+                $oldFilePath = storage_path('app/public/' . $recipient->image_proof);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+            
+            $image = $request->file('image_proof');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $path = $image->storeAs('social_aid_proofs', $imageName, 'public');
+            $updateData['image_proof'] = $path;
+        }
+
+        // Update the recipient
+        $recipient->update($updateData);
+
+        return redirect()->route('social-aid.recipients')
+            ->with('success', 'Status penerima bansos berhasil diperbarui.');
     }
 }

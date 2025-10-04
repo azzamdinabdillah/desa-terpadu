@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->string('image_proof')->nullable();
             $table->foreignId('performed_by')->nullable()->constrained('users')->onDelete('set null');
-            $table->timestamp('collected_at')->nullable();
+            $table->datetime('collected_at')->nullable();
             $table->timestamps();
         });
     }
