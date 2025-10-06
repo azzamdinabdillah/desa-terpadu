@@ -76,4 +76,44 @@ class MasterDocumentController extends Controller
         }
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(MasterDocument $masterDocument)
+    {
+        return Inertia::render('document/create', [
+            'masterDocument' => $masterDocument,
+            'isEdit' => true,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, MasterDocument $masterDocument)
+    {
+        try {
+            $validated = $request->validate([
+                'document_name' => 'required|string|max:255|unique:master_documents,document_name,' . $masterDocument->id,
+                'description' => 'nullable|string|max:1000',
+            ], [
+                'document_name.required' => 'Nama dokumen wajib diisi.',
+                'document_name.max' => 'Nama dokumen maksimal 255 karakter.',
+                'document_name.unique' => 'Nama dokumen sudah ada dalam sistem.',
+                'description.max' => 'Deskripsi maksimal 1000 karakter.',
+            ]);
+
+            $masterDocument->update($validated);
+
+            return redirect()->route('master-documents.index')
+                ->with('success', 'Dokumen master berhasil diperbarui!');
+                
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return back with validation errors for Inertia
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui dokumen master: ' . $e->getMessage());
+        }
+    }
+
 }

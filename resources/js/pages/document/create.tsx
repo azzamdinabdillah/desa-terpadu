@@ -13,16 +13,22 @@ interface CreateDocumentPageProps {
         success?: string;
         error?: string;
     };
+    masterDocument?: {
+        id: number;
+        document_name: string;
+        description: string;
+    };
+    isEdit?: boolean;
     [key: string]: unknown;
 }
 
 function CreateDocumentPage() {
-    const { flash } = usePage<CreateDocumentPageProps>().props;
+    const { flash, masterDocument, isEdit } = usePage<CreateDocumentPageProps>().props;
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const { data, setData, post, processing, errors } = useForm({
-        document_name: '',
-        description: '',
+    const { data, setData, post, put, processing, errors } = useForm({
+        document_name: masterDocument?.document_name || '',
+        description: masterDocument?.description || '',
     });
 
     // Handle flash messages
@@ -53,7 +59,7 @@ function CreateDocumentPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/documents', {
+        const submitData = {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
@@ -66,7 +72,13 @@ function CreateDocumentPage() {
                     errors: errors,
                 });
             },
-        });
+        };
+
+        if (isEdit && masterDocument) {
+            put(`/documents/${masterDocument.id}`, submitData);
+        } else {
+            post('/documents', submitData);
+        }
     };
 
     const handleCancel = () => {
@@ -76,7 +88,7 @@ function CreateDocumentPage() {
     return (
         <BaseLayouts>
             <div className="min-h-screen bg-green-50">
-                <Header showBackButton title="Tambah Dokumen Master" icon="📄" />
+                <Header showBackButton title={isEdit ? 'Edit Dokumen Master' : 'Tambah Dokumen Master'} icon="📄" />
 
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
@@ -84,8 +96,12 @@ function CreateDocumentPage() {
                 <div className="p-4 lg:p-6">
                     <div className="mx-auto max-w-4xl">
                         <HeaderPage
-                            title="Tambah Dokumen Master"
-                            description="Tambahkan jenis dokumen baru yang dapat digunakan untuk surat menyurat"
+                            title={isEdit ? 'Edit Dokumen Master' : 'Tambah Dokumen Master'}
+                            description={
+                                isEdit
+                                    ? 'Edit jenis dokumen yang sudah ada'
+                                    : 'Tambahkan jenis dokumen baru yang dapat digunakan untuk surat menyurat'
+                            }
                         />
 
                         {/* Form */}
@@ -140,7 +156,7 @@ function CreateDocumentPage() {
                                         className="sm:w-auto"
                                         disabled={processing}
                                     >
-                                        {processing ? 'Menyimpan...' : 'Simpan Dokumen'}
+                                        {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Dokumen' : 'Simpan Dokumen'}
                                     </Button>
                                 </div>
                             </form>

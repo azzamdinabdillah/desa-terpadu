@@ -9,7 +9,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { MasterDocument, MasterDocumentPageProps } from '@/types/document/masterDocumentTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, FileText, Plus, Search } from 'lucide-react';
+import { Calendar, Edit, FileText, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 function MasterDocumentPage() {
@@ -74,6 +74,23 @@ function MasterDocumentPage() {
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-600" />
                         <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'actions',
+                header: 'Aksi',
+                className: 'whitespace-nowrap text-right',
+                cell: (item: MasterDocument) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.visit(`/documents/${item.id}/edit`)}
+                            icon={<Edit className="h-4 w-4" />}
+                        >
+                            Edit
+                        </Button>
                     </div>
                 ),
             },
