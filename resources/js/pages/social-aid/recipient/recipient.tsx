@@ -81,7 +81,7 @@ function SocialAidRecipientPage() {
                 selectedStatus !== (filters.status || 'all')
             ) {
                 router.get(
-                    '/social-aid/recipients',
+                    '/recipients',
                     {
                         search: searchQuery || undefined,
                         program_id: selectedProgram !== 'all_programs' ? selectedProgram : undefined,
@@ -132,7 +132,7 @@ function SocialAidRecipientPage() {
         if (!recipientToDelete) return;
 
         setIsDeleting(true);
-        router.delete(`/social-aid/recipients/${recipientToDelete.id}`, {
+        router.delete(`/recipients/${recipientToDelete.id}`, {
             onSuccess: () => {
                 setDeleteModalOpen(false);
                 setRecipientToDelete(null);
@@ -291,12 +291,14 @@ function SocialAidRecipientPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: SocialAidRecipient) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/recipients/${item.id}/action`)} title="Action Penerima">
-                            <StickyNote className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.program_id}`)} title="Lihat Program">
+                        {isAdmin && (
+                            <Button variant="ghost" onClick={() => router.visit(`/recipients/${item.id}/action`)} title="Action Penerima">
+                                <StickyNote className="h-4 w-4" />
+                            </Button>
+                        )}
+                        {/* <Button variant="ghost" onClick={() => router.visit(`/${item.program_id}`)} title="Lihat Program">
                             <Eye className="h-4 w-4" />
-                        </Button>
+                        </Button> */}
                         {isAdmin && (
                             <Button
                                 variant="ghost"
@@ -343,7 +345,7 @@ function SocialAidRecipientPage() {
                             />
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             <Button
                                 onClick={handleOpenProgramModal}
                                 variant="outline"
@@ -365,13 +367,15 @@ function SocialAidRecipientPage() {
                                 className="w-48"
                             />
 
-                            <Button
-                                onClick={() => router.visit('/social-aid/recipients/create')}
-                                icon={<Plus className="h-4 w-4" />}
-                                iconPosition="left"
-                            >
-                                Tambah Penerima
-                            </Button>
+                            {isAdmin && (
+                                <Button
+                                    onClick={() => router.visit('/recipients/create')}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
+                                    Tambah Penerima
+                                </Button>
+                            )}
                         </div>
                     </div>
 
@@ -495,7 +499,7 @@ function SocialAidRecipientPage() {
                                 </div>
                             </div>
 
-                            <div className="flex justify-between">
+                            <div className="flex flex-wrap justify-between gap-3">
                                 <Button
                                     onClick={handleClearProgramFilter}
                                     variant="outline"

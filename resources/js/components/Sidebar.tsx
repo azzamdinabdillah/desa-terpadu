@@ -60,7 +60,7 @@ export const menuItems: MenuItem[] = [
         icon: <HandHeart className="h-5 w-5" />,
         submenu: [
             { id: 'social-aid-programs', label: 'Program Bantuan', href: '/social-aid' },
-            { id: 'social-aid-recipients', label: 'Penerima Bantuan', href: '/social-aid/recipients' },
+            { id: 'social-recipients', label: 'Penerima Bantuan', href: '/recipients' },
         ],
     },
     {

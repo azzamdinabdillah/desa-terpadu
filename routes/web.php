@@ -47,13 +47,9 @@ Route::get('/announcement', [AnnouncementController::class, 'index'])->name('ann
 Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
 
 Route::get('/social-aid', [SocialAidController::class, 'index'])->name('social-aid.index');
-Route::get('/social-aid/recipients', [SocialAidRecipientController::class, 'index'])->name('social-aid.recipients');
-Route::get('/social-aid/recipients/create', [SocialAidRecipientController::class, 'create'])->name('social-aid.recipients.create');
-Route::post('/social-aid/recipients', [SocialAidRecipientController::class, 'store'])->name('social-aid.recipients.store');
-Route::get('/social-aid/recipients/{recipient}/action', [SocialAidRecipientController::class, 'action'])->name('social-aid.recipients.action');
-Route::post('/social-aid/recipients/{recipient}/action', [SocialAidRecipientController::class, 'updateAction'])->name('social-aid.recipients.action.update');
-Route::delete('/social-aid/recipients/{recipient}', [SocialAidRecipientController::class, 'destroy'])->name('social-aid.recipients.destroy');
 Route::get('/social-aid/{socialAid}', [SocialAidController::class, 'show'])->where('socialAid', '[0-9]+')->name('social-aid.show');
+
+Route::get('/recipients', [SocialAidRecipientController::class, 'index'])->name('social-aid.recipients');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
@@ -126,6 +122,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/social-aid/{socialAid}', [SocialAidController::class, 'update'])->name('social-aid.update');
     Route::post('/social-aid/{socialAid}', [SocialAidController::class, 'update'])->name('social-aid.update.post');
     Route::delete('/social-aid/{socialAid}', [SocialAidController::class, 'destroy'])->name('social-aid.destroy');
+
+    Route::get('/recipients/create', [SocialAidRecipientController::class, 'create'])->name('social-aid.recipients.create');
+    Route::post('/recipients', [SocialAidRecipientController::class, 'store'])->name('social-aid.recipients.store');
+    Route::get('/recipients/{recipient}/action', [SocialAidRecipientController::class, 'action'])->name('social-aid.recipients.action');
+    Route::post('/recipients/{recipient}/action', [SocialAidRecipientController::class, 'updateAction'])->name('social-aid.recipients.action.update');
+    Route::delete('/recipients/{recipient}', [SocialAidRecipientController::class, 'destroy'])->name('social-aid.recipients.destroy');
 });
 
 // Auth

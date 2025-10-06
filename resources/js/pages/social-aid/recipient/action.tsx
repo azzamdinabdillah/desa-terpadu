@@ -77,7 +77,7 @@ export default function ActionPage() {
             submitData.append('image_proof', imageFile);
         }
 
-        post(`/social-aid/recipients/${recipient.id}/action`, {
+        post(`/recipients/${recipient.id}/action`, {
             ...submitData,
             forceFormData: true,
             preserveState: true,
