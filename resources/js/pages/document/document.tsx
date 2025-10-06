@@ -1,4 +1,5 @@
 import Alert, { AlertProps } from '@/components/Alert';
+import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -8,7 +9,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { MasterDocument, MasterDocumentPageProps } from '@/types/document/masterDocumentTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, FileText, Search } from 'lucide-react';
+import { Calendar, FileText, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 function MasterDocumentPage() {
@@ -108,6 +109,10 @@ function MasterDocumentPage() {
                                 inputClassName="pl-10"
                             />
                         </div>
+
+                        <Button onClick={() => router.visit('/documents/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                            Tambah Dokumen
+                        </Button>
                     </div>
 
                     {/* Master Documents Table */}
@@ -125,6 +130,14 @@ function MasterDocumentPage() {
                                         ? 'Tidak ada dokumen yang sesuai dengan pencarian Anda.'
                                         : 'Belum ada master dokumen yang terdaftar.'}
                                 </p>
+                                <Button
+                                    onClick={() => router.visit('/documents/create')}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                    className="mx-auto"
+                                >
+                                    Tambah Dokumen Pertama
+                                </Button>
                             </div>
                         }
                     />

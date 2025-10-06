@@ -1,0 +1,155 @@
+import Alert, { AlertProps } from '@/components/Alert';
+import Button from '@/components/Button';
+import Header from '@/components/Header';
+import HeaderPage from '@/components/HeaderPage';
+import InputField from '@/components/InputField';
+import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { router, useForm, usePage } from '@inertiajs/react';
+import { FileText, Save, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+interface CreateDocumentPageProps {
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    [key: string]: unknown;
+}
+
+function CreateDocumentPage() {
+    const { flash } = usePage<CreateDocumentPageProps>().props;
+    const [alert, setAlert] = useState<AlertProps | null>(null);
+
+    const { data, setData, post, processing, errors } = useForm({
+        document_name: '',
+        description: '',
+    });
+
+    // Handle flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ type: 'success', message: flash.success });
+            // Redirect to document list after success
+            setTimeout(() => {
+                router.visit('/documents');
+            }, 1500);
+        } else if (flash?.error) {
+            setAlert({ type: 'error', message: flash.error });
+        }
+    }, [flash]);
+
+    // Handle validation errors - same pattern as other modules
+    useEffect(() => {
+        const entries = Object.entries(errors || {});
+        if (entries.length) {
+            setAlert({
+                type: 'error',
+                message: '',
+                errors: errors,
+            });
+        }
+    }, [errors]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        post('/documents', {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                // Success handled by flash message
+            },
+            onError: (errors: Record<string, string | string[]>) => {
+                setAlert({
+                    type: 'error',
+                    message: '',
+                    errors: errors,
+                });
+            },
+        });
+    };
+
+    const handleCancel = () => {
+        router.visit('/documents');
+    };
+
+    return (
+        <BaseLayouts>
+            <div className="min-h-screen bg-green-50">
+                <Header showBackButton title="Tambah Dokumen Master" icon="📄" />
+
+                {/* Alert */}
+                {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
+
+                <div className="p-4 lg:p-6">
+                    <div className="mx-auto max-w-4xl">
+                        <HeaderPage
+                            title="Tambah Dokumen Master"
+                            description="Tambahkan jenis dokumen baru yang dapat digunakan untuk surat menyurat"
+                        />
+
+                        {/* Form */}
+                        <div className="space-y-8">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Document Information Section */}
+                                <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                                    <div className="mb-6 flex items-center gap-2">
+                                        <FileText className="h-5 w-5 text-green-600" />
+                                        <h3 className="text-lg font-semibold text-green-900">Informasi Dokumen</h3>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        <InputField
+                                            label="Nama Dokumen"
+                                            value={data.document_name}
+                                            onChange={(value) => setData('document_name', value)}
+                                            placeholder="Masukkan nama dokumen (contoh: Surat Keterangan Domisili)"
+                                            required
+                                            error={errors.document_name}
+                                        />
+
+                                        <InputField
+                                            label="Deskripsi"
+                                            value={data.description}
+                                            onChange={(value) => setData('description', value)}
+                                            placeholder="Masukkan deskripsi dokumen (opsional)"
+                                            as="textarea"
+                                            rows={4}
+                                            error={errors.description}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={handleCancel}
+                                        icon={<X className="h-4 w-4" />}
+                                        fullWidth
+                                        className="sm:w-auto"
+                                    >
+                                        Batal
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        loading={processing}
+                                        icon={<Save className="h-4 w-4" />}
+                                        fullWidth
+                                        className="sm:w-auto"
+                                        disabled={processing}
+                                    >
+                                        {processing ? 'Menyimpan...' : 'Simpan Dokumen'}
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </BaseLayouts>
+    );
+}
+
+export default CreateDocumentPage;

@@ -131,6 +131,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/recipients/{recipient}/action', [SocialAidRecipientController::class, 'action'])->name('social-aid.recipients.action');
     Route::post('/recipients/{recipient}/action', [SocialAidRecipientController::class, 'updateAction'])->name('social-aid.recipients.action.update');
     Route::delete('/recipients/{recipient}', [SocialAidRecipientController::class, 'destroy'])->name('social-aid.recipients.destroy');
+
+    Route::get('/documents/create', [MasterDocumentController::class, 'create'])->name('master-documents.create');
+    Route::post('/documents', [MasterDocumentController::class, 'store'])->name('master-documents.store');
 });
 
 // Auth
