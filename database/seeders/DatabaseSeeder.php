@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             AssetSeeder::class,
             SocialAidProgramSeeder::class,
             SocialAidRecipientSeeder::class,
+            MasterDocumentSeeder::class,
+            ApplicationDocumentSeeder::class,
             // AssetLoanSeeder::class,
             // EventsDocumentationSeeder::class,
         ]);
