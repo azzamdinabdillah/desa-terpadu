@@ -116,4 +116,20 @@ class MasterDocumentController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(MasterDocument $masterDocument)
+    {
+        try {
+            $masterDocument->delete();
+
+            return redirect()->route('master-documents.index')
+                ->with('success', 'Dokumen master berhasil dihapus!');
+                
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghapus dokumen master: ' . $e->getMessage());
+        }
+    }
+
 }

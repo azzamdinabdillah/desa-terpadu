@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -9,13 +10,16 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { MasterDocument, MasterDocumentPageProps } from '@/types/document/masterDocumentTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Edit, FileText, Plus, Search } from 'lucide-react';
+import { Calendar, Edit, FileText, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 function MasterDocumentPage() {
     const { masterDocuments, filters, flash } = usePage<MasterDocumentPageProps>().props;
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [documentToDelete, setDocumentToDelete] = useState<MasterDocument | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (flash?.success) {
@@ -43,6 +47,32 @@ function MasterDocumentPage() {
         }, 300);
         return () => clearTimeout(handler);
     }, [searchQuery, filters.search]);
+
+    const handleDeleteClick = (document: MasterDocument) => {
+        setDocumentToDelete(document);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setDocumentToDelete(null);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (documentToDelete) {
+            setIsDeleting(true);
+            router.delete(`/documents/${documentToDelete.id}`, {
+                onSuccess: () => {
+                    setShowDeleteModal(false);
+                    setDocumentToDelete(null);
+                    setIsDeleting(false);
+                },
+                onError: () => {
+                    setIsDeleting(false);
+                },
+            });
+        }
+    };
 
     const columns = useMemo(
         () => [
@@ -90,6 +120,9 @@ function MasterDocumentPage() {
                             icon={<Edit className="h-4 w-4" />}
                         >
                             Edit
+                        </Button>
+                        <Button variant="red" size="sm" onClick={() => handleDeleteClick(item)} icon={<Trash2 className="h-4 w-4" />}>
+                            Hapus
                         </Button>
                     </div>
                 ),
@@ -178,6 +211,34 @@ function MasterDocumentPage() {
                         }}
                     />
                 </div>
+
+                {/* Delete Confirmation Modal */}
+                <ConfirmationModal
+                    isOpen={showDeleteModal}
+                    onClose={handleDeleteCancel}
+                    onConfirm={handleDeleteConfirm}
+                    title="Konfirmasi Hapus"
+                    message={
+                        documentToDelete ? (
+                            <div>
+                                <p className="mb-2 text-sm text-gray-700">Apakah Anda yakin ingin menghapus dokumen berikut?</p>
+                                <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                                    <h3 className="font-medium text-red-900">{documentToDelete.document_name}</h3>
+                                    {documentToDelete.description && (
+                                        <p className="mt-1 text-sm text-red-700">
+                                            {documentToDelete.description.length > 100
+                                                ? `${documentToDelete.description.substring(0, 100)}...`
+                                                : documentToDelete.description}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            'Apakah Anda yakin ingin menghapus dokumen ini?'
+                        )
+                    }
+                    isLoading={isDeleting}
+                />
             </div>
         </BaseLayouts>
     );

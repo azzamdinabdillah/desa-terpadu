@@ -136,6 +136,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/documents', [MasterDocumentController::class, 'store'])->name('master-documents.store');
     Route::get('/documents/{masterDocument}/edit', [MasterDocumentController::class, 'edit'])->name('master-documents.edit');
     Route::put('/documents/{masterDocument}', [MasterDocumentController::class, 'update'])->name('master-documents.update');
+    Route::delete('/documents/{masterDocument}', [MasterDocumentController::class, 'destroy'])->name('master-documents.destroy');
 });
 
 // Auth
