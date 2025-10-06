@@ -10,6 +10,7 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SocialAidController;
 use App\Http\Controllers\SocialAidRecipientController;
+use App\Http\Controllers\MasterDocumentController;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,8 @@ Route::get('/social-aid', [SocialAidController::class, 'index'])->name('social-a
 Route::get('/social-aid/{socialAid}', [SocialAidController::class, 'show'])->where('socialAid', '[0-9]+')->name('social-aid.show');
 
 Route::get('/recipients', [SocialAidRecipientController::class, 'index'])->name('social-aid.recipients');
+
+Route::get('/documents', [MasterDocumentController::class, 'index'])->name('master-documents.index');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');

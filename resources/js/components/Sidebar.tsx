@@ -1,7 +1,7 @@
 import { PageProps } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { Bell, Building, Calendar, ChevronDown, ChevronRight, CircleDollarSign, HandHeart, Home, LogIn, User, Users } from 'lucide-react';
+import { Bell, Building, Calendar, ChevronDown, ChevronRight, CircleDollarSign, FileText, HandHeart, Home, LogIn, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -70,6 +70,14 @@ export const menuItems: MenuItem[] = [
         submenu: [
             { id: 'asset', label: 'Data Aset', href: '/assets' },
             { id: 'asset-loan', label: 'Peminjaman Aset', href: '/asset-loans' },
+        ],
+    },
+    {
+        id: 'master-documents',
+        label: 'Master Dokumen',
+        icon: <FileText className="h-5 w-5" />,
+        submenu: [
+            { id: 'master-documents-list', label: 'Daftar Dokumen', href: '/documents' },
         ],
     },
     {
