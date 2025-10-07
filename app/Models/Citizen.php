@@ -19,6 +19,7 @@ class Citizen extends Model
     protected $fillable = [
         'full_name',
         'nik',
+        'email',
         'phone_number',
         'profile_picture',
         'address',

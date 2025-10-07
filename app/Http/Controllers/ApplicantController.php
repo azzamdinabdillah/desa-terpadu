@@ -134,26 +134,25 @@ class ApplicantController extends Controller
             'admin_note.max' => 'Catatan admin maksimal 500 karakter.',
         ]);
 
-        // Update status to completed (approved)
+        // Update status to on_proccess (approved, waiting for applicant action)
         $application->update([
-            'status' => 'completed',
+            'status' => 'on_proccess',
             'admin_note' => $request->admin_note,
         ]);
 
         // Load relationships for email
-        $application->load(['masterDocument', 'citizen.user']);
+        $application->load(['masterDocument', 'citizen']);
 
         // Send email notification
         try {
-            // if ($application->citizen && $application->citizen->user->email) {
-            if ($application->citizen) {
-                // Mail::to($application->citizen->user->email)->send(
+            if ($application->citizen && $application->citizen->email) {
+                // Mail::to($application->citizen->email)->send(
                 Mail::to('azzamdinabdillah123@gmail.com')->send(
                     new ApprovalApplicationDocument($application, true, $request->admin_note)
                 );
                 return redirect()->back()->with('success', 'Pengajuan berhasil disetujui dan email notifikasi telah dikirim.');
             }
-            return redirect()->back()->with('success', 'Pengajuan berhasil disetujui, namun email tidak dapat dikirim karena pemohon belum memiliki akun.');
+            return redirect()->back()->with('success', 'Pengajuan berhasil disetujui, namun email tidak dapat dikirim karena pemohon tidak memiliki email.');
         } catch (\Exception $e) {
             // Log error but don't fail the approval
             \Log::error('Failed to send approval email: ' . $e->getMessage());
@@ -181,19 +180,18 @@ class ApplicantController extends Controller
         ]);
 
         // Load relationships for email
-        $application->load(['masterDocument', 'citizen.user']);
+        $application->load(['masterDocument', 'citizen']);
 
         // Send email notification
         try {
-            // if ($application->citizen && $application->citizen->user->email) {
-            if ($application->citizen) {
-                // Mail::to($application->citizen->user->email)->send(
+            if ($application->citizen && $application->citizen->email) {
+                // Mail::to($application->citizen->email)->send(
                 Mail::to('azzamdinabdillah123@gmail.com')->send(
                     new ApprovalApplicationDocument($application, false, $request->admin_note)
                 );
                 return redirect()->back()->with('success', 'Pengajuan berhasil ditolak dan email notifikasi telah dikirim.');
             }
-            return redirect()->back()->with('success', 'Pengajuan berhasil ditolak, namun email tidak dapat dikirim karena pemohon belum memiliki akun.');
+            return redirect()->back()->with('success', 'Pengajuan berhasil ditolak, namun email tidak dapat dikirim karena pemohon tidak memiliki email.');
         } catch (\Exception $e) {
             // Log error but don't fail the rejection
             \Log::error('Failed to send rejection email: ' . $e->getMessage());
