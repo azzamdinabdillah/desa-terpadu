@@ -117,6 +117,23 @@ class MasterDocumentController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(MasterDocument $masterDocument)
+    {
+        // Load the master document with its application documents and related citizen data
+        $masterDocument->load([
+            'applicationDocuments' => function ($query) {
+                $query->with('citizen')->orderBy('created_at', 'desc');
+            }
+        ]);
+
+        return Inertia::render('document/detail', [
+            'masterDocument' => $masterDocument,
+        ]);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(MasterDocument $masterDocument)

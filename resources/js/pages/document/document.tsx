@@ -10,7 +10,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { MasterDocument, MasterDocumentPageProps } from '@/types/document/masterDocumentTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Edit, FileText, Plus, Search, Trash2 } from 'lucide-react';
+import { Calendar, Edit, Eye, FileText, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 function MasterDocumentPage() {
@@ -113,6 +113,9 @@ function MasterDocumentPage() {
                 className: 'whitespace-nowrap text-right',
                 cell: (item: MasterDocument) => (
                     <div className="flex items-center justify-end gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => router.visit(`/documents/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                            Detail
+                        </Button>
                         <Button
                             variant="outline"
                             size="sm"

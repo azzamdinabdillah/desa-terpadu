@@ -54,6 +54,7 @@ Route::get('/social-aid/{socialAid}', [SocialAidController::class, 'show'])->whe
 Route::get('/recipients', [SocialAidRecipientController::class, 'index'])->name('social-aid.recipients');
 
 Route::get('/documents', [MasterDocumentController::class, 'index'])->name('master-documents.index');
+Route::get('/documents/{masterDocument}', [MasterDocumentController::class, 'show'])->where('masterDocument', '[0-9]+')->name('master-documents.show');
 
 Route::get('/document-applications', [ApplicantController::class, 'index'])->name('document-applications.index');
 Route::get('/document-applications/create', [ApplicantController::class, 'create'])->name('document-applications.create');

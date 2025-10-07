@@ -1,9 +1,12 @@
+import type { ApplicationDocumentType } from './documentTypes';
+
 export interface MasterDocument {
     id: number;
     document_name: string;
     description?: string;
     created_at: string;
     updated_at: string;
+    application_documents?: ApplicationDocumentType[];
 }
 
 export interface MasterDocumentPageProps {
