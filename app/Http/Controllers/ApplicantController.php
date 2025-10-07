@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ApplicationDocument;
 use App\Models\MasterDocument;
 use App\Models\Citizen;
+use App\Mail\ApprovalApplicationDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class ApplicantController extends Controller
@@ -117,5 +119,85 @@ class ApplicantController extends Controller
         return Inertia::render('document/applicant/detail', [
             'application' => $application,
         ]);
+    }
+
+    /**
+     * Approve a document application.
+     */
+    public function approve(Request $request, ApplicationDocument $application)
+    {
+        $request->validate([
+            'admin_note' => 'required|string|max:500',
+        ], [
+            'admin_note.required' => 'Catatan admin wajib diisi.',
+            'admin_note.string' => 'Catatan admin harus berupa teks.',
+            'admin_note.max' => 'Catatan admin maksimal 500 karakter.',
+        ]);
+
+        // Update status to completed (approved)
+        $application->update([
+            'status' => 'completed',
+            'admin_note' => $request->admin_note,
+        ]);
+
+        // Load relationships for email
+        $application->load(['masterDocument', 'citizen.user']);
+
+        // Send email notification
+        try {
+            // if ($application->citizen && $application->citizen->user->email) {
+            if ($application->citizen) {
+                // Mail::to($application->citizen->user->email)->send(
+                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                    new ApprovalApplicationDocument($application, true, $request->admin_note)
+                );
+                return redirect()->back()->with('success', 'Pengajuan berhasil disetujui dan email notifikasi telah dikirim.');
+            }
+            return redirect()->back()->with('success', 'Pengajuan berhasil disetujui, namun email tidak dapat dikirim karena pemohon belum memiliki akun.');
+        } catch (\Exception $e) {
+            // Log error but don't fail the approval
+            \Log::error('Failed to send approval email: ' . $e->getMessage());
+            return redirect()->back()->with('success', 'Pengajuan berhasil disetujui, namun email gagal dikirim.');
+        }
+    }
+
+    /**
+     * Reject a document application.
+     */
+    public function reject(Request $request, ApplicationDocument $application)
+    {
+        $request->validate([
+            'admin_note' => 'required|string|max:500',
+        ], [
+            'admin_note.required' => 'Alasan penolakan wajib diisi.',
+            'admin_note.string' => 'Alasan penolakan harus berupa teks.',
+            'admin_note.max' => 'Alasan penolakan maksimal 500 karakter.',
+        ]);
+
+        // Update status to rejected
+        $application->update([
+            'status' => 'rejected',
+            'admin_note' => $request->admin_note,
+        ]);
+
+        // Load relationships for email
+        $application->load(['masterDocument', 'citizen.user']);
+
+        // Send email notification
+        try {
+            // if ($application->citizen && $application->citizen->user->email) {
+            if ($application->citizen) {
+                // Mail::to($application->citizen->user->email)->send(
+                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                    new ApprovalApplicationDocument($application, false, $request->admin_note)
+                );
+                return redirect()->back()->with('success', 'Pengajuan berhasil ditolak dan email notifikasi telah dikirim.');
+            }
+            return redirect()->back()->with('success', 'Pengajuan berhasil ditolak, namun email tidak dapat dikirim karena pemohon belum memiliki akun.');
+        } catch (\Exception $e) {
+            // Log error but don't fail the rejection
+            \Log::error('Failed to send rejection email: ' . $e->getMessage());
+            return redirect()->back()->with('success', 'Pengajuan berhasil ditolak, namun email gagal dikirim.');
+        }
     }
 }

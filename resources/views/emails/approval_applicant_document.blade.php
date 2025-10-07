@@ -26,17 +26,18 @@
                         </td>
                     </tr>
 
-                    <!-- Status Badge - APPROVED VERSION -->
+                    <!-- Status Badge -->
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center;">
+                            @if($isApproved)
                             <div style="display: inline-block; background-color: #10b981; color: white; padding: 12px 30px; border-radius: 50px; font-size: 18px; font-weight: 600; margin-bottom: 10px;">
                                 ✓ PENGAJUAN DISETUJUI
                             </div>
-                            <!-- Uncomment this for rejected version:
+                            @else
                             <div style="display: inline-block; background-color: #ef4444; color: white; padding: 12px 30px; border-radius: 50px; font-size: 18px; font-weight: 600; margin-bottom: 10px;">
                                 ✗ PENGAJUAN DITOLAK
                             </div>
-                            -->
+                            @endif
                         </td>
                     </tr>
 
@@ -44,7 +45,7 @@
                     <tr>
                         <td style="padding: 0 30px 20px 30px;">
                             <p style="margin: 0; color: #374151; font-size: 16px; line-height: 1.6;">
-                                Yth. <strong>Budi Santoso</strong>,
+                                Yth. <strong>{{ $application->citizen->full_name ?? 'Pemohon' }}</strong>,
                             </p>
                             <p style="margin: 15px 0 0 0; color: #374151; font-size: 16px; line-height: 1.6;">
                                 Pengajuan surat Anda telah diproses oleh admin desa. Berikut adalah detail pengajuan Anda:
@@ -65,27 +66,27 @@
                                         <table width="100%" cellpadding="8" cellspacing="0">
                                             <tr>
                                                 <td style="color: #6b7280; font-size: 14px; width: 40%;">Nomor Pengajuan</td>
-                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">#APP-2025-001</td>
+                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">#APP-{{ str_pad($application->id, 6, '0', STR_PAD_LEFT) }}</td>
                                             </tr>
                                             <tr>
                                                 <td style="color: #6b7280; font-size: 14px;">Jenis Surat</td>
-                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">Surat Keterangan Domisili</td>
+                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">{{ $application->masterDocument->document_name ?? 'N/A' }}</td>
                                             </tr>
                                             <tr>
                                                 <td style="color: #6b7280; font-size: 14px;">NIK Pemohon</td>
-                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">3201234567890123</td>
+                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">{{ $application->nik }}</td>
                                             </tr>
                                             <tr>
                                                 <td style="color: #6b7280; font-size: 14px;">Nama Pemohon</td>
-                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">Budi Santoso</td>
+                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">{{ $application->citizen->full_name ?? 'N/A' }}</td>
                                             </tr>
                                             <tr>
                                                 <td style="color: #6b7280; font-size: 14px;">Tanggal Pengajuan</td>
-                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">5 Oktober 2025</td>
+                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">{{ \Carbon\Carbon::parse($application->created_at)->locale('id')->isoFormat('D MMMM YYYY') }}</td>
                                             </tr>
                                             <tr>
                                                 <td style="color: #6b7280; font-size: 14px; vertical-align: top;">Alasan Pengajuan</td>
-                                                <td style="color: #1f2937; font-size: 14px;">Untuk keperluan pembuatan rekening bank di Bank Mandiri</td>
+                                                <td style="color: #1f2937; font-size: 14px;">{{ $application->reason }}</td>
                                             </tr>
                                         </table>
                                     </td>
@@ -94,35 +95,30 @@
                         </td>
                     </tr>
 
-                    <!-- Admin Note (for approved) -->
+                    <!-- Admin Note -->
                     <tr>
                         <td style="padding: 0 30px 20px 30px;">
+                            @if($isApproved)
                             <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 15px 20px; border-radius: 4px;">
                                 <p style="margin: 0; color: #065f46; font-size: 14px; font-weight: 600;">
                                     📝 Catatan Admin:
                                 </p>
                                 <p style="margin: 10px 0 0 0; color: #047857; font-size: 14px; line-height: 1.6;">
-                                    Surat Anda telah diproses dan dapat diambil di kantor desa pada hari kerja (Senin-Jumat) pukul 08.00-15.00 WIB. Jangan lupa membawa KTP asli dan fotokopi KK.
+                                    {{ $adminNote }}
                                 </p>
                             </div>
-                        </td>
-                    </tr>
-
-                    <!-- Admin Note (for rejected) - Uncomment for rejection version -->
-                    <!--
-                    <tr>
-                        <td style="padding: 0 30px 20px 30px;">
+                            @else
                             <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 15px 20px; border-radius: 4px;">
                                 <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">
                                     ❌ Alasan Penolakan:
                                 </p>
                                 <p style="margin: 10px 0 0 0; color: #b91c1c; font-size: 14px; line-height: 1.6;">
-                                    Data yang Anda masukkan tidak lengkap. Mohon melengkapi dokumen pendukung berupa fotokopi KTP dan KK, kemudian ajukan kembali permohonan Anda.
+                                    {{ $adminNote }}
                                 </p>
                             </div>
+                            @endif
                         </td>
                     </tr>
-                    -->
 
                     <!-- Next Steps -->
                     <tr>
@@ -130,18 +126,19 @@
                             <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 16px;">
                                 Langkah Selanjutnya:
                             </h3>
+                            @if($isApproved)
                             <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
                                 <li>Datang ke kantor desa dengan membawa KTP asli</li>
                                 <li>Tunjukkan email ini kepada petugas</li>
                                 <li>Surat akan diberikan setelah verifikasi dokumen</li>
                             </ul>
-                            <!-- For rejected version:
+                            @else
                             <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
                                 <li>Lengkapi dokumen yang diminta</li>
                                 <li>Ajukan kembali permohonan melalui sistem</li>
                                 <li>Hubungi kantor desa jika ada pertanyaan</li>
                             </ul>
-                            -->
+                            @endif
                         </td>
                     </tr>
 
