@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/send-email',function(){
     $data = [
-        'subject' => 'Testing Kirim Email bismillah',
+        'subject' => 'Testing Kirim Email bismillah lagi',
         'title' => 'Testing Kirim Email bismillah',
         'body' => 'bismillah Ini adalah email uji coba dari Tutorial Laravel: Send Email Via SMTP GMAIL @ qadrLabs.com'
     ];

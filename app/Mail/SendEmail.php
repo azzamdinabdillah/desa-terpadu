@@ -39,7 +39,8 @@ class SendEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.send_email', // tambahkan ini
+            // view: 'emails.send_email', // tambahkan ini
+            view: 'emails.approval_applicant_document', // tambahkan ini
         );
     }
 
