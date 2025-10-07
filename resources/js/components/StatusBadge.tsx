@@ -1,5 +1,5 @@
 interface StatusBadgeProps {
-    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus' | 'socialAidType' | 'socialAidStatus';
+    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus' | 'socialAidType' | 'socialAidStatus' | 'documentStatus';
     value: string;
     className?: string;
 }
@@ -48,6 +48,13 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         completed: { label: 'Selesai', className: 'bg-gray-100 text-gray-800' },
     };
 
+    const documentStatusConfig = {
+        pending: { label: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
+        on_proccess: { label: 'Diproses', className: 'bg-blue-100 text-blue-800' },
+        completed: { label: 'Selesai', className: 'bg-green-100 text-green-800' },
+        rejected: { label: 'Ditolak', className: 'bg-red-100 text-red-800' },
+    };
+
     let config;
     switch (type) {
         case 'status':
@@ -70,6 +77,9 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
             break;
         case 'socialAidStatus':
             config = socialAidStatusConfig[value as keyof typeof socialAidStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'documentStatus':
+            config = documentStatusConfig[value as keyof typeof documentStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
             break;
         default:
             config = { label: value, className: 'bg-gray-100 text-gray-800' };

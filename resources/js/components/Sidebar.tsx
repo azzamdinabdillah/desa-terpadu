@@ -78,6 +78,7 @@ export const menuItems: MenuItem[] = [
         icon: <FileText className="h-5 w-5" />,
         submenu: [
             { id: 'master-documents-list', label: 'Daftar Dokumen', href: '/documents' },
+            { id: 'applicant', label: 'Pengajuan Dokumen', href: '/document-applications' },
         ],
     },
     {
