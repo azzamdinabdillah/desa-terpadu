@@ -147,8 +147,7 @@ function ApplicantPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                                // TODO: Implement view details
-                                console.log('View application:', item.id);
+                                router.visit(`/document-applications/${item.id}`);
                             }}
                         >
                             <Eye className="h-4 w-4" />
@@ -176,8 +175,8 @@ function ApplicantPage() {
                     />
 
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex flex-col gap-4 sm:flex-row w-full">
-                            <div className="relative max-w-md w-full flex-1">
+                        <div className="flex w-full flex-col gap-4 sm:flex-row">
+                            <div className="relative w-full max-w-md flex-1">
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <Search className="h-5 w-5 text-green-600" />
                                 </div>
@@ -195,7 +194,12 @@ function ApplicantPage() {
                             </div>
                         </div>
 
-                        <Button className='shrink-0 h-full' onClick={() => router.visit('/document-applications/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                        <Button
+                            className="h-full shrink-0"
+                            onClick={() => router.visit('/document-applications/create')}
+                            icon={<Plus className="h-4 w-4" />}
+                            iconPosition="left"
+                        >
                             Tambah Pengajuan
                         </Button>
                     </div>

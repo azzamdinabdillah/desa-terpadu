@@ -106,4 +106,16 @@ class ApplicantController extends Controller
 
         return redirect('/document-applications')->with('success', 'Pengajuan surat berhasil dikirim. Silakan tunggu konfirmasi dari admin desa.');
     }
+
+    /**
+     * Display a specific document application.
+     */
+    public function show(ApplicationDocument $application)
+    {
+        $application->load(['masterDocument', 'citizen']);
+        
+        return Inertia::render('document/applicant/detail', [
+            'application' => $application,
+        ]);
+    }
 }
