@@ -84,7 +84,7 @@ const ApplicantDetail: React.FC = () => {
                                         <label className="mb-1 block text-sm font-medium text-green-700">NIK</label>
                                         <div className="flex items-center gap-2 text-green-900">
                                             <FileText className="h-4 w-4 text-green-600" />
-                                            <span className="font-mono text-sm">{application.nik}</span>
+                                            <span className="">{application.nik}</span>
                                         </div>
                                     </div>
 

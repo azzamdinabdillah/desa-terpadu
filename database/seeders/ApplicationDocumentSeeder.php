@@ -27,14 +27,34 @@ class ApplicationDocumentSeeder extends Seeder
 
         // Create sample application documents
         for ($i = 0; $i < 20; $i++) {
+            $status = $statuses[array_rand($statuses)];
+            
+            // Adjust admin_note and file based on status
+            $adminNote = null;
+            $file = null;
+            
+            if ($status === 'pending') {
+                // pending: no admin_note and no file
+                $adminNote = null;
+                $file = null;
+            } elseif ($status === 'on_proccess' || $status === 'rejected') {
+                // on_proccess/rejected: has admin_note but no file
+                $adminNote = $this->getRandomAdminNote();
+                $file = null;
+            } elseif ($status === 'completed') {
+                // completed: has both admin_note and file
+                $adminNote = $this->getRandomAdminNote();
+                $file = $this->getRandomFile();
+            }
+            
             ApplicationDocument::create([
                 'master_document_id' => $masterDocuments->random()->id,
                 'nik' => $citizens->random()->nik,
-                'status' => $statuses[array_rand($statuses)],
+                'status' => $status,
                 'reason' => $this->getRandomReason(),
                 'citizen_note' => $this->getRandomCitizenNote(),
-                'admin_note' => $this->getRandomAdminNote(),
-                'file' => $this->getRandomFile(),
+                'admin_note' => $adminNote,
+                'file' => $file,
             ]);
         }
     }
@@ -71,10 +91,9 @@ class ApplicationDocumentSeeder extends Seeder
         return $notes[array_rand($notes)];
     }
 
-    private function getRandomAdminNote(): ?string
+    private function getRandomAdminNote(): string
     {
         $notes = [
-            null,
             'Sedang diproses, menunggu verifikasi data',
             'Dokumen sudah diverifikasi, siap dicetak',
             'Perlu perbaikan data, mohon lengkapi dokumen',
@@ -85,10 +104,9 @@ class ApplicationDocumentSeeder extends Seeder
         return $notes[array_rand($notes)];
     }
 
-    private function getRandomFile(): ?string
+    private function getRandomFile(): string
     {
         $files = [
-            null,
             'document_1.pdf',
             'document_2.jpg',
             'document_3.png',
