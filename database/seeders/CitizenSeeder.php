@@ -74,6 +74,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name('male'),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
@@ -91,6 +92,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name('female'),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
@@ -110,6 +112,7 @@ class CitizenSeeder extends Seeder
             $citizens[] = [
                 'full_name' => $faker->name($faker->randomElement($genders)),
                 'nik' => (string)($nikBase++),
+                'email' => $faker->unique()->safeEmail(),
                 'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
                 'profile_picture' => null,
                 'address' => $faker->address,
@@ -130,6 +133,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name('male'),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
@@ -147,6 +151,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name('female'),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
@@ -166,6 +171,7 @@ class CitizenSeeder extends Seeder
             $citizens[] = [
                 'full_name' => $faker->name($faker->randomElement($genders)),
                 'nik' => (string)($nikBase++),
+                'email' => $faker->unique()->safeEmail(),
                 'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
                 'profile_picture' => null,
                 'address' => $faker->address,
@@ -186,6 +192,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name('male'),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
@@ -203,6 +210,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name('female'),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
@@ -221,6 +229,7 @@ class CitizenSeeder extends Seeder
         $citizens[] = [
             'full_name' => $faker->name($faker->randomElement($genders)),
             'nik' => (string)($nikBase++),
+            'email' => $faker->unique()->safeEmail(),
             'phone_number' => $faker->optional(0.7)->regexify('08[0-9]{8,13}'),
             'profile_picture' => null,
             'address' => $faker->address,
