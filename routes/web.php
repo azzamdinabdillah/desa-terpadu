@@ -12,11 +12,23 @@ use App\Http\Controllers\SocialAidController;
 use App\Http\Controllers\SocialAidRecipientController;
 use App\Http\Controllers\MasterDocumentController;
 use App\Http\Controllers\ApplicantController;
+use App\Mail\SendEmail;
 use App\Models\Citizen;
 use App\Models\Family;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/send-email',function(){
+    $data = [
+        'subject' => 'Testing Kirim Email bismillah',
+        'title' => 'Testing Kirim Email bismillah',
+        'body' => 'bismillah Ini adalah email uji coba dari Tutorial Laravel: Send Email Via SMTP GMAIL @ qadrLabs.com'
+    ];
+   
+    Mail::to('azzamdinabdillah123@gmail.com')->send(new SendEmail($data));
+});
 
 Route::get('/', function () {
     $search = request('search');
