@@ -119,6 +119,11 @@ function ApplicantPage() {
                 ),
             },
             {
+                key: 'reason',
+                header: 'Alasan Pengajuan',
+                cell: (item: ApplicationDocumentType) => <span className="text-sm text-green-900">{item.reason || 'N/A'}</span>,
+            },
+            {
                 key: 'status',
                 header: 'Status',
                 cell: (item: ApplicationDocumentType) => <StatusBadge type="documentStatus" value={item.status} />,
@@ -171,7 +176,7 @@ function ApplicantPage() {
                     />
 
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center w-full">
+                        <div className="flex flex-col gap-4 sm:flex-row w-full">
                             <div className="relative max-w-md w-full flex-1">
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <Search className="h-5 w-5 text-green-600" />

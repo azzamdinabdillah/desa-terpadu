@@ -121,26 +121,76 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ citizens, filters }) => {
 
                 {/* Main Content */}
                 <div className="lg:ml-64">
-                    <Header
-                        title="Dashboard Desa"
-                        icon="🌾"
-                       
-                    />
+                    <Header title="Dashboard Desa" icon="🌾" />
 
                     {/* Page Content */}
                     <main className="bg-green-50 p-4 lg:p-8">
                         <div className="mx-auto max-w-7xl">
                             {/* Page Header */}
                             <div className="mb-6">
-                                <h1 className="font-heading text-2xl font-bold text-green-900">Data Penduduk</h1>
+                                <h1 className="font-heading text-2xl font-bold text-green-900">Dashboard Desa</h1>
                                 <p className="mt-2 text-green-700">
-                                    Kelola data penduduk desa
+                                    Selamat datang di sistem manajemen desa terpadu
                                     {searchQuery.trim() && (
                                         <span className="ml-2 text-sm">
                                             - Menampilkan {citizens.total} hasil dari pencarian "{searchQuery}"
                                         </span>
                                     )}
                                 </p>
+                            </div>
+
+                            {/* Public Services Section */}
+                            <div className="mb-8 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                                <div className="mb-4 flex items-center gap-2">
+                                    <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        />
+                                    </svg>
+                                    <h2 className="text-lg font-semibold text-green-900">Layanan Publik</h2>
+                                </div>
+                                <p className="mb-4 text-green-700">
+                                    Warga desa dapat mengajukan berbagai jenis surat secara online melalui sistem ini.
+                                </p>
+                                <div className="flex flex-col gap-3 sm:flex-row">
+                                    <button
+                                        onClick={() => router.visit('/document-applications/create')}
+                                        className="flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white transition-colors hover:bg-green-800 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                    >
+                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                            />
+                                        </svg>
+                                        Ajukan Surat
+                                    </button>
+                                    <button
+                                        onClick={() => router.visit('/document-applications')}
+                                        className="flex items-center gap-2 rounded-lg border border-green-300 bg-white px-4 py-2 text-green-700 transition-colors hover:bg-green-50 focus:ring-2 focus:ring-green-200 focus:outline-none"
+                                    >
+                                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                                            />
+                                        </svg>
+                                        Lihat Status Pengajuan
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Citizens Section Header */}
+                            <div className="mb-6">
+                                <h2 className="font-heading text-xl font-bold text-green-900">Data Penduduk</h2>
+                                <p className="mt-2 text-green-700">Kelola data penduduk desa</p>
                             </div>
 
                             {/* Search and Add Button */}

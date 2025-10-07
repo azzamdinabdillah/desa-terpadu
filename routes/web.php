@@ -56,6 +56,8 @@ Route::get('/recipients', [SocialAidRecipientController::class, 'index'])->name(
 Route::get('/documents', [MasterDocumentController::class, 'index'])->name('master-documents.index');
 
 Route::get('/document-applications', [ApplicantController::class, 'index'])->name('document-applications.index');
+Route::get('/document-applications/create', [ApplicantController::class, 'create'])->name('document-applications.create');
+Route::post('/document-applications', [ApplicantController::class, 'store'])->name('document-applications.store');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
