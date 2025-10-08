@@ -389,16 +389,32 @@ const ApplicantDetail: React.FC = () => {
                                                 <FileText className="h-5 w-5 text-green-600" />
                                                 <div className="flex-1">
                                                     <p className="text-sm font-medium text-green-900">{application.file.split('/').pop()}</p>
-                                                    <p className="text-xs text-green-600">Klik untuk mengunduh</p>
+                                                    <p className="text-xs text-green-600">Lihat atau unduh dokumen</p>
                                                 </div>
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        window.open(`/storage/${application.file}`, '_blank');
-                                                    }}
-                                                >
-                                                    Unduh
-                                                </Button>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            window.open(`/storage/${application.file}`, '_blank');
+                                                        }}
+                                                    >
+                                                        Lihat
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            const link = document.createElement('a');
+                                                            link.href = `/storage/${application.file}`;
+                                                            link.download = application.file?.split('/').pop() || 'dokumen';
+                                                            document.body.appendChild(link);
+                                                            link.click();
+                                                            document.body.removeChild(link);
+                                                        }}
+                                                    >
+                                                        Unduh
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
