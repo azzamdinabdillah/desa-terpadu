@@ -118,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
     return (
         <div
-            className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-green-200 lg:bg-green-50 lg:shadow-lg ${className}`}
+            className={`hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-[270px] lg:flex-col lg:border-r lg:border-green-200 lg:bg-green-50 lg:shadow-lg ${className}`}
         >
             {/* Logo Section */}
             <div className="border-b border-green-200 bg-green-100 p-6">
@@ -134,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-2 p-4">
+            <nav className="flex-1 space-y-2 p-4 overflow-y-auto">
                 {menuItems
                     .filter((item) => {
                         // Hide login menu when user is authenticated

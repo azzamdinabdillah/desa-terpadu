@@ -49,7 +49,7 @@
 
                     <!-- Greeting -->
                     <tr>
-                        <td style="padding: {{ (!isset($isNotification) || !$isNotification) ? '0' : '30px' }} 30px 20px 30px;">
+                        <td style="padding: 20px 30px 20px 30px;">
                             <p style="margin: 0; color: #374151; font-size: 16px; line-height: 1.6;">
                                 Yth. <strong>{{ $application->citizen->full_name ?? 'Pemohon' }}</strong>,
                             </p>
@@ -168,7 +168,7 @@
 
                     <!-- CTA Button -->
                     <tr>
-                        <td style="padding: {{ (isset($isNotification) && $isNotification) ? '20px' : '0' }} 30px 30px 30px; text-align: center;">
+                        <td style="padding: 30px; text-align: center;">
                             <a href="#" style="display: inline-block; background-color: #10b981; color: white; text-decoration: none; padding: 14px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.4);">
                                 Lihat Detail Pengajuan
                             </a>
