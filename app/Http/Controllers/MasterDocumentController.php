@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MasterDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class MasterDocumentController extends Controller
@@ -139,6 +140,17 @@ class MasterDocumentController extends Controller
     public function destroy(MasterDocument $masterDocument)
     {
         try {
+            // Ambil semua application documents yang terkait
+            $applicationDocuments = $masterDocument->applicationDocuments;
+            
+            // Hapus file-file dari storage
+            foreach ($applicationDocuments as $applicationDocument) {
+                if ($applicationDocument->file && Storage::disk('public')->exists($applicationDocument->file)) {
+                    Storage::disk('public')->delete($applicationDocument->file);
+                }
+            }
+            
+            // Hapus master document (akan menghapus child records juga jika ada cascade)
             $masterDocument->delete();
 
             return redirect()->route('master-documents.index')

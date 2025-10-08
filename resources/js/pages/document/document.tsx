@@ -243,6 +243,14 @@ function MasterDocumentPage() {
                                         </p>
                                     )}
                                 </div>
+                                <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+                                    <p className="text-sm font-medium text-yellow-900">⚠️ Peringatan:</p>
+                                    <ul className="mt-1 list-inside list-disc text-sm text-yellow-800">
+                                        <li>Semua data permohonan terkait akan ikut terhapus</li>
+                                        <li>Semua file yang diunggah pemohon akan dihapus dari storage</li>
+                                        <li>Tindakan ini tidak dapat dibatalkan</li>
+                                    </ul>
+                                </div>
                             </div>
                         ) : (
                             'Apakah Anda yakin ingin menghapus dokumen ini?'
