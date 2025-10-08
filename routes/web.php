@@ -149,6 +149,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/document-applications/{application}/approve', [ApplicantController::class, 'approve'])->name('document-applications.approve');
     Route::post('/document-applications/{application}/reject', [ApplicantController::class, 'reject'])->name('document-applications.reject');
+    Route::post('/document-applications/{application}/notify', [ApplicantController::class, 'notify'])->name('document-applications.notify');
 });
 
 // Auth

@@ -27,6 +27,7 @@
                     </tr>
 
                     <!-- Status Badge -->
+                    @if(!isset($isNotification) || !$isNotification)
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center;">
                             @if($isApproved)
@@ -40,15 +41,20 @@
                             @endif
                         </td>
                     </tr>
+                    @endif
 
                     <!-- Greeting -->
                     <tr>
-                        <td style="padding: 0 30px 20px 30px;">
+                        <td style="padding: {{ (!isset($isNotification) || !$isNotification) ? '0' : '30px' }} 30px 20px 30px;">
                             <p style="margin: 0; color: #374151; font-size: 16px; line-height: 1.6;">
                                 Yth. <strong>{{ $application->citizen->full_name ?? 'Pemohon' }}</strong>,
                             </p>
                             <p style="margin: 15px 0 0 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                                @if(isset($isNotification) && $isNotification)
+                                Berikut adalah informasi terkait pengajuan surat Anda:
+                                @else
                                 Pengajuan surat Anda telah diproses oleh admin desa. Berikut adalah detail pengajuan Anda:
+                                @endif
                             </p>
                         </td>
                     </tr>
@@ -98,29 +104,41 @@
                     <!-- Admin Note -->
                     <tr>
                         <td style="padding: 0 30px 20px 30px;">
-                            @if($isApproved)
+                            @if(isset($isNotification) && $isNotification)
                             <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 15px 20px; border-radius: 4px;">
                                 <p style="margin: 0; color: #065f46; font-size: 14px; font-weight: 600;">
-                                    📝 Catatan Admin:
+                                    📝 Informasi dari Admin:
                                 </p>
                                 <p style="margin: 10px 0 0 0; color: #047857; font-size: 14px; line-height: 1.6;">
                                     {{ $adminNote }}
                                 </p>
                             </div>
                             @else
-                            <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 15px 20px; border-radius: 4px;">
-                                <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">
-                                    ❌ Alasan Penolakan:
-                                </p>
-                                <p style="margin: 10px 0 0 0; color: #b91c1c; font-size: 14px; line-height: 1.6;">
-                                    {{ $adminNote }}
-                                </p>
-                            </div>
+                                @if($isApproved)
+                                <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 15px 20px; border-radius: 4px;">
+                                    <p style="margin: 0; color: #065f46; font-size: 14px; font-weight: 600;">
+                                        📝 Catatan Admin:
+                                    </p>
+                                    <p style="margin: 10px 0 0 0; color: #047857; font-size: 14px; line-height: 1.6;">
+                                        {{ $adminNote }}
+                                    </p>
+                                </div>
+                                @else
+                                <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 15px 20px; border-radius: 4px;">
+                                    <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">
+                                        ❌ Alasan Penolakan:
+                                    </p>
+                                    <p style="margin: 10px 0 0 0; color: #b91c1c; font-size: 14px; line-height: 1.6;">
+                                        {{ $adminNote }}
+                                    </p>
+                                </div>
+                                @endif
                             @endif
                         </td>
                     </tr>
 
                     <!-- Next Steps -->
+                    @if(!isset($isNotification) || !$isNotification)
                     <tr>
                         <td style="padding: 0 30px 30px 30px;">
                             <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 16px;">
@@ -141,10 +159,11 @@
                             @endif
                         </td>
                     </tr>
+                    @endif
 
                     <!-- CTA Button -->
                     <tr>
-                        <td style="padding: 0 30px 30px 30px; text-align: center;">
+                        <td style="padding: {{ (isset($isNotification) && $isNotification) ? '20px' : '0' }} 30px 30px 30px; text-align: center;">
                             <a href="#" style="display: inline-block; background-color: #10b981; color: white; text-decoration: none; padding: 14px 40px; border-radius: 6px; font-size: 16px; font-weight: 600; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.4);">
                                 Lihat Detail Pengajuan
                             </a>

@@ -198,4 +198,47 @@ class ApplicantController extends Controller
             return redirect()->back()->with('success', 'Pengajuan berhasil ditolak, namun email gagal dikirim.');
         }
     }
+
+    /**
+     * Send notification email for on_proccess status.
+     */
+    public function notify(Request $request, ApplicationDocument $application)
+    {
+        $request->validate([
+            'admin_note' => 'required|string|max:500',
+        ], [
+            'admin_note.required' => 'Catatan admin wajib diisi.',
+            'admin_note.string' => 'Catatan admin harus berupa teks.',
+            'admin_note.max' => 'Catatan admin maksimal 500 karakter.',
+        ]);
+
+        // Check if application status is on_proccess
+        if ($application->status !== 'on_proccess') {
+            return redirect()->back()->with('error', 'Notifikasi hanya dapat dikirim untuk pengajuan dengan status sedang diproses.');
+        }
+
+        // Update admin note (optional - to keep latest note sent)
+        $application->update([
+            'admin_note' => $request->admin_note,
+        ]);
+
+        // Load relationships for email
+        $application->load(['masterDocument', 'citizen']);
+
+        // Send email notification
+        try {
+            if ($application->citizen && $application->citizen->email) {
+                // Mail::to($application->citizen->email)->send(
+                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                    new ApprovalApplicationDocument($application, true, $request->admin_note, true)
+                );
+                return redirect()->back()->with('success', 'Email notifikasi berhasil dikirim ke pemohon.');
+            }
+            return redirect()->back()->with('error', 'Email tidak dapat dikirim karena pemohon tidak memiliki email.');
+        } catch (\Exception $e) {
+            // Log error
+            \Log::error('Failed to send notification email: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Email gagal dikirim. Silakan coba lagi.');
+        }
+    }
 }

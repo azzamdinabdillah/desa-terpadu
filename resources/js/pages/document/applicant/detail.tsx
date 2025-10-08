@@ -29,6 +29,7 @@ const ApplicantDetail: React.FC = () => {
 
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
+    const [showNotifyModal, setShowNotifyModal] = useState(false);
     const [adminNote, setAdminNote] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [alert, setAlert] = useState<AlertProps | null>(null);
@@ -108,6 +109,43 @@ const ApplicantDetail: React.FC = () => {
                     setAlert({
                         type: 'error',
                         message: 'Gagal menolak pengajuan.',
+                        errors: errors as Record<string, string | string[]>,
+                        autoClose: true,
+                        duration: 5000,
+                    });
+                },
+                onFinish: () => {
+                    setIsSubmitting(false);
+                },
+            },
+        );
+    };
+
+    const handleNotify = () => {
+        if (!adminNote.trim()) {
+            setAlert({
+                type: 'warning',
+                message: 'Catatan admin wajib diisi untuk mengirim notifikasi.',
+                autoClose: true,
+                duration: 3000,
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+        router.post(
+            `/document-applications/${application.id}/notify`,
+            { admin_note: adminNote },
+            {
+                onSuccess: () => {
+                    setShowNotifyModal(false);
+                    setAdminNote('');
+                },
+                onError: (errors) => {
+                    console.error('Notification failed:', errors);
+                    setAlert({
+                        type: 'error',
+                        message: 'Gagal mengirim notifikasi.',
                         errors: errors as Record<string, string | string[]>,
                         autoClose: true,
                         duration: 5000,
@@ -375,6 +413,19 @@ const ApplicantDetail: React.FC = () => {
                                     </Button>
                                 </div>
                             )}
+
+                            {isAdmin && application.status === 'on_proccess' && (
+                                <div className="flex gap-3">
+                                    <Button
+                                        onClick={() => {
+                                            setAdminNote(application.admin_note || '');
+                                            setShowNotifyModal(true);
+                                        }}
+                                    >
+                                        Kirim Notifikasi Email
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -482,6 +533,60 @@ const ApplicantDetail: React.FC = () => {
                             </Button>
                             <Button onClick={handleReject} loading={isSubmitting} disabled={isSubmitting || !adminNote.trim()} variant="red">
                                 {isSubmitting ? 'Memproses...' : 'Tolak Pengajuan'}
+                            </Button>
+                        </div>
+                    </Dialog.Content>
+                </Dialog.Portal>
+            </Dialog.Root>
+
+            {/* Notify Modal */}
+            <Dialog.Root open={showNotifyModal} onOpenChange={setShowNotifyModal}>
+                <Dialog.Portal>
+                    <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                    <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg md:w-full">
+                        <div className="mb-4 flex items-center gap-3 border-b border-green-200 pb-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                                <MessageSquare className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                                <Dialog.Title className="text-lg font-semibold text-green-900">Kirim Notifikasi Email</Dialog.Title>
+                                <p className="text-sm text-green-700">Kirim email pemberitahuan ke pemohon</p>
+                            </div>
+                            <Dialog.Close asChild>
+                                <button className="rounded-full p-1 text-green-600 hover:bg-green-100">
+                                    <X className="h-5 w-5" />
+                                </button>
+                            </Dialog.Close>
+                        </div>
+
+                        <div className="mb-6">
+                            <p className="mb-4 text-sm text-gray-700">
+                                Anda akan mengirim notifikasi email untuk pengajuan <strong>{application.master_document?.document_name}</strong>{' '}
+                                kepada <strong>{application.citizen?.full_name}</strong>.
+                            </p>
+                            <InputField
+                                label="Catatan untuk Pemohon"
+                                value={adminNote}
+                                onChange={setAdminNote}
+                                as="textarea"
+                                rows={4}
+                                placeholder="Masukkan informasi tambahan (misal: update status pengajuan, dokumen tambahan yang diperlukan, kapan bisa diambil, dll)"
+                                helperText={`${adminNote.length}/500 karakter`}
+                                required
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowNotifyModal(false)}
+                                disabled={isSubmitting}
+                                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                            >
+                                Batal
+                            </Button>
+                            <Button onClick={handleNotify} loading={isSubmitting} disabled={isSubmitting || !adminNote.trim()}>
+                                {isSubmitting ? 'Mengirim...' : 'Kirim Notifikasi'}
                             </Button>
                         </div>
                     </Dialog.Content>
