@@ -137,7 +137,7 @@ function MasterDocumentPage() {
                 ),
             },
         ],
-        [],
+        [isAdmin],
     );
 
     return (

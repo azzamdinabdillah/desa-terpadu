@@ -39,7 +39,7 @@ function SocialAidCreatePage() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    const { data, setData, post, put, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         program_name: program?.program_name || '',
         period: program?.period || '',
         type: program?.type || 'individual',

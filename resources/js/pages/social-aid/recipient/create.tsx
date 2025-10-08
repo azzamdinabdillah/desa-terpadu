@@ -155,7 +155,7 @@ function CreateRecipientPage() {
         return 'Belum dipilih';
     };
 
-    const updateRecipient = (id: string, field: keyof RecipientForm, value: any) => {
+    const updateRecipient = (id: string, field: keyof RecipientForm, value: number | undefined) => {
         // Check for duplicates when selecting citizen or family
         if (field === 'citizen_id' && value) {
             const duplicateRecipient = recipients.find((recipient) => recipient.id !== id && recipient.citizen_id === value);

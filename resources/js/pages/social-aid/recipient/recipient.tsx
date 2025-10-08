@@ -13,7 +13,7 @@ import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, CheckCircle, Circle, Eye, FileImage, Filter, HandHeart, Plus, Search, StickyNote, Trash2, Users, X } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, FileImage, Filter, HandHeart, Plus, Search, StickyNote, Trash2, Users, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidRecipientPageProps {
@@ -153,22 +153,6 @@ function SocialAidRecipientPage() {
         const query = programSearchQuery.toLowerCase();
         return programs.filter((program) => program.program_name.toLowerCase().includes(query) || program.period.toLowerCase().includes(query));
     }, [programs, programSearchQuery]);
-
-    useEffect(() => {
-        console.log(recipients);
-    }, [recipients]);
-
-    // Prepare program options for filter
-    const programOptions = useMemo(() => {
-        const options = [{ value: 'all_programs', label: 'Semua Program' }];
-        programs.forEach((program) => {
-            options.push({
-                value: program.id.toString(),
-                label: `${program.program_name} (${program.period})`,
-            });
-        });
-        return options;
-    }, [programs]);
 
     const columns = useMemo(
         () => [
@@ -313,7 +297,7 @@ function SocialAidRecipientPage() {
                 ),
             },
         ],
-        [],
+        [isAdmin],
     );
 
     return (

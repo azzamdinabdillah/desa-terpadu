@@ -8,7 +8,6 @@ import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { ApplicationDocumentType, PaginatedApplicationDocuments } from '@/types/document/documentTypes';
 import { router, usePage } from '@inertiajs/react';
@@ -30,8 +29,6 @@ interface ApplicantPageProps {
 
 function ApplicantPage() {
     const { applications, filters, flash } = usePage().props as unknown as ApplicantPageProps;
-    const { user } = useAuth();
-    const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
 
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [searchQuery, setSearchQuery] = useState(filters?.search ?? '');
@@ -72,7 +69,7 @@ function ApplicantPage() {
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchQuery, filters.search]);
+    }, [searchQuery, filters.search, statusFilter]);
 
     // Handle status filter change
     useEffect(() => {
@@ -89,7 +86,7 @@ function ApplicantPage() {
                 },
             );
         }
-    }, [statusFilter, filters.status]);
+    }, [statusFilter, filters.status, searchQuery]);
 
     const columns = useMemo(
         () => [

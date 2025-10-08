@@ -92,7 +92,7 @@ function SocialAidPage() {
                     setShowDeleteModal(false);
                     setDeleteProgram(null);
                 },
-                onError: (errors) => {
+                onError: () => {
                     setAlert({ type: 'error', message: 'Gagal menghapus program bantuan sosial' });
                     setShowDeleteModal(false);
                     setDeleteProgram(null);
