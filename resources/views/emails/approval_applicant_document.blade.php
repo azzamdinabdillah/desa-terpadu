@@ -30,7 +30,11 @@
                     @if(!isset($isNotification) || !$isNotification)
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center;">
-                            @if($isApproved)
+                            @if(isset($isCompleted) && $isCompleted)
+                            <div style="display: inline-block; background-color: #3b82f6; color: white; padding: 12px 30px; border-radius: 50px; font-size: 18px; font-weight: 600; margin-bottom: 10px;">
+                                ✓ PENGAJUAN SELESAI
+                            </div>
+                            @elseif($isApproved)
                             <div style="display: inline-block; background-color: #10b981; color: white; padding: 12px 30px; border-radius: 50px; font-size: 18px; font-weight: 600; margin-bottom: 10px;">
                                 ✓ PENGAJUAN DISETUJUI
                             </div>
@@ -50,7 +54,9 @@
                                 Yth. <strong>{{ $application->citizen->full_name ?? 'Pemohon' }}</strong>,
                             </p>
                             <p style="margin: 15px 0 0 0; color: #374151; font-size: 16px; line-height: 1.6;">
-                                @if(isset($isNotification) && $isNotification)
+                                @if(isset($isCompleted) && $isCompleted)
+                                Selamat! Pengajuan surat Anda telah selesai diproses. Berikut adalah detail pengajuan Anda:
+                                @elseif(isset($isNotification) && $isNotification)
                                 Berikut adalah informasi terkait pengajuan surat Anda:
                                 @else
                                 Pengajuan surat Anda telah diproses oleh admin desa. Berikut adalah detail pengajuan Anda:
@@ -104,7 +110,16 @@
                     <!-- Admin Note -->
                     <tr>
                         <td style="padding: 0 30px 20px 30px;">
-                            @if(isset($isNotification) && $isNotification)
+                            @if(isset($isCompleted) && $isCompleted)
+                            <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px 20px; border-radius: 4px;">
+                                <p style="margin: 0; color: #1e40af; font-size: 14px; font-weight: 600;">
+                                    ✅ Catatan Penyelesaian:
+                                </p>
+                                <p style="margin: 10px 0 0 0; color: #1d4ed8; font-size: 14px; line-height: 1.6;">
+                                    {{ $adminNote }}
+                                </p>
+                            </div>
+                            @elseif(isset($isNotification) && $isNotification)
                             <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 15px 20px; border-radius: 4px;">
                                 <p style="margin: 0; color: #065f46; font-size: 14px; font-weight: 600;">
                                     📝 Informasi dari Admin:
@@ -137,29 +152,19 @@
                         </td>
                     </tr>
 
-                    <!-- Next Steps -->
-                    @if(!isset($isNotification) || !$isNotification)
+                    <!-- Contact Info Section -->
                     <tr>
                         <td style="padding: 0 30px 30px 30px;">
                             <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 16px;">
-                                Langkah Selanjutnya:
+                                Informasi Umum
                             </h3>
-                            @if($isApproved)
                             <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
-                                <li>Datang ke kantor desa dengan membawa KTP asli</li>
-                                <li>Tunjukkan email ini kepada petugas</li>
-                                <li>Surat akan diberikan setelah verifikasi dokumen</li>
+                                <li>Untuk informasi lebih lanjut, silakan hubungi kantor desa</li>
+                                <li>Jam operasional: Senin - Jumat, 08:00 - 15:00 WIB</li>
+                                <li>Pastikan membawa dokumen identitas (KTP) saat berkunjung</li>
                             </ul>
-                            @else
-                            <ul style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 14px; line-height: 1.8;">
-                                <li>Lengkapi dokumen yang diminta</li>
-                                <li>Ajukan kembali permohonan melalui sistem</li>
-                                <li>Hubungi kantor desa jika ada pertanyaan</li>
-                            </ul>
-                            @endif
                         </td>
                     </tr>
-                    @endif
 
                     <!-- CTA Button -->
                     <tr>

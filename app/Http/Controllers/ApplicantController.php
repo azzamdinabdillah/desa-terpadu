@@ -241,4 +241,62 @@ class ApplicantController extends Controller
             return redirect()->back()->with('error', 'Email gagal dikirim. Silakan coba lagi.');
         }
     }
+
+    /**
+     * Complete a document application.
+     */
+    public function complete(Request $request, ApplicationDocument $application)
+    {
+        $request->validate([
+            'admin_note' => 'required|string|max:500',
+            'proof_file' => 'required|file|mimes:jpeg,jpg,png,pdf|max:5120',
+        ], [
+            'admin_note.required' => 'Catatan admin wajib diisi.',
+            'admin_note.string' => 'Catatan admin harus berupa teks.',
+            'admin_note.max' => 'Catatan admin maksimal 500 karakter.',
+            'proof_file.required' => 'Bukti penyelesaian wajib diunggah.',
+            'proof_file.file' => 'Bukti penyelesaian harus berupa file.',
+            'proof_file.mimes' => 'Bukti penyelesaian harus berformat JPEG, JPG, PNG, atau PDF.',
+            'proof_file.max' => 'Ukuran bukti penyelesaian maksimal 5MB.',
+        ]);
+
+        // Check if application status is on_proccess
+        if ($application->status !== 'on_proccess') {
+            return redirect()->back()->with('error', 'Hanya pengajuan dengan status sedang diproses yang dapat diselesaikan.');
+        }
+
+        // Handle file upload
+        $proofFilePath = null;
+        if ($request->hasFile('proof_file')) {
+            $file = $request->file('proof_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $proofFilePath = $file->storeAs('application_document', $fileName, 'public');
+        }
+
+        // Update status to completed
+        $application->update([
+            'status' => 'completed',
+            'admin_note' => $request->admin_note,
+            'file' => $proofFilePath,
+        ]);
+
+        // Load relationships for email
+        $application->load(['masterDocument', 'citizen']);
+
+        // Send email notification
+        try {
+            if ($application->citizen && $application->citizen->email) {
+                // Mail::to($application->citizen->email)->send(
+                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                    new ApprovalApplicationDocument($application, true, $request->admin_note, false, true)
+                );
+                return redirect()->back()->with('success', 'Pengajuan berhasil diselesaikan dan email notifikasi telah dikirim.');
+            }
+            return redirect()->back()->with('success', 'Pengajuan berhasil diselesaikan, namun email tidak dapat dikirim karena pemohon tidak memiliki email.');
+        } catch (\Exception $e) {
+            // Log error but don't fail the completion
+            \Log::error('Failed to send completion email: ' . $e->getMessage());
+            return redirect()->back()->with('success', 'Pengajuan berhasil diselesaikan, namun email gagal dikirim.');
+        }
+    }
 }

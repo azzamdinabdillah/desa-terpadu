@@ -30,7 +30,9 @@ const ApplicantDetail: React.FC = () => {
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [showNotifyModal, setShowNotifyModal] = useState(false);
+    const [showCompleteModal, setShowCompleteModal] = useState(false);
     const [adminNote, setAdminNote] = useState('');
+    const [proofFile, setProofFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
@@ -156,6 +158,55 @@ const ApplicantDetail: React.FC = () => {
                 },
             },
         );
+    };
+
+    const handleComplete = () => {
+        if (!adminNote.trim()) {
+            setAlert({
+                type: 'warning',
+                message: 'Catatan admin wajib diisi untuk menyelesaikan pengajuan.',
+                autoClose: true,
+                duration: 3000,
+            });
+            return;
+        }
+
+        if (!proofFile) {
+            setAlert({
+                type: 'warning',
+                message: 'Bukti penyelesaian (foto/PDF) wajib diunggah.',
+                autoClose: true,
+                duration: 3000,
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        const formData = new FormData();
+        formData.append('admin_note', adminNote);
+        formData.append('proof_file', proofFile);
+
+        router.post(`/document-applications/${application.id}/complete`, formData, {
+            onSuccess: () => {
+                setShowCompleteModal(false);
+                setAdminNote('');
+                setProofFile(null);
+            },
+            onError: (errors) => {
+                console.error('Complete failed:', errors);
+                setAlert({
+                    type: 'error',
+                    message: 'Gagal menyelesaikan pengajuan.',
+                    errors: errors as Record<string, string | string[]>,
+                    autoClose: true,
+                    duration: 5000,
+                });
+            },
+            onFinish: () => {
+                setIsSubmitting(false);
+            },
+        });
     };
 
     return (
@@ -417,12 +468,22 @@ const ApplicantDetail: React.FC = () => {
                             {isAdmin && application.status === 'on_proccess' && (
                                 <div className="flex gap-3">
                                     <Button
+                                        variant="outline"
                                         onClick={() => {
                                             setAdminNote(application.admin_note || '');
                                             setShowNotifyModal(true);
                                         }}
                                     >
                                         Kirim Notifikasi Email
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            setAdminNote('');
+                                            setProofFile(null);
+                                            setShowCompleteModal(true);
+                                        }}
+                                    >
+                                        Selesaikan Pengajuan
                                     </Button>
                                 </div>
                             )}
@@ -587,6 +648,101 @@ const ApplicantDetail: React.FC = () => {
                             </Button>
                             <Button onClick={handleNotify} loading={isSubmitting} disabled={isSubmitting || !adminNote.trim()}>
                                 {isSubmitting ? 'Mengirim...' : 'Kirim Notifikasi'}
+                            </Button>
+                        </div>
+                    </Dialog.Content>
+                </Dialog.Portal>
+            </Dialog.Root>
+
+            {/* Complete Modal */}
+            <Dialog.Root open={showCompleteModal} onOpenChange={setShowCompleteModal}>
+                <Dialog.Portal>
+                    <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                    <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg md:w-full">
+                        <div className="mb-4 flex items-center gap-3 border-b border-green-200 pb-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                                <Dialog.Title className="text-lg font-semibold text-green-900">Selesaikan Pengajuan</Dialog.Title>
+                                <p className="text-sm text-green-700">Tandai pengajuan sebagai selesai dan kirim notifikasi</p>
+                            </div>
+                            <Dialog.Close asChild>
+                                <button className="rounded-full p-1 text-green-600 hover:bg-green-100">
+                                    <X className="h-5 w-5" />
+                                </button>
+                            </Dialog.Close>
+                        </div>
+
+                        <div className="mb-6 space-y-4">
+                            <p className="text-sm text-gray-700">
+                                Anda akan menandai pengajuan <strong>{application.master_document?.document_name}</strong> dari{' '}
+                                <strong>{application.citizen?.full_name}</strong> sebagai selesai.
+                            </p>
+
+                            <InputField
+                                label="Catatan Admin"
+                                value={adminNote}
+                                onChange={setAdminNote}
+                                as="textarea"
+                                rows={3}
+                                placeholder="Masukkan catatan penyelesaian untuk pemohon"
+                                helperText={`${adminNote.length}/500 karakter`}
+                                required
+                            />
+
+                            <div>
+                                <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    Bukti Penyelesaian <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex flex-col gap-2">
+                                    <input
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                // Validate file size (max 5MB)
+                                                if (file.size > 5 * 1024 * 1024) {
+                                                    setAlert({
+                                                        type: 'error',
+                                                        message: 'Ukuran file maksimal 5MB.',
+                                                        autoClose: true,
+                                                        duration: 3000,
+                                                    });
+                                                    e.target.value = '';
+                                                    return;
+                                                }
+                                                setProofFile(file);
+                                            }
+                                        }}
+                                        className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-green-700 hover:file:bg-green-100"
+                                    />
+                                    <p className="text-xs text-gray-500">Upload foto atau PDF sebagai bukti (max. 5MB)</p>
+                                    {proofFile && (
+                                        <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 p-2">
+                                            <FileText className="h-4 w-4 text-green-600" />
+                                            <span className="text-sm text-green-700">{proofFile.name}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setShowCompleteModal(false);
+                                    setProofFile(null);
+                                }}
+                                disabled={isSubmitting}
+                                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                            >
+                                Batal
+                            </Button>
+                            <Button onClick={handleComplete} loading={isSubmitting} disabled={isSubmitting || !adminNote.trim() || !proofFile}>
+                                {isSubmitting ? 'Memproses...' : 'Selesaikan Pengajuan'}
                             </Button>
                         </div>
                     </Dialog.Content>

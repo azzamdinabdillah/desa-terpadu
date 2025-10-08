@@ -19,16 +19,18 @@ class ApprovalApplicationDocument extends Mailable
     public $isApproved;
     public $adminNote;
     public $isNotification;
+    public $isCompleted;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(ApplicationDocument $application, bool $isApproved, string $adminNote = '', bool $isNotification = false)
+    public function __construct(ApplicationDocument $application, bool $isApproved, string $adminNote = '', bool $isNotification = false, bool $isCompleted = false)
     {
         $this->application = $application;
         $this->isApproved = $isApproved;
         $this->adminNote = $adminNote;
         $this->isNotification = $isNotification;
+        $this->isCompleted = $isCompleted;
     }
 
     /**
@@ -36,7 +38,9 @@ class ApprovalApplicationDocument extends Mailable
      */
     public function envelope(): Envelope
     {
-        if ($this->isNotification) {
+        if ($this->isCompleted) {
+            $subject = "Pengajuan Surat Selesai - {$this->application->masterDocument->document_name}";
+        } elseif ($this->isNotification) {
             $subject = "Pemberitahuan Pengajuan Surat - {$this->application->masterDocument->document_name}";
         } else {
             $status = $this->isApproved ? 'Disetujui' : 'Ditolak';
@@ -60,6 +64,7 @@ class ApprovalApplicationDocument extends Mailable
                 'isApproved' => $this->isApproved,
                 'adminNote' => $this->adminNote,
                 'isNotification' => $this->isNotification,
+                'isCompleted' => $this->isCompleted,
             ]
         );
     }
