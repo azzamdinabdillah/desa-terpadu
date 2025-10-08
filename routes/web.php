@@ -62,6 +62,9 @@ Route::get('/document-applications', [ApplicantController::class, 'index'])->nam
 Route::get('/document-applications/create', [ApplicantController::class, 'create'])->name('document-applications.create');
 Route::post('/document-applications', [ApplicantController::class, 'store'])->name('document-applications.store');
 Route::get('/document-applications/{application}', [ApplicantController::class, 'show'])->where('application', '[0-9]+')->name('document-applications.show');
+Route::get('/document-applications/{application}/edit', [ApplicantController::class, 'edit'])->where('application', '[0-9]+')->name('document-applications.edit');
+Route::put('/document-applications/{application}', [ApplicantController::class, 'update'])->where('application', '[0-9]+')->name('document-applications.update');
+Route::post('/document-applications/{application}/update', [ApplicantController::class, 'update'])->where('application', '[0-9]+')->name('document-applications.update.post');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
 Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');

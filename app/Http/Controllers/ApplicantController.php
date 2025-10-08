@@ -25,6 +25,16 @@ class ApplicantController extends Controller
         $query = ApplicationDocument::with(['masterDocument', 'citizen'])
             ->orderBy('created_at', 'desc');
         
+        // Apply role-based filter
+        $user = auth()->user();
+        if ($user && $user->role === 'citizen') {
+            // Filter by logged-in citizen's NIK
+            if ($user->citizen) {
+                $query->where('nik', $user->citizen->nik);
+            }
+        }
+        // If role is admin or superadmin, show all data (no filter needed)
+        
         // Apply search filter
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -119,6 +129,87 @@ class ApplicantController extends Controller
         return Inertia::render('document/applicant/detail', [
             'application' => $application,
         ]);
+    }
+
+    /**
+     * Show the form for editing a document application.
+     */
+    public function edit(ApplicationDocument $application)
+    {
+        // Only allow editing if status is pending
+        if ($application->status !== 'pending') {
+            return redirect('/document-applications')->with('error', 'Hanya pengajuan dengan status pending yang dapat diubah.');
+        }
+
+        // Check if user is authorized to edit (citizen can only edit their own application)
+        $user = auth()->user();
+        if ($user && $user->role === 'citizen') {
+            if (!$user->citizen || $user->citizen->nik !== $application->nik) {
+                return redirect('/document-applications')->with('error', 'Anda tidak memiliki akses untuk mengubah pengajuan ini.');
+            }
+        }
+
+        $masterDocuments = MasterDocument::orderBy('document_name')->get();
+        $application->load(['masterDocument', 'citizen']);
+        
+        return Inertia::render('document/applicant/create', [
+            'masterDocuments' => $masterDocuments,
+            'application' => $application,
+        ]);
+    }
+
+    /**
+     * Update a document application.
+     */
+    public function update(Request $request, ApplicationDocument $application)
+    {
+        // Only allow updating if status is pending
+        if ($application->status !== 'pending') {
+            return redirect()->back()->with('error', 'Hanya pengajuan dengan status pending yang dapat diubah.');
+        }
+
+        // Check if user is authorized to update (citizen can only update their own application)
+        $user = auth()->user();
+        if ($user && $user->role === 'citizen') {
+            if (!$user->citizen || $user->citizen->nik !== $application->nik) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengubah pengajuan ini.');
+            }
+        }
+
+        $request->validate([
+            'master_document_id' => 'required|exists:master_documents,id',
+            'nik' => 'required|string|max:16',
+            'reason' => 'required|string',
+            'citizen_note' => 'nullable|string',
+        ], [
+            'master_document_id.required' => 'Jenis surat wajib dipilih.',
+            'master_document_id.exists' => 'Jenis surat yang dipilih tidak valid.',
+            'nik.required' => 'NIK wajib diisi.',
+            'nik.string' => 'NIK harus berupa teks.',
+            'nik.max' => 'NIK maksimal 16 karakter.',
+            'reason.required' => 'Alasan pengajuan wajib diisi.',
+            'reason.string' => 'Alasan pengajuan harus berupa teks.',
+            'citizen_note.string' => 'Catatan tambahan harus berupa teks.',
+        ]);
+
+        // Check if NIK exists in citizens table
+        $citizen = Citizen::where('nik', $request->nik)->first();
+        if (!$citizen) {
+            return redirect()->back()->withErrors([
+                'nik' => 'NIK tidak ditemukan dalam database. Pastikan NIK yang diinput sudah terdaftar sebagai warga desa.'
+            ])->withInput();
+        }
+
+        $data = $request->only([
+            'master_document_id',
+            'nik',
+            'reason',
+            'citizen_note',
+        ]);
+
+        $application->update($data);
+
+        return redirect('/document-applications')->with('success', 'Pengajuan surat berhasil diperbarui.');
     }
 
     /**

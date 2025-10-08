@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'citizen_id' => 5, // Budi Santoso
-                'email' => 'budi.santoso@email.com',
+                'email' => 'citizen1@gmail.com',
                 'password' => Hash::make('123'),
                 'role' => 'citizen',
                 'status' => 'active',

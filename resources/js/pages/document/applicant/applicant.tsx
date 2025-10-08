@@ -11,7 +11,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { ApplicationDocumentType, PaginatedApplicationDocuments } from '@/types/document/documentTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Eye, FileText, Plus, Search, User } from 'lucide-react';
+import { Calendar, Eye, FileText, Pencil, Plus, Search, User } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface ApplicantPageProps {
@@ -149,6 +149,18 @@ function ApplicantPage() {
                         >
                             <Eye className="h-4 w-4" />
                         </Button>
+
+                        {item.status === 'pending' && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                    router.visit(`/document-applications/${item.id}/edit`);
+                                }}
+                            >
+                                <Pencil className="h-4 w-4" />
+                            </Button>
+                        )}
                     </div>
                 ),
             },
