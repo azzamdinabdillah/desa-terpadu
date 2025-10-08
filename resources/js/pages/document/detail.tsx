@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { ApplicationDocumentType } from '@/types/document/documentTypes';
 import { MasterDocument } from '@/types/document/masterDocumentTypes';
@@ -17,6 +18,7 @@ interface MasterDocumentDetailProps {
 
 const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocument }) => {
     const applications = masterDocument.application_documents || [];
+    const { isAdmin } = useAuth();
 
     const columns = useMemo(
         () => [
@@ -68,8 +70,7 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                                // TODO: Implement view application details
-                                console.log('View application:', item.id);
+                                router.visit(`/document-applications/${item.id}`);
                             }}
                             icon={<Eye className="h-4 w-4" />}
                         >
@@ -186,7 +187,7 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
                             <Button variant="outline" onClick={() => router.visit('/documents')}>
                                 Kembali ke Daftar Dokumen
                             </Button>
-                            <Button onClick={() => router.visit(`/documents/${masterDocument.id}/edit`)}>Edit Dokumen</Button>
+                            {isAdmin && <Button onClick={() => router.visit(`/documents/${masterDocument.id}/edit`)}>Edit Dokumen</Button>}
                         </div>
                     </div>
                 </div>

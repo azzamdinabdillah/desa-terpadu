@@ -7,6 +7,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { MasterDocument, MasterDocumentPageProps } from '@/types/document/masterDocumentTypes';
 import { router, usePage } from '@inertiajs/react';
@@ -20,6 +21,7 @@ function MasterDocumentPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState<MasterDocument | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const { isAdmin } = useAuth();
 
     useEffect(() => {
         if (flash?.success) {
@@ -116,17 +118,21 @@ function MasterDocumentPage() {
                         <Button variant="ghost" size="sm" onClick={() => router.visit(`/documents/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
                             Detail
                         </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.visit(`/documents/${item.id}/edit`)}
-                            icon={<Edit className="h-4 w-4" />}
-                        >
-                            Edit
-                        </Button>
-                        <Button variant="red" size="sm" onClick={() => handleDeleteClick(item)} icon={<Trash2 className="h-4 w-4" />}>
-                            Hapus
-                        </Button>
+                        {isAdmin && (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => router.visit(`/documents/${item.id}/edit`)}
+                                    icon={<Edit className="h-4 w-4" />}
+                                >
+                                    Edit
+                                </Button>
+                                <Button variant="red" size="sm" onClick={() => handleDeleteClick(item)} icon={<Trash2 className="h-4 w-4" />}>
+                                    Hapus
+                                </Button>
+                            </>
+                        )}
                     </div>
                 ),
             },
@@ -163,9 +169,11 @@ function MasterDocumentPage() {
                             />
                         </div>
 
-                        <Button onClick={() => router.visit('/documents/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
-                            Tambah Dokumen
-                        </Button>
+                        {isAdmin && (
+                            <Button onClick={() => router.visit('/documents/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                Tambah Dokumen
+                            </Button>
+                        )}
                     </div>
 
                     {/* Master Documents Table */}
