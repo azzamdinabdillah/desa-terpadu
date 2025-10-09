@@ -16,8 +16,9 @@ class AssetSeeder extends Seeder
             [
                 'code' => 'AST-001',
                 'asset_name' => 'Laptop Dell Inspiron 15',
+                'borrower_id' => 1,
                 'condition' => 'good',
-                'status' => 'idle',
+                'status' => 'onloan',
                 'notes' => 'Laptop untuk keperluan administrasi desa',
             ],
             [
@@ -30,15 +31,17 @@ class AssetSeeder extends Seeder
             [
                 'code' => 'AST-003',
                 'asset_name' => 'Proyektor Epson',
+                'borrower_id' => 3,
                 'condition' => 'fair',
-                'status' => 'idle',
+                'status' => 'onloan',
                 'notes' => 'Proyektor untuk presentasi dan rapat',
             ],
             [
                 'code' => 'AST-004',
                 'asset_name' => 'Sound System JBL',
+                'borrower_id' => 5,
                 'condition' => 'good',
-                'status' => 'idle',
+                'status' => 'onloan',
                 'notes' => 'Sound system untuk acara desa',
             ],
             [
@@ -58,8 +61,9 @@ class AssetSeeder extends Seeder
             [
                 'code' => 'AST-007',
                 'asset_name' => 'Tenda 3x3 Meter',
+                'borrower_id' => 7,
                 'condition' => 'good',
-                'status' => 'idle',
+                'status' => 'onloan',
                 'notes' => 'Tenda untuk acara outdoor',
             ],
             [
@@ -72,8 +76,9 @@ class AssetSeeder extends Seeder
             [
                 'code' => 'AST-009',
                 'asset_name' => 'Kamera Canon EOS',
+                'borrower_id' => 9,
                 'condition' => 'good',
-                'status' => 'idle',
+                'status' => 'onloan',
                 'notes' => 'Kamera untuk dokumentasi acara',
             ],
             [

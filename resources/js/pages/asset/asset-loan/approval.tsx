@@ -7,39 +7,10 @@ import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
+import { AssetLoan } from '@/types/assetLoanType';
 import { useForm, usePage } from '@inertiajs/react';
 import { CheckCircle, FileText, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-interface Asset {
-    id: number;
-    code: string;
-    asset_name: string;
-    condition: string;
-}
-
-interface Citizen {
-    id: number;
-    full_name: string;
-    nik: string;
-}
-
-interface AssetLoan {
-    id: number;
-    asset_id: number;
-    citizen_id: number;
-    status: 'waiting_approval' | 'rejected' | 'on_loan' | 'returned';
-    reason: string;
-    note?: string;
-    borrowed_at?: string;
-    expected_return_date?: string;
-    returned_at?: string;
-    image_before_loan?: string;
-    created_at: string;
-    updated_at: string;
-    asset: Asset;
-    citizen: Citizen;
-}
 
 interface ApprovalPageProps {
     assetLoan: AssetLoan;

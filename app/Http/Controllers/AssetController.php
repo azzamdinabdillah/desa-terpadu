@@ -21,7 +21,7 @@ class AssetController extends Controller
         $condition = $request->string('condition')->toString();
         $status = $request->string('status')->toString();
 
-        $query = Asset::query();
+        $query = Asset::query()->with('borrower');
 
         // Search functionality
         if ($search !== '') {

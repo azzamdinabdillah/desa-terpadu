@@ -160,7 +160,12 @@ export default function AssetPage() {
             {
                 key: 'status',
                 header: 'Status',
-                cell: (asset) => <StatusBadge type="assetStatus" value={asset.status} />,
+                cell: (asset) => (
+                    <div className="flex items-center gap-2">
+                        <StatusBadge type="assetStatus" value={asset.status} />
+                        {asset.status === 'onloan' && asset.borrower && <span className="text-sm text-green-700">: {asset.borrower.full_name}</span>}
+                    </div>
+                ),
             },
             {
                 key: 'notes',
@@ -298,7 +303,6 @@ export default function AssetPage() {
                         links={assets.links}
                         onChange={handlePageChange}
                     />
-
                 </div>
 
                 {/* Delete Confirmation Modal */}
