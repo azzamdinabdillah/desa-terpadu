@@ -202,9 +202,15 @@ class AssetLoanController extends Controller
         // Update asset status based on loan status
         $asset = Asset::findOrFail($assetLoan->asset_id);
         if ($validated['status'] === 'on_loan') {
-            $asset->update(['status' => 'onloan']);
+            $asset->update([
+                'status' => 'onloan',
+                'borrower_id' => $assetLoan->citizen_id
+            ]);
         } elseif ($validated['status'] === 'rejected' || $validated['status'] === 'returned') {
-            $asset->update(['status' => 'idle']);
+            $asset->update([
+                'status' => 'idle',
+                'borrower_id' => null
+            ]);
         }
 
         // Send email notification for approval or rejection
