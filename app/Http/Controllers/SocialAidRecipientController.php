@@ -18,6 +18,8 @@ class SocialAidRecipientController extends Controller
      */
     public function index(Request $request)
     {
+        $user = auth()->user();
+        
         $query = SocialAidRecipient::with([
             'program',
             'citizen',
@@ -26,6 +28,21 @@ class SocialAidRecipientController extends Controller
         ])->whereHas('program', function ($q) {
             $q->where('type', '!=', 'public');
         });
+
+        // Filter by user role - citizen can only see their own data and their family's data
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            $familyId = $user->citizen->family_id;
+            
+            $query->where(function ($q) use ($user, $familyId) {
+                // Show individual data
+                $q->where('citizen_id', $user->citizen_id);
+                
+                // Show family data if user belongs to a family
+                if ($familyId) {
+                    $q->orWhere('family_id', $familyId);
+                }
+            });
+        }
 
         // Search functionality
         if ($request->has('search') && $request->search) {

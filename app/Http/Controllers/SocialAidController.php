@@ -93,11 +93,31 @@ class SocialAidController extends Controller
         // Update statuses before displaying
         $this->updateSocialAidStatuses();
         
-        $program = $socialAid->load([
-            'recipients.citizen',
-            'recipients.family',
-            'recipients.performedBy.citizen'
-        ]);
+        $user = auth()->user();
+        
+        // Filter recipients based on user role
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            $familyId = $user->citizen->family_id;
+            
+            $program = $socialAid->load(['recipients' => function ($query) use ($user, $familyId) {
+                $query->where(function ($q) use ($user, $familyId) {
+                    // Show individual data
+                    $q->where('citizen_id', $user->citizen_id);
+                    
+                    // Show family data if user belongs to a family
+                    if ($familyId) {
+                        $q->orWhere('family_id', $familyId);
+                    }
+                });
+            }, 'recipients.citizen', 'recipients.family', 'recipients.performedBy.citizen']);
+        } else {
+            // Admin can see all recipients
+            $program = $socialAid->load([
+                'recipients.citizen',
+                'recipients.family',
+                'recipients.performedBy.citizen'
+            ]);
+        }
 
         return Inertia::render('social-aid/detail', [
             'program' => $program,
