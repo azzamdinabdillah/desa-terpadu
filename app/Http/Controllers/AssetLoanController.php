@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AssetLoanNotification;
 use App\Models\Asset;
 use App\Models\AssetLoan;
 use App\Models\Citizen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AssetLoanController extends Controller
@@ -180,8 +184,8 @@ class AssetLoanController extends Controller
         $imagePath = $assetLoan->image_before_loan;
         if ($request->hasFile('image_before_loan')) {
             // Delete old image if exists
-            if ($imagePath && \Storage::disk('public')->exists($imagePath)) {
-                \Storage::disk('public')->delete($imagePath);
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
             }
 
             // Store new image
@@ -203,9 +207,34 @@ class AssetLoanController extends Controller
             $asset->update(['status' => 'idle']);
         }
 
+        // Send email notification for approval or rejection
+        if ($validated['status'] === 'on_loan' || $validated['status'] === 'rejected') {
+            // Load relationships for email
+            $assetLoan->load(['asset', 'citizen']);
+
+            $isApproved = $validated['status'] === 'on_loan';
+            $baseMessage = $isApproved ? 'Peminjaman asset berhasil disetujui' : 'Peminjaman asset telah ditolak';
+
+            try {
+                if ($assetLoan->citizen && $assetLoan->citizen->email) {
+                    // Mail::to($assetLoan->citizen->email)->send(
+                    Mail::to('azzamdinabdillah123@gmail.com')->send(
+                        new AssetLoanNotification($assetLoan, $isApproved, $validated['note'] ?? '')
+                    );
+                    return redirect()->route('asset-loans.index')
+                        ->with('success', $baseMessage . ' dan email notifikasi telah dikirim.');
+                }
+                return redirect()->route('asset-loans.index')
+                    ->with('success', $baseMessage . ', namun email tidak dapat dikirim karena peminjam tidak memiliki email.');
+            } catch (\Exception $e) {
+                // Log error but don't fail the approval/rejection
+                Log::error('Failed to send asset loan notification email: ' . $e->getMessage());
+                return redirect()->route('asset-loans.index')
+                    ->with('success', $baseMessage . ', namun email gagal dikirim.');
+            }
+        }
+
         $message = match($validated['status']) {
-            'on_loan' => 'Peminjaman asset berhasil disetujui.',
-            'rejected' => 'Peminjaman asset telah ditolak.',
             'returned' => 'Asset telah dikembalikan.',
             default => 'Status peminjaman berhasil diperbarui.',
         };
