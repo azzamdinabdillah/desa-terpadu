@@ -82,6 +82,12 @@ export const menuItems: MenuItem[] = [
         ],
     },
     {
+        id: 'profile',
+        label: 'Profile',
+        icon: <User className="h-5 w-5" />,
+        href: '/profile',
+    },
+    {
         id: 'login',
         label: 'Login',
         icon: <LogIn className="h-5 w-5" />,

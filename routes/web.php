@@ -12,6 +12,7 @@ use App\Http\Controllers\SocialAidController;
 use App\Http\Controllers\SocialAidRecipientController;
 use App\Http\Controllers\MasterDocumentController;
 use App\Http\Controllers\ApplicantController;
+use App\Http\Controllers\ProfileController;
 use App\Mail\SendEmail;
 use App\Models\Citizen;
 use App\Models\Family;
@@ -88,6 +89,8 @@ Route::get('/events/{event}/change-status', [EventController::class, 'changeStat
 Route::post('/events/{event}/change-status', [EventController::class, 'updateStatus'])->where('event', '[0-9]+')->name('events.change-status.store');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');

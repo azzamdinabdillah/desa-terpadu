@@ -1,5 +1,15 @@
 interface StatusBadgeProps {
-    type: 'status' | 'eventType' | 'assetCondition' | 'assetStatus' | 'loanStatus' | 'socialAidType' | 'socialAidStatus' | 'documentStatus';
+    type:
+        | 'status'
+        | 'eventType'
+        | 'assetCondition'
+        | 'assetStatus'
+        | 'loanStatus'
+        | 'socialAidType'
+        | 'socialAidStatus'
+        | 'documentStatus'
+        | 'userRole'
+        | 'userStatus';
     value: string;
     className?: string;
 }
@@ -55,6 +65,17 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         rejected: { label: 'Ditolak', className: 'bg-red-100 text-red-800' },
     };
 
+    const userRoleConfig = {
+        superadmin: { label: 'Super Admin', className: 'bg-purple-100 text-purple-800 border border-purple-200' },
+        admin: { label: 'Admin', className: 'bg-blue-100 text-blue-800 border border-blue-200' },
+        citizen: { label: 'Warga', className: 'bg-green-100 text-green-800 border border-green-200' },
+    };
+
+    const userStatusConfig = {
+        active: { label: 'Aktif', className: 'bg-green-100 text-green-800' },
+        inactive: { label: 'Tidak Aktif', className: 'bg-red-100 text-red-800' },
+    };
+
     let config;
     switch (type) {
         case 'status':
@@ -80,6 +101,12 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
             break;
         case 'documentStatus':
             config = documentStatusConfig[value as keyof typeof documentStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'userRole':
+            config = userRoleConfig[value as keyof typeof userRoleConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'userStatus':
+            config = userStatusConfig[value as keyof typeof userStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
             break;
         default:
             config = { label: value, className: 'bg-gray-100 text-gray-800' };
