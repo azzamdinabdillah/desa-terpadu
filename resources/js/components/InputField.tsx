@@ -77,7 +77,7 @@ export default function InputField({
                         onKeyDown={onKeyDown}
                         placeholder={placeholder}
                         readOnly={readOnly}
-                        className={`w-full resize-none bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
+                        className={`w-full read-only:cursor-not-allowed resize-none bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
                     />
                 ) : (
                     <input
@@ -94,7 +94,7 @@ export default function InputField({
                                 e.currentTarget.blur();
                             }
                         }}
-                        className={`w-full bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
+                        className={`w-full read-only:cursor-not-allowed bg-transparent py-2.5 pr-3 pl-3 text-sm text-green-900 placeholder:text-sm placeholder:text-green-500 focus:outline-none sm:text-base sm:placeholder:text-base ${inputClassName}`}
                     />
                 )}
                 {suffix && <div className="flex items-center bg-green-100 px-3 text-sm font-semibold text-green-800">{suffix}</div>}

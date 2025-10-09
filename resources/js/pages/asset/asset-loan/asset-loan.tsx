@@ -218,26 +218,28 @@ export default function AssetLoanPage() {
                 header: 'Diajukan',
                 cell: (loan) => <div className="text-sm whitespace-nowrap text-green-700">{formatDate(loan.created_at)}</div>,
             },
-            ...(isAdmin ? [
-                {
-                    key: 'actions',
-                    header: 'Aksi',
-                    cell: (loan : AssetLoan) => (
-                        <div className="flex gap-2">
-                            {loan.status === 'waiting_approval' && (
-                                <Button
-                                    variant="primary"
-                                    size="sm"
-                                    onClick={() => router.visit(`/asset-loans/${loan.id}/approval`)}
-                                    icon={<CheckCircle className="h-4 w-4" />}
-                                >
-                                    Review
-                                </Button>
-                            )}
-                        </div>
-                    ),
-                },
-            ] : []),
+            ...(isAdmin
+                ? [
+                      {
+                          key: 'actions',
+                          header: 'Aksi',
+                          cell: (loan: AssetLoan) => (
+                              <div className="flex gap-2">
+                                  {loan.status === 'waiting_approval' && (
+                                      <Button
+                                          variant="primary"
+                                          size="sm"
+                                          onClick={() => router.visit(`/asset-loans/${loan.id}/approval`)}
+                                          icon={<CheckCircle className="h-4 w-4" />}
+                                      >
+                                          Review
+                                      </Button>
+                                  )}
+                              </div>
+                          ),
+                      },
+                  ]
+                : []),
         );
 
         return baseColumns;
@@ -295,9 +297,11 @@ export default function AssetLoanPage() {
                                 placeholder="Pilih status"
                             />
 
-                            <Button onClick={() => router.visit('/asset-loans/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
-                                Ajukan Peminjaman
-                            </Button>
+                            {!isAdmin && (
+                                <Button onClick={() => router.visit('/asset-loans/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                    Ajukan Peminjaman
+                                </Button>
+                            )}
                         </div>
                     </div>
 

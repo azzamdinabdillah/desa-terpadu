@@ -5,6 +5,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { useForm, usePage } from '@inertiajs/react';
 import { Calendar, Package, Save, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -34,6 +35,7 @@ interface CreateAssetLoanPageProps {
 
 export default function CreateAssetLoanPage() {
     const { assets, flash } = usePage().props as unknown as CreateAssetLoanPageProps;
+    const { user } = useAuth();
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nik: '',
@@ -44,6 +46,13 @@ export default function CreateAssetLoanPage() {
     });
 
     const [alert, setAlert] = useState<AlertProps | null>(null);
+
+    // Set NIK from logged in user
+    useEffect(() => {
+        if (user?.citizen?.nik) {
+            setData('nik', user.citizen.nik);
+        }
+    }, [user]);
 
     // Handle flash messages
     useEffect(() => {
@@ -114,11 +123,11 @@ export default function CreateAssetLoanPage() {
                                         label="Nomor Induk Kependudukan (NIK)"
                                         value={data.nik}
                                         onChange={(value) => setData('nik', value)}
-                                        placeholder="Masukkan NIK peminjam"
+                                        placeholder="NIK akan diisi otomatis"
                                         required
                                         error={errors.nik}
-                                        type="number"
-                                        helperText="Masukkan NIK sesuai KTP"
+                                        type="text"
+                                        readOnly
                                     />
                                 </div>
 

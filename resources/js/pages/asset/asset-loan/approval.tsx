@@ -127,7 +127,7 @@ export default function ApprovalPage() {
                     )}
 
                     {/* Loan Information (Read-only) */}
-                    <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-6 shadow-sm">
+                    <div className="mb-6 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
                         <div className="mb-4 flex items-center gap-2">
                             <FileText className="h-5 w-5 text-green-600" />
                             <h3 className="text-lg font-semibold text-green-900">Informasi Peminjaman</h3>

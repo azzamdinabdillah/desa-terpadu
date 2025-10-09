@@ -17,8 +17,14 @@ class AssetLoanController extends Controller
     {
         $search = $request->string('search')->toString();
         $status = $request->string('status')->toString();
+        $user = $request->user();
 
         $query = AssetLoan::with(['asset', 'citizen']);
+
+        // Filter by citizen_id if user is not admin or superadmin
+        if ($user && !$user->isAdmin() && !$user->isSuperAdmin()) {
+            $query->where('citizen_id', $user->citizen_id);
+        }
 
         // Search across asset, citizen, and loan fields
         if ($search !== '') {
