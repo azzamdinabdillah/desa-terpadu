@@ -132,17 +132,22 @@ function CitizenPage() {
                     </div>
                 ),
             },
-            {
-                key: 'nik',
-                header: 'NIK',
-                className: 'whitespace-nowrap',
-                cell: (item: CitizenType) => (
-                    <div className="flex items-center gap-2">
-                        <IdCard className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900">{item.nik}</span>
-                    </div>
-                ),
-            },
+            // NIK hanya tampil untuk admin
+            ...(isAdmin
+                ? [
+                      {
+                          key: 'nik',
+                          header: 'NIK',
+                          className: 'whitespace-nowrap',
+                          cell: (item: CitizenType) => (
+                              <div className="flex items-center gap-2">
+                                  <IdCard className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm text-green-900">{item.nik}</span>
+                              </div>
+                          ),
+                      },
+                  ]
+                : []),
             {
                 key: 'gender',
                 header: 'Jenis Kelamin',
