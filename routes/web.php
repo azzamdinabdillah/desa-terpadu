@@ -13,6 +13,7 @@ use App\Http\Controllers\SocialAidRecipientController;
 use App\Http\Controllers\MasterDocumentController;
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Mail\SendEmail;
 use App\Models\Citizen;
 use App\Models\Family;
@@ -79,6 +80,9 @@ Route::get('/events/{event}', [EventController::class, 'show'])->where('event', 
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    
+    // User management - Admin only
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
     
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');

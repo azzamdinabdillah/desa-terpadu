@@ -82,6 +82,12 @@ export const menuItems: MenuItem[] = [
         ],
     },
     {
+        id: 'user',
+        label: 'Manajemen User',
+        icon: <Users className="h-5 w-5" />,
+        href: '/users',
+    },
+    {
         id: 'profile',
         label: 'Profile',
         icon: <User className="h-5 w-5" />,
@@ -121,6 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
     const { props } = usePage<PageProps>();
     const isAuthenticated = !!props?.auth?.user;
+    const isAdmin = props?.auth?.user?.role === 'admin' || props?.auth?.user?.role === 'superadmin';
 
     return (
         <div
@@ -140,11 +147,15 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-2 p-4 overflow-y-auto">
+            <nav className="flex-1 space-y-2 overflow-y-auto p-4">
                 {menuItems
                     .filter((item) => {
                         // Hide login menu when user is authenticated
                         if (item.id === 'login' && isAuthenticated) {
+                            return false;
+                        }
+                        // Show profile and user management only for admin
+                        if ((item.id === 'profile' || item.id === 'user') && !isAdmin) {
                             return false;
                         }
                         return true;
