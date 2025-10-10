@@ -26,10 +26,21 @@ export default function FileUpload({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0] || null;
 
-        // Validate file size
-        if (selectedFile && selectedFile.size > maxSize * 1024 * 1024) {
-            alert(`File terlalu besar. Maksimal ${maxSize}MB`);
-            return;
+        if (selectedFile) {
+            // Validate file type if specific image formats are required
+            if (accept === 'image/jpeg,image/jpg,image/png') {
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                if (!validTypes.includes(selectedFile.type)) {
+                    alert('Format file tidak valid. Hanya JPEG, JPG, dan PNG yang diperbolehkan.');
+                    return;
+                }
+            }
+
+            // Validate file size
+            if (selectedFile.size > maxSize * 1024 * 1024) {
+                alert(`File terlalu besar. Maksimal ${maxSize}MB`);
+                return;
+            }
         }
 
         onChange(selectedFile);
@@ -48,6 +59,9 @@ export default function FileUpload({
     };
 
     const getFileTypeText = () => {
+        if (accept === 'image/jpeg,image/jpg,image/png') {
+            return 'JPEG, JPG, PNG';
+        }
         if (accept.includes('image/*')) {
             return 'PNG, JPG, PDF';
         }

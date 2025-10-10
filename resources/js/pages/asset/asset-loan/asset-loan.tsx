@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination, { Paginated } from '@/components/Pagination';
+import ReturnAssetModal from '@/components/ReturnAssetModal';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
@@ -12,7 +13,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { AssetLoan } from '@/types/assetLoanType';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Clock, Package, Plus, Search, X } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Package, Plus, RotateCcw, Search, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type AssetLoanPagination = Paginated<AssetLoan>;
@@ -40,6 +41,11 @@ export default function AssetLoanPage() {
         imageUrl: '',
         title: '',
     });
+    const [returnModal, setReturnModal] = useState<{ isOpen: boolean; loan: AssetLoan | null }>({
+        isOpen: false,
+        loan: null,
+    });
+    const [isReturning, setIsReturning] = useState(false);
 
     // Handle flash messages
     useEffect(() => {
@@ -104,6 +110,38 @@ export default function AssetLoanPage() {
         return today > returnDate;
     };
 
+    const handleReturnAsset = (imageFile: File, note: string) => {
+        if (!returnModal.loan) return;
+
+        setIsReturning(true);
+
+        const formData = new FormData();
+        formData.append('status', 'returned');
+        formData.append('image_after_loan', imageFile);
+        formData.append('note', note);
+        formData.append('_method', 'PUT');
+
+        router.post(`/asset-loans/${returnModal.loan.id}`, formData, {
+            preserveState: true,
+            onSuccess: () => {
+                setReturnModal({ isOpen: false, loan: null });
+                setIsReturning(false);
+            },
+            onError: (errors) => {
+                setIsReturning(false);
+
+                // Show error alert
+                const errorMessages = Object.values(errors).flat();
+                if (errorMessages.length > 0) {
+                    setAlert({
+                        type: 'error',
+                        message: errorMessages.join(' '),
+                    });
+                }
+            },
+        });
+    };
+
     const columns: Column<AssetLoan>[] = useMemo(() => {
         // Check if we should show the image column based on current data
         const shouldShowImageColumn = assetLoans.data.some((loan) => loan.status === 'on_loan' || loan.status === 'returned');
@@ -130,39 +168,62 @@ export default function AssetLoanPage() {
                     // Show image_before_loan for on_loan status
                     if (loan.status === 'on_loan' && loan.image_before_loan) {
                         return (
-                            <div className="flex justify-center">
+                            <div className="flex flex-col items-center gap-1">
                                 <img
                                     src={`/storage/${loan.image_before_loan}`}
-                                    alt="Gambar sebelum pinjam"
+                                    alt="Gambar saat dipinjamkan"
                                     className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                     onClick={() =>
                                         setImageModal({
                                             isOpen: true,
                                             imageUrl: `/storage/${loan.image_before_loan}`,
-                                            title: 'Gambar Sebelum Pinjam',
+                                            title: 'Kondisi Asset Saat Dipinjamkan',
                                         })
                                     }
                                 />
+                                <span className="text-xs text-green-600">Saat dipinjamkan</span>
                             </div>
                         );
                     }
 
-                    // Show image_after_loan for returned status
-                    if (loan.status === 'returned' && loan.image_after_loan) {
+                    // Show both images for returned status
+                    if (loan.status === 'returned') {
                         return (
-                            <div className="flex justify-center">
-                                <img
-                                    src={`/storage/${loan.image_after_loan}`}
-                                    alt="Gambar setelah kembali"
-                                    className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
-                                    onClick={() =>
-                                        setImageModal({
-                                            isOpen: true,
-                                            imageUrl: `/storage/${loan.image_after_loan}`,
-                                            title: 'Gambar Setelah Kembali',
-                                        })
-                                    }
-                                />
+                            <div className="flex gap-2">
+                                {loan.image_before_loan && (
+                                    <div className="flex flex-col items-center gap-1">
+                                        <img
+                                            src={`/storage/${loan.image_before_loan}`}
+                                            alt="Gambar saat dipinjamkan"
+                                            className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                            onClick={() =>
+                                                setImageModal({
+                                                    isOpen: true,
+                                                    imageUrl: `/storage/${loan.image_before_loan}`,
+                                                    title: 'Kondisi Asset Saat Dipinjamkan',
+                                                })
+                                            }
+                                        />
+                                        <span className="text-xs text-green-600">Dipinjamkan</span>
+                                    </div>
+                                )}
+                                {loan.image_after_loan && (
+                                    <div className="flex flex-col items-center gap-1">
+                                        <img
+                                            src={`/storage/${loan.image_after_loan}`}
+                                            alt="Gambar saat diterima kembali"
+                                            className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                            onClick={() =>
+                                                setImageModal({
+                                                    isOpen: true,
+                                                    imageUrl: `/storage/${loan.image_after_loan}`,
+                                                    title: 'Kondisi Asset Saat Diterima Kembali',
+                                                })
+                                            }
+                                        />
+                                        <span className="text-xs text-green-600">Diterima kembali</span>
+                                    </div>
+                                )}
                             </div>
                         );
                     }
@@ -259,6 +320,16 @@ export default function AssetLoanPage() {
                                           icon={<CheckCircle className="h-4 w-4" />}
                                       >
                                           Review
+                                      </Button>
+                                  )}
+                                  {loan.status === 'on_loan' && (
+                                      <Button
+                                          variant="success"
+                                          size="sm"
+                                          onClick={() => setReturnModal({ isOpen: true, loan })}
+                                          icon={<RotateCcw className="h-4 w-4" />}
+                                      >
+                                          Terima Kembali
                                       </Button>
                                   )}
                               </div>
@@ -380,6 +451,18 @@ export default function AssetLoanPage() {
                     </div>
                 </>
             )}
+
+            {/* Return Asset Modal */}
+            <ReturnAssetModal
+                isOpen={returnModal.isOpen}
+                onClose={() => setReturnModal({ isOpen: false, loan: null })}
+                onConfirm={handleReturnAsset}
+                title="Terima Pengembalian Asset"
+                message="Peminjam telah mengembalikan asset. Periksa kondisi asset dan upload foto sebagai dokumentasi penerimaan kembali asset dari peminjam."
+                assetName={returnModal.loan?.asset.asset_name || ''}
+                borrowerName={returnModal.loan?.citizen.full_name || ''}
+                isLoading={isReturning}
+            />
         </BaseLayouts>
     );
 }

@@ -164,6 +164,7 @@ class AssetLoanController extends Controller
             'status' => 'required|in:waiting_approval,rejected,on_loan,returned',
             'note' => 'nullable|string|max:1000',
             'image_before_loan' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'image_after_loan' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ], [
             'status.required' => 'Status wajib dipilih.',
             'status.in' => 'Status yang dipilih tidak valid.',
@@ -171,33 +172,55 @@ class AssetLoanController extends Controller
             'image_before_loan.image' => 'File harus berupa gambar.',
             'image_before_loan.mimes' => 'Gambar harus berformat JPEG, JPG, atau PNG.',
             'image_before_loan.max' => 'Ukuran gambar maksimal 2MB.',
+            'image_after_loan.image' => 'File harus berupa gambar.',
+            'image_after_loan.mimes' => 'Gambar harus berformat JPEG, JPG, atau PNG.',
+            'image_after_loan.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        // If status is approved (on_loan), image is required
+        // If status is approved (on_loan), image_before_loan is required
         if ($validated['status'] === 'on_loan' && !$request->hasFile('image_before_loan') && !$assetLoan->image_before_loan) {
             return back()->withErrors([
                 'image_before_loan' => 'Foto kondisi asset sebelum dipinjam wajib diupload jika menyetujui peminjaman.'
             ]);
         }
 
-        // Handle image upload
-        $imagePath = $assetLoan->image_before_loan;
+        // If status is returned, image_after_loan is required
+        if ($validated['status'] === 'returned' && !$request->hasFile('image_after_loan') && !$assetLoan->image_after_loan) {
+            return back()->withErrors([
+                'image_after_loan' => 'Foto kondisi asset saat diterima kembali wajib diupload untuk dokumentasi.'
+            ]);
+        }
+
+        // Prepare update data
+        $updateData = [
+            'status' => $validated['status'],
+            'note' => $validated['note'] ?? $assetLoan->note,
+        ];
+
+        // Handle image_before_loan upload (only update if new file uploaded)
         if ($request->hasFile('image_before_loan')) {
             // Delete old image if exists
-            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
-                Storage::disk('public')->delete($imagePath);
+            if ($assetLoan->image_before_loan && Storage::disk('public')->exists($assetLoan->image_before_loan)) {
+                Storage::disk('public')->delete($assetLoan->image_before_loan);
             }
 
             // Store new image
-            $imagePath = $request->file('image_before_loan')->store('asset_loans', 'public');
+            $updateData['image_before_loan'] = $request->file('image_before_loan')->store('asset_loans', 'public');
+        }
+
+        // Handle image_after_loan upload (only update if new file uploaded)
+        if ($request->hasFile('image_after_loan')) {
+            // Store new image (don't delete old one, keep for history)
+            $updateData['image_after_loan'] = $request->file('image_after_loan')->store('asset_loans', 'public');
+        }
+
+        // Set returned_at timestamp when status is returned
+        if ($validated['status'] === 'returned' && !$assetLoan->returned_at) {
+            $updateData['returned_at'] = now();
         }
 
         // Update asset loan
-        $assetLoan->update([
-            'status' => $validated['status'],
-            'note' => $validated['note'],
-            'image_before_loan' => $imagePath,
-        ]);
+        $assetLoan->update($updateData);
 
         // Update asset status based on loan status
         $asset = Asset::findOrFail($assetLoan->asset_id);
@@ -241,7 +264,7 @@ class AssetLoanController extends Controller
         }
 
         $message = match($validated['status']) {
-            'returned' => 'Asset telah dikembalikan.',
+            'returned' => 'Penerimaan pengembalian asset berhasil dikonfirmasi dan status telah diperbarui.',
             default => 'Status peminjaman berhasil diperbarui.',
         };
 
