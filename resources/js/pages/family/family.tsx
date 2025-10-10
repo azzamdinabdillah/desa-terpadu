@@ -131,12 +131,16 @@ function Family() {
                     </div>
                 ),
             },
-            {
-                key: 'kk_number',
-                header: 'Nomor KK',
-                className: 'whitespace-nowrap',
-                cell: (item: FamilyType) => <p className="font-mono text-sm text-green-900">{item.kk_number}</p>,
-            },
+            ...(isAdmin
+                ? [
+                    {
+                        key: 'kk_number',
+                        header: 'Nomor KK',
+                        className: 'whitespace-nowrap',
+                        cell: (item: FamilyType) => <p className="font-mono text-sm text-green-900">{item.kk_number}</p>,
+                    },
+                ]
+                : []),
             {
                 key: 'citizens_count',
                 header: 'Jumlah Anggota',

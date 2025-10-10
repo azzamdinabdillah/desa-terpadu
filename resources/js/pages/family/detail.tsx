@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { calculateAge, formatDate, getGenderLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { FamilyType } from '@/types/familyType';
@@ -15,6 +16,7 @@ interface FamilyDetailProps {
 }
 
 export default function FamilyDetail({ family, headOfHousehold, spouses, children }: FamilyDetailProps) {
+    const { isAdmin } = useAuth();
     const totalMembers = (headOfHousehold ? 1 : 0) + spouses.length + children.length;
 
     return (
@@ -42,11 +44,13 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Users className="h-4 w-4 text-green-600" />
-                                        <span className="text-gray-500">No. KK:</span>
-                                        <span className="font-medium text-green-900">{family.kk_number}</span>
-                                    </div>
+                                    {isAdmin && (
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <Users className="h-4 w-4 text-green-600" />
+                                            <span className="text-gray-500">No. KK:</span>
+                                            <span className="font-medium text-green-900">{family.kk_number}</span>
+                                        </div>
+                                    )}
                                     <div className="flex items-center gap-2 text-sm">
                                         <MapPin className="h-4 w-4 text-green-600" />
                                         <span className="text-gray-500">Alamat:</span>
@@ -90,10 +94,12 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                             </div>
 
                                             <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-                                                <div>
-                                                    <span className="text-gray-500">NIK:</span>
-                                                    <span className="ml-2 font-medium text-purple-900">{headOfHousehold.nik}</span>
-                                                </div>
+                                                {isAdmin && (
+                                                    <div>
+                                                        <span className="text-gray-500">NIK:</span>
+                                                        <span className="ml-2 font-medium text-purple-900">{headOfHousehold.nik}</span>
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
                                                     <span className="ml-2 font-medium text-purple-900 capitalize">
@@ -159,10 +165,12 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                             </div>
 
                                             <div className="space-y-2 text-sm">
-                                                <div>
-                                                    <span className="text-gray-500">NIK:</span>
-                                                    <span className="ml-2 font-medium text-blue-900">{spouse.nik}</span>
-                                                </div>
+                                                {isAdmin && (
+                                                    <div>
+                                                        <span className="text-gray-500">NIK:</span>
+                                                        <span className="ml-2 font-medium text-blue-900">{spouse.nik}</span>
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
                                                     <span className="ml-2 font-medium text-blue-900 capitalize">
@@ -225,10 +233,12 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                             </div>
 
                                             <div className="space-y-2 text-sm">
-                                                <div>
-                                                    <span className="text-gray-500">NIK:</span>
-                                                    <span className="ml-2 font-medium text-green-900">{child.nik}</span>
-                                                </div>
+                                                {isAdmin && (
+                                                    <div>
+                                                        <span className="text-gray-500">NIK:</span>
+                                                        <span className="ml-2 font-medium text-green-900">{child.nik}</span>
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <span className="text-gray-500">Jenis Kelamin:</span>
                                                     <span className="ml-2 font-medium text-green-900 capitalize">

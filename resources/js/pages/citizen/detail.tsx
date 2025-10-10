@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { Head, router } from '@inertiajs/react';
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const DetailCitizen: React.FC<Props> = ({ citizen }) => {
+    const { isAdmin } = useAuth();
     return (
         <BaseLayouts>
             <Head title={`Detail Warga - ${citizen.full_name}`} />
@@ -71,10 +73,12 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                     <h3 className="text-lg font-semibold text-green-900">Informasi Pribadi</h3>
                                 </div>
                                 <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-green-600">NIK</label>
-                                        <p className="mt-1 text-sm text-green-900">{citizen.nik}</p>
-                                    </div>
+                                    {isAdmin && (
+                                        <div>
+                                            <label className="block text-sm font-medium text-green-600">NIK</label>
+                                            <p className="mt-1 text-sm text-green-900">{citizen.nik}</p>
+                                        </div>
+                                    )}
                                     <div>
                                         <label className="block text-sm font-medium text-green-600">Tanggal Lahir</label>
                                         <p className="mt-1 text-sm text-green-900">{formatDate(citizen.date_of_birth || '')}</p>
