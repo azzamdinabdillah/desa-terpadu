@@ -6,27 +6,15 @@ import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
+import { Asset } from '@/types/assetType';
+import { CitizenType } from '@/types/citizen/citizenType';
 import { useForm, usePage } from '@inertiajs/react';
 import { Calendar, Package, Save, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-interface Asset {
-    id: number;
-    code: string;
-    asset_name: string;
-    condition: string;
-    status: string;
-}
-
-interface Citizen {
-    id: number;
-    full_name: string;
-    nik: string;
-}
-
 interface CreateAssetLoanPageProps {
     assets: Asset[];
-    citizens: Citizen[];
+    citizens: CitizenType[];
     flash?: {
         success?: string;
         error?: string;
@@ -52,7 +40,7 @@ export default function CreateAssetLoanPage() {
         if (user?.citizen?.nik) {
             setData('nik', user.citizen.nik);
         }
-    }, [user]);
+    }, [user, setData]);
 
     // Handle flash messages
     useEffect(() => {

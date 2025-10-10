@@ -9,7 +9,7 @@ import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
 import { Head, Link, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, Clock, MapPin, Settings, User, Users, X } from 'lucide-react';
+import { Calendar, Clock, MapPin, User, Users, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface EventDetailProps {

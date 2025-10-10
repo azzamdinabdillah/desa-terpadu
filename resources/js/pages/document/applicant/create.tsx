@@ -27,7 +27,7 @@ function CreateDocumentApplication() {
     // Determine if we're in edit mode
     const isEditMode = !!application;
 
-    const { data, setData, post, put, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         master_document_id: application?.master_document_id?.toString() || 'placeholder',
         nik: application?.nik || '',
         reason: application?.reason || '',
@@ -57,7 +57,7 @@ function CreateDocumentApplication() {
             onSuccess: () => {
                 // Success handled by flash message
             },
-            onError: (errors: any) => {
+            onError: (errors: Record<string, string>) => {
                 setAlert({
                     type: 'error',
                     message: '',
