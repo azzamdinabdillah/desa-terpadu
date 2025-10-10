@@ -289,12 +289,16 @@ class EventController extends Controller
     /**
      * Show the registration page for an event.
      */
-    public function register(Event $event)
+    public function register(Request $request, Event $event)
     {
         $event->load(['createdBy.citizen', 'participants.citizen', 'documentations']);
 
+        // Get logged in user with citizen data
+        $user = $request->user()->load('citizen');
+
         return Inertia::render('event/register', [
-            'event' => $event
+            'event' => $event,
+            'userCitizen' => $user->citizen
         ]);
     }
 
@@ -303,15 +307,12 @@ class EventController extends Controller
      */
     public function storeRegistration(Request $request, Event $event)
     {
-        $request->validate([
-            'nik' => 'required|string|size:16'
-        ]);
-
-        // Find citizen by NIK
-        $citizen = Citizen::where('nik', $request->nik)->first();
+        // Get citizen from logged in user
+        $user = $request->user()->load('citizen');
+        $citizen = $user->citizen;
 
         if (!$citizen) {
-            return back()->withErrors(['nik' => 'NIK tidak ditemukan dalam sistem desa.']);
+            return back()->withErrors(['error' => 'Data warga tidak ditemukan. Silakan hubungi administrator.']);
         }
 
         // Check if citizen is already registered
@@ -320,20 +321,20 @@ class EventController extends Controller
             ->first();
 
         if ($existingRegistration) {
-            return back()->withErrors(['nik' => 'Anda sudah terdaftar untuk event ini.']);
+            return back()->withErrors(['error' => 'Anda sudah terdaftar untuk event ini.']);
         }
 
         // Check if event is full (if max_participants is set)
         if ($event->max_participants) {
             $currentParticipants = EventParticipant::where('event_id', $event->id)->count();
             if ($currentParticipants >= $event->max_participants) {
-                return back()->withErrors(['nik' => 'Event ini sudah penuh.']);
+                return back()->withErrors(['error' => 'Event ini sudah penuh.']);
             }
         }
 
         // Check if event is finished
         if ($event->status === 'finished') {
-            return back()->withErrors(['nik' => 'Event ini sudah selesai dan tidak menerima pendaftaran baru.']);
+            return back()->withErrors(['error' => 'Event ini sudah selesai dan tidak menerima pendaftaran baru.']);
         }
 
         // Create registration

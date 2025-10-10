@@ -6,6 +6,7 @@ import InputField from '@/components/InputField';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDateTime } from '@/lib/utils';
+import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
@@ -13,16 +14,19 @@ import { useEffect, useState } from 'react';
 
 interface EventRegisterPageProps {
     event: EventType;
+    userCitizen: CitizenType;
     flash?: {
         success?: string;
+        error?: string;
+    };
+    errors?: {
         error?: string;
     };
     [key: string]: unknown;
 }
 
 function EventRegisterPage() {
-    const { event, flash } = usePage().props as unknown as EventRegisterPageProps;
-    const [nik, setNik] = useState('');
+    const { event, userCitizen, flash, errors } = usePage().props as unknown as EventRegisterPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -31,8 +35,10 @@ function EventRegisterPage() {
             setAlert({ type: 'success', message: flash.success });
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
+        } else if (errors?.error) {
+            setAlert({ type: 'error', message: errors.error });
         }
-    }, [flash]);
+    }, [flash, errors]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,12 +46,9 @@ function EventRegisterPage() {
 
         router.post(
             `/events/${event.id}/register`,
-            {
-                nik: nik,
-            },
+            {},
             {
                 onSuccess: () => {
-                    setNik('');
                     setAlert({ type: 'success', message: 'Pendaftaran berhasil!' });
                 },
                 onError: (errors) => {
@@ -155,16 +158,24 @@ function EventRegisterPage() {
                         <h2 className="mb-6 text-xl font-semibold text-green-900">Form Pendaftaran</h2>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <div>
+                            <div className="space-y-4">
+                                <InputField
+                                    label="Nama Lengkap"
+                                    id="full_name"
+                                    type="text"
+                                    value={userCitizen?.full_name || ''}
+                                    onChange={() => {}}
+                                    readOnly
+                                    helperText="Data diambil dari akun yang sedang login"
+                                />
                                 <InputField
                                     label="Nomor Induk Kependudukan (NIK)"
                                     id="nik"
-                                    type="number"
-                                    placeholder="Masukkan NIK Anda (16 digit)"
-                                    value={nik}
-                                    onChange={setNik}
-                                    required
-                                    helperText="Pastikan NIK yang dimasukkan sudah terdaftar di sistem desa"
+                                    type="text"
+                                    value={userCitizen?.nik || ''}
+                                    onChange={() => {}}
+                                    readOnly
+                                    helperText="Data diambil dari akun yang sedang login"
                                 />
                             </div>
 
@@ -173,7 +184,7 @@ function EventRegisterPage() {
                                     Kembali ke Daftar Event
                                 </Button>
 
-                                <Button type="submit" disabled={isLoading || nik.length !== 16}>
+                                <Button type="submit" disabled={isLoading || !userCitizen}>
                                     {isLoading ? 'Mendaftar...' : 'Daftar Event'}
                                 </Button>
                             </div>

@@ -272,23 +272,6 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     </div>
                                 </div>
                             )}
-
-                            {/* Back to Events - Always show */}
-                            <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                                <h3 className="mb-4 text-lg font-semibold text-green-900">Navigasi</h3>
-                                <div className="flex flex-col gap-2">
-                                    <Link href={`/events/${event.id}/change-status`}>
-                                        <Button className="w-full" icon={<Settings className="mr-2 h-4 w-4" />} iconPosition="left">
-                                            Ubah Status Event
-                                        </Button>
-                                    </Link>
-                                    <Link href="/events">
-                                        <Button variant="outline" className="w-full">
-                                            Kembali ke Daftar Event
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

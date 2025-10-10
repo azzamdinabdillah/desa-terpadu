@@ -76,10 +76,6 @@ Route::get('/families/{family}', [FamilyController::class, 'show'])
 
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/{event}', [EventController::class, 'show'])->where('event', '[0-9]+')->name('events.show');
-Route::get('/events/{event}/register', [EventController::class, 'register'])->where('event', '[0-9]+')->name('events.register');
-Route::post('/events/{event}/register', [EventController::class, 'storeRegistration'])->name('events.register.store');
-Route::get('/events/{event}/change-status', [EventController::class, 'changeStatus'])->where('event', '[0-9]+')->name('events.change-status');
-Route::post('/events/{event}/change-status', [EventController::class, 'updateStatus'])->where('event', '[0-9]+')->name('events.change-status.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -89,6 +85,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::post('/events/{event}', [EventController::class, 'update'])->name('events.update.post');
+    Route::get('/events/{event}/register', [EventController::class, 'register'])->where('event', '[0-9]+')->name('events.register');
+    Route::post('/events/{event}/register', [EventController::class, 'storeRegistration'])->name('events.register.store');
+    Route::get('/events/{event}/change-status', [EventController::class, 'changeStatus'])->where('event', '[0-9]+')->name('events.change-status');
+    Route::post('/events/{event}/change-status', [EventController::class, 'updateStatus'])->where('event', '[0-9]+')->name('events.change-status.store');
 
     Route::get('/families/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/families', [FamilyController::class, 'store'])->name('family.store');

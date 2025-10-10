@@ -221,14 +221,16 @@ function EventPage() {
                                 <Pencil className="h-4 w-4" />
                             </Button>
                         )}
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.visit(`/events/${item.id}/change-status`)}
-                            title="Ubah Status"
-                            className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                        >
-                            <Settings className="h-4 w-4" />
-                        </Button>
+                        {isAdmin && (
+                            <Button
+                                variant="ghost"
+                                onClick={() => router.visit(`/events/${item.id}/change-status`)}
+                                title="Ubah Status"
+                                className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                            >
+                                <Settings className="h-4 w-4" />
+                            </Button>
+                        )}
                         {item.type !== 'public' && item.status === 'pending' && !isAdmin && (
                             <Button
                                 variant="ghost"
