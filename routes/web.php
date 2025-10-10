@@ -68,10 +68,6 @@ Route::put('/document-applications/{application}', [ApplicantController::class, 
 Route::post('/document-applications/{application}/update', [ApplicantController::class, 'update'])->where('application', '[0-9]+')->name('document-applications.update.post');
 
 Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
-Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
-Route::get('/asset-loans/create', [AssetLoanController::class, 'create'])->name('asset-loans.create');
-Route::post('/asset-loans', [AssetLoanController::class, 'store'])->name('asset-loans.store');
-Route::get('/asset-loans/{assetLoan}/approval', [AssetLoanController::class, 'edit'])->name('asset-loans.edit');
 
 Route::get('/citizens', [CitizenController::class, 'index'])->name('citizens.index');
 Route::get('/citizens/{citizen}', [CitizenController::class, 'show'])->where('citizen', '[0-9]+')->name('citizens.show');
@@ -133,6 +129,10 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/asset-loans/{assetLoan}', [AssetLoanController::class, 'update'])->name('asset-loans.update');
     Route::post('/asset-loans/{assetLoan}', [AssetLoanController::class, 'update'])->name('asset-loans.update.post');
+    Route::get('/asset-loans', [AssetLoanController::class, 'index'])->name('asset-loans.index');
+    Route::get('/asset-loans/create', [AssetLoanController::class, 'create'])->name('asset-loans.create');
+    Route::post('/asset-loans', [AssetLoanController::class, 'store'])->name('asset-loans.store');
+    Route::get('/asset-loans/{assetLoan}/approval', [AssetLoanController::class, 'edit'])->name('asset-loans.edit');
 
     Route::get('/social-aid/create', [SocialAidController::class, 'create'])->name('social-aid.create');
     Route::post('/social-aid', [SocialAidController::class, 'store'])->name('social-aid.store');
