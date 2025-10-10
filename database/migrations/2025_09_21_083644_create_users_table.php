@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('citizen_id')->nullable()->constrained('citizens')->onDelete('set null');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['citizen', 'admin', 'superadmin']);
+            $table->enum('role', ['citizen', 'admin']);
             $table->enum('status', ['pending', 'active', 'inactive']);
             $table->rememberToken();
             $table->timestamps();

@@ -1,4 +1,5 @@
 import Alert, { AlertProps } from '@/components/Alert';
+import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -10,7 +11,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { User } from '@/types/user/userTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Mail, Search, Shield, User as UserIcon, Users } from 'lucide-react';
+import { Calendar, Mail, Plus, Search, Shield, User as UserIcon, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface UserPageProps {
@@ -220,46 +221,56 @@ function UserPage() {
                     />
 
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="relative max-w-md flex-1">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <Search className="h-5 w-5 text-green-600" />
+                        <Button
+                            variant="primary"
+                            icon={<Plus className="h-4 w-4" />}
+                            iconPosition="left"
+                            onClick={() => router.visit('/users/create')}
+                        >
+                            Tambah Pengguna
+                        </Button>
+
+                        <div className="flex flex-1 flex-col justify-end gap-4 sm:flex-row">
+                            <div className="relative max-w-md flex-1 sm:max-w-xs">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <Search className="h-5 w-5 text-green-600" />
+                                </div>
+                                <InputField
+                                    type="text"
+                                    placeholder="Cari pengguna (nama, email, NIK)..."
+                                    value={searchTerm}
+                                    onChange={(value) => setSearchTerm(value)}
+                                    inputClassName="pl-10"
+                                />
                             </div>
-                            <InputField
-                                type="text"
-                                placeholder="Cari pengguna (nama, email, NIK)..."
-                                value={searchTerm}
-                                onChange={(value) => setSearchTerm(value)}
-                                inputClassName="pl-10"
-                            />
-                        </div>
 
-                        <div className="flex flex-wrap gap-2">
-                            <Select
-                                label=""
-                                value={role}
-                                onChange={(val) => setRole(val)}
-                                options={[
-                                    { value: 'all', label: 'Semua Role' },
-                                    { value: 'admin', label: 'Admin' },
-                                    { value: 'superadmin', label: 'Super Admin' },
-                                    { value: 'citizen', label: 'Warga' },
-                                ]}
-                                className="min-w-[180px]"
-                                placeholder="Pilih role"
-                            />
+                            <div className="flex flex-wrap gap-2">
+                                <Select
+                                    label=""
+                                    value={role}
+                                    onChange={(val) => setRole(val)}
+                                    options={[
+                                        { value: 'all', label: 'Semua Role' },
+                                        { value: 'admin', label: 'Admin' },
+                                        { value: 'citizen', label: 'Warga' },
+                                    ]}
+                                    className="min-w-[180px]"
+                                    placeholder="Pilih role"
+                                />
 
-                            <Select
-                                label=""
-                                value={status}
-                                onChange={(val) => setStatus(val)}
-                                options={[
-                                    { value: 'all', label: 'Semua Status' },
-                                    { value: 'active', label: 'Aktif' },
-                                    { value: 'inactive', label: 'Tidak Aktif' },
-                                ]}
-                                className="min-w-[180px]"
-                                placeholder="Pilih status"
-                            />
+                                <Select
+                                    label=""
+                                    value={status}
+                                    onChange={(val) => setStatus(val)}
+                                    options={[
+                                        { value: 'all', label: 'Semua Status' },
+                                        { value: 'active', label: 'Aktif' },
+                                        { value: 'inactive', label: 'Tidak Aktif' },
+                                    ]}
+                                    className="min-w-[180px]"
+                                    placeholder="Pilih status"
+                                />
+                            </div>
                         </div>
                     </div>
 
