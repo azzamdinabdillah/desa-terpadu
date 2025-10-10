@@ -51,7 +51,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('finance.index');
+        return redirect()->route('login');
     }
 }
 

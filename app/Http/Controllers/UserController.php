@@ -135,8 +135,12 @@ class UserController extends Controller
             ]);
 
             return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan.');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return back with validation errors for Inertia
+            return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan data pengguna: ' . $e->getMessage())->withInput();
         }
     }
 }

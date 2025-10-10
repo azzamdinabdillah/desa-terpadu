@@ -4,6 +4,7 @@ export interface CitizenType {
     id: number;
     full_name: string;
     nik: string;
+    email?: string;
     phone_number?: string;
     address?: string;
     gender?: string;

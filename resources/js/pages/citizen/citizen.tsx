@@ -168,6 +168,14 @@ function CitizenPage() {
                 ),
             },
             {
+                key: 'email',
+                header: 'Email',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <span className="text-sm text-green-900">{item.email || '-'}</span>
+                ),
+            },
+            {
                 key: 'phone_number',
                 header: 'No. HP',
                 className: 'whitespace-nowrap',

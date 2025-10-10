@@ -105,7 +105,8 @@ function CreateUserPage() {
         { value: 'placeholder', label: 'Pilih Warga' },
         ...citizens.map((citizen) => ({
             value: citizen.id.toString(),
-            label: `${citizen.full_name} - ${citizen.nik}`,
+            // label: `${citizen.full_name} - ${citizen.email}`,
+            label: `${citizen.full_name}`,
         })),
     ];
 
@@ -132,8 +133,8 @@ function CreateUserPage() {
                                 <h3 className="text-lg font-semibold text-green-900">Form Tambah Pengguna</h3>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <div className="md:col-span-2">
+                            <div className="flex flex-col gap-6">
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Select
                                         label="Pilih Warga"
                                         value={data.citizen_id}
@@ -144,30 +145,35 @@ function CreateUserPage() {
                                         required
                                         helperText="Email akan diambil dari data warga yang dipilih"
                                     />
+                                    <Select
+                                        label="Role"
+                                        value={data.role}
+                                        onChange={(value) => setData('role', value)}
+                                        options={roleOptions}
+                                        required
+                                    />
                                 </div>
 
-                                <Select label="Role" value={data.role} onChange={(value) => setData('role', value)} options={roleOptions} required />
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                    <InputField
+                                        label="Password"
+                                        type="password"
+                                        value={data.password}
+                                        onChange={(value) => setData('password', value)}
+                                        placeholder="Masukkan password"
+                                        required={!isEdit}
+                                        helperText={isEdit ? 'Kosongkan jika tidak ingin mengubah password' : ''}
+                                    />
 
-                                <div></div>
-
-                                <InputField
-                                    label="Password"
-                                    type="password"
-                                    value={data.password}
-                                    onChange={(value) => setData('password', value)}
-                                    placeholder="Masukkan password"
-                                    required={!isEdit}
-                                    helperText={isEdit ? 'Kosongkan jika tidak ingin mengubah password' : ''}
-                                />
-
-                                <InputField
-                                    label="Konfirmasi Password"
-                                    type="password"
-                                    value={data.password_confirmation}
-                                    onChange={(value) => setData('password_confirmation', value)}
-                                    placeholder="Masukkan ulang password"
-                                    required={!isEdit && data.password !== ''}
-                                />
+                                    <InputField
+                                        label="Konfirmasi Password"
+                                        type="password"
+                                        value={data.password_confirmation}
+                                        onChange={(value) => setData('password_confirmation', value)}
+                                        placeholder="Masukkan ulang password"
+                                        required={!isEdit && data.password !== ''}
+                                    />
+                                </div>
                             </div>
                         </div>
 

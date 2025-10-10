@@ -220,18 +220,9 @@ function UserPage() {
                         total={users.total}
                     />
 
-                    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <Button
-                            variant="primary"
-                            icon={<Plus className="h-4 w-4" />}
-                            iconPosition="left"
-                            onClick={() => router.visit('/users/create')}
-                        >
-                            Tambah Pengguna
-                        </Button>
-
-                        <div className="flex flex-1 flex-col justify-end gap-4 sm:flex-row">
-                            <div className="relative max-w-md flex-1 sm:max-w-xs">
+                    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:justify-between">
+                        <div className="flex w-full flex-col gap-4 sm:flex-row">
+                            <div className="relative w-full max-w-md flex-1">
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <Search className="h-5 w-5 text-green-600" />
                                 </div>
@@ -243,34 +234,42 @@ function UserPage() {
                                     inputClassName="pl-10"
                                 />
                             </div>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                            <Select
+                                label=""
+                                value={role}
+                                onChange={(val) => setRole(val)}
+                                options={[
+                                    { value: 'all', label: 'Semua Role' },
+                                    { value: 'admin', label: 'Admin' },
+                                    { value: 'citizen', label: 'Warga' },
+                                ]}
+                                className="w-full sm:w-44"
+                                placeholder="Pilih role"
+                            />
 
-                            <div className="flex flex-wrap gap-2">
-                                <Select
-                                    label=""
-                                    value={role}
-                                    onChange={(val) => setRole(val)}
-                                    options={[
-                                        { value: 'all', label: 'Semua Role' },
-                                        { value: 'admin', label: 'Admin' },
-                                        { value: 'citizen', label: 'Warga' },
-                                    ]}
-                                    className="min-w-[180px]"
-                                    placeholder="Pilih role"
-                                />
-
-                                <Select
-                                    label=""
-                                    value={status}
-                                    onChange={(val) => setStatus(val)}
-                                    options={[
-                                        { value: 'all', label: 'Semua Status' },
-                                        { value: 'active', label: 'Aktif' },
-                                        { value: 'inactive', label: 'Tidak Aktif' },
-                                    ]}
-                                    className="min-w-[180px]"
-                                    placeholder="Pilih status"
-                                />
-                            </div>
+                            <Select
+                                label=""
+                                value={status}
+                                onChange={(val) => setStatus(val)}
+                                options={[
+                                    { value: 'all', label: 'Semua Status' },
+                                    { value: 'active', label: 'Aktif' },
+                                    { value: 'inactive', label: 'Tidak Aktif' },
+                                ]}
+                                className="w-full sm:w-44"
+                                placeholder="Pilih status"
+                            />
+                            <Button
+                                className="h-full"
+                                variant="primary"
+                                icon={<Plus className="h-4 w-4" />}
+                                iconPosition="left"
+                                onClick={() => router.visit('/users/create')}
+                            >
+                                Tambah Pengguna
+                            </Button>
                         </div>
                     </div>
 
