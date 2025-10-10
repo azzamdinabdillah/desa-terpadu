@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { AssetLoan } from '@/types/assetLoanType';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Clock, Package, Plus, Search } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Package, Plus, Search, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type AssetLoanPagination = Paginated<AssetLoan>;
@@ -35,6 +35,11 @@ export default function AssetLoanPage() {
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
     const { isAdmin } = useAuth();
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [imageModal, setImageModal] = useState<{ isOpen: boolean; imageUrl: string; title: string }>({
+        isOpen: false,
+        imageUrl: '',
+        title: '',
+    });
 
     // Handle flash messages
     useEffect(() => {
@@ -89,7 +94,14 @@ export default function AssetLoanPage() {
 
     const isOverdue = (expectedReturnDate: string | null, status: string) => {
         if (!expectedReturnDate || status !== 'on_loan') return false;
-        return new Date(expectedReturnDate) < new Date();
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const returnDate = new Date(expectedReturnDate);
+        returnDate.setHours(0, 0, 0, 0);
+
+        return today > returnDate;
     };
 
     const columns: Column<AssetLoan>[] = useMemo(() => {
@@ -122,7 +134,14 @@ export default function AssetLoanPage() {
                                 <img
                                     src={`/storage/${loan.image_before_loan}`}
                                     alt="Gambar sebelum pinjam"
-                                    className="h-16 w-16 rounded-lg border border-green-200 object-cover"
+                                    className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                    onClick={() =>
+                                        setImageModal({
+                                            isOpen: true,
+                                            imageUrl: `/storage/${loan.image_before_loan}`,
+                                            title: 'Gambar Sebelum Pinjam',
+                                        })
+                                    }
                                 />
                             </div>
                         );
@@ -135,7 +154,14 @@ export default function AssetLoanPage() {
                                 <img
                                     src={`/storage/${loan.image_after_loan}`}
                                     alt="Gambar setelah kembali"
-                                    className="h-16 w-16 rounded-lg border border-green-200 object-cover"
+                                    className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                    onClick={() =>
+                                        setImageModal({
+                                            isOpen: true,
+                                            imageUrl: `/storage/${loan.image_after_loan}`,
+                                            title: 'Gambar Setelah Kembali',
+                                        })
+                                    }
                                 />
                             </div>
                         );
@@ -331,6 +357,29 @@ export default function AssetLoanPage() {
                     />
                 </div>
             </div>
+
+            {/* Image Modal */}
+            {imageModal.isOpen && (
+                <>
+                    {/* Overlay */}
+                    <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setImageModal({ isOpen: false, imageUrl: '', title: '' })} />
+                    {/* Modal Content */}
+                    <div className="fixed top-1/2 left-1/2 z-50 w-[95%] max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg">
+                        <div className="mb-4 flex items-center justify-between">
+                            <h3 className="text-lg font-semibold text-green-900">{imageModal.title}</h3>
+                            <button
+                                onClick={() => setImageModal({ isOpen: false, imageUrl: '', title: '' })}
+                                className="rounded-full p-1 text-green-600 transition-colors hover:bg-green-100"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <img src={imageModal.imageUrl} alt={imageModal.title} className="max-h-[70vh] max-w-full rounded-lg object-contain" />
+                        </div>
+                    </div>
+                </>
+            )}
         </BaseLayouts>
     );
 }
