@@ -1,7 +1,8 @@
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { ApexOptions } from 'apexcharts';
 import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -21,6 +22,7 @@ import {
     Wallet,
     XCircle,
 } from 'lucide-react';
+import { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { Bar, Doughnut } from 'react-chartjs-2';
 
@@ -52,6 +54,7 @@ interface DashboardProps {
         month: string;
         income: number;
         expense: number;
+        balance: number;
     }>;
     citizensByGender: Array<{ name: string; value: number }>;
     citizensByMaritalStatus: Array<{ name: string; value: number }>;
@@ -86,6 +89,7 @@ const formatNumber = (value: number) => {
 };
 
 function Dashboard() {
+    const page = usePage();
     const {
         summaryStats,
         financeStats,
@@ -106,7 +110,33 @@ function Dashboard() {
         recentDocumentApplications,
         topOccupations,
         ageDistribution,
-    } = usePage().props as unknown as DashboardProps;
+    } = page.props as unknown as DashboardProps;
+
+    // Get period from URL params, default to 'year'
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialPeriod = urlParams.get('period') || 'year';
+
+    const [financePeriod, setFinancePeriod] = useState(initialPeriod);
+
+    const periodOptions = [
+        { value: 'week', label: '1 Minggu Terakhir' },
+        { value: 'month', label: '1 Bulan Terakhir' },
+        { value: 'year', label: 'Tahun Ini' },
+        { value: 'all', label: 'Selamanya' },
+    ];
+
+    const handlePeriodChange = (value: string) => {
+        setFinancePeriod(value);
+        router.get(
+            '/dashboard',
+            { period: value },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['financeTrend', 'financeStats'],
+            },
+        );
+    };
 
     // Finance Trend Line Chart (ApexCharts)
     const financeTrendOptions: ApexOptions = {
@@ -120,15 +150,16 @@ function Dashboard() {
                 speed: 800,
             },
         },
-        colors: ['#10b981', '#ef4444'],
+        colors: ['#10b981', '#ef4444', '#3b82f6'],
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: 3,
+            width: [3, 3, 3],
+            // dashArray: [0, 0, 5],
         },
         markers: {
-            size: 5,
-            colors: ['#10b981', '#ef4444'],
+            size: [5, 5, 5],
+            colors: ['#10b981', '#ef4444', '#3b82f6'],
             strokeColors: '#fff',
             strokeWidth: 2,
             hover: {
@@ -154,6 +185,7 @@ function Dashboard() {
             },
         },
         yaxis: {
+            forceNiceScale: true,
             labels: {
                 style: {
                     colors: '#6b7280',
@@ -161,16 +193,43 @@ function Dashboard() {
                     fontWeight: 500,
                 },
                 formatter: (value) => {
-                    if (value >= 1000000) return `${(value / 1000000).toFixed(0)}jt`;
+                    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}jt`;
                     if (value >= 1000) return `${(value / 1000).toFixed(0)}rb`;
-                    return value.toString();
+                    if (value <= -1000000) return `${(value / 1000000).toFixed(1)}jt`;
+                    if (value <= -1000) return `${(value / 1000).toFixed(0)}rb`;
+                    return value.toFixed(0);
                 },
             },
         },
         tooltip: {
             theme: 'dark',
-            y: {
-                formatter: (value) => formatCurrency(value),
+            shared: true,
+            intersect: false,
+            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                const income = series[0][dataPointIndex];
+                const expense = series[1][dataPointIndex];
+                const balance = series[2][dataPointIndex];
+                const month = w.globals.labels[dataPointIndex];
+
+                return `
+                    <div class="px-4 py-3">
+                        <div class="font-semibold mb-2 text-sm">${month}</div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="inline-block w-3 h-3 rounded-full" style="background-color: #10b981;"></span>
+                                <span>Pemasukan: <strong>${formatCurrency(income)}</strong></span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <span class="inline-block w-3 h-3 rounded-full" style="background-color: #ef4444;"></span>
+                                <span>Pengeluaran: <strong>${formatCurrency(expense)}</strong></span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs border-t border-gray-600 pt-1 mt-1">
+                                <span class="inline-block w-3 h-3 rounded-full" style="background-color: #3b82f6;"></span>
+                                <span>Saldo Tersisa: <strong>${formatCurrency(balance)}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
             },
             style: {
                 fontSize: '12px',
@@ -205,6 +264,10 @@ function Dashboard() {
         {
             name: 'Pengeluaran',
             data: financeTrend.map((d) => d.expense),
+        },
+        {
+            name: 'Saldo Tersisa',
+            data: financeTrend.map((d) => d.balance),
         },
     ];
 
@@ -577,7 +640,18 @@ function Dashboard() {
                     </div>
 
                     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        <h3 className="mb-4 text-lg font-bold text-gray-900">Tren Keuangan (6 Bulan Terakhir)</h3>
+                        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <h3 className="text-lg font-bold text-gray-900">Tren Keuangan</h3>
+                            <div className="w-full sm:w-64">
+                                <Select
+                                    label=""
+                                    value={financePeriod}
+                                    onChange={handlePeriodChange}
+                                    options={periodOptions}
+                                    placeholder="Pilih periode"
+                                />
+                            </div>
+                        </div>
                         <ReactApexChart options={financeTrendOptions} series={financeTrendSeries} type="line" height={320} />
                     </div>
 

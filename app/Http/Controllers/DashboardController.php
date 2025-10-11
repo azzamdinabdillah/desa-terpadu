@@ -15,13 +15,16 @@ use App\Models\SocialAidProgram;
 use App\Models\SocialAidRecipient;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $period = $request->get('period', 'year'); // default: year
+
         // Summary Statistics
         $summaryStats = [
             'total_families' => Family::count(),
@@ -38,9 +41,9 @@ class DashboardController extends Controller
         ];
 
         // Finance Statistics
-        $currentBalance = Finance::orderBy('created_at', 'desc')->first()?->remaining_balance ?? 0;
         $totalIncome = Finance::where('type', 'income')->sum('amount');
         $totalExpense = Finance::where('type', 'expense')->sum('amount');
+        $currentBalance = $totalIncome - $totalExpense;
         $monthlyIncome = Finance::where('type', 'income')
             ->whereMonth('date', Carbon::now()->month)
             ->whereYear('date', Carbon::now()->year)
@@ -58,25 +61,8 @@ class DashboardController extends Controller
             'monthly_expense' => $monthlyExpense,
         ];
 
-        // Finance Trend (Last 6 months)
-        $financeTrend = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
-            $income = Finance::where('type', 'income')
-                ->whereMonth('date', $month->month)
-                ->whereYear('date', $month->year)
-                ->sum('amount');
-            $expense = Finance::where('type', 'expense')
-                ->whereMonth('date', $month->month)
-                ->whereYear('date', $month->year)
-                ->sum('amount');
-
-            $financeTrend[] = [
-                'month' => $month->format('M Y'),
-                'income' => $income,
-                'expense' => $expense,
-            ];
-        }
+        // Finance Trend based on period
+        $financeTrend = $this->getFinanceTrend($period);
 
         // Citizens by Gender
         $citizensByGender = Citizen::select('gender', DB::raw('count(*) as total'))
@@ -263,6 +249,138 @@ class DashboardController extends Controller
             'topOccupations' => $topOccupations,
             'ageDistribution' => $ageDistribution,
         ]);
+    }
+
+    private function getFinanceTrend($period)
+    {
+        $financeTrend = [];
+        $runningBalance = 0;
+
+        // Calculate initial balance before the period starts
+        switch ($period) {
+            case 'week':
+                // Last 7 days
+                $startDate = Carbon::now()->subDays(6)->startOfDay();
+                $runningBalance = $this->getBalanceBeforeDate($startDate);
+
+                for ($i = 6; $i >= 0; $i--) {
+                    $date = Carbon::now()->subDays($i);
+                    $income = Finance::where('type', 'income')
+                        ->whereDate('date', $date->format('Y-m-d'))
+                        ->sum('amount');
+                    $expense = Finance::where('type', 'expense')
+                        ->whereDate('date', $date->format('Y-m-d'))
+                        ->sum('amount');
+
+                    $runningBalance += $income - $expense;
+
+                    $financeTrend[] = [
+                        'month' => $date->format('d M'),
+                        'income' => $income,
+                        'expense' => $expense,
+                        'balance' => $runningBalance,
+                    ];
+                }
+                break;
+
+            case 'month':
+                // Last 30 days (grouped by week)
+                $startDate = Carbon::now()->subWeeks(4)->startOfWeek();
+                $runningBalance = $this->getBalanceBeforeDate($startDate);
+
+                for ($i = 3; $i >= 0; $i--) {
+                    $startDate = Carbon::now()->subWeeks($i + 1)->startOfWeek();
+                    $endDate = Carbon::now()->subWeeks($i)->endOfWeek();
+
+                    $income = Finance::where('type', 'income')
+                        ->whereBetween('date', [$startDate, $endDate])
+                        ->sum('amount');
+                    $expense = Finance::where('type', 'expense')
+                        ->whereBetween('date', [$startDate, $endDate])
+                        ->sum('amount');
+
+                    $runningBalance += $income - $expense;
+
+                    $financeTrend[] = [
+                        'month' => 'Minggu ' . (4 - $i),
+                        'income' => $income,
+                        'expense' => $expense,
+                        'balance' => $runningBalance,
+                    ];
+                }
+                break;
+
+            case 'year':
+            default:
+                // This year (grouped by month)
+                $currentYear = Carbon::now()->year;
+                $startDate = Carbon::createFromDate($currentYear, 1, 1)->startOfDay();
+                $runningBalance = $this->getBalanceBeforeDate($startDate);
+
+                for ($month = 1; $month <= 12; $month++) {
+                    $income = Finance::where('type', 'income')
+                        ->whereMonth('date', $month)
+                        ->whereYear('date', $currentYear)
+                        ->sum('amount');
+                    $expense = Finance::where('type', 'expense')
+                        ->whereMonth('date', $month)
+                        ->whereYear('date', $currentYear)
+                        ->sum('amount');
+
+                    $runningBalance += $income - $expense;
+
+                    $monthName = Carbon::createFromDate($currentYear, $month, 1)->format('M');
+                    $financeTrend[] = [
+                        'month' => $monthName,
+                        'income' => $income,
+                        'expense' => $expense,
+                        'balance' => $runningBalance,
+                    ];
+                }
+                break;
+
+            case 'all':
+                // All time (grouped by year)
+                $firstRecord = Finance::orderBy('date', 'asc')->first();
+                if ($firstRecord) {
+                    $startYear = Carbon::parse($firstRecord->date)->year;
+                    $currentYear = Carbon::now()->year;
+                    $runningBalance = 0;
+
+                    for ($year = $startYear; $year <= $currentYear; $year++) {
+                        $income = Finance::where('type', 'income')
+                            ->whereYear('date', $year)
+                            ->sum('amount');
+                        $expense = Finance::where('type', 'expense')
+                            ->whereYear('date', $year)
+                            ->sum('amount');
+
+                        $runningBalance += $income - $expense;
+
+                        $financeTrend[] = [
+                            'month' => (string) $year,
+                            'income' => $income,
+                            'expense' => $expense,
+                            'balance' => $runningBalance,
+                        ];
+                    }
+                }
+                break;
+        }
+
+        return $financeTrend;
+    }
+
+    private function getBalanceBeforeDate($date)
+    {
+        $income = Finance::where('type', 'income')
+            ->where('date', '<', $date)
+            ->sum('amount');
+        $expense = Finance::where('type', 'expense')
+            ->where('date', '<', $date)
+            ->sum('amount');
+
+        return $income - $expense;
     }
 }
 
