@@ -410,8 +410,11 @@ Dashboard fully responsive untuk semua device:
 
 ### Installed:
 
-1. ✅ `apexcharts` & `react-apexcharts` - Modern chart library dengan animasi smooth
-2. ❌ `recharts` - Dihapus dan diganti dengan ApexCharts (lebih modern dan smooth)
+1. ✅ `chart.js` & `react-chartjs-2` & `chartjs-plugin-datalabels` - Untuk donut & bar charts dengan border radius!
+2. ✅ `apexcharts` & `react-apexcharts` - Khusus untuk line chart yang lebih smooth
+3. ❌ `recharts` - Dihapus dan diganti dengan Chart.js + ApexCharts
+
+**Kombinasi Terbaik**: ApexCharts untuk line chart (smooth & clean) + Chart.js untuk donut/bar (border radius support!)
 
 ---
 

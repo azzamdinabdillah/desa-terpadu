@@ -3,6 +3,8 @@ import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { usePage } from '@inertiajs/react';
 import { ApexOptions } from 'apexcharts';
+import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
     AlertCircle,
     Building,
@@ -20,6 +22,10 @@ import {
     XCircle,
 } from 'lucide-react';
 import ReactApexChart from 'react-apexcharts';
+import { Bar, Doughnut } from 'react-chartjs-2';
+
+// Register ChartJS components
+ChartJS.register(CategoryScale, LinearScale, PointElement, BarElement, ArcElement, Title, Tooltip, Legend, Filler, ChartDataLabels);
 
 interface DashboardProps {
     summaryStats: {
@@ -102,7 +108,7 @@ function Dashboard() {
         ageDistribution,
     } = usePage().props as unknown as DashboardProps;
 
-    // Finance Trend Line Chart
+    // Finance Trend Line Chart (ApexCharts)
     const financeTrendOptions: ApexOptions = {
         chart: {
             type: 'line',
@@ -118,7 +124,7 @@ function Dashboard() {
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: 4,
+            width: 3,
         },
         markers: {
             size: 5,
@@ -202,522 +208,240 @@ function Dashboard() {
         },
     ];
 
-    // Gender Distribution Donut Chart
-    const genderChartOptions: ApexOptions = {
-        chart: {
-            type: 'donut',
-            fontFamily: 'Poppins, sans-serif',
-            animations: {
-                enabled: true,
-                speed: 800,
+    // Donut Chart Config (with border radius!)
+    const createDoughnutData = (data: Array<{ name: string; value: number }>) => ({
+        labels: data.map((d) => d.name),
+        datasets: [
+            {
+                data: data.map((d) => d.value),
+                backgroundColor: COLORS,
+                borderColor: '#fff',
+                borderWidth: 4,
+                borderRadius: 12, // Border radius untuk setiap segment!
+                spacing: 2,
             },
-        },
-        labels: citizensByGender.map((d) => d.name),
-        colors: COLORS,
-        legend: {
-            position: 'bottom',
-            fontSize: '13px',
-            fontWeight: 500,
-            itemMargin: {
-                horizontal: 8,
-                vertical: 4,
+        ],
+    });
+
+    const doughnutOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+            datalabels: {
+                color: '#fff',
+                font: {
+                    family: 'Poppins',
+                    size: 12,
+                    weight: 700,
+                },
+                formatter: (value: number, context: any) => {
+                    const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+                    const percentage = ((value / total) * 100).toFixed(0);
+                    return formatNumber(value) + '\n' + percentage + '%';
+                },
+                textAlign: 'center' as const,
+                anchor: 'center' as const,
+                align: 'center' as const,
             },
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (val: number) => `${val.toFixed(0)}%`,
-            style: {
-                fontSize: '13px',
-                fontWeight: 600,
+            legend: {
+                position: 'bottom' as const,
+                labels: {
+                    font: {
+                        family: 'Poppins',
+                        size: 13,
+                        weight: 500,
+                    },
+                    padding: 15,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    boxWidth: 12,
+                    boxHeight: 12,
+                },
             },
-            dropShadow: {
-                enabled: false,
-            },
-        },
-        plotOptions: {
-            pie: {
-                expandOnClick: false,
-                donut: {
-                    size: '60%',
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                            fontSize: '14px',
-                            fontWeight: 600,
-                        },
-                        value: {
-                            show: true,
-                            fontSize: '22px',
-                            fontWeight: 700,
-                            color: '#16a34a',
-                            formatter: (val) => formatNumber(Number(val)),
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            color: '#6b7280',
-                            formatter: () => formatNumber(citizensByGender.reduce((acc, curr) => acc + curr.value, 0)),
-                        },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                padding: 14,
+                cornerRadius: 8,
+                titleFont: {
+                    family: 'Poppins',
+                    size: 13,
+                    weight: 600,
+                },
+                bodyFont: {
+                    family: 'Poppins',
+                    size: 12,
+                    weight: 500,
+                },
+                callbacks: {
+                    label: function (context: any) {
+                        const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+                        const percentage = ((context.parsed / total) * 100).toFixed(0);
+                        return context.label + ': ' + formatNumber(context.parsed) + ' (' + percentage + '%)';
                     },
                 },
             },
         },
-        stroke: {
-            width: 4,
-            colors: ['#fff'],
-        },
-        states: {
-            hover: {
-                filter: {
-                    type: 'lighten',
-                },
-            },
-            active: {
-                filter: {
-                    type: 'none',
-                },
-            },
-        },
-        tooltip: {
-            theme: 'light',
-            y: {
-                formatter: (value) => `${formatNumber(value)} orang`,
-            },
-            style: {
-                fontSize: '12px',
-            },
-        },
     };
 
-    // Marital Status Donut Chart
-    const maritalStatusChartOptions: ApexOptions = {
-        chart: {
-            type: 'donut',
-            fontFamily: 'Poppins, sans-serif',
-            animations: {
-                enabled: true,
-                speed: 800,
+    // Bar Chart Data
+    const createBarData = (data: Array<{ name: string; value: number }>, color: string = '#16a34a') => ({
+        labels: data.map((d) => d.name),
+        datasets: [
+            {
+                label: 'Jumlah',
+                data: data.map((d) => d.value),
+                backgroundColor: color,
+                borderRadius: 8,
+                borderSkipped: false,
             },
-        },
-        labels: citizensByMaritalStatus.map((d) => d.name),
-        colors: COLORS,
-        legend: {
-            position: 'bottom',
-            fontSize: '13px',
-            fontWeight: 500,
-            itemMargin: {
-                horizontal: 8,
-                vertical: 4,
+        ],
+    });
+
+    const barOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            datalabels: {
+                display: false,
             },
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (val: number) => `${val.toFixed(0)}%`,
-            style: {
-                fontSize: '13px',
-                fontWeight: 600,
+            legend: {
+                display: false,
             },
-            dropShadow: {
-                enabled: false,
-            },
-        },
-        plotOptions: {
-            pie: {
-                expandOnClick: false,
-                donut: {
-                    size: '55%',
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                            fontSize: '14px',
-                            fontWeight: 600,
-                        },
-                        value: {
-                            show: true,
-                            fontSize: '22px',
-                            fontWeight: 700,
-                            color: '#16a34a',
-                            formatter: (val) => formatNumber(Number(val)),
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            color: '#6b7280',
-                            formatter: () => formatNumber(citizensByMaritalStatus.reduce((acc, curr) => acc + curr.value, 0)),
-                        },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                padding: 14,
+                cornerRadius: 8,
+                titleFont: {
+                    family: 'Poppins',
+                    size: 13,
+                    weight: 600,
+                },
+                bodyFont: {
+                    family: 'Poppins',
+                    size: 12,
+                    weight: 500,
+                },
+                callbacks: {
+                    label: function (context: any) {
+                        return formatNumber(context.parsed.y) + ' orang';
                     },
                 },
             },
         },
-        stroke: {
-            width: 4,
-            colors: ['#fff'],
-        },
-        states: {
-            hover: {
-                filter: {
-                    type: 'lighten',
-                },
-            },
-            active: {
-                filter: {
-                    type: 'none',
-                },
-            },
-        },
-        tooltip: {
-            theme: 'light',
+        scales: {
             y: {
-                formatter: (value) => `${formatNumber(value)} orang`,
+                ticks: {
+                    font: {
+                        family: 'Poppins',
+                        size: 12,
+                        weight: 500,
+                    },
+                    color: '#6b7280',
+                },
+                grid: {
+                    color: 'rgba(229, 231, 235, 0.5)',
+                },
             },
-            style: {
-                fontSize: '12px',
+            x: {
+                ticks: {
+                    font: {
+                        family: 'Poppins',
+                        size: 11,
+                        weight: 500,
+                    },
+                    color: '#6b7280',
+                },
+                grid: {
+                    display: false,
+                },
             },
         },
     };
 
-    // Religion Bar Chart
-    const religionChartOptions: ApexOptions = {
-        chart: {
-            type: 'bar',
-            toolbar: { show: false },
-            fontFamily: 'Poppins, sans-serif',
-            animations: {
-                enabled: true,
-                speed: 800,
-            },
-        },
-        colors: ['#16a34a'],
-        plotOptions: {
-            bar: {
-                borderRadius: 8,
-                columnWidth: '65%',
-                distributed: false,
-                dataLabels: {
-                    position: 'top',
-                },
-            },
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (val: number) => formatNumber(val),
-            offsetY: -20,
-            style: {
-                fontSize: '11px',
-                fontWeight: 600,
-                colors: ['#374151'],
-            },
-        },
-        xaxis: {
-            categories: citizensByReligion.map((d) => d.name),
-            labels: {
-                style: {
-                    colors: '#6b7280',
-                    fontSize: '11px',
-                    fontWeight: 500,
-                },
-            },
-            axisBorder: {
-                show: true,
-                color: '#e5e7eb',
-            },
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    colors: '#6b7280',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                },
-            },
-        },
-        tooltip: {
-            theme: 'light',
-            y: {
-                formatter: (value) => `${formatNumber(value)} orang`,
-            },
-            style: {
-                fontSize: '12px',
-            },
-        },
-        grid: {
-            borderColor: '#e5e7eb',
-            strokeDashArray: 4,
+    // Horizontal Bar Options
+    const horizontalBarOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y' as const,
+        layout: {
             padding: {
-                top: -20,
-                right: 20,
-                bottom: 0,
-                left: 10,
-            },
-        },
-    };
-
-    const religionChartSeries = [
-        {
-            name: 'Jumlah',
-            data: citizensByReligion.map((d) => d.value),
-        },
-    ];
-
-    // Age Distribution Bar Chart
-    const ageChartOptions: ApexOptions = {
-        chart: {
-            type: 'bar',
-            toolbar: { show: false },
-            fontFamily: 'Poppins, sans-serif',
-            animations: {
-                enabled: true,
-                speed: 800,
-            },
-        },
-        colors: ['#16a34a'],
-        plotOptions: {
-            bar: {
-                borderRadius: 8,
-                columnWidth: '65%',
-                dataLabels: {
-                    position: 'top',
-                },
-            },
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (val: number) => formatNumber(val),
-            offsetY: -20,
-            style: {
-                fontSize: '11px',
-                fontWeight: 600,
-                colors: ['#374151'],
-            },
-        },
-        xaxis: {
-            categories: ageDistribution.map((d) => d.name),
-            labels: {
-                style: {
-                    colors: '#6b7280',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                },
-            },
-            axisBorder: {
-                show: true,
-                color: '#e5e7eb',
-            },
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    colors: '#6b7280',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                },
-            },
-        },
-        tooltip: {
-            theme: 'light',
-            y: {
-                formatter: (value) => `${formatNumber(value)} orang`,
-            },
-            style: {
-                fontSize: '12px',
-            },
-        },
-        grid: {
-            borderColor: '#e5e7eb',
-            strokeDashArray: 4,
-            padding: {
-                top: -20,
-                right: 20,
-                bottom: 0,
-                left: 10,
-            },
-        },
-    };
-
-    const ageChartSeries = [
-        {
-            name: 'Jumlah',
-            data: ageDistribution.map((d) => d.value),
-        },
-    ];
-
-    // Top Occupations Horizontal Bar Chart
-    const occupationChartOptions: ApexOptions = {
-        chart: {
-            type: 'bar',
-            toolbar: { show: false },
-            fontFamily: 'Poppins, sans-serif',
-            animations: {
-                enabled: true,
-                speed: 800,
-            },
-        },
-        colors: ['#16a34a'],
-        plotOptions: {
-            bar: {
-                borderRadius: 8,
-                horizontal: true,
-                barHeight: '70%',
-                dataLabels: {
-                    position: 'top',
-                },
-            },
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (val: number) => formatNumber(val),
-            offsetX: 30,
-            style: {
-                fontSize: '11px',
-                fontWeight: 600,
-                colors: ['#374151'],
-            },
-        },
-        xaxis: {
-            labels: {
-                style: {
-                    colors: '#6b7280',
-                    fontSize: '12px',
-                    fontWeight: 500,
-                },
-            },
-            axisBorder: {
-                show: true,
-                color: '#e5e7eb',
-            },
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    colors: '#6b7280',
-                    fontSize: '11px',
-                    fontWeight: 500,
-                },
-            },
-        },
-        tooltip: {
-            theme: 'light',
-            y: {
-                formatter: (value) => `${formatNumber(value)} orang`,
-            },
-            style: {
-                fontSize: '12px',
-            },
-        },
-        grid: {
-            borderColor: '#e5e7eb',
-            strokeDashArray: 4,
-            padding: {
+                left: 0,
+                right: 0,
                 top: 0,
-                right: 30,
                 bottom: 0,
-                left: 10,
             },
         },
-    };
-
-    const occupationChartSeries = [
-        {
-            name: 'Jumlah',
-            data: topOccupations.map((d) => ({
-                x: d.name,
-                y: d.value,
-            })),
-        },
-    ];
-
-    // Social Aid Type Donut Chart
-    const socialAidTypeChartOptions: ApexOptions = {
-        chart: {
-            type: 'donut',
-            fontFamily: 'Poppins, sans-serif',
-            animations: {
-                enabled: true,
-                speed: 800,
+        plugins: {
+            datalabels: {
+                display: false,
             },
-        },
-        labels: socialAidByType.map((d) => d.name),
-        colors: COLORS,
-        legend: {
-            position: 'bottom',
-            fontSize: '13px',
-            fontWeight: 500,
-            itemMargin: {
-                horizontal: 8,
-                vertical: 4,
+            legend: {
+                display: false,
             },
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: (val: number) => `${val.toFixed(0)}%`,
-            style: {
-                fontSize: '13px',
-                fontWeight: 600,
-            },
-            dropShadow: {
-                enabled: false,
-            },
-        },
-        plotOptions: {
-            pie: {
-                expandOnClick: false,
-                donut: {
-                    size: '55%',
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                            fontSize: '14px',
-                            fontWeight: 600,
-                        },
-                        value: {
-                            show: true,
-                            fontSize: '22px',
-                            fontWeight: 700,
-                            color: '#16a34a',
-                            formatter: (val) => formatNumber(Number(val)),
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            color: '#6b7280',
-                            formatter: () => formatNumber(socialAidByType.reduce((acc, curr) => acc + curr.value, 0)),
-                        },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                padding: 14,
+                cornerRadius: 8,
+                titleFont: {
+                    family: 'Poppins',
+                    size: 13,
+                    weight: 600,
+                },
+                bodyFont: {
+                    family: 'Poppins',
+                    size: 12,
+                    weight: 500,
+                },
+                callbacks: {
+                    label: function (context: any) {
+                        return formatNumber(context.parsed.x) + ' orang';
                     },
                 },
             },
         },
-        stroke: {
-            width: 4,
-            colors: ['#fff'],
-        },
-        states: {
-            hover: {
-                filter: {
-                    type: 'lighten',
+        scales: {
+            x: {
+                ticks: {
+                    font: {
+                        family: 'Poppins',
+                        size: 12,
+                        weight: 500,
+                    },
+                    color: '#6b7280',
+                },
+                grid: {
+                    color: 'rgba(229, 231, 235, 0.5)',
+                    drawBorder: false,
+                },
+                border: {
+                    display: false,
                 },
             },
-            active: {
-                filter: {
-                    type: 'none',
-                },
-            },
-        },
-        tooltip: {
-            theme: 'light',
             y: {
-                formatter: (value) => `${formatNumber(value)} program`,
-            },
-            style: {
-                fontSize: '12px',
+                ticks: {
+                    font: {
+                        family: 'Poppins',
+                        size: 11,
+                        weight: 500,
+                    },
+                    color: '#6b7280',
+                    autoSkip: false,
+                    padding: 0,
+                    crossAlign: 'far' as const,
+                    mirror: false,
+                },
+                grid: {
+                    display: false,
+                    drawBorder: false,
+                },
+                border: {
+                    display: false,
+                },
+                offset: true,
+                afterFit: (scale: any) => {
+                    scale.width = 90; // Set fixed width untuk y-axis labels
+                },
             },
         },
     };
@@ -860,46 +584,51 @@ function Dashboard() {
                     {/* Citizens Statistics */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
-                        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 className="mb-4 text-lg font-bold text-gray-900">Penduduk Berdasarkan Jenis Kelamin</h3>
-                            <ReactApexChart options={genderChartOptions} series={citizensByGender.map((d) => d.value)} type="donut" height={280} />
+                            <div className="flex-1" style={{ minHeight: '300px' }}>
+                                <Doughnut data={createDoughnutData(citizensByGender)} options={doughnutOptions} />
+                            </div>
                         </div>
 
                         {/* Marital Status Distribution */}
-                        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 className="mb-4 text-lg font-bold text-gray-900">Penduduk Berdasarkan Status Pernikahan</h3>
-                            <ReactApexChart
-                                options={maritalStatusChartOptions}
-                                series={citizensByMaritalStatus.map((d) => d.value)}
-                                type="donut"
-                                height={280}
-                            />
+                            <div className="flex-1" style={{ minHeight: '300px' }}>
+                                <Doughnut data={createDoughnutData(citizensByMaritalStatus)} options={doughnutOptions} />
+                            </div>
                         </div>
 
                         {/* Religion Distribution */}
-                        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 className="mb-4 text-lg font-bold text-gray-900">Penduduk Berdasarkan Agama</h3>
-                            <ReactApexChart options={religionChartOptions} series={religionChartSeries} type="bar" height={280} />
+                            <div className="flex-1 pl-2" style={{ minHeight: '300px' }}>
+                                <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
+                            </div>
                         </div>
                     </div>
 
                     {/* Age Distribution & Top Occupations */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Age Distribution */}
-                        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 className="mb-4 text-lg font-bold text-gray-900">Distribusi Usia Penduduk</h3>
-                            <ReactApexChart options={ageChartOptions} series={ageChartSeries} type="bar" height={320} />
+                            <div className="flex-1" style={{ minHeight: '340px' }}>
+                                <Bar data={createBarData(ageDistribution)} options={barOptions} />
+                            </div>
                         </div>
 
                         {/* Top Occupations */}
-                        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <h3 className="mb-4 text-lg font-bold text-gray-900">5 Pekerjaan Teratas</h3>
-                            <ReactApexChart options={occupationChartOptions} series={occupationChartSeries} type="bar" height={320} />
+                            <div className="flex-1 pl-2" style={{ minHeight: '340px' }}>
+                                <Bar data={createBarData(topOccupations)} options={horizontalBarOptions} />
+                            </div>
                         </div>
                     </div>
 
                     {/* Module Statistics */}
-                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 xl:grid-cols-3">
                         {/* Event Stats */}
                         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <div className="mb-4 flex items-center gap-2">
@@ -1023,17 +752,14 @@ function Dashboard() {
                         </div>
 
                         {/* Social Aid by Type */}
-                        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <div className="mb-4 flex items-center gap-2">
                                 <HandHeart className="h-5 w-5 text-green-600" />
                                 <h3 className="text-lg font-bold text-gray-900">Bantuan Sosial per Tipe</h3>
                             </div>
-                            <ReactApexChart
-                                options={socialAidTypeChartOptions}
-                                series={socialAidByType.map((d) => d.value)}
-                                type="donut"
-                                height={240}
-                            />
+                            <div className="flex-1" style={{ minHeight: '280px' }}>
+                                <Doughnut data={createDoughnutData(socialAidByType)} options={doughnutOptions} />
+                            </div>
                         </div>
 
                         {/* Document Application Stats */}
@@ -1066,7 +792,7 @@ function Dashboard() {
                     </div>
 
                     {/* Recent Activities */}
-                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
                         {/* Recent Events */}
                         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                             <div className="mb-4 flex items-center justify-between">
