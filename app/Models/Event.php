@@ -51,6 +51,14 @@ class Event extends Model
     }
 
     /**
+     * Get the user who created this event (alias for createdBy).
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
      * Get the participants for this event.
      */
     public function participants(): HasMany

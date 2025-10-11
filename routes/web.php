@@ -6,6 +6,7 @@ use App\Http\Controllers\AssetLoanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\CitizenController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SocialAidController;
@@ -47,6 +48,8 @@ Route::get('/', function () {
         ],
     ]);
 })->name('home');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/announcement', [AnnouncementController::class, 'index'])->name('announcement.index');
 

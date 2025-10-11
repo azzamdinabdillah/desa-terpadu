@@ -17,13 +17,14 @@ export function BaseLayouts({ children }: { children: React.ReactNode }) {
     }, [isCollapsed]);
 
     const handleToggle = () => {
+        console.log("bismillah");
         setIsCollapsed(!isCollapsed);
     };
 
     return (
         <div className="min-h-screen bg-green-50">
             <Sidebar isCollapsed={isCollapsed} onToggle={handleToggle} />
-            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-[80px]' : 'lg:ml-[270px]'}`}>{children}</div>
+            <div className={`transition-all duration-300 ${isCollapsed ? 'lg:ml-[90px]' : 'lg:ml-[270px]'}`}>{children}</div>
         </div>
     );
 }

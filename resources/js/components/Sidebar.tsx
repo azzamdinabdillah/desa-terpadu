@@ -151,7 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
         <Tooltip.Provider>
             <div
                 className={`hidden transition-all duration-300 lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col lg:border-r lg:border-green-200 lg:bg-green-50 lg:shadow-lg ${
-                    isCollapsed ? 'lg:w-[80px]' : 'lg:w-[270px]'
+                    isCollapsed ? 'lg:w-[90px]' : 'lg:w-[270px]'
                 } ${className}`}
             >
                 {/* Logo Section */}
