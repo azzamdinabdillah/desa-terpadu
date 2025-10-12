@@ -9,7 +9,7 @@ import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
-import { formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
+import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
 import { Award, Briefcase, Calendar, Edit, Eye, Heart, Home, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
@@ -164,6 +164,17 @@ function CitizenPage() {
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-green-600" />
                         <span className="text-sm text-green-900">{item.date_of_birth ? formatDate(item.date_of_birth) : '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'age',
+                header: 'Umur',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.date_of_birth ? `${calculateAge(item.date_of_birth)} tahun` : '-'}</span>
                     </div>
                 ),
             },
