@@ -3,16 +3,13 @@ import Button from '@/components/Button';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField, { formatters, parsers } from '@/components/InputField';
-import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { Finance } from '@/types/finance/financeTypes';
-import { User } from '@/types/user/userTypes';
 import { useForm, usePage } from '@inertiajs/react';
-import { CalendarDays, CircleUserRound } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface Props {
-    users: User[];
     flash?: {
         success?: string;
         error?: string;
@@ -26,13 +23,12 @@ interface EditFinanceProps {
 }
 
 function EditFinance({ finance, currentBalance: initialBalance }: EditFinanceProps) {
-    const { users, flash } = usePage<Props>().props;
+    const { flash } = usePage<Props>().props;
     const { data, setData, post, reset } = useForm({
         date: finance.date ? finance.date.substring(0, 10) : '',
         type: finance.type,
         amount: finance.amount.toString(),
         note: finance.note,
-        user_id: finance.user_id.toString(),
         proof_file: null as File | null,
     });
     const [remainingBalance, setRemainingBalance] = useState<string>('');
@@ -60,7 +56,6 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
                 let newBalance = currentBalance;
 
                 if (data.type === 'income') {
-
                     newBalance = currentBalance + amountValue;
                 } else if (data.type === 'expense') {
                     newBalance = currentBalance - amountValue;
@@ -131,10 +126,7 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
 
                 <div className="p-4 lg:p-6">
                     <div className="mx-auto max-w-7xl">
-                        <HeaderPage
-                            title="Edit Transaksi Keuangan"
-                            description="Ubah data pemasukan atau pengeluaran desa"
-                        />
+                        <HeaderPage title="Edit Transaksi Keuangan" description="Ubah data pemasukan atau pengeluaran desa" />
 
                         {/* Form */}
                         <div className="space-y-8">
@@ -217,30 +209,17 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    {/* Remaining Balance */}
-                                    <InputField
-                                        label="Sisa Saldo Saat Ini"
-                                        value={remainingBalance}
-                                        prefix="Rp"
-                                        variant="muted"
-                                        readOnly
-                                        helperText="Akan dihitung otomatis"
-                                        formatValue={formatters.currencyDigitsToDisplay}
-                                        onChange={() => {}}
-                                    />
-
-                                    {/* Responsible Person */}
-                                    <Select
-                                        label="Penanggung Jawab"
-                                        value={data.user_id}
-                                        prefix={<CircleUserRound className="h-5 w-5" />}
-                                        onChange={(v) => setData('user_id', v)}
-                                        options={users.map((user: User) => ({ value: user.id.toString(), label: user.citizen?.full_name || '' }))}
-                                        placeholder="Pilih penanggung jawab"
-                                        required
-                                    />
-                                </div>
+                                {/* Remaining Balance */}
+                                <InputField
+                                    label="Sisa Saldo Saat Ini"
+                                    value={remainingBalance}
+                                    prefix="Rp"
+                                    variant="muted"
+                                    readOnly
+                                    helperText="Akan dihitung otomatis"
+                                    formatValue={formatters.currencyDigitsToDisplay}
+                                    onChange={() => {}}
+                                />
 
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     {/* Notes */}

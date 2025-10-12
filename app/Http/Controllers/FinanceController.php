@@ -34,15 +34,31 @@ class FinanceController extends Controller
             $query->where('type', $request->type);
         }
 
+        // Filter by date range
+        if ($request->has('start_date') && $request->start_date) {
+            $query->where('date', '>=', $request->start_date);
+        }
+        if ($request->has('end_date') && $request->end_date) {
+            $query->where('date', '<=', $request->end_date);
+        }
+
         // Order by date descending (newest first)
         $query->orderBy('id', 'desc');
 
         // Pagination (preserve query string for pagination links)
         $finances = $query->paginate(10)->onEachSide(0)->withQueryString();
 
-        // Calculate summary
-        $totalIncome = Finance::where('type', 'income')->sum('amount');
-        $totalExpense = Finance::where('type', 'expense')->sum('amount');
+        // Calculate summary based on filters
+        $summaryQuery = Finance::query();
+        if ($request->has('start_date') && $request->start_date) {
+            $summaryQuery->where('date', '>=', $request->start_date);
+        }
+        if ($request->has('end_date') && $request->end_date) {
+            $summaryQuery->where('date', '<=', $request->end_date);
+        }
+        
+        $totalIncome = (clone $summaryQuery)->where('type', 'income')->sum('amount');
+        $totalExpense = (clone $summaryQuery)->where('type', 'expense')->sum('amount');
         $balance = $totalIncome - $totalExpense;
 
         return inertia('finance/finance', [
@@ -55,6 +71,8 @@ class FinanceController extends Controller
             'filters' => [
                 'search' => $request->search,
                 'type' => $request->type,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
             ],
         ]);
     }
@@ -68,11 +86,9 @@ class FinanceController extends Controller
         $totalIncome = Finance::where('type', 'income')->sum('amount');
         $totalExpense = Finance::where('type', 'expense')->sum('amount');
         $currentBalance = $totalIncome - $totalExpense;
-        $users = User::with('citizen:id,full_name')->select('id', 'email', 'citizen_id')->get();
 
         return inertia('finance/create', [
             'currentBalance' => $currentBalance,
-            'users' => $users,
         ]);
     }
 
@@ -87,7 +103,6 @@ class FinanceController extends Controller
             'type' => 'required|in:income,expense',
             'amount' => 'required|numeric|min:0',
             'note' => 'nullable|string|max:1000',
-            'user_id' => 'required|exists:users,id',
             'proof_file' => 'required|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
         ], [
             'date.required' => 'Tanggal wajib diisi.',
@@ -99,8 +114,6 @@ class FinanceController extends Controller
             'amount.min' => 'Nominal tidak boleh kurang dari 0.',
             'note.string' => 'Catatan harus berupa teks.',
             'note.max' => 'Catatan maksimal 1000 karakter.',
-            'user_id.required' => 'Penanggung jawab wajib dipilih.',
-            'user_id.exists' => 'Penanggung jawab yang dipilih tidak ditemukan.',
             'proof_file.required' => 'Bukti transaksi wajib diisi.',
             'proof_file.file' => 'Bukti transaksi harus berupa file.',
             'proof_file.mimes' => 'Bukti transaksi harus berupa file jpeg, png, jpg, atau pdf.',
@@ -135,7 +148,7 @@ class FinanceController extends Controller
                 'amount' => $newAmount,
                 'remaining_balance' => $remainingBalance,
                 'note' => $request->note,
-                'user_id' => $request->user_id,
+                'user_id' => auth()->id(),
             ];
 
             // Handle file upload
@@ -171,12 +184,10 @@ class FinanceController extends Controller
             ->where('id', '!=', $id)
             ->sum('amount');
         $currentBalance = $totalIncome - $totalExpense;
-        $users = User::with('citizen:id,full_name')->select('id', 'email', 'citizen_id')->get();
 
         return inertia('finance/edit', [
             'finance' => $finance,
             'currentBalance' => $currentBalance,
-            'users' => $users,
         ]);
     }
 
@@ -198,7 +209,6 @@ class FinanceController extends Controller
             'type' => 'required|in:income,expense',
             'amount' => 'required|numeric|min:0',
             'note' => 'nullable|string|max:1000',
-            'user_id' => 'required|exists:users,id',
             'proof_file' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
         ], [
             'date.required' => 'Tanggal wajib diisi.',
@@ -210,8 +220,6 @@ class FinanceController extends Controller
             'amount.min' => 'Nominal tidak boleh kurang dari 0.',
             'note.string' => 'Catatan harus berupa teks.',
             'note.max' => 'Catatan maksimal 1000 karakter.',
-            'user_id.required' => 'Penanggung jawab wajib dipilih.',
-            'user_id.exists' => 'Penanggung jawab yang dipilih tidak ditemukan.',
             'proof_file.file' => 'Bukti transaksi harus berupa file.',
             'proof_file.mimes' => 'Bukti transaksi harus berupa file jpeg, png, jpg, atau pdf.',
             'proof_file.max' => 'Ukuran file bukti transaksi maksimal 10MB.',
@@ -248,7 +256,7 @@ class FinanceController extends Controller
                 'amount' => $newAmount,
                 'remaining_balance' => $remainingBalance,
                 'note' => $request->note,
-                'user_id' => $request->user_id,
+                'user_id' => auth()->id(),
             ];
 
             // Handle file upload

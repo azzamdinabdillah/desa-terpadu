@@ -4,15 +4,12 @@ import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField, { formatters, parsers } from '@/components/InputField';
-import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { User } from '@/types/user/userTypes';
 import { useForm, usePage } from '@inertiajs/react';
-import { CalendarDays, CircleUserRound } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface Props {
-    users: User[];
     flash?: {
         success?: string;
         error?: string;
@@ -25,13 +22,12 @@ interface CreateFinanceProps {
 }
 
 function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
-    const { users, flash } = usePage<Props>().props;
+    const { flash } = usePage<Props>().props;
     const { data, setData, post, reset } = useForm({
         date: '',
         type: 'income' as 'income' | 'expense',
         amount: '',
         note: '',
-        user_id: '',
         proof_file: null as File | null,
     });
     const [remainingBalance, setRemainingBalance] = useState<string>('');
@@ -202,30 +198,17 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    {/* Remaining Balance */}
-                                    <InputField
-                                        label="Sisa Saldo Saat Ini"
-                                        value={remainingBalance}
-                                        prefix="Rp"
-                                        variant="muted"
-                                        readOnly
-                                        helperText="Akan dihitung otomatis"
-                                        formatValue={formatters.currencyDigitsToDisplay}
-                                        onChange={() => {}}
-                                    />
-
-                                    {/* Responsible Person */}
-                                    <Select
-                                        label="Penanggung Jawab"
-                                        value={data.user_id}
-                                        prefix={<CircleUserRound className="h-5 w-5" />}
-                                        onChange={(v) => setData('user_id', v)}
-                                        options={users.map((user: User) => ({ value: user.id, label: user.citizen?.full_name || '' }))}
-                                        placeholder="Pilih penanggung jawab"
-                                        required
-                                    />
-                                </div>
+                                {/* Remaining Balance */}
+                                <InputField
+                                    label="Sisa Saldo Saat Ini"
+                                    value={remainingBalance}
+                                    prefix="Rp"
+                                    variant="muted"
+                                    readOnly
+                                    helperText="Akan dihitung otomatis"
+                                    formatValue={formatters.currencyDigitsToDisplay}
+                                    onChange={() => {}}
+                                />
 
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     {/* Notes */}

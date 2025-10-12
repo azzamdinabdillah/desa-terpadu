@@ -12,7 +12,21 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { Finance as FinanceType, PaginatedFinances, Summary } from '@/types/finance/financeTypes';
 import { router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, Edit, FileText, Image as ImageIcon, Plus, Search, Trash2, TrendingDown, TrendingUp, User, Wallet } from 'lucide-react';
+import {
+    Calendar,
+    CalendarRange,
+    Edit,
+    FileText,
+    Image as ImageIcon,
+    Plus,
+    Search,
+    Trash2,
+    TrendingDown,
+    TrendingUp,
+    User,
+    Wallet,
+    X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Props {
@@ -23,6 +37,8 @@ interface Props {
     filters: {
         search?: string;
         type?: string;
+        start_date?: string;
+        end_date?: string;
     };
     finances: PaginatedFinances;
     summary: Summary;
@@ -38,6 +54,9 @@ function Finance() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<{ id: number; note: string; amount: number; type: string } | null>(null);
+    const [dateFilterModalOpen, setDateFilterModalOpen] = useState(false);
+    const [startDate, setStartDate] = useState(filters.start_date || '');
+    const [endDate, setEndDate] = useState(filters.end_date || '');
 
     // Handle flash messages
     useEffect(() => {
@@ -122,6 +141,46 @@ function Finance() {
         setDeleteModalOpen(false);
         setDeleteModalData(null);
     };
+
+    const handleDateFilterApply = () => {
+        router.get(
+            '/finance',
+            {
+                search: searchTerm,
+                type: filterType,
+                start_date: startDate,
+                end_date: endDate,
+            },
+            {
+                preserveState: true,
+                replace: true,
+                onSuccess: () => {
+                    setDateFilterModalOpen(false);
+                },
+            },
+        );
+    };
+
+    const handleDateFilterClear = () => {
+        setStartDate('');
+        setEndDate('');
+        router.get(
+            '/finance',
+            {
+                search: searchTerm,
+                type: filterType,
+            },
+            {
+                preserveState: true,
+                replace: true,
+                onSuccess: () => {
+                    setDateFilterModalOpen(false);
+                },
+            },
+        );
+    };
+
+    const hasDateFilter = filters.start_date || filters.end_date;
 
     const columns = useMemo(
         () => [
@@ -324,6 +383,15 @@ function Finance() {
                                 placeholder="Pilih tipe"
                             />
 
+                            <Button
+                                onClick={() => setDateFilterModalOpen(true)}
+                                variant={hasDateFilter ? 'primary' : 'outline'}
+                                icon={<CalendarRange className="h-4 w-4" />}
+                                iconPosition="left"
+                            >
+                                {hasDateFilter ? 'Filter Aktif' : 'Filter Tanggal'}
+                            </Button>
+
                             {isAdmin && (
                                 <Button onClick={() => router.visit('/finance/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
                                     Tambah Transaksi
@@ -403,7 +471,7 @@ function Finance() {
                     <Dialog.Portal>
                         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
                         <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                            <div className="justify_center mx-auto mb-4 flex h-12 w-12 items-center rounded-full border-2 border-red-200 bg-red-100">
+                            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-200 bg-red-100">
                                 <Trash2 className="h-6 w-6 text-red-600" />
                             </div>
                             <div className="text-center">
@@ -440,6 +508,65 @@ function Finance() {
                                     fullWidth
                                 >
                                     Hapus
+                                </Button>
+                            </div>
+                        </Dialog.Content>
+                    </Dialog.Portal>
+                </Dialog.Root>
+
+                {/* Date Filter Modal */}
+                <Dialog.Root open={dateFilterModalOpen} onOpenChange={setDateFilterModalOpen}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                            <div className="flex items-center justify-between border-b border-green-200 p-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="rounded-full bg-green-100 p-2">
+                                        <CalendarRange className="h-5 w-5 text-green-700" />
+                                    </div>
+                                    <Dialog.Title className="text-lg font-semibold text-green-900">Filter Tanggal</Dialog.Title>
+                                </div>
+                                <Dialog.Close asChild>
+                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                        <X className="h-5 w-5" />
+                                    </Button>
+                                </Dialog.Close>
+                            </div>
+                            <div className="p-6">
+                                <div className="space-y-4">
+                                    <InputField
+                                        label="Tanggal Mulai"
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(value) => setStartDate(value)}
+                                        placeholder="Pilih tanggal mulai"
+                                    />
+                                    <InputField
+                                        label="Tanggal Akhir"
+                                        type="date"
+                                        value={endDate}
+                                        onChange={(value) => setEndDate(value)}
+                                        placeholder="Pilih tanggal akhir"
+                                    />
+                                    {hasDateFilter && (
+                                        <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+                                            <p className="text-xs font-medium text-green-800">Filter Aktif:</p>
+                                            <p className="text-sm text-green-700">
+                                                {filters.start_date && formatDate(filters.start_date)} {filters.start_date && filters.end_date && '→'}{' '}
+                                                {filters.end_date && formatDate(filters.end_date)}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex gap-3 border-t border-green-200 p-4">
+                                {hasDateFilter && (
+                                    <Button onClick={handleDateFilterClear} variant="outline" className="flex-1">
+                                        Reset Filter
+                                    </Button>
+                                )}
+                                <Button onClick={handleDateFilterApply} variant="primary" className="flex-1" disabled={!startDate && !endDate}>
+                                    Terapkan Filter
                                 </Button>
                             </div>
                         </Dialog.Content>
