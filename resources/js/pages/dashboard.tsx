@@ -128,7 +128,7 @@ function Dashboard() {
     const handlePeriodChange = (value: string) => {
         setFinancePeriod(value);
         router.get(
-            '/dashboard',
+            '/',
             { period: value },
             {
                 preserveState: true,
@@ -163,7 +163,8 @@ function Dashboard() {
             strokeColors: '#fff',
             strokeWidth: 2,
             hover: {
-                size: 7,
+                size: 8,
+                sizeOffset: 3,
             },
         },
         xaxis: {
@@ -174,6 +175,8 @@ function Dashboard() {
                     fontSize: '12px',
                     fontWeight: 500,
                 },
+                rotate: 0,
+                hideOverlappingLabels: true,
             },
             axisBorder: {
                 show: true,
@@ -182,6 +185,38 @@ function Dashboard() {
             axisTicks: {
                 show: true,
                 color: '#e5e7eb',
+            },
+            crosshairs: {
+                show: true,
+                width: 1,
+                position: 'back',
+                opacity: 0.9,
+                stroke: {
+                    color: '#15803d',
+                    width: 2,
+                    dashArray: 4,
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        colorFrom: '#dcfce7',
+                        colorTo: '#bbf7d0',
+                        opacityFrom: 0.6,
+                        opacityTo: 0.3,
+                    },
+                },
+                dropShadow: {
+                    enabled: true,
+                    top: 0,
+                    left: 0,
+                    blur: 1,
+                    opacity: 0.4,
+                    color: '#15803d',
+                },
+            },
+            tooltip: {
+                enabled: true,
+                offsetY: -5,
             },
         },
         yaxis: {
@@ -202,7 +237,6 @@ function Dashboard() {
             },
         },
         tooltip: {
-            theme: 'dark',
             shared: true,
             intersect: false,
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
@@ -210,38 +244,198 @@ function Dashboard() {
                 const expense = series[1][dataPointIndex];
                 const balance = series[2][dataPointIndex];
                 const month = w.globals.labels[dataPointIndex];
+                const netIncome = income - expense;
+                const netPercentage = income > 0 ? ((netIncome / income) * 100).toFixed(1) : 0;
 
                 return `
-                    <div class="px-4 py-3">
-                        <div class="font-semibold mb-2 text-sm">${month}</div>
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="inline-block w-3 h-3 rounded-full" style="background-color: #10b981;"></span>
-                                <span>Pemasukan: <strong>${formatCurrency(income)}</strong></span>
+                    <div style="
+                        background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+                        border-radius: 12px;
+                        overflow: hidden;
+                        padding: 16px;
+                        min-width: 280px;
+                        box-shadow: 0 10px 40px rgba(21, 128, 61, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+                        font-family: 'Poppins', sans-serif;
+                    ">
+                        <!-- Header -->
+                        <div style="
+                            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+                            padding-bottom: 12px;
+                            margin-bottom: 12px;
+                        ">
+                            <div style="
+                                font-size: 15px;
+                                font-weight: 700;
+                                color: #ffffff;
+                                letter-spacing: 0.3px;
+                                text-transform: uppercase;
+                            ">${month}</div>
+                            <div style="
+                                font-size: 11px;
+                                color: #bbf7d0;
+                                margin-top: 2px;
+                                font-weight: 500;
+                            ">Ringkasan Keuangan</div>
+                        </div>
+
+                        <!-- Income -->
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            padding: 8px 0;
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                        ">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="
+                                    width: 8px;
+                                    height: 8px;
+                                    border-radius: 50%;
+                                    background: linear-gradient(135deg, #22c55e, #16a34a);
+                                    box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+                                "></div>
+                                <span style="
+                                    font-size: 12px;
+                                    color: #f0fdf4;
+                                    font-weight: 500;
+                                ">Pemasukan</span>
                             </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="inline-block w-3 h-3 rounded-full" style="background-color: #ef4444;"></span>
-                                <span>Pengeluaran: <strong>${formatCurrency(expense)}</strong></span>
+                            <span style="
+                                font-size: 13px;
+                                font-weight: 700;
+                                color: #bbf7d0;
+                                letter-spacing: 0.3px;
+                            ">${formatCurrency(income)}</span>
+                        </div>
+
+                        <!-- Expense -->
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            padding: 8px 0;
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                        ">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="
+                                    width: 8px;
+                                    height: 8px;
+                                    border-radius: 50%;
+                                    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+                                    box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+                                "></div>
+                                <span style="
+                                    font-size: 12px;
+                                    color: #f0fdf4;
+                                    font-weight: 500;
+                                ">Pengeluaran</span>
                             </div>
-                            <div class="flex items-center gap-2 text-xs border-t border-gray-600 pt-1 mt-1">
-                                <span class="inline-block w-3 h-3 rounded-full" style="background-color: #3b82f6;"></span>
-                                <span>Saldo Tersisa: <strong>${formatCurrency(balance)}</strong></span>
+                            <span style="
+                                font-size: 13px;
+                                font-weight: 700;
+                                color: #fef3c7;
+                                letter-spacing: 0.3px;
+                            ">${formatCurrency(expense)}</span>
+                        </div>
+
+                        <!-- Balance -->
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            padding: 8px 0;
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                        ">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="
+                                    width: 8px;
+                                    height: 8px;
+                                    border-radius: 50%;
+                                    background: linear-gradient(135deg, #86efac, #4ade80);
+                                    box-shadow: 0 0 10px rgba(134, 239, 172, 0.6);
+                                "></div>
+                                <span style="
+                                    font-size: 12px;
+                                    color: #f0fdf4;
+                                    font-weight: 500;
+                                ">Saldo Tersisa</span>
+                            </div>
+                            <span style="
+                                font-size: 13px;
+                                font-weight: 700;
+                                color: #dcfce7;
+                                letter-spacing: 0.3px;
+                            ">${formatCurrency(balance)}</span>
+                        </div>
+
+                        <!-- Net Income Summary -->
+                        <div style="
+                            margin-top: 12px;
+                            padding-top: 12px;
+                            border-top: 2px solid rgba(255, 255, 255, 0.15);
+                            background: rgba(255, 255, 255, 0.08);
+                            border-radius: 8px;
+                            padding: 10px;
+                        ">
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                            ">
+                                <span style="
+                                    font-size: 12px;
+                                    color: #dcfce7;
+                                    font-weight: 600;
+                                    text-transform: uppercase;
+                                    letter-spacing: 0.5px;
+                                ">Net ${netIncome >= 0 ? 'Profit' : 'Loss'}</span>
+                                <div style="text-align: right;">
+                                    <div style="
+                                        font-size: 14px;
+                                        font-weight: 800;
+                                        color: ${netIncome >= 0 ? '#dcfce7' : '#fef3c7'};
+                                        letter-spacing: 0.3px;
+                                    ">${netIncome >= 0 ? '+' : ''}${formatCurrency(netIncome)}</div>
+                                    <div style="
+                                        font-size: 10px;
+                                        color: #bbf7d0;
+                                        margin-top: 2px;
+                                        font-weight: 600;
+                                    ">${netPercentage}% dari pemasukan</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
-            },
-            style: {
-                fontSize: '12px',
             },
         },
         legend: {
             position: 'top',
             horizontalAlign: 'right',
             fontSize: '13px',
-            fontWeight: 500,
+            fontWeight: 600,
+            offsetY: 0,
             itemMargin: {
-                horizontal: 10,
+                horizontal: 12,
+                vertical: 5,
+            },
+            markers: {
+                size: 8,
+                strokeWidth: 2,
+                fillColors: ['#10b981', '#ef4444', '#3b82f6'],
+                shape: 'circle',
+                offsetX: -2,
+                offsetY: 0,
+            },
+            labels: {
+                colors: '#374151',
+                useSeriesColors: false,
+            },
+            onItemClick: {
+                toggleDataSeries: true,
+            },
+            onItemHover: {
+                highlightDataSeries: true,
             },
         },
         grid: {
