@@ -22,147 +22,279 @@ class FinanceSeeder extends Seeder
             return;
         }
 
-        // Data pertama - Pemasukan untuk mengisi remaining_balance
+        // Data 1 - Januari (12 bulan lalu) - SANGAT TINGGI
         Finance::create([
-            'date' => now()->subDays(30),
+            'date' => now()->subMonths(12),
             'type' => 'income',
-            'amount' => 50000000, // 50 juta
-            'remaining_balance' => 50000000,
-            'note' => 'Dana awal kas desa',
+            'amount' => 250000000, // 250 juta - Dana APBD
+            'remaining_balance' => 250000000,
+            'note' => 'Dana APBD tahun anggaran baru',
             'user_id' => $user->id,
             'proof_image' => 'proof_images/initial_fund.jpg',
         ]);
 
-        // Data kedua - Pemasukan lainnya
+        // Data 2 - Februari (11 bulan lalu) - TINGGI
         Finance::create([
-            'date' => now()->subDays(25),
+            'date' => now()->subMonths(11),
             'type' => 'income',
-            'amount' => 15000000, // 15 juta
-            'remaining_balance' => 65000000, // 50jt + 15jt
-            'note' => 'Dana bantuan pemerintah',
+            'amount' => 80000000, // 80 juta
+            'remaining_balance' => 330000000, // 250jt + 80jt
+            'note' => 'Dana bantuan pemerintah pusat',
             'user_id' => $user->id,
             'proof_image' => 'proof_images/government_aid.jpg',
         ]);
 
-        // Data ketiga - Pengeluaran
+        // Data 3 - Februari (11 bulan lalu) - TINGGI
         Finance::create([
-            'date' => now()->subDays(20),
+            'date' => now()->subMonths(11)->addDays(15),
             'type' => 'expense',
-            'amount' => 5000000, // 5 juta
-            'remaining_balance' => 60000000, // 65jt - 5jt
-            'note' => 'Pembangunan jalan desa',
+            'amount' => 120000000, // 120 juta
+            'remaining_balance' => 210000000, // 330jt - 120jt
+            'note' => 'Pembangunan jalan desa sepanjang 2 km',
             'user_id' => $user->id,
             'proof_image' => 'proof_images/road_construction.jpg',
         ]);
 
-        // Data keempat - Pemasukan
+        // Data 4 - Maret (10 bulan lalu) - RENDAH
         Finance::create([
-            'date' => now()->subDays(15),
+            'date' => now()->subMonths(10),
             'type' => 'income',
-            'amount' => 10000000, // 10 juta
-            'remaining_balance' => 70000000, // 60jt + 10jt
+            'amount' => 8000000, // 8 juta
+            'remaining_balance' => 218000000, // 210jt + 8jt
             'note' => 'Retribusi pasar desa',
             'user_id' => $user->id,
             'proof_image' => 'proof_images/market_retribution.jpg',
         ]);
 
-        // Data kelima - Pengeluaran
+        // Data 5 - April (9 bulan lalu) - RENDAH
         Finance::create([
-            'date' => now()->subDays(10),
+            'date' => now()->subMonths(9),
             'type' => 'expense',
-            'amount' => 8000000, // 8 juta
-            'remaining_balance' => 62000000, // 70jt - 8jt
+            'amount' => 3000000, // 3 juta
+            'remaining_balance' => 215000000, // 218jt - 3jt
             'note' => 'Pengadaan alat tulis kantor',
             'user_id' => $user->id,
             'proof_image' => 'proof_images/office_supplies.jpg',
         ]);
 
-        // Data keenam - Pengeluaran
+        // Data 6 - Mei (8 bulan lalu) - SEDANG
         Finance::create([
-            'date' => now()->subDays(5),
+            'date' => now()->subMonths(8),
             'type' => 'expense',
-            'amount' => 3000000, // 3 juta
-            'remaining_balance' => 59000000, // 62jt - 3jt
-            'note' => 'Biaya operasional kantor desa',
+            'amount' => 45000000, // 45 juta
+            'remaining_balance' => 170000000, // 215jt - 45jt
+            'note' => 'Biaya operasional dan gaji perangkat desa',
             'user_id' => $user->id,
             'proof_image' => 'proof_images/operational_cost.jpg',
         ]);
 
-        // Generate 100 more finance data entries with varied dates, types, amounts, notes, and proof images
-        $notes = [
-            'Pembayaran listrik desa',
-            'Penerimaan dana CSR',
-            'Pengeluaran perbaikan balai desa',
-            'Pemasukan hasil sewa tanah desa',
-            'Pengeluaran pelatihan perangkat desa',
-            'Penerimaan donasi masyarakat',
-            'Pengeluaran kegiatan 17 Agustus',
-            'Pemasukan retribusi parkir',
-            'Pengeluaran pembelian bibit pohon',
-            'Penerimaan bantuan provinsi',
-            'Pengeluaran perawatan kendaraan dinas',
-            'Pemasukan hasil panen sawah desa',
-            'Pengeluaran subsidi pupuk',
-            'Penerimaan dana BUMDes',
-            'Pengeluaran pembangunan pos ronda',
-            'Pemasukan hasil lelang desa',
-            'Pengeluaran honor petugas kebersihan',
-            'Penerimaan dana hibah',
-            'Pengeluaran pengadaan komputer',
-            'Pemasukan retribusi air bersih',
-        ];
+        // Data 7 - Juni (7 bulan lalu) - SANGAT TINGGI
+        Finance::create([
+            'date' => now()->subMonths(7),
+            'type' => 'income',
+            'amount' => 200000000, // 200 juta
+            'remaining_balance' => 370000000, // 170jt + 200jt
+            'note' => 'Dana CSR perusahaan besar',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/csr.jpg',
+        ]);
 
-        $proofImages = [
-            'proof_images/electricity.jpg',
-            'proof_images/csr.jpg',
-            'proof_images/repair.jpg',
-            'proof_images/land_rent.jpg',
-            'proof_images/training.jpg',
-            'proof_images/donation.jpg',
-            'proof_images/independence_day.jpg',
-            'proof_images/parking.jpg',
-            'proof_images/tree_seed.jpg',
-            'proof_images/province_aid.jpg',
-            'proof_images/vehicle_maintenance.jpg',
-            'proof_images/harvest.jpg',
-            'proof_images/fertilizer.jpg',
-            'proof_images/bumdes.jpg',
-            'proof_images/security_post.jpg',
-            'proof_images/auction.jpg',
-            'proof_images/cleaning_staff.jpg',
-            'proof_images/grant.jpg',
-            'proof_images/computer.jpg',
-            'proof_images/clean_water.jpg',
-        ];
+        // Data 8 - Juli (6 bulan lalu) - TINGGI
+        Finance::create([
+            'date' => now()->subMonths(6),
+            'type' => 'expense',
+            'amount' => 95000000, // 95 juta
+            'remaining_balance' => 275000000, // 370jt - 95jt
+            'note' => 'Renovasi dan perluasan balai desa',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/repair.jpg',
+        ]);
 
-        $balance = 59000000;
-        $faker = app(\Faker\Generator::class);
+        // Data 9 - Agustus (5 bulan lalu) - SEDANG
+        Finance::create([
+            'date' => now()->subMonths(5),
+            'type' => 'income',
+            'amount' => 35000000, // 35 juta
+            'remaining_balance' => 310000000, // 275jt + 35jt
+            'note' => 'Hasil sewa tanah kas desa',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/land_rent.jpg',
+        ]);
 
-        for ($i = 0; $i < 100; $i++) {
-            // Randomly choose type
-            $type = $faker->randomElement(['income', 'expense']);
-            // Random amount between 1jt and 15jt
-            $amount = $faker->numberBetween(1000000, 15000000);
+        // Data 10 - Agustus (5 bulan lalu) - RENDAH
+        Finance::create([
+            'date' => now()->subMonths(5)->addDays(17),
+            'type' => 'expense',
+            'amount' => 5000000, // 5 juta
+            'remaining_balance' => 305000000, // 310jt - 5jt
+            'note' => 'Perayaan HUT RI ke-80',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/independence_day.jpg',
+        ]);
 
-            if ($type === 'income') {
-                $balance += $amount;
-            } else {
-                // Prevent negative balance
-                if ($balance - $amount < 0) {
-                    $amount = $balance > 0 ? $balance : 0;
-                }
-                $balance -= $amount;
-            }
+        // Data 11 - September (4 bulan lalu) - SEDANG
+        Finance::create([
+            'date' => now()->subMonths(4),
+            'type' => 'expense',
+            'amount' => 60000000, // 60 juta
+            'remaining_balance' => 245000000, // 305jt - 60jt
+            'note' => 'Pembangunan 3 pos ronda',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/security_post.jpg',
+        ]);
 
+        // Data 12 - Oktober (3 bulan lalu) - TINGGI
+        Finance::create([
+            'date' => now()->subMonths(3),
+            'type' => 'income',
+            'amount' => 150000000, // 150 juta
+            'remaining_balance' => 395000000, // 245jt + 150jt
+            'note' => 'Dana hibah provinsi untuk infrastruktur',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/grant.jpg',
+        ]);
+
+        // Data 13 - November (2 bulan lalu) - SEDANG
+        Finance::create([
+            'date' => now()->subMonths(2),
+            'type' => 'expense',
+            'amount' => 28000000, // 28 juta
+            'remaining_balance' => 367000000, // 395jt - 28jt
+            'note' => 'Pengadaan komputer dan printer',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/computer.jpg',
+        ]);
+
+        // Data 14 - November (2 bulan lalu) - TINGGI
+        Finance::create([
+            'date' => now()->subMonths(2)->addDays(15),
+            'type' => 'income',
+            'amount' => 180000000, // 180 juta
+            'remaining_balance' => 547000000, // 367jt + 180jt
+            'note' => 'Dana desa dari kementerian',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/ministry_fund.jpg',
+        ]);
+
+        // Data 15 - November (2 bulan lalu) - TINGGI
+        Finance::create([
+            'date' => now()->subMonths(2)->addDays(25),
+            'type' => 'expense',
+            'amount' => 110000000, // 110 juta
+            'remaining_balance' => 437000000, // 547jt - 110jt
+            'note' => 'Pembangunan gedung PAUD dan posyandu',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/paud_building.jpg',
+        ]);
+
+        // Data 16 - Desember (1 bulan lalu) - RENDAH
+        Finance::create([
+            'date' => now()->subMonths(1),
+            'type' => 'income',
+            'amount' => 12000000, // 12 juta
+            'remaining_balance' => 449000000, // 437jt + 12jt
+            'note' => 'Retribusi dan iuran akhir tahun',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/year_end.jpg',
+        ]);
+
+        // Data 17 - Desember (1 bulan lalu) - TINGGI
+        Finance::create([
+            'date' => now()->subMonths(1)->addDays(10),
+            'type' => 'income',
+            'amount' => 90000000, // 90 juta
+            'remaining_balance' => 539000000, // 449jt + 90jt
+            'note' => 'Dana alokasi khusus infrastruktur',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/special_allocation.jpg',
+        ]);
+
+        // Data 18 - Desember (1 bulan lalu) - TINGGI
+        Finance::create([
+            'date' => now()->subMonths(1)->addDays(20),
+            'type' => 'expense',
+            'amount' => 85000000, // 85 juta
+            'remaining_balance' => 454000000, // 539jt - 85jt
+            'note' => 'Pengaspalan jalan desa dan gorong-gorong',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/road_asphalt.jpg',
+        ]);
+
+        // Data 19 - Januari (bulan ini) - RENDAH
+        Finance::create([
+            'date' => now(),
+            'type' => 'expense',
+            'amount' => 7000000, // 7 juta
+            'remaining_balance' => 447000000, // 454jt - 7jt
+            'note' => 'Perawatan infrastruktur rutin',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/maintenance.jpg',
+        ]);
+
+        // Data 20 - November 2025 (1 bulan ke depan) - TINGGI
+        Finance::create([
+            'date' => now()->addMonths(1),
+            'type' => 'income',
+            'amount' => 175000000, // 175 juta
+            'remaining_balance' => 622000000, // 447jt + 175jt
+            'note' => 'Dana bantuan langsung tunai desa tahun 2025',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/blt_fund_2025.jpg',
+        ]);
+
+        // Data 21 - November 2025 (1 bulan ke depan) - TINGGI
+        Finance::create([
+            'date' => now()->addMonths(1)->addDays(12),
+            'type' => 'expense',
+            'amount' => 130000000, // 130 juta
+            'remaining_balance' => 492000000, // 622jt - 130jt
+            'note' => 'Pembangunan jembatan desa dan drainase',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/bridge_construction.jpg',
+        ]);
+
+        // Data 22 - November 2025 (1 bulan ke depan) - SEDANG
+        Finance::create([
+            'date' => now()->addMonths(1)->addDays(25),
+            'type' => 'income',
+            'amount' => 55000000, // 55 juta
+            'remaining_balance' => 547000000, // 492jt + 55jt
+            'note' => 'Hasil pengelolaan BUMDes',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/bumdes_income.jpg',
+        ]);
+
+        // Data 23 - Desember 2025 (2 bulan ke depan) - TINGGI
+        Finance::create([
+            'date' => now()->addMonths(2),
+            'type' => 'income',
+            'amount' => 220000000, // 220 juta
+            'remaining_balance' => 767000000, // 547jt + 220jt
+            'note' => 'Dana desa tahap akhir tahun anggaran 2025',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/village_fund_final.jpg',
+        ]);
+
+        // Data 24 - Desember 2025 (2 bulan ke depan) - TINGGI
+        Finance::create([
+            'date' => now()->addMonths(2)->addDays(10),
+            'type' => 'expense',
+            'amount' => 160000000, // 160 juta
+            'remaining_balance' => 607000000, // 767jt - 160jt
+            'note' => 'Pembangunan gedung serbaguna dan perpustakaan desa',
+            'user_id' => $user->id,
+            'proof_image' => 'proof_images/multipurpose_building.jpg',
+        ]);
+
+        // Data 25 - Desember 2025 (2 bulan ke depan) - TINGGI
             Finance::create([
-                'date' => now()->subDays(4)->subDays($i + 1),
-                'type' => $type,
-                'amount' => $amount,
-                'remaining_balance' => $balance,
-                'note' => $faker->randomElement($notes),
+            'date' => now()->addMonths(2)->addDays(20),
+            'type' => 'expense',
+            'amount' => 95000000, // 95 juta
+            'remaining_balance' => 512000000, // 607jt - 95jt
+            'note' => 'Pengadaan sistem informasi desa dan digitalisasi',
                 'user_id' => $user->id,
-                'proof_image' => $faker->randomElement($proofImages),
+            'proof_image' => 'proof_images/digitalization.jpg',
             ]);
-        }
     }
 }
