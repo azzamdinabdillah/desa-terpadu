@@ -163,9 +163,13 @@ class FinanceController extends Controller
     {
         $finance = Finance::with(['user.citizen'])->findOrFail($id);
         
-        // Calculate current balance
-        $totalIncome = Finance::where('type', 'income')->sum('amount');
-        $totalExpense = Finance::where('type', 'expense')->sum('amount');
+        // Calculate current balance excluding the record being edited
+        $totalIncome = Finance::where('type', 'income')
+            ->where('id', '!=', $id)
+            ->sum('amount');
+        $totalExpense = Finance::where('type', 'expense')
+            ->where('id', '!=', $id)
+            ->sum('amount');
         $currentBalance = $totalIncome - $totalExpense;
         $users = User::with('citizen:id,full_name')->select('id', 'email', 'citizen_id')->get();
 
