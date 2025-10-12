@@ -1,3 +1,4 @@
+import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import Select from '@/components/Select';
@@ -727,72 +728,36 @@ function Dashboard() {
 
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-green-800">Total Keluarga</p>
-                                    <Home className="h-5 w-5 text-green-800" />
-                                </div>
-                            </div>
-                            <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-green-800">{formatNumber(summaryStats.total_families)}</p>
-                                <p className="mt-1 text-sm text-gray-500">Jumlah kepala keluarga</p>
-                            </div>
-                        </div>
+                        <DetailCard title="Total Keluarga" icon={Home}>
+                            <p className="text-3xl font-bold text-green-800">{formatNumber(summaryStats.total_families)}</p>
+                            <p className="mt-1 text-sm text-gray-500">Jumlah kepala keluarga</p>
+                        </DetailCard>
 
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-green-800">Total Penduduk</p>
-                                    <Users className="h-5 w-5 text-green-800" />
-                                </div>
-                            </div>
-                            <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-green-800">{formatNumber(summaryStats.total_citizens)}</p>
-                                <p className="mt-1 text-sm text-gray-500">Jumlah seluruh warga</p>
-                            </div>
-                        </div>
+                        <DetailCard title="Total Penduduk" icon={Users}>
+                            <p className="text-3xl font-bold text-green-800">{formatNumber(summaryStats.total_citizens)}</p>
+                            <p className="mt-1 text-sm text-gray-500">Jumlah seluruh warga</p>
+                        </DetailCard>
 
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-green-800">Pengguna Aktif</p>
-                                    <UserCheck className="h-5 w-5 text-green-800" />
-                                </div>
-                            </div>
-                            <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-green-800">
-                                    {formatNumber(summaryStats.active_users)}{' '}
-                                    <span className="text-xl text-gray-500">/ {formatNumber(summaryStats.total_users)}</span>
-                                </p>
-                                <p className="mt-1 text-sm text-gray-500">User yang aktif</p>
-                            </div>
-                        </div>
+                        <DetailCard title="Pengguna Aktif" icon={UserCheck}>
+                            <p className="text-3xl font-bold text-green-800">
+                                {formatNumber(summaryStats.active_users)}{' '}
+                                <span className="text-xl text-gray-500">/ {formatNumber(summaryStats.total_users)}</span>
+                            </p>
+                            <p className="mt-1 text-sm text-gray-500">User yang aktif</p>
+                        </DetailCard>
 
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-green-800">Acara Berlangsung</p>
-                                    <Calendar className="h-5 w-5 text-green-800" />
-                                </div>
-                            </div>
-                            <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-green-800">
-                                    {formatNumber(summaryStats.ongoing_events)}{' '}
-                                    <span className="text-xl text-gray-500">/ {formatNumber(summaryStats.total_events)}</span>
-                                </p>
-                                <p className="mt-1 text-sm text-gray-500">Event yang sedang berjalan</p>
-                            </div>
-                        </div>
+                        <DetailCard title="Acara Berlangsung" icon={Calendar}>
+                            <p className="text-3xl font-bold text-green-800">
+                                {formatNumber(summaryStats.ongoing_events)}{' '}
+                                <span className="text-xl text-gray-500">/ {formatNumber(summaryStats.total_events)}</span>
+                            </p>
+                            <p className="mt-1 text-sm text-gray-500">Event yang sedang berjalan</p>
+                        </DetailCard>
                     </div>
 
                     {/* Finance Overview */}
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                        <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                            <h2 className="text-xl font-bold text-green-800">Ringkasan Keuangan</h2>
-                        </div>
-
-                        <div className="space-y-5 p-6">
+                    <DetailCard title="Ringkasan Keuangan" icon={Wallet}>
+                        <div className="space-y-5">
                             <div className="overflow-hidden rounded-xl border border-gray-200 bg-green-700 shadow-md">
                                 <div className="p-6">
                                     <div className="flex items-center justify-between">
@@ -865,12 +830,11 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </DetailCard>
 
-                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                        <div className="border-b border-green-200 bg-green-100 px-6 py-4">
+                    <DetailCard title="Tren Keuangan" icon={TrendingUp}>
+                        <div className="mb-4">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                <h3 className="text-lg font-bold text-green-800">Tren Keuangan</h3>
                                 <div className="w-full sm:w-64">
                                     <Select
                                         label=""
@@ -882,78 +846,55 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="p-6">
-                            <ReactApexChart options={financeTrendOptions} series={financeTrendSeries} type="line" height={320} />
-                        </div>
-                    </div>
+                        <ReactApexChart options={financeTrendOptions} series={financeTrendSeries} type="line" height={320} />
+                    </DetailCard>
 
                     {/* Citizens Statistics */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
-                        <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Jenis Kelamin</h3>
-                            </div>
-                            <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
+                        <DetailCard title="Penduduk Berdasarkan Jenis Kelamin" icon={Users}>
+                            <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByGender)} options={doughnutOptions} />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Marital Status Distribution */}
-                        <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Status Pernikahan</h3>
-                            </div>
-                            <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
+                        <DetailCard title="Penduduk Berdasarkan Status Pernikahan" icon={Users}>
+                            <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByMaritalStatus)} options={doughnutOptions} />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Religion Distribution */}
-                        <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Agama</h3>
-                            </div>
-                            <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
+                        <DetailCard title="Penduduk Berdasarkan Agama" icon={Users}>
+                            <div style={{ minHeight: '300px' }}>
                                 <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
                             </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     {/* Age Distribution & Top Occupations */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Age Distribution */}
-                        <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-bold text-green-800">Distribusi Usia Penduduk</h3>
-                            </div>
-                            <div className="flex-1 p-6" style={{ minHeight: '340px' }}>
+                        <DetailCard title="Distribusi Usia Penduduk" icon={Users}>
+                            <div style={{ minHeight: '340px' }}>
                                 <Bar data={createBarData(ageDistribution)} options={barOptions} />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Top Occupations */}
-                        <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-bold text-green-800">5 Pekerjaan Teratas</h3>
-                            </div>
-                            <div className="flex-1 p-6" style={{ minHeight: '340px' }}>
+                        <DetailCard title="5 Pekerjaan Teratas" icon={Users}>
+                            <div style={{ minHeight: '340px' }}>
                                 <Bar data={createBarData(topOccupations)} options={horizontalBarOptions} />
                             </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     {/* Module Statistics */}
                     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 xl:grid-cols-3">
                         {/* Event Stats */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="h-5 w-5 text-green-800" />
-                                    <h3 className="text-lg font-semibold text-green-800">Status Acara</h3>
-                                </div>
-                            </div>
-                            <div className="space-y-3 p-6">
+                        <DetailCard title="Status Acara" icon={Calendar}>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <Clock className="h-5 w-5 text-green-800" />
@@ -976,17 +917,11 @@ function Dashboard() {
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{eventStats.finished}</span>
                                 </div>
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Asset Stats */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <Building className="h-5 w-5 text-green-800" />
-                                    <h3 className="text-lg font-semibold text-green-800">Kondisi Aset</h3>
-                                </div>
-                            </div>
-                            <div className="space-y-3 p-6">
+                        <DetailCard title="Kondisi Aset" icon={Building}>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <CheckCircle className="h-5 w-5 text-green-800" />
@@ -1009,17 +944,11 @@ function Dashboard() {
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{assetStats.bad}</span>
                                 </div>
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Asset Loan Stats */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <Building className="h-5 w-5 text-green-800" />
-                                    <h3 className="text-lg font-semibold text-green-800">Status Peminjaman Aset</h3>
-                                </div>
-                            </div>
-                            <div className="space-y-3 p-6">
+                        <DetailCard title="Status Peminjaman Aset" icon={Building}>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu Approval</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
@@ -1039,17 +968,11 @@ function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Social Aid Stats */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <HandHeart className="h-5 w-5 text-green-800" />
-                                    <h3 className="text-lg font-semibold text-green-800">Status Program Bantuan Sosial</h3>
-                                </div>
-                            </div>
-                            <div className="space-y-3 p-6">
+                        <DetailCard title="Status Program Bantuan Sosial" icon={HandHeart}>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
@@ -1069,17 +992,11 @@ function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Social Aid by Type */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <HandHeart className="h-5 w-5 text-green-800" />
-                                    <h3 className="text-lg font-semibold text-green-800">Bantuan Sosial per Tipe</h3>
-                                </div>
-                            </div>
-                            <div className="space-y-3 p-6">
+                        <DetailCard title="Bantuan Sosial per Tipe" icon={HandHeart}>
+                            <div className="space-y-3">
                                 {socialAidByType.length === 0 ? (
                                     <p className="text-center text-sm text-gray-500">Belum ada data</p>
                                 ) : (
@@ -1096,17 +1013,11 @@ function Dashboard() {
                                     ))
                                 )}
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Document Application Stats */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
-                                <div className="flex items-center gap-2">
-                                    <FileText className="h-5 w-5 text-green-800" />
-                                    <h3 className="text-lg font-semibold text-green-800">Status Pengajuan Dokumen</h3>
-                                </div>
-                            </div>
-                            <div className="space-y-3 p-6">
+                        <DetailCard title="Status Pengajuan Dokumen" icon={FileText}>
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
@@ -1126,7 +1037,7 @@ function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     {/* Recent Activities */}
