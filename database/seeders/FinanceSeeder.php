@@ -451,15 +451,15 @@ class FinanceSeeder extends Seeder
         ]);
 
         // Desember 2025 - RENDAH
-        $balance -= 490000;
+        $balance += 490000;
         Finance::create([
             'date' => '2025-12-18',
-            'type' => 'expense',
+            'type' => 'income',
             'amount' => 490000,
             'remaining_balance' => $balance,
-            'note' => 'Pemeliharaan dan operasional akhir tahun',
+            'note' => 'Dana operasional akhir tahun',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/maintenance_dec_2025.jpg',
+            'proof_image' => 'proof_images/income_dec_2025.jpg',
         ]);
     }
 }

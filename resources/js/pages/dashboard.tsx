@@ -314,7 +314,7 @@ function Dashboard() {
                             align-items: center;
                             justify-content: space-between;
                             padding: 8px 0;
-                            // border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                         ">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <div style="
@@ -339,7 +339,7 @@ function Dashboard() {
                         </div>
 
                         <!-- Balance -->
-                        <!-- <div style="
+                        <div style="
                             display: flex;
                             align-items: center;
                             justify-content: space-between;
@@ -366,10 +366,10 @@ function Dashboard() {
                                 color: #dcfce7;
                                 letter-spacing: 0.3px;
                             ">${formatCurrency(balance)}</span>
-                        </div> -->
+                        </div>
 
                         <!-- Net Income Summary -->
-                        <!-- <div style="
+                        <div style="
                             margin-top: 12px;
                             padding-top: 12px;
                             border-top: 2px solid rgba(255, 255, 255, 0.15);
@@ -404,7 +404,7 @@ function Dashboard() {
                                     ">${netPercentage}% dari pemasukan</div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                 `;
             },

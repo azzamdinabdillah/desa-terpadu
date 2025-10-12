@@ -201,7 +201,7 @@ class DashboardController extends Controller
             ->where('occupation', '!=', '')
             ->groupBy('occupation')
             ->orderBy('total', 'desc')
-            ->take(3)
+            ->take(5)
             ->get()
             ->map(function ($item) {
                 return [
