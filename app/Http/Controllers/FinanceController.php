@@ -35,7 +35,7 @@ class FinanceController extends Controller
         }
 
         // Order by date descending (newest first)
-        $query->orderBy('date', 'desc');
+        $query->orderBy('id', 'desc');
 
         // Pagination (preserve query string for pagination links)
         $finances = $query->paginate(10)->onEachSide(0)->withQueryString();

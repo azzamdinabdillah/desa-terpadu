@@ -342,12 +342,13 @@ class DashboardController extends Controller
             case 'all':
                 // All time (grouped by year)
                 $firstRecord = Finance::orderBy('date', 'asc')->first();
-                if ($firstRecord) {
+                $lastRecord = Finance::orderBy('date', 'desc')->first();
+                if ($firstRecord && $lastRecord) {
                     $startYear = Carbon::parse($firstRecord->date)->year;
-                    $currentYear = Carbon::now()->year;
+                    $endYear = Carbon::parse($lastRecord->date)->year;
                     $runningBalance = 0;
 
-                    for ($year = $startYear; $year <= $currentYear; $year++) {
+                    for ($year = $startYear; $year <= $endYear; $year++) {
                         $income = Finance::where('type', 'income')
                             ->whereYear('date', $year)
                             ->sum('amount');
