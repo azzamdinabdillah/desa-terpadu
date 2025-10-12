@@ -175,24 +175,24 @@ class DashboardController extends Controller
         // Recent Events
         $recentEvents = Event::with('creator')
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(3)
             ->get();
 
         // Recent Announcements
         $recentAnnouncements = Announcement::orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(3)
             ->get();
 
         // Recent Finance Transactions
         $recentFinanceTransactions = Finance::with('user')
             ->orderBy('date', 'desc')
-            ->take(5)
+            ->take(3)
             ->get();
 
         // Recent Document Applications
         $recentDocumentApplications = ApplicationDocument::with('masterDocument')
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(3)
             ->get();
 
         // Top 5 Occupations
@@ -201,7 +201,7 @@ class DashboardController extends Controller
             ->where('occupation', '!=', '')
             ->groupBy('occupation')
             ->orderBy('total', 'desc')
-            ->take(5)
+            ->take(3)
             ->get()
             ->map(function ($item) {
                 return [

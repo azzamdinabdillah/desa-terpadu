@@ -43,7 +43,7 @@ export const menuItems: MenuItem[] = [
         id: 'dashboard',
         label: 'Dashboard',
         icon: <Home className="h-5 w-5" />,
-        href: '/dashboard',
+        href: '/',
     },
     {
         id: 'finance',

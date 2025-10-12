@@ -520,40 +520,40 @@ function Dashboard() {
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-white">Total Keluarga</p>
-                                    <Home className="h-5 w-5 text-white" />
+                                    <p className="text-sm font-semibold text-green-800">Total Keluarga</p>
+                                    <Home className="h-5 w-5 text-green-800" />
                                 </div>
                             </div>
                             <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-gray-900">{formatNumber(summaryStats.total_families)}</p>
+                                <p className="text-3xl font-bold text-green-800">{formatNumber(summaryStats.total_families)}</p>
                                 <p className="mt-1 text-sm text-gray-500">Jumlah kepala keluarga</p>
                             </div>
                         </div>
 
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-white">Total Penduduk</p>
-                                    <Users className="h-5 w-5 text-white" />
+                                    <p className="text-sm font-semibold text-green-800">Total Penduduk</p>
+                                    <Users className="h-5 w-5 text-green-800" />
                                 </div>
                             </div>
                             <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-gray-900">{formatNumber(summaryStats.total_citizens)}</p>
+                                <p className="text-3xl font-bold text-green-800">{formatNumber(summaryStats.total_citizens)}</p>
                                 <p className="mt-1 text-sm text-gray-500">Jumlah seluruh warga</p>
                             </div>
                         </div>
 
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-white">Pengguna Aktif</p>
-                                    <UserCheck className="h-5 w-5 text-white" />
+                                    <p className="text-sm font-semibold text-green-800">Pengguna Aktif</p>
+                                    <UserCheck className="h-5 w-5 text-green-800" />
                                 </div>
                             </div>
                             <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-gray-900">
+                                <p className="text-3xl font-bold text-green-800">
                                     {formatNumber(summaryStats.active_users)}{' '}
                                     <span className="text-xl text-gray-500">/ {formatNumber(summaryStats.total_users)}</span>
                                 </p>
@@ -562,14 +562,14 @@ function Dashboard() {
                         </div>
 
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-white">Acara Berlangsung</p>
-                                    <Calendar className="h-5 w-5 text-white" />
+                                    <p className="text-sm font-semibold text-green-800">Acara Berlangsung</p>
+                                    <Calendar className="h-5 w-5 text-green-800" />
                                 </div>
                             </div>
                             <div className="px-6 py-5">
-                                <p className="text-3xl font-bold text-gray-900">
+                                <p className="text-3xl font-bold text-green-800">
                                     {formatNumber(summaryStats.ongoing_events)}{' '}
                                     <span className="text-xl text-gray-500">/ {formatNumber(summaryStats.total_events)}</span>
                                 </p>
@@ -580,8 +580,8 @@ function Dashboard() {
 
                     {/* Finance Overview */}
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                        <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                            <h2 className="text-xl font-bold text-gray-900">Ringkasan Keuangan</h2>
+                        <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                            <h2 className="text-xl font-bold text-green-800">Ringkasan Keuangan</h2>
                         </div>
 
                         <div className="space-y-5 p-6">
@@ -601,58 +601,58 @@ function Dashboard() {
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-gray-100 px-4 py-3">
+                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingUp className="h-4 w-4 text-white" />
                                             </div>
-                                            <p className="text-xs font-semibold text-gray-600">Total Pemasukan</p>
+                                            <p className="text-xs font-semibold text-green-800">Total Pemasukan</p>
                                         </div>
                                     </div>
                                     <div className="px-4 py-3">
-                                        <p className="text-xl font-bold text-gray-900">{formatCurrency(financeStats.total_income)}</p>
+                                        <p className="text-xl font-bold text-green-800">{formatCurrency(financeStats.total_income)}</p>
                                     </div>
                                 </div>
 
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-gray-100 px-4 py-3">
+                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingDown className="h-4 w-4 text-white" />
                                             </div>
-                                            <p className="text-xs font-semibold text-gray-600">Total Pengeluaran</p>
+                                            <p className="text-xs font-semibold text-green-800">Total Pengeluaran</p>
                                         </div>
                                     </div>
                                     <div className="px-4 py-3">
-                                        <p className="text-xl font-bold text-gray-900">{formatCurrency(financeStats.total_expense)}</p>
+                                        <p className="text-xl font-bold text-green-800">{formatCurrency(financeStats.total_expense)}</p>
                                     </div>
                                 </div>
 
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-gray-100 px-4 py-3">
+                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingUp className="h-4 w-4 text-white" />
                                             </div>
-                                            <p className="text-xs font-semibold text-gray-600">Pemasukan Bulan Ini</p>
+                                            <p className="text-xs font-semibold text-green-800">Pemasukan Bulan Ini</p>
                                         </div>
                                     </div>
                                     <div className="px-4 py-3">
-                                        <p className="text-xl font-bold text-gray-900">{formatCurrency(financeStats.monthly_income)}</p>
+                                        <p className="text-xl font-bold text-green-800">{formatCurrency(financeStats.monthly_income)}</p>
                                     </div>
                                 </div>
 
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-gray-100 px-4 py-3">
+                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingDown className="h-4 w-4 text-white" />
                                             </div>
-                                            <p className="text-xs font-semibold text-gray-600">Pengeluaran Bulan Ini</p>
+                                            <p className="text-xs font-semibold text-green-800">Pengeluaran Bulan Ini</p>
                                         </div>
                                     </div>
                                     <div className="px-4 py-3">
-                                        <p className="text-xl font-bold text-gray-900">{formatCurrency(financeStats.monthly_expense)}</p>
+                                        <p className="text-xl font-bold text-green-800">{formatCurrency(financeStats.monthly_expense)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -660,9 +660,9 @@ function Dashboard() {
                     </div>
 
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                        <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
+                        <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                <h3 className="text-lg font-bold text-gray-900">Tren Keuangan</h3>
+                                <h3 className="text-lg font-bold text-green-800">Tren Keuangan</h3>
                                 <div className="w-full sm:w-64">
                                     <Select
                                         label=""
@@ -683,8 +683,8 @@ function Dashboard() {
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                                <h3 className="text-lg font-bold text-gray-900">Penduduk Berdasarkan Jenis Kelamin</h3>
+                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Jenis Kelamin</h3>
                             </div>
                             <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByGender)} options={doughnutOptions} />
@@ -693,8 +693,8 @@ function Dashboard() {
 
                         {/* Marital Status Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                                <h3 className="text-lg font-bold text-gray-900">Penduduk Berdasarkan Status Pernikahan</h3>
+                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Status Pernikahan</h3>
                             </div>
                             <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByMaritalStatus)} options={doughnutOptions} />
@@ -703,8 +703,8 @@ function Dashboard() {
 
                         {/* Religion Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                                <h3 className="text-lg font-bold text-gray-900">Penduduk Berdasarkan Agama</h3>
+                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Agama</h3>
                             </div>
                             <div className="flex-1 p-6 pl-2" style={{ minHeight: '300px' }}>
                                 <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
@@ -716,8 +716,8 @@ function Dashboard() {
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Age Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                                <h3 className="text-lg font-bold text-gray-900">Distribusi Usia Penduduk</h3>
+                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-bold text-green-800">Distribusi Usia Penduduk</h3>
                             </div>
                             <div className="flex-1 p-6" style={{ minHeight: '340px' }}>
                                 <Bar data={createBarData(ageDistribution)} options={barOptions} />
@@ -726,8 +726,8 @@ function Dashboard() {
 
                         {/* Top Occupations */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                                <h3 className="text-lg font-bold text-gray-900">5 Pekerjaan Teratas</h3>
+                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-bold text-green-800">5 Pekerjaan Teratas</h3>
                             </div>
                             <div className="flex-1 p-6 pl-2" style={{ minHeight: '340px' }}>
                                 <Bar data={createBarData(topOccupations)} options={horizontalBarOptions} />
@@ -739,30 +739,30 @@ function Dashboard() {
                     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 xl:grid-cols-3">
                         {/* Event Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center gap-2">
-                                    <Calendar className="h-5 w-5 text-white" />
-                                    <h3 className="text-lg font-semibold text-white">Status Acara</h3>
+                                    <Calendar className="h-5 w-5 text-green-800" />
+                                    <h3 className="text-lg font-semibold text-green-800">Status Acara</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <div className="flex items-center gap-2">
-                                        <Clock className="h-5 w-5 text-gray-600" />
+                                        <Clock className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{eventStats.pending}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <div className="flex items-center gap-2">
-                                        <AlertCircle className="h-5 w-5 text-gray-600" />
+                                        <AlertCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Berlangsung</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{eventStats.ongoing}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <div className="flex items-center gap-2">
-                                        <CheckCircle className="h-5 w-5 text-gray-600" />
+                                        <CheckCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Selesai</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{eventStats.finished}</span>
@@ -772,30 +772,30 @@ function Dashboard() {
 
                         {/* Asset Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center gap-2">
-                                    <Building className="h-5 w-5 text-white" />
-                                    <h3 className="text-lg font-semibold text-white">Kondisi Aset</h3>
+                                    <Building className="h-5 w-5 text-green-800" />
+                                    <h3 className="text-lg font-semibold text-green-800">Kondisi Aset</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <div className="flex items-center gap-2">
-                                        <CheckCircle className="h-5 w-5 text-gray-600" />
+                                        <CheckCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Baik</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{assetStats.good}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <div className="flex items-center gap-2">
-                                        <AlertCircle className="h-5 w-5 text-gray-600" />
+                                        <AlertCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Sedang</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{assetStats.fair}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <div className="flex items-center gap-2">
-                                        <XCircle className="h-5 w-5 text-gray-600" />
+                                        <XCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Buruk</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{assetStats.bad}</span>
@@ -805,26 +805,26 @@ function Dashboard() {
 
                         {/* Asset Loan Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center gap-2">
-                                    <Building className="h-5 w-5 text-white" />
-                                    <h3 className="text-lg font-semibold text-white">Status Peminjaman Aset</h3>
+                                    <Building className="h-5 w-5 text-green-800" />
+                                    <h3 className="text-lg font-semibold text-green-800">Status Peminjaman Aset</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu Approval</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {assetLoanStats.waiting_approval}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Dipinjam</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {assetLoanStats.on_loan}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Dikembalikan</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {assetLoanStats.returned}
@@ -835,26 +835,26 @@ function Dashboard() {
 
                         {/* Social Aid Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center gap-2">
-                                    <HandHeart className="h-5 w-5 text-white" />
-                                    <h3 className="text-lg font-semibold text-white">Status Program Bantuan Sosial</h3>
+                                    <HandHeart className="h-5 w-5 text-green-800" />
+                                    <h3 className="text-lg font-semibold text-green-800">Status Program Bantuan Sosial</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {socialAidStats.pending}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Berlangsung</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {socialAidStats.ongoing}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Selesai</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {socialAidStats.completed}
@@ -864,40 +864,51 @@ function Dashboard() {
                         </div>
 
                         {/* Social Aid by Type */}
-                        <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-700 px-6 py-4">
+                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center gap-2">
-                                    <HandHeart className="h-5 w-5 text-white" />
-                                    <h3 className="text-lg font-semibold text-white">Bantuan Sosial per Tipe</h3>
+                                    <HandHeart className="h-5 w-5 text-green-800" />
+                                    <h3 className="text-lg font-semibold text-green-800">Bantuan Sosial per Tipe</h3>
                                 </div>
                             </div>
-                            <div className="flex-1 p-6" style={{ minHeight: '280px' }}>
-                                <Doughnut data={createDoughnutData(socialAidByType)} options={doughnutOptions} />
+                            <div className="space-y-3 p-6">
+                                {socialAidByType.length === 0 ? (
+                                    <p className="text-center text-sm text-gray-500">Belum ada data</p>
+                                ) : (
+                                    socialAidByType.map((item) => (
+                                        <div key={item.name} className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                            <span className="text-sm font-medium text-gray-700">{item.name}</span>
+                                            <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
+                                                {formatNumber(item.value)}
+                                            </span>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
 
                         {/* Document Application Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-700 px-6 py-4">
+                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
                                 <div className="flex items-center gap-2">
-                                    <FileText className="h-5 w-5 text-white" />
-                                    <h3 className="text-lg font-semibold text-white">Status Pengajuan Dokumen</h3>
+                                    <FileText className="h-5 w-5 text-green-800" />
+                                    <h3 className="text-lg font-semibold text-green-800">Status Pengajuan Dokumen</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {documentApplicationStats.pending}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Diproses</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {documentApplicationStats.on_proccess}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
+                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
                                     <span className="text-sm font-medium text-gray-700">Selesai</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {documentApplicationStats.completed}
@@ -911,9 +922,9 @@ function Dashboard() {
                     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
                         {/* Recent Events */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-700 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-white">Acara Terbaru</h3>
-                                <a href="/events" className="text-sm text-white hover:text-green-100">
+                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-semibold text-green-800">Acara Terbaru</h3>
+                                <a href="/events" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
                             </div>
@@ -925,8 +936,8 @@ function Dashboard() {
                                         <div key={event.id} className="rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md">
                                             <div className="flex items-start justify-between">
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900">{event.event_name}</h4>
-                                                    <p className="text-xs text-gray-600">{event.location}</p>
+                                                    <h4 className="font-semibold text-green-800">{event.event_name}</h4>
+                                                    <p className="text-xs text-green-800">{event.location}</p>
                                                     <p className="mt-1 text-xs text-gray-500">
                                                         {new Date(event.date_start).toLocaleDateString('id-ID')}
                                                     </p>
@@ -936,7 +947,7 @@ function Dashboard() {
                                                         event.status === 'ongoing'
                                                             ? 'bg-blue-100 text-blue-800'
                                                             : event.status === 'finished'
-                                                              ? 'bg-green-100 text-green-800'
+                                                              ? 'bg-green-100 border-b border-green-200 text-green-800'
                                                               : 'bg-yellow-100 text-yellow-800'
                                                     }`}
                                                 >
@@ -955,9 +966,9 @@ function Dashboard() {
 
                         {/* Recent Announcements */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-700 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-white">Pengumuman Terbaru</h3>
-                                <a href="/announcement" className="text-sm text-white hover:text-green-100">
+                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-semibold text-green-800">Pengumuman Terbaru</h3>
+                                <a href="/announcement" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
                             </div>
@@ -970,8 +981,8 @@ function Dashboard() {
                                             key={announcement.id}
                                             className="rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md"
                                         >
-                                            <h4 className="font-semibold text-gray-900">{announcement.title}</h4>
-                                            <p className="mt-1 line-clamp-2 text-sm text-gray-600">{announcement.description}</p>
+                                            <h4 className="font-semibold text-green-800">{announcement.title}</h4>
+                                            <p className="mt-1 line-clamp-2 text-sm text-green-800">{announcement.description}</p>
                                             <p className="mt-2 text-xs text-gray-500">
                                                 {new Date(announcement.created_at).toLocaleDateString('id-ID')}
                                             </p>
@@ -983,9 +994,9 @@ function Dashboard() {
 
                         {/* Recent Finance Transactions */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-700 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-white">Transaksi Keuangan Terbaru</h3>
-                                <a href="/finance" className="text-sm text-white hover:text-green-100">
+                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-semibold text-green-800">Transaksi Keuangan Terbaru</h3>
+                                <a href="/finance" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
                             </div>
@@ -999,7 +1010,7 @@ function Dashboard() {
                                             className="flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md"
                                         >
                                             <div>
-                                                <p className="text-sm font-medium text-gray-900">{transaction.note || 'Transaksi'}</p>
+                                                <p className="text-sm font-medium text-green-800">{transaction.note || 'Transaksi'}</p>
                                                 <p className="text-xs text-gray-500">{new Date(transaction.date).toLocaleDateString('id-ID')}</p>
                                             </div>
                                             <div className="text-right">
@@ -1018,9 +1029,9 @@ function Dashboard() {
 
                         {/* Recent Document Applications */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-700 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-white">Pengajuan Dokumen Terbaru</h3>
-                                <a href="/document-applications" className="text-sm text-white hover:text-green-100">
+                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                                <h3 className="text-lg font-semibold text-green-800">Pengajuan Dokumen Terbaru</h3>
+                                <a href="/document-applications" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
                             </div>
@@ -1032,8 +1043,8 @@ function Dashboard() {
                                         <div key={application.id} className="rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md">
                                             <div className="flex items-start justify-between">
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900">{application.master_document.document_name}</h4>
-                                                    <p className="text-xs text-gray-600">NIK: {application.nik}</p>
+                                                    <h4 className="font-semibold text-green-800">{application.master_document.document_name}</h4>
+                                                    <p className="text-xs text-green-800">NIK: {application.nik}</p>
                                                     <p className="mt-1 text-xs text-gray-500">
                                                         {new Date(application.created_at).toLocaleDateString('id-ID')}
                                                     </p>
@@ -1041,7 +1052,7 @@ function Dashboard() {
                                                 <span
                                                     className={`rounded-full px-2 py-1 text-xs font-medium ${
                                                         application.status === 'completed'
-                                                            ? 'bg-green-100 text-green-800'
+                                                            ? 'bg-green-100 border-b border-green-200 text-green-800'
                                                             : application.status === 'on_proccess'
                                                               ? 'bg-blue-100 text-blue-800'
                                                               : application.status === 'rejected'
