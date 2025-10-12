@@ -115,6 +115,14 @@ class FinanceController extends Controller
             $currentBalance = $totalIncome - $totalExpense;
             
             $newAmount = $request->amount;
+            
+            // Validate that expense does not exceed current balance
+            if ($request->type === 'expense' && $newAmount > $currentBalance) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['amount' => 'Nominal pengeluaran tidak boleh melebihi saldo yang tersedia (Rp ' . number_format($currentBalance, 0, ',', '.') . ')']);
+            }
+            
             if ($request->type === 'income') {
                 $remainingBalance = $currentBalance + $newAmount;
             } else {
@@ -206,12 +214,24 @@ class FinanceController extends Controller
         ]);
 
         try {
-            // Calculate remaining balance
-            $totalIncome = Finance::where('type', 'income')->sum('amount');
-            $totalExpense = Finance::where('type', 'expense')->sum('amount');
+            // Calculate current balance excluding the record being updated
+            $totalIncome = Finance::where('type', 'income')
+                ->where('id', '!=', $id)
+                ->sum('amount');
+            $totalExpense = Finance::where('type', 'expense')
+                ->where('id', '!=', $id)
+                ->sum('amount');
             $currentBalance = $totalIncome - $totalExpense;
             
             $newAmount = $request->amount;
+            
+            // Validate that expense does not exceed current balance
+            if ($request->type === 'expense' && $newAmount > $currentBalance) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['amount' => 'Nominal pengeluaran tidak boleh melebihi saldo yang tersedia (Rp ' . number_format($currentBalance, 0, ',', '.') . ')']);
+            }
+            
             if ($request->type === 'income') {
                 $remainingBalance = $currentBalance + $newAmount;
             } else {
