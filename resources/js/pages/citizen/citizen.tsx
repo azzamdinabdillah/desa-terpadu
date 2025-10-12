@@ -9,10 +9,10 @@ import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
-import { formatDate, getGenderLabel } from '@/lib/utils';
+import { formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Edit, Eye, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
+import { Award, Briefcase, Calendar, Edit, Eye, Heart, Home, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface CitizenPageProps {
@@ -168,12 +168,32 @@ function CitizenPage() {
                 ),
             },
             {
+                key: 'occupation',
+                header: 'Pekerjaan',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Briefcase className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.occupation || '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'position',
+                header: 'Jabatan',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Award className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.position || '-'}</span>
+                    </div>
+                ),
+            },
+            {
                 key: 'email',
                 header: 'Email',
                 className: 'whitespace-nowrap',
-                cell: (item: CitizenType) => (
-                    <span className="text-sm text-green-900">{item.email || '-'}</span>
-                ),
+                cell: (item: CitizenType) => <span className="text-sm text-green-900">{item.email || '-'}</span>,
             },
             {
                 key: 'phone_number',
@@ -193,6 +213,34 @@ function CitizenPage() {
                     <div className="flex items-center gap-2">
                         <MapPin className="h-4 w-4 flex-shrink-0 text-green-600" />
                         <span className="max-w-xs truncate text-sm text-green-900">{item.address || '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'religion',
+                header: 'Agama',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => <span className="text-sm text-green-900">{item.religion ? getReligionLabel(item.religion) : '-'}</span>,
+            },
+            {
+                key: 'marital_status',
+                header: 'Status Perkawinan',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Heart className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.marital_status ? getMaritalStatusLabel(item.marital_status) : '-'}</span>
+                    </div>
+                ),
+            },
+            {
+                key: 'status',
+                header: 'Status dalam Keluarga',
+                className: 'whitespace-nowrap',
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Home className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.status ? getStatusLabel(item.status) : '-'}</span>
                     </div>
                 ),
             },

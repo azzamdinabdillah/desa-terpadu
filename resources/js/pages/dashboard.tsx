@@ -401,6 +401,13 @@ function Dashboard() {
                         weight: 500,
                     },
                     color: '#6b7280',
+                    stepSize: 1,
+                    callback: function (value: any) {
+                        if (Number.isInteger(value)) {
+                            return value;
+                        }
+                        return null;
+                    },
                 },
                 grid: {
                     color: 'rgba(229, 231, 235, 0.5)',
@@ -472,6 +479,13 @@ function Dashboard() {
                         weight: 500,
                     },
                     color: '#6b7280',
+                    stepSize: 1,
+                    callback: function (value: any) {
+                        if (Number.isInteger(value)) {
+                            return value;
+                        }
+                        return null;
+                    },
                 },
                 grid: {
                     color: 'rgba(229, 231, 235, 0.5)',
@@ -520,7 +534,7 @@ function Dashboard() {
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center justify-between">
                                     <p className="text-sm font-semibold text-green-800">Total Keluarga</p>
                                     <Home className="h-5 w-5 text-green-800" />
@@ -533,7 +547,7 @@ function Dashboard() {
                         </div>
 
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center justify-between">
                                     <p className="text-sm font-semibold text-green-800">Total Penduduk</p>
                                     <Users className="h-5 w-5 text-green-800" />
@@ -546,7 +560,7 @@ function Dashboard() {
                         </div>
 
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center justify-between">
                                     <p className="text-sm font-semibold text-green-800">Pengguna Aktif</p>
                                     <UserCheck className="h-5 w-5 text-green-800" />
@@ -562,7 +576,7 @@ function Dashboard() {
                         </div>
 
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center justify-between">
                                     <p className="text-sm font-semibold text-green-800">Acara Berlangsung</p>
                                     <Calendar className="h-5 w-5 text-green-800" />
@@ -580,7 +594,7 @@ function Dashboard() {
 
                     {/* Finance Overview */}
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                        <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                        <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                             <h2 className="text-xl font-bold text-green-800">Ringkasan Keuangan</h2>
                         </div>
 
@@ -601,7 +615,7 @@ function Dashboard() {
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
+                                    <div className="border-b border-green-200 bg-green-100 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingUp className="h-4 w-4 text-white" />
@@ -615,7 +629,7 @@ function Dashboard() {
                                 </div>
 
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
+                                    <div className="border-b border-green-200 bg-green-100 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingDown className="h-4 w-4 text-white" />
@@ -629,7 +643,7 @@ function Dashboard() {
                                 </div>
 
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
+                                    <div className="border-b border-green-200 bg-green-100 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingUp className="h-4 w-4 text-white" />
@@ -643,7 +657,7 @@ function Dashboard() {
                                 </div>
 
                                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                                    <div className="bg-green-100 border-b border-green-200 px-4 py-3">
+                                    <div className="border-b border-green-200 bg-green-100 px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             <div className="rounded-lg bg-green-700 p-2">
                                                 <TrendingDown className="h-4 w-4 text-white" />
@@ -660,7 +674,7 @@ function Dashboard() {
                     </div>
 
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                        <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                        <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <h3 className="text-lg font-bold text-green-800">Tren Keuangan</h3>
                                 <div className="w-full sm:w-64">
@@ -683,7 +697,7 @@ function Dashboard() {
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Jenis Kelamin</h3>
                             </div>
                             <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
@@ -693,7 +707,7 @@ function Dashboard() {
 
                         {/* Marital Status Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Status Pernikahan</h3>
                             </div>
                             <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
@@ -703,10 +717,10 @@ function Dashboard() {
 
                         {/* Religion Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-bold text-green-800">Penduduk Berdasarkan Agama</h3>
                             </div>
-                            <div className="flex-1 p-6 pl-2" style={{ minHeight: '300px' }}>
+                            <div className="flex-1 p-6" style={{ minHeight: '300px' }}>
                                 <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
                             </div>
                         </div>
@@ -716,7 +730,7 @@ function Dashboard() {
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Age Distribution */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-bold text-green-800">Distribusi Usia Penduduk</h3>
                             </div>
                             <div className="flex-1 p-6" style={{ minHeight: '340px' }}>
@@ -726,10 +740,10 @@ function Dashboard() {
 
                         {/* Top Occupations */}
                         <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="border-b border-gray-200 bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-bold text-green-800">5 Pekerjaan Teratas</h3>
                             </div>
-                            <div className="flex-1 p-6 pl-2" style={{ minHeight: '340px' }}>
+                            <div className="flex-1 p-6" style={{ minHeight: '340px' }}>
                                 <Bar data={createBarData(topOccupations)} options={horizontalBarOptions} />
                             </div>
                         </div>
@@ -739,28 +753,28 @@ function Dashboard() {
                     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 xl:grid-cols-3">
                         {/* Event Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <Calendar className="h-5 w-5 text-green-800" />
                                     <h3 className="text-lg font-semibold text-green-800">Status Acara</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <Clock className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{eventStats.pending}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <AlertCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Berlangsung</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{eventStats.ongoing}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <CheckCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Selesai</span>
@@ -772,28 +786,28 @@ function Dashboard() {
 
                         {/* Asset Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <Building className="h-5 w-5 text-green-800" />
                                     <h3 className="text-lg font-semibold text-green-800">Kondisi Aset</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <CheckCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Baik</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{assetStats.good}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <AlertCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Sedang</span>
                                     </div>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">{assetStats.fair}</span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <div className="flex items-center gap-2">
                                         <XCircle className="h-5 w-5 text-green-800" />
                                         <span className="text-sm font-medium text-gray-700">Buruk</span>
@@ -805,26 +819,26 @@ function Dashboard() {
 
                         {/* Asset Loan Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <Building className="h-5 w-5 text-green-800" />
                                     <h3 className="text-lg font-semibold text-green-800">Status Peminjaman Aset</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu Approval</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {assetLoanStats.waiting_approval}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Dipinjam</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {assetLoanStats.on_loan}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Dikembalikan</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {assetLoanStats.returned}
@@ -835,26 +849,26 @@ function Dashboard() {
 
                         {/* Social Aid Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <HandHeart className="h-5 w-5 text-green-800" />
                                     <h3 className="text-lg font-semibold text-green-800">Status Program Bantuan Sosial</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {socialAidStats.pending}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Berlangsung</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {socialAidStats.ongoing}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Selesai</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {socialAidStats.completed}
@@ -865,7 +879,7 @@ function Dashboard() {
 
                         {/* Social Aid by Type */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <HandHeart className="h-5 w-5 text-green-800" />
                                     <h3 className="text-lg font-semibold text-green-800">Bantuan Sosial per Tipe</h3>
@@ -876,7 +890,10 @@ function Dashboard() {
                                     <p className="text-center text-sm text-gray-500">Belum ada data</p>
                                 ) : (
                                     socialAidByType.map((item) => (
-                                        <div key={item.name} className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                        <div
+                                            key={item.name}
+                                            className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3"
+                                        >
                                             <span className="text-sm font-medium text-gray-700">{item.name}</span>
                                             <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                                 {formatNumber(item.value)}
@@ -889,26 +906,26 @@ function Dashboard() {
 
                         {/* Document Application Stats */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="border-b border-green-200 bg-green-100 px-6 py-4">
                                 <div className="flex items-center gap-2">
                                     <FileText className="h-5 w-5 text-green-800" />
                                     <h3 className="text-lg font-semibold text-green-800">Status Pengajuan Dokumen</h3>
                                 </div>
                             </div>
                             <div className="space-y-3 p-6">
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {documentApplicationStats.pending}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Diproses</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {documentApplicationStats.on_proccess}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg bg-green-100 border-b border-green-200 p-3">
+                                <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Selesai</span>
                                     <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-bold text-gray-800">
                                         {documentApplicationStats.completed}
@@ -922,7 +939,7 @@ function Dashboard() {
                     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
                         {/* Recent Events */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-semibold text-green-800">Acara Terbaru</h3>
                                 <a href="/events" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
@@ -947,7 +964,7 @@ function Dashboard() {
                                                         event.status === 'ongoing'
                                                             ? 'bg-blue-100 text-blue-800'
                                                             : event.status === 'finished'
-                                                              ? 'bg-green-100 border-b border-green-200 text-green-800'
+                                                              ? 'border-b border-green-200 bg-green-100 text-green-800'
                                                               : 'bg-yellow-100 text-yellow-800'
                                                     }`}
                                                 >
@@ -966,7 +983,7 @@ function Dashboard() {
 
                         {/* Recent Announcements */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-semibold text-green-800">Pengumuman Terbaru</h3>
                                 <a href="/announcement" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
@@ -994,7 +1011,7 @@ function Dashboard() {
 
                         {/* Recent Finance Transactions */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-semibold text-green-800">Transaksi Keuangan Terbaru</h3>
                                 <a href="/finance" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
@@ -1029,7 +1046,7 @@ function Dashboard() {
 
                         {/* Recent Document Applications */}
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between bg-green-100 border-b border-green-200 px-6 py-4">
+                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
                                 <h3 className="text-lg font-semibold text-green-800">Pengajuan Dokumen Terbaru</h3>
                                 <a href="/document-applications" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
@@ -1052,7 +1069,7 @@ function Dashboard() {
                                                 <span
                                                     className={`rounded-full px-2 py-1 text-xs font-medium ${
                                                         application.status === 'completed'
-                                                            ? 'bg-green-100 border-b border-green-200 text-green-800'
+                                                            ? 'border-b border-green-200 bg-green-100 text-green-800'
                                                             : application.status === 'on_proccess'
                                                               ? 'bg-blue-100 text-blue-800'
                                                               : application.status === 'rejected'
