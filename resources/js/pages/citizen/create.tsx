@@ -32,6 +32,7 @@ function CreateCitizenPage() {
     const { data, setData, post, processing } = useForm({
         full_name: citizen?.full_name || '',
         nik: citizen?.nik || '',
+        email: citizen?.email || '',
         phone_number: citizen?.phone_number || '',
         address: citizen?.address || '',
         date_of_birth: citizen?.date_of_birth ? citizen.date_of_birth.slice(0, 10) : '',
@@ -160,6 +161,15 @@ function CreateCitizenPage() {
                                     value={data.nik}
                                     onChange={(value) => setData('nik', value)}
                                     placeholder="Masukkan NIK (16 digit)"
+                                    required
+                                />
+
+                                <InputField
+                                    label="Email"
+                                    type="email"
+                                    value={data.email}
+                                    onChange={(value) => setData('email', value)}
+                                    placeholder="Masukkan email"
                                     required
                                 />
 

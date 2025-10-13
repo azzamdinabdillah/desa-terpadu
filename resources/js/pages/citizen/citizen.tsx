@@ -13,7 +13,7 @@ import { useAuth } from '@/lib/auth';
 import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Award, Briefcase, Calendar, Edit, Eye, Heart, Home, IdCard, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
+import { Award, Briefcase, Calendar, Edit, Eye, Heart, Home, IdCard, Mail, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface CitizenPageProps {
@@ -222,7 +222,12 @@ function CitizenPage() {
                 key: 'email',
                 header: 'Email',
                 className: 'whitespace-nowrap',
-                cell: (item: CitizenType) => <span className="text-sm text-green-900">{item.email || '-'}</span>,
+                cell: (item: CitizenType) => (
+                    <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-900">{item.email || '-'}</span>
+                    </div>
+                ),
             },
             {
                 key: 'phone_number',

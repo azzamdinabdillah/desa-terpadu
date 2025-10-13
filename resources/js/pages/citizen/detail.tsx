@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth';
 import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { Head, router } from '@inertiajs/react';
-import { Briefcase, Calendar, CreditCard, Heart, Home, MapPin, Phone, User, Users } from 'lucide-react';
+import { Briefcase, Calendar, CreditCard, Heart, Home, Mail, MapPin, Phone, User, Users } from 'lucide-react';
 import React from 'react';
 
 interface Props {
@@ -56,6 +56,12 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                             <User className="h-4 w-4 text-green-600" />
                                             <span className="font-medium text-gray-700">{getGenderLabel(citizen.gender || '')}</span>
                                         </div>
+                                        {citizen.email && (
+                                            <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-sm">
+                                                <Mail className="h-4 w-4 text-green-600" />
+                                                <span className="font-medium text-gray-700">{citizen.email}</span>
+                                            </div>
+                                        )}
                                         {citizen.phone_number && (
                                             <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-sm">
                                                 <Phone className="h-4 w-4 text-green-600" />
@@ -73,6 +79,8 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                 <div className="space-y-3">
                                     {isAdmin && <DetailItem icon={CreditCard} label="NIK" value={citizen.nik} />}
                                     <DetailItem icon={Calendar} label="Tanggal Lahir" value={formatDate(citizen.date_of_birth || '')} />
+                                    {citizen.email && <DetailItem icon={Mail} label="Email" value={citizen.email} />}
+                                    {citizen.phone_number && <DetailItem icon={Phone} label="Nomor Telepon" value={citizen.phone_number} />}
                                     <DetailItem icon={Heart} label="Agama" value={getReligionLabel(citizen.religion || '')} />
                                     <DetailItem
                                         icon={Users}

@@ -68,6 +68,7 @@ class CitizenController extends Controller
             $validated = $request->validate([
                 'full_name' => 'required|string|max:255',
                 'nik' => 'required|string|size:16|unique:citizens,nik',
+                'email' => 'required|email|max:255|unique:citizens,email',
                 'phone_number' => 'nullable|string|max:20',
                 'address' => 'required|string|max:500',
                 'date_of_birth' => 'required|date',
@@ -85,6 +86,10 @@ class CitizenController extends Controller
                 'nik.required' => 'NIK wajib diisi.',
                 'nik.size' => 'NIK harus terdiri dari 16 digit.',
                 'nik.unique' => 'NIK sudah terdaftar dalam sistem.',
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.max' => 'Email maksimal 255 karakter.',
+                'email.unique' => 'Email sudah terdaftar dalam sistem.',
                 'phone_number.max' => 'Nomor telepon maksimal 20 karakter.',
                 'address.required' => 'Alamat wajib diisi.',
                 'address.max' => 'Alamat maksimal 500 karakter.',
@@ -124,6 +129,7 @@ class CitizenController extends Controller
             $citizen = new Citizen();
             $citizen->full_name = $validated['full_name'];
             $citizen->nik = $validated['nik'];
+            $citizen->email = $validated['email'];
             $citizen->phone_number = $validated['phone_number'];
             $citizen->address = $validated['address'];
             $citizen->date_of_birth = $validated['date_of_birth'];
@@ -173,6 +179,7 @@ class CitizenController extends Controller
             $validated = $request->validate([
                 'full_name' => 'required|string|max:255',
                 'nik' => 'required|string|size:16|unique:citizens,nik,' . $citizen->id,
+                'email' => 'required|email|max:255|unique:citizens,email,' . $citizen->id,
                 'phone_number' => 'nullable|string|max:20',
                 'address' => 'required|string|max:500',
                 'date_of_birth' => 'required|date',
@@ -190,6 +197,10 @@ class CitizenController extends Controller
                 'nik.required' => 'NIK wajib diisi.',
                 'nik.size' => 'NIK harus terdiri dari 16 digit.',
                 'nik.unique' => 'NIK sudah terdaftar dalam sistem.',
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.max' => 'Email maksimal 255 karakter.',
+                'email.unique' => 'Email sudah terdaftar dalam sistem.',
                 'phone_number.max' => 'Nomor telepon maksimal 20 karakter.',
                 'address.required' => 'Alamat wajib diisi.',
                 'address.max' => 'Alamat maksimal 500 karakter.',
@@ -229,6 +240,7 @@ class CitizenController extends Controller
 
             $citizen->full_name = $validated['full_name'];
             $citizen->nik = $validated['nik'];
+            $citizen->email = $validated['email'];
             $citizen->phone_number = $validated['phone_number'];
             $citizen->address = $validated['address'];
             $citizen->date_of_birth = $validated['date_of_birth'];
