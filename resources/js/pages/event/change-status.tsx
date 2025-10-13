@@ -1,5 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -8,7 +10,7 @@ import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { EventType } from '@/types/event/eventType';
 import { Head, router, usePage } from '@inertiajs/react';
-import { AlertCircle, Clock, FileText, Image as ImageIcon, MapPin, Save, Upload, Users, X } from 'lucide-react';
+import { AlertCircle, Calendar, Clock, FileText, Image as ImageIcon, Info, MapPin, Save, Upload, Users, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface ChangeStatusProps {
@@ -152,8 +154,7 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                         {/* Event Info */}
                         <div className="space-y-6 lg:col-span-1">
-                            <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                                <h3 className="mb-4 text-lg font-semibold text-green-900">Informasi Event</h3>
+                            <DetailCard title="Informasi Event" icon={Info}>
                                 {event.flyer ? (
                                     <div className="mb-4 flex justify-center">
                                         <img
@@ -184,47 +185,27 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <div className="flex items-center space-x-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                                <MapPin className="h-5 w-5 text-green-600" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-green-900">Lokasi</h4>
-                                                <p className="text-green-700">{event.location}</p>
-                                            </div>
-                                        </div>
+                                        <DetailItem icon={MapPin} label="Lokasi" value={event.location} />
 
-                                        <div className="flex items-center space-x-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                                <Clock className="h-5 w-5 text-green-600" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-green-900">Tanggal Mulai</h4>
-                                                <p className="text-green-700">
-                                                    {new Date(event.date_start).toLocaleDateString('id-ID', {
-                                                        weekday: 'long',
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric',
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        <DetailItem
+                                            icon={Clock}
+                                            label="Tanggal Mulai"
+                                            value={new Date(event.date_start).toLocaleDateString('id-ID', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })}
+                                        />
 
-                                        <div className="flex items-center space-x-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                                <Users className="h-5 w-5 text-green-600" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-green-900">Peserta</h4>
-                                                <p className="text-green-700">
-                                                    {event.participants?.length || 0} peserta
-                                                    {event.max_participants && ` / ${event.max_participants} maksimal`}
-                                                </p>
-                                            </div>
-                                        </div>
+                                        <DetailItem
+                                            icon={Users}
+                                            label="Peserta"
+                                            value={`${event.participants?.length || 0} peserta${event.max_participants ? ` / ${event.max_participants} maksimal` : ''}`}
+                                            withBorder={false}
+                                        />
                                     </div>
 
                                     <div className="border-t border-green-200 pt-4">
@@ -240,119 +221,106 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </DetailCard>
                         </div>
 
                         {/* Change Status Form */}
                         <div className="lg:col-span-2">
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {/* Status Change */}
-                                <div className="rounded-lg border border-green-200 bg-white shadow-sm">
-                                    <div className="border-b border-green-200 p-6">
-                                        <h2 className="text-lg font-semibold text-green-900">Ubah Status Event</h2>
-                                        <p className="mt-1 text-green-700">Pilih status baru untuk event ini</p>
-                                    </div>
-                                    <div className="p-6">
-                                        <div className="space-y-4">
-                                            <div>
-                                                <Select
-                                                    label="Status Event"
-                                                    value={selectedStatus}
-                                                    onChange={(value) => setSelectedStatus(value as 'pending' | 'ongoing' | 'finished')}
-                                                    options={statusOptions}
-                                                />
-                                                {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status}</p>}
-                                            </div>
-
-                                            {selectedStatus !== event.status && (
-                                                <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                                                    <div className="flex items-center space-x-2">
-                                                        <AlertCircle className="h-5 w-5 text-yellow-600" />
-                                                        <p className="text-sm text-yellow-800">
-                                                            Status akan diubah dari{' '}
-                                                            <strong>{statusOptions.find((s) => s.value === event.status)?.label}</strong> menjadi{' '}
-                                                            <strong>{statusOptions.find((s) => s.value === selectedStatus)?.label}</strong>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )}
+                                <DetailCard title="Ubah Status Event" icon={Calendar}>
+                                    <p className="mb-4 text-green-700">Pilih status baru untuk event ini</p>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <Select
+                                                label="Status Event"
+                                                value={selectedStatus}
+                                                onChange={(value) => setSelectedStatus(value as 'pending' | 'ongoing' | 'finished')}
+                                                options={statusOptions}
+                                            />
+                                            {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status}</p>}
                                         </div>
+
+                                        {selectedStatus !== event.status && (
+                                            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                                                <div className="flex items-center space-x-2">
+                                                    <AlertCircle className="h-5 w-5 text-yellow-600" />
+                                                    <p className="text-sm text-yellow-800">
+                                                        Status akan diubah dari{' '}
+                                                        <strong>{statusOptions.find((s) => s.value === event.status)?.label}</strong> menjadi{' '}
+                                                        <strong>{statusOptions.find((s) => s.value === selectedStatus)?.label}</strong>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
+                                </DetailCard>
 
                                 {/* Documentation Upload */}
-                                <div className="rounded-lg border border-green-200 bg-white shadow-sm">
-                                    <div className="border-b border-green-200 p-6">
-                                        <h2 className="text-lg font-semibold text-green-900">
-                                            <Upload className="mr-2 inline h-5 w-5" />
-                                            Upload Dokumentasi
-                                        </h2>
-                                        <p className="mt-1 text-green-700">Upload foto atau dokumen terkait event (opsional)</p>
-                                    </div>
-                                    <div className="p-6">
-                                        <div className="space-y-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-green-900">File Dokumentasi</label>
-                                                <input
-                                                    type="file"
-                                                    multiple
-                                                    accept="image/*,.pdf"
-                                                    onChange={handleFileSelect}
-                                                    className="mt-1 block w-full rounded-lg border border-green-200 bg-white px-3 py-2 text-sm text-green-900 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
-                                                />
-                                                <p className="mt-1 text-xs text-green-600">
-                                                    Format yang didukung: JPG, PNG, PDF (maksimal 10MB per file)
-                                                </p>
-                                                {errors.files && <p className="mt-1 text-sm text-red-600">{errors.files}</p>}
-                                            </div>
-
-                                            {/* Selected Files Preview */}
-                                            {selectedFiles.length > 0 && (
-                                                <div className="space-y-4">
-                                                    <label className="block text-sm font-medium text-green-900">File Terpilih:</label>
-                                                    <div className="space-y-4">
-                                                        {selectedFiles.map((item, index) => (
-                                                            <div key={index} className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                                                <div className="mb-3 flex items-start justify-between">
-                                                                    <div className="flex items-center space-x-3">
-                                                                        {item.file.type.startsWith('image/') ? (
-                                                                            <ImageIcon className="h-5 w-5 text-blue-600" />
-                                                                        ) : (
-                                                                            <FileText className="h-5 w-5 text-red-600" />
-                                                                        )}
-                                                                        <div>
-                                                                            <p className="text-sm font-medium text-green-900">{item.file.name}</p>
-                                                                            <p className="text-xs text-green-600">{formatFileSize(item.file.size)}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <Button
-                                                                        type="button"
-                                                                        variant="outline"
-                                                                        size="sm"
-                                                                        onClick={() => removeFile(index)}
-                                                                        className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                                                                    >
-                                                                        <X className="h-4 w-4" />
-                                                                    </Button>
-                                                                </div>
-                                                                <div>
-                                                                    <InputField
-                                                                        label={`Caption untuk ${item.file.name}`}
-                                                                        value={item.caption}
-                                                                        onChange={(value) => updateFileCaption(index, value)}
-                                                                        placeholder="Masukkan caption untuk file ini..."
-                                                                        as="textarea"
-                                                                        rows={2}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
+                                <DetailCard title="Upload Dokumentasi" icon={Upload}>
+                                    <p className="mb-4 text-green-700">Upload foto atau dokumen terkait event (opsional)</p>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-green-900">File Dokumentasi</label>
+                                            <input
+                                                type="file"
+                                                multiple
+                                                accept="image/*,.pdf"
+                                                onChange={handleFileSelect}
+                                                className="mt-1 block w-full rounded-lg border border-green-200 bg-white px-3 py-2 text-sm text-green-900 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
+                                            />
+                                            <p className="mt-1 text-xs text-green-600">
+                                                Format yang didukung: JPG, PNG, PDF (maksimal 10MB per file)
+                                            </p>
+                                            {errors.files && <p className="mt-1 text-sm text-red-600">{errors.files}</p>}
                                         </div>
+
+                                        {/* Selected Files Preview */}
+                                        {selectedFiles.length > 0 && (
+                                            <div className="space-y-4">
+                                                <label className="block text-sm font-medium text-green-900">File Terpilih:</label>
+                                                <div className="space-y-4">
+                                                    {selectedFiles.map((item, index) => (
+                                                        <div key={index} className="rounded-lg border border-green-200 bg-green-50 p-4">
+                                                            <div className="mb-3 flex items-start justify-between">
+                                                                <div className="flex items-center space-x-3">
+                                                                    {item.file.type.startsWith('image/') ? (
+                                                                        <ImageIcon className="h-5 w-5 text-blue-600" />
+                                                                    ) : (
+                                                                        <FileText className="h-5 w-5 text-red-600" />
+                                                                    )}
+                                                                    <div>
+                                                                        <p className="text-sm font-medium text-green-900">{item.file.name}</p>
+                                                                        <p className="text-xs text-green-600">{formatFileSize(item.file.size)}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() => removeFile(index)}
+                                                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                            <div>
+                                                                <InputField
+                                                                    label={`Caption untuk ${item.file.name}`}
+                                                                    value={item.caption}
+                                                                    onChange={(value) => updateFileCaption(index, value)}
+                                                                    placeholder="Masukkan caption untuk file ini..."
+                                                                    as="textarea"
+                                                                    rows={2}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
+                                </DetailCard>
 
                                 {/* Submit Button */}
                                 <div className="flex justify-end gap-4">
