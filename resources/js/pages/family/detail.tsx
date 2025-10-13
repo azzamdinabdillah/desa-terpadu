@@ -1,3 +1,5 @@
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
@@ -6,7 +8,7 @@ import { calculateAge, formatDate, getGenderLabel, getStatusLabel } from '@/lib/
 import { CitizenType } from '@/types/citizen/citizenType';
 import { FamilyType } from '@/types/familyType';
 import { Head } from '@inertiajs/react';
-import { Baby, Calendar, Home, MapPin, User, Users } from 'lucide-react';
+import { Baby, Briefcase, Calendar, CreditCard, Heart, Home, MapPin, Phone, User, Users } from 'lucide-react';
 
 interface FamilyDetailProps {
     family: FamilyType;
@@ -30,246 +32,119 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                     <HeaderPage title={family.family_name} description={`Detail informasi keluarga ${family.family_name}`} total={totalMembers} />
 
                     {/* Family Info Card */}
-                    <div className="mb-8 rounded-xl border border-green-200 bg-green-50 p-6 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
-                        <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                                <div className="mb-4 flex items-center gap-3">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-200 shadow-md">
-                                        <Home className="h-6 w-6 text-green-800" />
-                                    </div>
-                                    <div>
-                                        <h1 className="text-2xl font-bold text-green-900">{family.family_name}</h1>
-                                        <p className="text-sm text-green-600">Keluarga</p>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                    {isAdmin && (
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <Users className="h-4 w-4 text-green-600" />
-                                            <span className="text-gray-500">No. KK:</span>
-                                            <span className="font-medium text-green-900">{family.kk_number}</span>
-                                        </div>
-                                    )}
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <MapPin className="h-4 w-4 text-green-600" />
-                                        <span className="text-gray-500">Alamat:</span>
-                                        <span className="font-medium text-green-900">{family.address}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Calendar className="h-4 w-4 text-green-600" />
-                                        <span className="text-gray-500">Dibuat:</span>
-                                        <span className="font-medium text-green-900">{formatDate(family.created_at || '')}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Users className="h-4 w-4 text-green-600" />
-                                        <span className="text-gray-500">Total Anggota:</span>
-                                        <span className="font-bold text-green-900">{totalMembers} orang</span>
-                                    </div>
-                                </div>
+                    <div className="mb-8">
+                        <DetailCard title={family.family_name} icon={Home}>
+                            <div className="space-y-3">
+                                {isAdmin && <DetailItem icon={Users} label="No. KK" value={family.kk_number} />}
+                                <DetailItem icon={MapPin} label="Alamat" value={family.address ? family.address : '-'} />
+                                <DetailItem icon={Calendar} label="Dibuat" value={formatDate(family.created_at || '')} />
+                                <DetailItem icon={Users} label="Total Anggota" value={`${totalMembers} orang`} withBorder={false} />
                             </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     {/* Head of Household Section */}
                     {headOfHousehold && (
                         <div className="mb-8">
-                            <h2 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
-                                <User className="mr-2 h-5 w-5 text-purple-600" />
-                                Kepala Keluarga
-                            </h2>
-
-                            <div className="overflow-hidden rounded-xl border border-purple-200 bg-purple-50 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
-                                <div className="p-6">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="mb-4 flex items-center gap-3">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-200 shadow-md">
-                                                    <User className="h-6 w-6 text-purple-800" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-semibold text-purple-900">{headOfHousehold.full_name}</h3>
-                                                    <p className="text-sm text-purple-600">{getStatusLabel(headOfHousehold.status || '')}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-                                                {isAdmin && (
-                                                    <div>
-                                                        <span className="text-gray-500">NIK:</span>
-                                                        <span className="ml-2 font-medium text-purple-900">{headOfHousehold.nik}</span>
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-purple-900 capitalize">
-                                                        {getGenderLabel(headOfHousehold.gender || '')}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500">Tanggal Lahir:</span>
-                                                    <span className="ml-2 font-medium text-purple-900">
-                                                        {formatDate(headOfHousehold.date_of_birth || '')} (
-                                                        {calculateAge(headOfHousehold.date_of_birth || '')} tahun)
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500">Pekerjaan:</span>
-                                                    <span className="ml-2 font-medium text-purple-900">{headOfHousehold.occupation || '-'}</span>
-                                                </div>
-                                                {headOfHousehold.phone_number && (
-                                                    <div>
-                                                        <span className="text-gray-500">Telepon:</span>
-                                                        <span className="ml-2 font-medium text-purple-900">{headOfHousehold.phone_number}</span>
-                                                    </div>
-                                                )}
-                                                {headOfHousehold.religion && (
-                                                    <div>
-                                                        <span className="text-gray-500">Agama:</span>
-                                                        <span className="ml-2 font-medium text-purple-900 capitalize">
-                                                            {headOfHousehold.religion}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
+                            <DetailCard title={`Kepala Keluarga - ${headOfHousehold.full_name}`} icon={User}>
+                                <div className="mb-4 text-sm text-gray-600">
+                                    Status: <span className="font-medium text-gray-900">{getStatusLabel(headOfHousehold.status || '')}</span>
                                 </div>
-                            </div>
+                                <div className="space-y-3">
+                                    {isAdmin && <DetailItem icon={CreditCard} label="NIK" value={headOfHousehold.nik} />}
+                                    <DetailItem icon={User} label="Jenis Kelamin" value={getGenderLabel(headOfHousehold.gender || '')} />
+                                    <DetailItem
+                                        icon={Calendar}
+                                        label="Tanggal Lahir"
+                                        value={`${formatDate(headOfHousehold.date_of_birth || '')} (${calculateAge(headOfHousehold.date_of_birth || '')} tahun)`}
+                                    />
+                                    <DetailItem
+                                        icon={Briefcase}
+                                        label="Pekerjaan"
+                                        value={headOfHousehold.occupation || '-'}
+                                        withBorder={!!(headOfHousehold.phone_number || headOfHousehold.religion)}
+                                    />
+                                    {headOfHousehold.phone_number && (
+                                        <DetailItem
+                                            icon={Phone}
+                                            label="Telepon"
+                                            value={headOfHousehold.phone_number}
+                                            withBorder={!!headOfHousehold.religion}
+                                        />
+                                    )}
+                                    {headOfHousehold.religion && (
+                                        <DetailItem icon={Heart} label="Agama" value={headOfHousehold.religion} withBorder={false} />
+                                    )}
+                                </div>
+                            </DetailCard>
                         </div>
                     )}
 
                     {/* Spouses Section */}
                     {spouses.length > 0 && (
                         <div className="mb-8">
-                            <h2 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
-                                <User className="mr-2 h-5 w-5 text-blue-600" />
-                                Pasangan ({spouses.length} orang)
-                            </h2>
-
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <h2 className="mb-4 text-lg font-semibold text-gray-900">Pasangan ({spouses.length} orang)</h2>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 {spouses.map((spouse) => (
-                                    <div
-                                        key={spouse.id}
-                                        className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
-                                    >
-                                        <div className="p-6">
-                                            <div className="mb-4 flex items-center gap-3">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-200 shadow-md">
-                                                    <User className="h-6 w-6 text-blue-800" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-semibold text-blue-900">{spouse.full_name}</h3>
-                                                    <p className="text-sm text-blue-600">{getStatusLabel(spouse.status || '')}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-2 text-sm">
-                                                {isAdmin && (
-                                                    <div>
-                                                        <span className="text-gray-500">NIK:</span>
-                                                        <span className="ml-2 font-medium text-blue-900">{spouse.nik}</span>
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-blue-900 capitalize">
-                                                        {getGenderLabel(spouse.gender || '')}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500">Tanggal Lahir:</span>
-                                                    <span className="ml-2 font-medium text-blue-900">
-                                                        {formatDate(spouse.date_of_birth || '')} ({calculateAge(spouse.date_of_birth || '')} tahun)
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500">Pekerjaan:</span>
-                                                    <span className="ml-2 font-medium text-blue-900">{spouse.occupation || '-'}</span>
-                                                </div>
-                                                {spouse.phone_number && (
-                                                    <div>
-                                                        <span className="text-gray-500">Telepon:</span>
-                                                        <span className="ml-2 font-medium text-blue-900">{spouse.phone_number}</span>
-                                                    </div>
-                                                )}
-                                                {spouse.religion && (
-                                                    <div>
-                                                        <span className="text-gray-500">Agama:</span>
-                                                        <span className="ml-2 font-medium text-blue-900 capitalize">{spouse.religion}</span>
-                                                    </div>
-                                                )}
-                                            </div>
+                                    <DetailCard key={spouse.id} title={spouse.full_name} icon={User}>
+                                        <div className="mb-4 text-sm text-gray-600">
+                                            Status: <span className="font-medium text-gray-900">{getStatusLabel(spouse.status || '')}</span>
                                         </div>
-                                    </div>
+                                        <div className="space-y-3">
+                                            {isAdmin && <DetailItem icon={CreditCard} label="NIK" value={spouse.nik} />}
+                                            <DetailItem icon={User} label="Jenis Kelamin" value={getGenderLabel(spouse.gender || '')} />
+                                            <DetailItem
+                                                icon={Calendar}
+                                                label="Tanggal Lahir"
+                                                value={`${formatDate(spouse.date_of_birth || '')} (${calculateAge(spouse.date_of_birth || '')} tahun)`}
+                                            />
+                                            <DetailItem
+                                                icon={Briefcase}
+                                                label="Pekerjaan"
+                                                value={spouse.occupation || '-'}
+                                                withBorder={!!(spouse.phone_number || spouse.religion)}
+                                            />
+                                            {spouse.phone_number && (
+                                                <DetailItem icon={Phone} label="Telepon" value={spouse.phone_number} withBorder={!!spouse.religion} />
+                                            )}
+                                            {spouse.religion && <DetailItem icon={Heart} label="Agama" value={spouse.religion} withBorder={false} />}
+                                        </div>
+                                    </DetailCard>
                                 ))}
                             </div>
                         </div>
                     )}
 
                     {/* Children Section */}
-                    {children && (
+                    {children && children.length > 0 && (
                         <div className="mb-8">
-                            <h2 className="mb-4 flex items-center text-lg font-semibold text-gray-900">
-                                <Baby className="mr-2 h-5 w-5 text-green-600" />
-                                Anak-anak ({children.length} orang)
-                            </h2>
-
+                            <h2 className="mb-4 text-lg font-semibold text-gray-900">Anak-anak ({children.length} orang)</h2>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {children.map((child) => (
-                                    <div
-                                        key={child.id}
-                                        className="overflow-hidden rounded-xl border border-green-200 bg-green-50 shadow-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
-                                    >
-                                        <div className="p-6">
-                                            <div className="mb-4 flex items-center gap-3">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-200 shadow-md">
-                                                    <Baby className="h-6 w-6 text-green-800" />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-lg font-semibold text-green-900">{child.full_name}</h3>
-                                                    <p className="text-sm text-green-600">{getStatusLabel(child.status || '')}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-2 text-sm">
-                                                {isAdmin && (
-                                                    <div>
-                                                        <span className="text-gray-500">NIK:</span>
-                                                        <span className="ml-2 font-medium text-green-900">{child.nik}</span>
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <span className="text-gray-500">Jenis Kelamin:</span>
-                                                    <span className="ml-2 font-medium text-green-900 capitalize">
-                                                        {getGenderLabel(child.gender || '')}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500">Tanggal Lahir:</span>
-                                                    <span className="ml-2 font-medium text-green-900">
-                                                        {formatDate(child.date_of_birth || '')} ({calculateAge(child.date_of_birth || '')} tahun)
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500">Pekerjaan:</span>
-                                                    <span className="ml-2 font-medium text-green-900">{child.occupation || '-'}</span>
-                                                </div>
-                                                {child.phone_number && (
-                                                    <div>
-                                                        <span className="text-gray-500">Telepon:</span>
-                                                        <span className="ml-2 font-medium text-green-900">{child.phone_number}</span>
-                                                    </div>
-                                                )}
-                                                {child.religion && (
-                                                    <div>
-                                                        <span className="text-gray-500">Agama:</span>
-                                                        <span className="ml-2 font-medium text-green-900 capitalize">{child.religion}</span>
-                                                    </div>
-                                                )}
-                                            </div>
+                                    <DetailCard key={child.id} title={child.full_name} icon={Baby}>
+                                        <div className="mb-4 text-sm text-gray-600">
+                                            Status: <span className="font-medium text-gray-900">{getStatusLabel(child.status || '')}</span>
                                         </div>
-                                    </div>
+                                        <div className="space-y-3">
+                                            {isAdmin && <DetailItem icon={CreditCard} label="NIK" value={child.nik} />}
+                                            <DetailItem icon={User} label="Jenis Kelamin" value={getGenderLabel(child.gender || '')} />
+                                            <DetailItem
+                                                icon={Calendar}
+                                                label="Tanggal Lahir"
+                                                value={`${formatDate(child.date_of_birth || '')} (${calculateAge(child.date_of_birth || '')} tahun)`}
+                                            />
+                                            <DetailItem
+                                                icon={Briefcase}
+                                                label="Pekerjaan"
+                                                value={child.occupation || '-'}
+                                                withBorder={!!(child.phone_number || child.religion)}
+                                            />
+                                            {child.phone_number && (
+                                                <DetailItem icon={Phone} label="Telepon" value={child.phone_number} withBorder={!!child.religion} />
+                                            )}
+                                            {child.religion && <DetailItem icon={Heart} label="Agama" value={child.religion} withBorder={false} />}
+                                        </div>
+                                    </DetailCard>
                                 ))}
                             </div>
                         </div>
