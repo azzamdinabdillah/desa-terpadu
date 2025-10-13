@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -9,7 +10,7 @@ import { useAuth } from '@/lib/auth';
 import { Asset } from '@/types/assetType';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { useForm, usePage } from '@inertiajs/react';
-import { Calendar, Package, Save, User } from 'lucide-react';
+import { Calendar, FileText, Package, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface CreateAssetLoanPageProps {
@@ -98,51 +99,38 @@ export default function CreateAssetLoanPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Loan Information Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <Package className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Informasi Peminjaman</h3>
-                            </div>
-
+                        <DetailCard title="Informasi Peminjaman" icon={Package}>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 {/* Citizen Selection */}
-                                <div>
-                                    <InputField
-                                        label="Nomor Induk Kependudukan (NIK)"
-                                        value={data.nik}
-                                        onChange={(value) => setData('nik', value)}
-                                        placeholder="NIK akan diisi otomatis"
-                                        required
-                                        error={errors.nik}
-                                        type="text"
-                                        readOnly
-                                    />
-                                </div>
+                                <InputField
+                                    label="Nomor Induk Kependudukan (NIK)"
+                                    value={data.nik}
+                                    onChange={(value) => setData('nik', value)}
+                                    placeholder="NIK akan diisi otomatis"
+                                    required
+                                    error={errors.nik}
+                                    type="text"
+                                    readOnly
+                                    variant="muted"
+                                />
 
                                 {/* Asset Selection */}
-                                <div>
-                                    <Select
-                                        label="Pilih Asset"
-                                        value={data.asset_id}
-                                        onChange={(value) => setData('asset_id', value)}
-                                        options={assetOptions}
-                                        placeholder="Pilih asset yang akan dipinjam"
-                                        required
-                                        enableSearch
-                                        searchPlaceholder="Cari nama asset atau kode..."
-                                        error={errors.asset_id}
-                                    />
-                                </div>
+                                <Select
+                                    label="Pilih Asset"
+                                    value={data.asset_id}
+                                    onChange={(value) => setData('asset_id', value)}
+                                    options={assetOptions}
+                                    placeholder="Pilih asset yang akan dipinjam"
+                                    required
+                                    enableSearch
+                                    searchPlaceholder="Cari nama asset atau kode..."
+                                    error={errors.asset_id}
+                                />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Reason Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <User className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Alasan Peminjaman</h3>
-                            </div>
-
+                        <DetailCard title="Alasan Peminjaman" icon={FileText}>
                             <InputField
                                 label="Alasan Peminjaman"
                                 value={data.reason}
@@ -154,15 +142,10 @@ export default function CreateAssetLoanPage() {
                                 error={errors.reason}
                                 helperText="Berikan penjelasan yang jelas tentang tujuan penggunaan asset"
                             />
-                        </div>
+                        </DetailCard>
 
                         {/* Date Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <Calendar className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Jadwal Peminjaman</h3>
-                            </div>
-
+                        <DetailCard title="Jadwal Peminjaman" icon={Calendar}>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 {/* Borrowed Date */}
                                 <InputField
@@ -186,7 +169,7 @@ export default function CreateAssetLoanPage() {
                                     helperText="Tanggal kapan asset diharapkan dikembalikan"
                                 />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Submit Button */}
                         <div className="flex justify-end space-x-4">

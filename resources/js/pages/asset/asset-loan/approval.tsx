@@ -1,5 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -9,7 +11,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDate } from '@/lib/utils';
 import { AssetLoan } from '@/types/assetLoanType';
 import { useForm, usePage } from '@inertiajs/react';
-import { CheckCircle, FileText, Save } from 'lucide-react';
+import { Calendar, CheckCircle, FileText, Package, Save, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface ApprovalPageProps {
@@ -98,46 +100,47 @@ export default function ApprovalPage() {
                     )}
 
                     {/* Loan Information (Read-only) */}
-                    <div className="mb-6 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                        <div className="mb-4 flex items-center gap-2">
-                            <FileText className="h-5 w-5 text-green-600" />
-                            <h3 className="text-lg font-semibold text-green-900">Informasi Peminjaman</h3>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <label className="text-sm font-medium text-green-900">Asset</label>
-                                <p className="text-green-700">{assetLoan.asset.asset_name}</p>
-                                <p className="text-xs text-green-600">Kode: {assetLoan.asset.code}</p>
+                    <div className="mb-6">
+                        <DetailCard title="Informasi Peminjaman" icon={FileText}>
+                            <div className="space-y-4">
+                                <DetailItem
+                                    icon={Package}
+                                    label="Asset"
+                                    value={
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">{assetLoan.asset.asset_name}</p>
+                                            <p className="text-xs text-gray-500">Kode: {assetLoan.asset.code}</p>
+                                        </div>
+                                    }
+                                />
+                                <DetailItem
+                                    icon={User}
+                                    label="Peminjam"
+                                    value={
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">{assetLoan.citizen.full_name}</p>
+                                            <p className="text-xs text-gray-500">NIK: {assetLoan.citizen.nik}</p>
+                                        </div>
+                                    }
+                                />
+                                <DetailItem
+                                    icon={Calendar}
+                                    label="Tanggal Pinjam"
+                                    value={assetLoan.borrowed_at ? formatDate(assetLoan.borrowed_at) : '-'}
+                                />
+                                <DetailItem
+                                    icon={Calendar}
+                                    label="Tanggal Kembali"
+                                    value={assetLoan.expected_return_date ? formatDate(assetLoan.expected_return_date) : '-'}
+                                />
+                                <DetailItem icon={FileText} label="Alasan Peminjaman" value={assetLoan.reason} withBorder={false} />
                             </div>
-                            <div>
-                                <label className="text-sm font-medium text-green-900">Peminjam</label>
-                                <p className="text-green-700">{assetLoan.citizen.full_name}</p>
-                                <p className="text-xs text-green-600">NIK: {assetLoan.citizen.nik}</p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-green-900">Tanggal Pinjam</label>
-                                <p className="text-green-700">{assetLoan.borrowed_at ? formatDate(assetLoan.borrowed_at) : '-'}</p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-green-900">Tanggal Kembali</label>
-                                <p className="text-green-700">{assetLoan.expected_return_date ? formatDate(assetLoan.expected_return_date) : '-'}</p>
-                            </div>
-                            <div className="md:col-span-2">
-                                <label className="text-sm font-medium text-green-900">Alasan Peminjaman</label>
-                                <p className="text-green-700">{assetLoan.reason}</p>
-                            </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Approval Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Keputusan Persetujuan</h3>
-                            </div>
-
+                        <DetailCard title="Keputusan Persetujuan" icon={CheckCircle}>
                             <div className="space-y-6">
                                 {/* Status Selection */}
                                 <Select
@@ -179,7 +182,7 @@ export default function ApprovalPage() {
                                     helperText="Pesan ini akan dilihat oleh peminjam"
                                 />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Submit Button */}
                         <div className="flex justify-end space-x-4">
