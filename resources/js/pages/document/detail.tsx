@@ -1,5 +1,7 @@
 import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import StatusBadge from '@/components/StatusBadge';
@@ -95,21 +97,13 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
 
                     <div className="space-y-6">
                         {/* Document Information Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="flex items-start gap-4">
-                                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                                    <FileText className="h-8 w-8 text-green-600" />
-                                </div>
-                                <div className="flex-1">
-                                    <h2 className="mb-2 text-2xl font-bold text-green-900">{masterDocument.document_name}</h2>
-                                    {masterDocument.description && <p className="mb-4 text-green-700">{masterDocument.description}</p>}
-                                    <div className="flex items-center gap-2 text-sm text-green-600">
-                                        <Calendar className="h-4 w-4" />
-                                        <span>Dibuat pada {formatDate(masterDocument.created_at)}</span>
-                                    </div>
-                                </div>
+                        <DetailCard title={masterDocument.document_name} icon={FileText}>
+                            <div className="space-y-4">
+                                <DetailItem icon={FileText} label="Nama Dokumen" value={masterDocument.document_name} />
+                                {masterDocument.description && <DetailItem icon={FileText} label="Deskripsi" value={masterDocument.description} />}
+                                <DetailItem icon={Calendar} label="Dibuat Pada" value={formatDate(masterDocument.created_at)} withBorder={false} />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Statistics Cards */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -161,12 +155,8 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
                         </div>
 
                         {/* Application History */}
-                        <div className="rounded-lg border border-green-200 bg-white shadow-sm">
-                            <div className="border-b border-green-200 p-6">
-                                <h3 className="text-lg font-semibold text-green-900">Riwayat Pengajuan</h3>
-                                <p className="mt-1 text-sm text-green-700">Daftar semua pengajuan yang menggunakan dokumen ini</p>
-                            </div>
-
+                        <DetailCard title="Riwayat Pengajuan" icon={FileText}>
+                            <div className="mb-4 text-sm text-gray-600">Daftar semua pengajuan yang menggunakan dokumen ini</div>
                             <DataTable
                                 columns={columns}
                                 data={applications}
@@ -180,7 +170,7 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
                                     </div>
                                 }
                             />
-                        </div>
+                        </DetailCard>
 
                         {/* Action Buttons */}
                         <div className="flex gap-3">

@@ -1,5 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -10,7 +12,7 @@ import { formatDate } from '@/lib/utils';
 import { ApplicationDocumentType } from '@/types/document/documentTypes';
 import { Head, router, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, CheckCircle, FileText, MapPin, MessageSquare, Phone, User, X, XCircle } from 'lucide-react';
+import { Briefcase, Calendar, CheckCircle, FileText, Heart, MapPin, MessageSquare, Phone, User, X, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface ApplicantDetailProps {
@@ -224,140 +226,79 @@ const ApplicantDetail: React.FC = () => {
 
                     <div className="space-y-6">
                         {/* Status and Document Information Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-start gap-4">
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                                        <FileText className="h-8 w-8 text-green-600" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h2 className="mb-2 text-2xl font-bold text-green-900">
-                                            {application.master_document?.document_name || 'N/A'}
-                                        </h2>
-                                        {application.master_document?.description && (
-                                            <p className="mb-4 text-green-700">{application.master_document.description}</p>
-                                        )}
-                                        <div className="flex items-center gap-2 text-sm text-green-600">
-                                            <Calendar className="h-4 w-4" />
-                                            <span>Diajukan pada {formatDate(application.created_at)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-end gap-2">
+                        <DetailCard
+                            title={application.master_document?.document_name || 'N/A'}
+                            icon={FileText}
+                            headerRight={
+                                <div className="flex items-center gap-2">
                                     <StatusBadge type="documentStatus" value={application.status} />
-                                    <span className="text-xs text-green-600">ID: #{application.id}</span>
+                                    <span className="text-xs text-gray-500">ID: #{application.id}</span>
                                 </div>
+                            }
+                        >
+                            <div className="space-y-4">
+                                <DetailItem icon={FileText} label="Jenis Dokumen" value={application.master_document?.document_name || 'N/A'} />
+                                {application.master_document?.description && (
+                                    <DetailItem icon={FileText} label="Deskripsi" value={application.master_document.description} />
+                                )}
+                                <DetailItem icon={Calendar} label="Diajukan Pada" value={formatDate(application.created_at)} withBorder={false} />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Applicant Information Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <User className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Informasi Pemohon</h3>
+                        <DetailCard title="Informasi Pemohon" icon={User}>
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <DetailItem icon={User} label="Nama Lengkap" value={application.citizen?.full_name || 'N/A'} />
+                                <DetailItem icon={FileText} label="NIK" value={application.nik} />
+                                <DetailItem
+                                    icon={User}
+                                    label="Jenis Kelamin"
+                                    value={
+                                        application.citizen?.gender === 'male'
+                                            ? 'Laki-laki'
+                                            : application.citizen?.gender === 'female'
+                                                ? 'Perempuan'
+                                                : 'N/A'
+                                    }
+                                />
+                                <DetailItem
+                                    icon={Calendar}
+                                    label="Tanggal Lahir"
+                                    value={application.citizen?.date_of_birth ? formatDate(application.citizen.date_of_birth) : 'N/A'}
+                                />
+                                <DetailItem icon={Briefcase} label="Pekerjaan" value={application.citizen?.occupation || 'N/A'} />
+                                <DetailItem
+                                    icon={Heart}
+                                    label="Status Perkawinan"
+                                    value={
+                                        application.citizen?.marital_status === 'married'
+                                            ? 'Kawin'
+                                            : application.citizen?.marital_status === 'single'
+                                                ? 'Belum Kawin'
+                                                : application.citizen?.marital_status === 'divorced'
+                                                    ? 'Cerai'
+                                                    : application.citizen?.marital_status === 'widowed'
+                                                        ? 'Duda/Janda'
+                                                        : 'N/A'
+                                    }
+                                />
+                                <DetailItem
+                                    icon={MapPin}
+                                    label="Alamat"
+                                    value={application.citizen?.address || 'N/A'}
+                                    withBorder={!!application.citizen?.phone_number}
+                                />
+                                {application.citizen?.phone_number && (
+                                    <DetailItem icon={Phone} label="Nomor Telepon" value={application.citizen.phone_number} withBorder={false} />
+                                )}
                             </div>
-
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                {/* Left Column */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">Nama Lengkap</label>
-                                        <div className="flex items-center gap-2 text-green-900">
-                                            <User className="h-4 w-4 text-green-600" />
-                                            <span className="font-medium">{application.citizen?.full_name || 'N/A'}</span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">NIK</label>
-                                        <div className="flex items-center gap-2 text-green-900">
-                                            <FileText className="h-4 w-4 text-green-600" />
-                                            <span className="">{application.nik}</span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">Jenis Kelamin</label>
-                                        <div className="flex items-center gap-2 text-green-900">
-                                            <User className="h-4 w-4 text-green-600" />
-                                            <span>
-                                                {application.citizen?.gender === 'male'
-                                                    ? 'Laki-laki'
-                                                    : application.citizen?.gender === 'female'
-                                                      ? 'Perempuan'
-                                                      : 'N/A'}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">Tanggal Lahir</label>
-                                        <div className="flex items-center gap-2 text-green-900">
-                                            <Calendar className="h-4 w-4 text-green-600" />
-                                            <span>{application.citizen?.date_of_birth ? formatDate(application.citizen.date_of_birth) : 'N/A'}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Right Column */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">Pekerjaan</label>
-                                        <div className="flex items-center gap-2 text-green-900">
-                                            <FileText className="h-4 w-4 text-green-600" />
-                                            <span>{application.citizen?.occupation || 'N/A'}</span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">Status Perkawinan</label>
-                                        <div className="flex items-center gap-2 text-green-900">
-                                            <User className="h-4 w-4 text-green-600" />
-                                            <span>
-                                                {application.citizen?.marital_status === 'married'
-                                                    ? 'Kawin'
-                                                    : application.citizen?.marital_status === 'single'
-                                                      ? 'Belum Kawin'
-                                                      : application.citizen?.marital_status === 'divorced'
-                                                        ? 'Cerai'
-                                                        : application.citizen?.marital_status === 'widowed'
-                                                          ? 'Duda/Janda'
-                                                          : 'N/A'}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="mb-1 block text-sm font-medium text-green-700">Alamat</label>
-                                        <div className="flex items-start gap-2 text-green-900">
-                                            <MapPin className="mt-1 h-4 w-4 shrink-0 text-green-600" />
-                                            <span>{application.citizen?.address || 'N/A'}</span>
-                                        </div>
-                                    </div>
-
-                                    {application.citizen?.phone_number && (
-                                        <div>
-                                            <label className="mb-1 block text-sm font-medium text-green-700">Nomor Telepon</label>
-                                            <div className="flex items-center gap-2 text-green-900">
-                                                <Phone className="h-4 w-4 text-green-600" />
-                                                <span>{application.citizen.phone_number}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Application Details Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <MessageSquare className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Detail Pengajuan</h3>
-                            </div>
-
+                        <DetailCard title="Detail Pengajuan" icon={MessageSquare}>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="mb-2 block text-sm font-medium text-green-700">Alasan Pengajuan</label>
+                                    <label className="mb-2 block text-sm font-medium text-gray-700">Alasan Pengajuan</label>
                                     <div className="rounded-md border border-green-200 bg-green-50 p-4">
                                         <p className="text-green-900">{application.reason || 'Tidak ada alasan yang diberikan'}</p>
                                     </div>
@@ -365,7 +306,7 @@ const ApplicantDetail: React.FC = () => {
 
                                 {application.citizen_note && (
                                     <div>
-                                        <label className="mb-2 block text-sm font-medium text-green-700">Catatan Pemohon</label>
+                                        <label className="mb-2 block text-sm font-medium text-gray-700">Catatan Pemohon</label>
                                         <div className="rounded-md border border-green-200 bg-green-50 p-4">
                                             <p className="text-green-900">{application.citizen_note}</p>
                                         </div>
@@ -374,7 +315,7 @@ const ApplicantDetail: React.FC = () => {
 
                                 {application.admin_note && (
                                     <div>
-                                        <label className="mb-2 block text-sm font-medium text-green-700">Catatan Admin</label>
+                                        <label className="mb-2 block text-sm font-medium text-gray-700">Catatan Admin</label>
                                         <div className="rounded-md border border-blue-200 bg-blue-50 p-4">
                                             <p className="text-blue-900">{application.admin_note}</p>
                                         </div>
@@ -383,7 +324,7 @@ const ApplicantDetail: React.FC = () => {
 
                                 {application.file && (
                                     <div>
-                                        <label className="mb-2 block text-sm font-medium text-green-700">Dokumen</label>
+                                        <label className="mb-2 block text-sm font-medium text-gray-700">Dokumen</label>
                                         <div className="rounded-md border border-green-200 bg-green-50 p-4">
                                             <div className="flex items-center gap-3">
                                                 <FileText className="h-5 w-5 text-green-600" />
@@ -420,37 +361,20 @@ const ApplicantDetail: React.FC = () => {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Timeline Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <Calendar className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Riwayat Waktu</h3>
-                            </div>
-
+                        <DetailCard title="Riwayat Waktu" icon={Calendar}>
                             <div className="space-y-4">
-                                <div className="flex items-start gap-4">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100">
-                                        <Calendar className="h-5 w-5 text-green-600" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="font-medium text-green-900">Tanggal Pengajuan</p>
-                                        <p className="text-sm text-green-700">{formatDate(application.created_at)}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-4">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100">
-                                        <Calendar className="h-5 w-5 text-blue-600" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="font-medium text-blue-900">Terakhir Diperbarui</p>
-                                        <p className="text-sm text-blue-700">{formatDate(application.updated_at)}</p>
-                                    </div>
-                                </div>
+                                <DetailItem icon={Calendar} label="Tanggal Pengajuan" value={formatDate(application.created_at)} />
+                                <DetailItem
+                                    icon={Calendar}
+                                    label="Terakhir Diperbarui"
+                                    value={formatDate(application.updated_at)}
+                                    withBorder={false}
+                                />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Action Buttons */}
                         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">

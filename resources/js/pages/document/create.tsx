@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -105,62 +106,55 @@ function CreateDocumentPage() {
                         />
 
                         {/* Form */}
-                        <div className="space-y-8">
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* Document Information Section */}
-                                <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                                    <div className="mb-6 flex items-center gap-2">
-                                        <FileText className="h-5 w-5 text-green-600" />
-                                        <h3 className="text-lg font-semibold text-green-900">Informasi Dokumen</h3>
-                                    </div>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Document Information Section */}
+                            <DetailCard title="Informasi Dokumen" icon={FileText}>
+                                <div className="space-y-6">
+                                    <InputField
+                                        label="Nama Dokumen"
+                                        value={data.document_name}
+                                        onChange={(value) => setData('document_name', value)}
+                                        placeholder="Masukkan nama dokumen (contoh: Surat Keterangan Domisili)"
+                                        required
+                                        error={errors.document_name}
+                                    />
 
-                                    <div className="space-y-6">
-                                        <InputField
-                                            label="Nama Dokumen"
-                                            value={data.document_name}
-                                            onChange={(value) => setData('document_name', value)}
-                                            placeholder="Masukkan nama dokumen (contoh: Surat Keterangan Domisili)"
-                                            required
-                                            error={errors.document_name}
-                                        />
-
-                                        <InputField
-                                            label="Deskripsi"
-                                            value={data.description}
-                                            onChange={(value) => setData('description', value)}
-                                            placeholder="Masukkan deskripsi dokumen (opsional)"
-                                            as="textarea"
-                                            rows={4}
-                                            error={errors.description}
-                                        />
-                                    </div>
+                                    <InputField
+                                        label="Deskripsi"
+                                        value={data.description}
+                                        onChange={(value) => setData('description', value)}
+                                        placeholder="Masukkan deskripsi dokumen (opsional)"
+                                        as="textarea"
+                                        rows={4}
+                                        error={errors.description}
+                                    />
                                 </div>
+                            </DetailCard>
 
-                                {/* Action Buttons */}
-                                <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={handleCancel}
-                                        icon={<X className="h-4 w-4" />}
-                                        fullWidth
-                                        className="sm:w-auto"
-                                    >
-                                        Batal
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        loading={processing}
-                                        icon={<Save className="h-4 w-4" />}
-                                        fullWidth
-                                        className="sm:w-auto"
-                                        disabled={processing}
-                                    >
-                                        {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Dokumen' : 'Simpan Dokumen'}
-                                    </Button>
-                                </div>
-                            </form>
-                        </div>
+                            {/* Action Buttons */}
+                            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleCancel}
+                                    icon={<X className="h-4 w-4" />}
+                                    fullWidth
+                                    className="sm:w-auto"
+                                >
+                                    Batal
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    loading={processing}
+                                    icon={<Save className="h-4 w-4" />}
+                                    fullWidth
+                                    className="sm:w-auto"
+                                    disabled={processing}
+                                >
+                                    {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Dokumen' : 'Simpan Dokumen'}
+                                </Button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
