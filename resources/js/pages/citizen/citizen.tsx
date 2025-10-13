@@ -7,6 +7,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
+import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
@@ -85,6 +86,11 @@ function CitizenPage() {
     };
 
     const handleDeleteClick = (citizen: CitizenType) => {
+        // Check if citizen has admin user account
+        if (citizen.user && citizen.user.role === 'admin') {
+            setAlert({ type: 'error', message: 'Tidak dapat menghapus warga yang memiliki akun user dengan role admin!' });
+            return;
+        }
         setCitizenToDelete(citizen);
         setShowDeleteModal(true);
     };
@@ -145,6 +151,18 @@ function CitizenPage() {
                                   <span className="text-sm text-green-900">{item.nik}</span>
                               </div>
                           ),
+                      },
+                      {
+                          key: 'role',
+                          header: 'Role',
+                          className: 'whitespace-nowrap',
+                          cell: (item: CitizenType) => {
+                              if (!item.user || !item.user.role) {
+                                  return <span className="text-sm text-gray-400">-</span>;
+                              }
+
+                              return <StatusBadge type="userRole" value={item.user.role} />;
+                          },
                       },
                   ]
                 : []),
@@ -271,23 +289,36 @@ function CitizenPage() {
                 key: 'action',
                 header: 'Aksi',
                 className: 'whitespace-nowrap',
-                cell: (item: CitizenType) => (
-                    <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}`)}>
-                            <Eye className="h-4 w-4" />
-                        </Button>
-                        {isAdmin && (
-                            <>
-                                <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
-                                    <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button variant="ghost" onClick={() => handleDeleteClick(item)}>
-                                    <Trash className="h-4 w-4" />
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                ),
+                cell: (item: CitizenType) => {
+                    const hasAdminUser = Boolean(item.user && item.user.role === 'admin');
+                    return (
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}`)}>
+                                <Eye className="h-4 w-4" />
+                            </Button>
+                            {isAdmin && (
+                                <>
+                                    <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
+                                        <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => handleDeleteClick(item)}
+                                        disabled={hasAdminUser}
+                                        className={hasAdminUser ? 'cursor-not-allowed opacity-50' : ''}
+                                        title={
+                                            hasAdminUser
+                                                ? 'Tidak dapat menghapus warga yang memiliki akun user dengan role admin'
+                                                : 'Hapus data warga'
+                                        }
+                                    >
+                                        <Trash className="h-4 w-4" />
+                                    </Button>
+                                </>
+                            )}
+                        </div>
+                    );
+                },
             },
         ],
         [isAdmin],
@@ -375,7 +406,7 @@ function CitizenPage() {
                     onClose={handleDeleteCancel}
                     onConfirm={handleDeleteConfirm}
                     title="Konfirmasi Hapus Data Warga"
-                    message={`Apakah Anda yakin ingin menghapus data warga "${citizenToDelete?.full_name}"? Tindakan ini tidak dapat dibatalkan.`}
+                    message={`Apakah Anda yakin ingin menghapus data warga "${citizenToDelete?.full_name}"? Tindakan ini tidak dapat dibatalkan dan seluruh data yang berkaitan dengan warga ini (misal: kepemilikan akun, keterkaitan keluarga, dan data lain) juga akan diubah atau menjadi kosong (null). Lanjutkan?`}
                     confirmText="Ya, Hapus"
                     cancelText="Batal"
                     isLoading={isDeleting}

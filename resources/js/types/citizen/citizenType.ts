@@ -1,4 +1,5 @@
-import { FamilyType } from "../familyType";
+import { FamilyType } from '../familyType';
+import { User } from '../user/userTypes';
 
 export interface CitizenType {
     id: number;
@@ -17,4 +18,5 @@ export interface CitizenType {
     marital_status?: string;
     family_id: number;
     family: FamilyType;
+    user?: User | null;
 }

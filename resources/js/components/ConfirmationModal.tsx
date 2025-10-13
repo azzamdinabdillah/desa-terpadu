@@ -1,3 +1,4 @@
+import * as Dialog from '@radix-ui/react-dialog';
 import { Trash2 } from 'lucide-react';
 import Button from './Button';
 
@@ -22,38 +23,44 @@ export default function ConfirmationModal({
     cancelText = 'Batal',
     isLoading = false,
 }: ConfirmationModalProps) {
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 z-50">
-            {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/40" onClick={onClose} />
-
-            {/* Modal */}
-            <div className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                <div className="mb-4 flex items-center gap-3 border-b border-red-200 pb-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                        <Trash2 className="h-5 w-5 text-red-600" />
+        <Dialog.Root open={isOpen} onOpenChange={onClose}>
+            <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
+                <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-200 bg-red-100">
+                        <Trash2 className="h-6 w-6 text-red-600" />
                     </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-red-900">{title}</h3>
-                        <p className="text-sm text-red-700">Tindakan ini tidak dapat dibatalkan.</p>
+                    <div className="text-center">
+                        <Dialog.Title className="mb-2 text-lg font-semibold text-red-900">{title}</Dialog.Title>
+                        <Dialog.Description className="mb-4 text-sm text-red-700 leading-relaxed">{message}</Dialog.Description>
+                        <p className="mt-3 text-xs font-medium text-red-600">⚠️ Tindakan ini tidak dapat dibatalkan!</p>
                     </div>
-                </div>
-
-                <div className="mb-6">
-                    <p className="mb-2 text-sm text-gray-700">{message}</p>
-                </div>
-
-                <div className="flex justify-end gap-3">
-                    <Button onClick={onClose} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50" disabled={isLoading}>
-                        {cancelText}
-                    </Button>
-                    <Button onClick={onConfirm} variant="red" disabled={isLoading} loading={isLoading}>
-                        {isLoading ? 'Menghapus...' : confirmText}
-                    </Button>
-                </div>
-            </div>
-        </div>
+                    <div className="mt-6 flex gap-3">
+                        <Dialog.Close asChild>
+                            <Button
+                                onClick={onClose}
+                                variant="outline"
+                                className="flex-1 border-red-300 text-red-700 hover:bg-red-50"
+                                disabled={isLoading}
+                                fullWidth
+                            >
+                                {cancelText}
+                            </Button>
+                        </Dialog.Close>
+                        <Button
+                            onClick={onConfirm}
+                            variant="primary"
+                            className="flex-1 bg-red-600 text-white hover:bg-red-700"
+                            disabled={isLoading}
+                            loading={isLoading}
+                            fullWidth
+                        >
+                            {isLoading ? 'Menghapus...' : confirmText}
+                        </Button>
+                    </div>
+                </Dialog.Content>
+            </Dialog.Portal>
+        </Dialog.Root>
     );
 }

@@ -34,8 +34,11 @@ class CitizenController extends Controller
             $query->where('family_id', $familyId);
         }
 
-        $citizens = $query->with('family')
-            ->orderBy('created_at', 'desc')
+        $citizens = $query->with(['family', 'user'])
+            ->leftJoin('users', 'citizens.id', '=', 'users.citizen_id')
+            ->select('citizens.*')
+            ->orderByRaw("CASE WHEN users.role = 'admin' THEN 0 ELSE 1 END")
+            ->orderBy('citizens.created_at', 'desc')
             ->paginate(10)
             ->onEachSide(0)
             ->withQueryString();
@@ -275,6 +278,12 @@ class CitizenController extends Controller
     public function destroy(Citizen $citizen)
     {
         try {
+            // Check if citizen has a user account with admin role
+            $user = $citizen->user;
+            if ($user && $user->role === 'admin') {
+                return back()->with('error', 'Tidak dapat menghapus data warga yang memiliki akun user dengan role admin!');
+            }
+            
             $citizenName = $citizen->full_name;
             
             // Delete profile picture if exists
