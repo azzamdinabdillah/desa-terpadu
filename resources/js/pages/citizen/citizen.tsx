@@ -129,7 +129,7 @@ function CitizenPage() {
                             <img
                                 src={`/storage/${item.profile_picture}`}
                                 alt={item.full_name}
-                                className="h-8 w-8 rounded-full border border-green-200 object-cover"
+                                className="h-8 w-8 shrink-0 rounded-full border border-green-200 object-cover"
                             />
                         ) : (
                             <Users className="h-8 w-8 rounded-full border border-green-200 bg-green-50 p-1.5 text-green-600" />

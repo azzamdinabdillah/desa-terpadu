@@ -36,7 +36,6 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                         <DetailCard title={family.family_name} icon={Home}>
                             <div className="space-y-3">
                                 {isAdmin && <DetailItem icon={Users} label="No. KK" value={family.kk_number} />}
-                                <DetailItem icon={MapPin} label="Alamat" value={family.address ? family.address : '-'} />
                                 <DetailItem icon={Calendar} label="Dibuat" value={formatDate(family.created_at || '')} />
                                 <DetailItem icon={Users} label="Total Anggota" value={`${totalMembers} orang`} withBorder={false} />
                             </div>

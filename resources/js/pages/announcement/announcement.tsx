@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -92,10 +93,10 @@ function Announcement() {
         setViewModalOpen(true);
     };
 
-        // const handleViewClose = () => {
-        //     setViewModalOpen(false);
-        //     setViewModalData(null);
-        // };
+    // const handleViewClose = () => {
+    //     setViewModalOpen(false);
+    //     setViewModalData(null);
+    // };
 
     const handleDeleteClick = (announcement: AnnouncementType) => {
         setDeleteModalData(announcement);
@@ -365,45 +366,31 @@ function Announcement() {
                     </Dialog.Root>
 
                     {/* Delete Confirmation Modal */}
-                    <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                                <div className="mb-4 flex items-center gap-3 border-b border-red-200 pb-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                                        <Trash2 className="h-5 w-5 text-red-600" />
+                    <ConfirmationModal
+                        isOpen={deleteModalOpen}
+                        onClose={handleDeleteClose}
+                        onConfirm={handleDeleteConfirm}
+                        title="Konfirmasi Hapus"
+                        message={
+                            deleteModalData ? (
+                                <div>
+                                    <p className="mb-2">Apakah Anda yakin ingin menghapus pengumuman berikut?</p>
+                                    <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                                        <h3 className="font-medium text-red-900">{deleteModalData.title}</h3>
+                                        <p className="mt-1 text-sm text-red-700">
+                                            {deleteModalData.description?.length > 100
+                                                ? `${deleteModalData.description.substring(0, 100)}...`
+                                                : deleteModalData.description}
+                                        </p>
                                     </div>
-                                    <div>
-                                        <Dialog.Title className="text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
-                                        <p className="text-sm text-red-700">Tindakan ini tidak dapat dibatalkan.</p>
-                                    </div>
                                 </div>
-
-                                <div className="mb-6">
-                                    <p className="mb-2 text-sm text-gray-700">Apakah Anda yakin ingin menghapus pengumuman berikut?</p>
-                                    {deleteModalData && (
-                                        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-                                            <h3 className="font-medium text-red-900">{deleteModalData.title}</h3>
-                                            <p className="mt-1 text-sm text-red-700">
-                                                {deleteModalData.description?.length > 100
-                                                    ? `${deleteModalData.description.substring(0, 100)}...`
-                                                    : deleteModalData.description}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="flex justify-end gap-3">
-                                    <Button onClick={handleDeleteClose} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
-                                        Batal
-                                    </Button>
-                                    <Button onClick={handleDeleteConfirm} variant="red">
-                                        Hapus
-                                    </Button>
-                                </div>
-                            </Dialog.Content>
-                        </Dialog.Portal>
-                    </Dialog.Root>
+                            ) : (
+                                'Apakah Anda yakin ingin menghapus pengumuman ini?'
+                            )
+                        }
+                        confirmText="Hapus"
+                        cancelText="Batal"
+                    />
                 </div>
             </div>
         </BaseLayouts>

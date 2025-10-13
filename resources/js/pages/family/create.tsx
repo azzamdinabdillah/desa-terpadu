@@ -120,6 +120,7 @@ function CreateFamilyPage() {
                             />
 
                             <InputField
+                                type="number"
                                 label="Nomor Kartu Keluarga (KK)"
                                 value={data.kk_number}
                                 onChange={(value) => setData('kk_number', value)}
