@@ -1,5 +1,6 @@
 import type { Paginated } from '@/components/Pagination';
 import type { CitizenType } from '../citizen/citizenType';
+import { FamilyType } from '../familyType';
 
 export interface SocialAidProgram {
     id: number;
@@ -35,17 +36,8 @@ export interface SocialAidRecipient {
     created_at: string;
     updated_at: string;
     program?: SocialAidProgram;
-    citizen?: {
-        id: number;
-        full_name: string;
-        nik: string;
-        phone_number?: string;
-    } | null;
-    family?: {
-        id: number;
-        family_name: string;
-        kk_number?: string;
-    } | null;
+    citizen?: CitizenType | null;
+    family?: FamilyType | null;
     performed_by?: {
         citizen: CitizenType;
     } | null;

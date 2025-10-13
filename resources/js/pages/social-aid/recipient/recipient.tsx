@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -165,13 +166,23 @@ function SocialAidRecipientPage() {
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                             <Users className="h-4 w-4 text-green-600" />
                         </div>
-                        <div>
-                            <span className="text-sm font-medium text-green-900">{item.citizen?.full_name || item.family?.family_name || '-'}</span>
-                            <div className="text-xs text-green-600">{item.citizen?.nik || item.family?.kk_number || '-'}</div>
-                        </div>
+                        {isAdmin && (
+                            <div>
+                                <span className="text-sm font-medium text-green-900">
+                                    {item.citizen?.full_name || item.family?.family_name || '-'}
+                                </span>
+                                <div className="text-xs text-green-600">{item.citizen?.nik || item.family?.kk_number || '-'}</div>
+                            </div>
+                        )}
                     </div>
                 ),
             },
+            // {
+            //     key: 'email',
+            //     header: 'Email',
+            //     className: 'whitespace-nowrap',
+            //     cell: (item: SocialAidRecipient) => <span className="text-sm text-green-900">{item.citizen?.email || '-'}</span>,
+            // },
             {
                 key: 'program',
                 header: 'Program',
@@ -283,7 +294,7 @@ function SocialAidRecipientPage() {
                         {/* <Button variant="ghost" onClick={() => router.visit(`/${item.program_id}`)} title="Lihat Program">
                             <Eye className="h-4 w-4" />
                         </Button> */}
-                        {isAdmin && (
+                        {isAdmin && item.status !== 'collected' && (
                             <Button
                                 variant="ghost"
                                 onClick={() => handleDeleteClick(item)}
@@ -505,46 +516,31 @@ function SocialAidRecipientPage() {
                 </Dialog.Root>
 
                 {/* Delete Confirmation Modal */}
-                <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-                    <Dialog.Portal>
-                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                            <div className="justify_center mx-auto mb-4 flex h-12 w-12 items-center rounded-full border-2 border-red-200 bg-red-100">
-                                <Trash2 className="h-6 w-6 text-red-600" />
+                <ConfirmationModal
+                    isOpen={deleteModalOpen}
+                    onClose={handleDeleteClose}
+                    onConfirm={handleDeleteConfirm}
+                    title="Konfirmasi Hapus"
+                    message={
+                        recipientToDelete ? (
+                            <div>
+                                <p className="mb-4">Apakah Anda yakin ingin menghapus penerima bantuan sosial ini?</p>
+                                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-left">
+                                    <p className="text-sm font-medium text-red-900">Detail Penerima:</p>
+                                    <p className="text-sm text-red-800">
+                                        {recipientToDelete.citizen?.full_name || recipientToDelete.family?.family_name} -{' '}
+                                        {recipientToDelete.program?.program_name}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="text-center">
-                                <Dialog.Title className="mb-2 text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
-                                <Dialog.Description className="mb-4 text-sm text-red-700">
-                                    Apakah Anda yakin ingin menghapus penerima bantuan sosial ini?
-                                </Dialog.Description>
-                                {recipientToDelete && (
-                                    <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-left">
-                                        <p className="text-sm font-medium text-red-900">Detail Penerima:</p>
-                                        <p className="text-sm text-red-800">
-                                            {recipientToDelete.citizen?.full_name || recipientToDelete.family?.family_name} -{' '}
-                                            {recipientToDelete.program?.program_name}
-                                        </p>
-                                        <p className="mt-1 text-xs text-red-600">Tindakan ini tidak dapat dibatalkan.</p>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex justify-end gap-3">
-                                <Button
-                                    onClick={handleDeleteClose}
-                                    variant="outline"
-                                    className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                                    disabled={isDeleting}
-                                >
-                                    Batal
-                                </Button>
-                                <Button onClick={handleDeleteConfirm} variant="red" disabled={isDeleting}>
-                                    {isDeleting ? 'Menghapus...' : 'Hapus'}
-                                </Button>
-                            </div>
-                        </Dialog.Content>
-                    </Dialog.Portal>
-                </Dialog.Root>
+                        ) : (
+                            'Apakah Anda yakin ingin menghapus penerima bantuan sosial ini?'
+                        )
+                    }
+                    confirmText="Hapus"
+                    cancelText="Batal"
+                    isLoading={isDeleting}
+                />
             </div>
         </BaseLayouts>
     );
