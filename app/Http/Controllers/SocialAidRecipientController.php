@@ -6,9 +6,12 @@ use App\Models\SocialAidRecipient;
 use App\Models\SocialAidProgram;
 use App\Models\Citizen;
 use App\Models\Family;
+use App\Mail\SocialAidRecipientNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class SocialAidRecipientController extends Controller
@@ -238,6 +241,9 @@ class SocialAidRecipientController extends Controller
             SocialAidRecipient::insert($rows);
         });
 
+        // Send email notifications to recipients after successful insert
+        $this->sendRecipientNotifications($program, $filtered);
+
         return redirect()->route('social-aid.recipients')
             ->with('success', 'Penerima bantuan sosial berhasil ditambahkan.');
     }
@@ -326,5 +332,62 @@ class SocialAidRecipientController extends Controller
 
         return redirect()->route('social-aid.recipients')
             ->with('success', 'Penerima bantuan sosial berhasil dihapus.');
+    }
+
+    /**
+     * Send email notifications to recipients.
+     */
+    private function sendRecipientNotifications(SocialAidProgram $program, array $filtered)
+    {
+        foreach ($filtered as $recipientData) {
+            try {
+                $citizenId = $recipientData['citizen_id'] ?? null;
+                $familyId = $recipientData['family_id'] ?? null;
+                
+                // Find the recipient record
+                $recipient = null;
+                if ($citizenId) {
+                    $recipient = SocialAidRecipient::where('program_id', $program->id)
+                        ->where('citizen_id', $citizenId)
+                        ->with('citizen')
+                        ->latest()
+                        ->first();
+                } elseif ($familyId) {
+                    $recipient = SocialAidRecipient::where('program_id', $program->id)
+                        ->where('family_id', $familyId)
+                        ->with(['family.citizens' => function ($query) {
+                            $query->where('status', 'head_of_household');
+                        }])
+                        ->latest()
+                        ->first();
+                }
+
+                if (!$recipient) {
+                    continue;
+                }
+
+                // Determine email recipient
+                $email = null;
+                
+                if ($program->type === 'individual' && $recipient->citizen) {
+                    // For individual programs, send to citizen's email
+                    $email = $recipient->citizen->email;
+                } elseif ($program->type === 'household' && $recipient->family) {
+                    // For household programs, send to head of household's email
+                    $headOfHousehold = $recipient->family->headOfHousehold();
+                    if ($headOfHousehold) {
+                        $email = $headOfHousehold->email;
+                    }
+                }
+
+                // Send email if valid email exists
+                if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    Mail::to($email)->send(new SocialAidRecipientNotification($program, $recipient));
+                }
+            } catch (\Exception $e) {
+                // Log error but don't fail the operation
+                Log::error('Failed to send social aid recipient notification: ' . $e->getMessage());
+            }
+        }
     }
 }

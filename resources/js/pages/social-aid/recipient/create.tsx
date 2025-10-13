@@ -39,6 +39,7 @@ function CreateRecipientPage() {
     const [recipients, setRecipients] = useState<RecipientForm[]>([{ id: '1', citizen_id: undefined, family_id: undefined, note: '' }]);
     const [showProgramChangeModal, setShowProgramChangeModal] = useState(false);
     const [pendingProgramId, setPendingProgramId] = useState<string>('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Function to format error message with list support
     const formatErrorMessage = (message: string) => {
@@ -223,6 +224,8 @@ function CreateRecipientPage() {
             return;
         }
 
+        setIsSubmitting(true);
+
         router.post(
             '/recipients',
             {
@@ -241,6 +244,9 @@ function CreateRecipientPage() {
                     const firstError = typeof errors === 'object' ? Object.values(errors)[0] : null;
                     const errorMessage = (firstError as string) || 'Gagal menyimpan penerima bantuan sosial';
                     setAlert({ type: 'error', message: formatErrorMessage(errorMessage) });
+                },
+                onFinish: () => {
+                    setIsSubmitting(false);
                 },
             },
         );
@@ -404,11 +410,12 @@ function CreateRecipientPage() {
                                 onClick={() => router.visit('/recipients')}
                                 variant="outline"
                                 className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                                disabled={isSubmitting}
                             >
                                 Batal
                             </Button>
-                            <Button onClick={handleSubmit} icon={<UserCheck className="h-4 w-4" />} iconPosition="left">
-                                Simpan Penerima
+                            <Button onClick={handleSubmit} icon={<UserCheck className="h-4 w-4" />} iconPosition="left" disabled={isSubmitting}>
+                                {isSubmitting ? 'Menyimpan...' : 'Simpan Penerima'}
                             </Button>
                         </div>
                     </div>
