@@ -18,7 +18,7 @@ class EventController extends Controller
     public function index(Request $request)
     {
         // Update event statuses based on current date FIRST
-        $this->updateEventStatuses();
+        // $this->updateEventStatuses();
         
         $search = $request->string('q')->toString();
         $status = $request->string('status')->toString();
@@ -62,23 +62,23 @@ class EventController extends Controller
     /**
      * Update event statuses based on current date.
      */
-    private function updateEventStatuses(): void
-    {
-        $now = now();
+    // private function updateEventStatuses(): void
+    // {
+    //     $now = now();
         
-        // Update events that should be finished FIRST (highest priority)
-        Event::where('date_end', '<', $now)
-            ->update(['status' => 'finished']);
+    //     // Update events that should be finished FIRST (highest priority)
+    //     Event::where('date_end', '<', $now)
+    //         ->update(['status' => 'finished']);
             
-        // Update events that should be ongoing (only if not finished)
-        Event::where('date_start', '<=', $now)
-            ->where('date_end', '>=', $now)
-            ->update(['status' => 'ongoing']);
+    //     // Update events that should be ongoing (only if not finished)
+    //     Event::where('date_start', '<=', $now)
+    //         ->where('date_end', '>=', $now)
+    //         ->update(['status' => 'ongoing']);
             
-        // Update events that should be pending (only if not finished or ongoing)
-        Event::where('date_start', '>', $now)
-            ->update(['status' => 'pending']);
-    }
+    //     // Update events that should be pending (only if not finished or ongoing)
+    //     Event::where('date_start', '>', $now)
+    //         ->update(['status' => 'pending']);
+    // }
 
     /**
      * Show the form for creating a new event.
@@ -108,7 +108,7 @@ class EventController extends Controller
         $rules = [
             'event_name' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
-            'date_start' => 'required|date|after:now',
+            'date_start' => 'required|date',
             'date_end' => 'required|date|after:date_start',
             'location' => 'required|string|max:255',
             'flyer' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240', // 10MB max
@@ -131,7 +131,6 @@ class EventController extends Controller
             'description.max' => 'Deskripsi maksimal 2000 karakter.',
             'date_start.required' => 'Tanggal mulai wajib diisi.',
             'date_start.date' => 'Format tanggal mulai tidak valid.',
-            'date_start.after' => 'Tanggal mulai harus setelah waktu sekarang.',
             'date_end.required' => 'Tanggal selesai wajib diisi.',
             'date_end.date' => 'Format tanggal selesai tidak valid.',
             'date_end.after' => 'Tanggal selesai harus setelah tanggal mulai.',
