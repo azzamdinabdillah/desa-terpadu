@@ -245,10 +245,19 @@ function Dashboard() {
                 const expense = series[1][dataPointIndex];
                 const balance = series[2][dataPointIndex];
                 const month = w.globals.labels[dataPointIndex];
+
+                // Check which series are active (not collapsed)
+                const collapsedSeriesIndices = w.globals.collapsedSeriesIndices || [];
+                const isIncomeActive = !collapsedSeriesIndices.includes(0);
+                const isExpenseActive = !collapsedSeriesIndices.includes(1);
+                const isBalanceActive = !collapsedSeriesIndices.includes(2);
+
+                // Calculate net income only if both income and expense are active
                 const netIncome = income - expense;
                 const netPercentage = income > 0 ? ((netIncome / income) * 100).toFixed(1) : 0;
+                const showNetSummary = isIncomeActive && isExpenseActive && isBalanceActive;
 
-                return `
+                let tooltipContent = `
                     <div style="
                         background: linear-gradient(135deg, #15803d 0%, #166534 100%);
                         border-radius: 12px;
@@ -278,8 +287,11 @@ function Dashboard() {
                                 font-weight: 500;
                             ">Ringkasan Keuangan</div>
                         </div>
+                `;
 
-                        <!-- Income -->
+                // Income - only show if active
+                if (isIncomeActive) {
+                    tooltipContent += `
                         <div style="
                             display: flex;
                             align-items: center;
@@ -308,8 +320,12 @@ function Dashboard() {
                                 letter-spacing: 0.3px;
                             ">${formatCurrency(income)}</span>
                         </div>
+                    `;
+                }
 
-                        <!-- Expense -->
+                // Expense - only show if active
+                if (isExpenseActive) {
+                    tooltipContent += `
                         <div style="
                             display: flex;
                             align-items: center;
@@ -338,8 +354,12 @@ function Dashboard() {
                                 letter-spacing: 0.3px;
                             ">${formatCurrency(expense)}</span>
                         </div>
+                    `;
+                }
 
-                        <!-- Balance -->
+                // Balance - only show if active
+                if (isBalanceActive) {
+                    tooltipContent += `
                         <div style="
                             display: flex;
                             align-items: center;
@@ -368,8 +388,12 @@ function Dashboard() {
                                 letter-spacing: 0.3px;
                             ">${formatCurrency(balance)}</span>
                         </div>
+                    `;
+                }
 
-                        <!-- Net Income Summary -->
+                // Net Income Summary - only show if all series are active
+                if (showNetSummary) {
+                    tooltipContent += `
                         <div style="
                             margin-top: 12px;
                             padding-top: 12px;
@@ -406,8 +430,11 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
+
+                tooltipContent += `</div>`;
+                return tooltipContent;
             },
         },
         legend: {
