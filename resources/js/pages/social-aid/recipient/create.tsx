@@ -75,7 +75,7 @@ function CreateRecipientPage() {
     // Get selected program details
     const selectedProgramData = programs.find((p) => p.id.toString() === selectedProgram);
 
-    // Prepare program options
+    // Prepare program options (already sorted by created_at desc from backend)
     const programOptions = programs.map((program) => ({
         value: program.id.toString(),
         label: `${program.program_name} (${program.period})`,
@@ -366,16 +366,18 @@ function CreateRecipientPage() {
                                                     <div className="md:col-span-2">
                                                         <Select
                                                             label="Pilih Keluarga"
-                                                            options={families.map((family) => {
-                                                                const isSelected = recipients.some(
-                                                                    (r) => r.id !== recipient.id && r.family_id === family.id,
-                                                                );
-                                                                return {
-                                                                    value: family.id.toString(),
-                                                                    label: `${family.family_name} (${family.kk_number || 'No KK'})${isSelected ? ' - Sudah dipilih' : ''}`,
-                                                                    disabled: isSelected,
-                                                                };
-                                                            })}
+                                                            options={families
+                                                                .filter((family) => family.has_head_of_household)
+                                                                .map((family) => {
+                                                                    const isSelected = recipients.some(
+                                                                        (r) => r.id !== recipient.id && r.family_id === family.id,
+                                                                    );
+                                                                    return {
+                                                                        value: family.id.toString(),
+                                                                        label: `${family.family_name} (${family.kk_number || 'No KK'})${isSelected ? ' - Sudah dipilih' : ''}`,
+                                                                        disabled: isSelected,
+                                                                    };
+                                                                })}
                                                             value={recipient.family_id?.toString() || ''}
                                                             onChange={(value) =>
                                                                 updateRecipient(recipient.id, 'family_id', value ? parseInt(value) : undefined)

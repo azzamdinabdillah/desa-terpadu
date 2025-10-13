@@ -104,11 +104,11 @@ class SocialAidRecipientController extends Controller
      */
     public function create()
     {
-        // Get all programs (exclude public type)
-        $programs = SocialAidProgram::select('id', 'program_name', 'period', 'type', 'quota')
+        // Get all programs (exclude public type) - sorted by newest first
+        $programs = SocialAidProgram::select('id', 'program_name', 'period', 'type', 'quota', 'created_at')
             ->where('type', '!=', 'public')
             ->withCount('recipients')
-            ->orderBy('program_name')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Get all citizens
@@ -116,10 +116,22 @@ class SocialAidRecipientController extends Controller
             ->orderBy('full_name')
             ->get();
 
-        // Get all families
+        // Get all families with head of household information
         $families = Family::select('id', 'family_name', 'kk_number')
+            ->with(['citizens' => function ($query) {
+                $query->where('status', 'head_of_household')->select('id', 'family_id', 'full_name', 'status');
+            }])
             ->orderBy('family_name')
-            ->get();
+            ->get()
+            ->map(function ($family) {
+                return [
+                    'id' => $family->id,
+                    'family_name' => $family->family_name,
+                    'kk_number' => $family->kk_number,
+                    'has_head_of_household' => $family->citizens->isNotEmpty(),
+                    'head_of_household_name' => $family->citizens->first()?->full_name ?? null,
+                ];
+            });
 
         return Inertia::render('social-aid/recipient/create', [
             'programs' => $programs,
