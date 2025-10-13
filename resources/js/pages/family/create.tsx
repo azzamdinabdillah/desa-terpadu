@@ -1,12 +1,13 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { FamilyType } from '@/types/familyType';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { Save } from 'lucide-react';
+import { Save, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface CreateFamilyPageProps {
@@ -108,8 +109,8 @@ function CreateFamilyPage() {
 
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
-                <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <DetailCard title="Data Keluarga" icon={Users}>
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             <InputField
                                 label="Nama Keluarga"
@@ -128,17 +129,17 @@ function CreateFamilyPage() {
                                 required
                             />
                         </div>
+                    </DetailCard>
 
-                        <div className="flex justify-end space-x-4 border-t border-gray-200 pt-6">
-                            <Button type="button" variant="outline" onClick={() => router.visit('/families')} disabled={processing}>
-                                Batal
-                            </Button>
-                            <Button type="submit" variant="primary" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
-                                <span>{processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui' : 'Simpan'}</span>
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                    <div className="flex justify-end space-x-4">
+                        <Button type="button" variant="outline" onClick={() => router.visit('/families')} disabled={processing}>
+                            Batal
+                        </Button>
+                        <Button type="submit" variant="primary" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
+                            <span>{processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui' : 'Simpan'}</span>
+                        </Button>
+                    </div>
+                </form>
             </div>
         </BaseLayouts>
     );

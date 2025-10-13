@@ -1,5 +1,6 @@
 ﻿import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -140,79 +141,74 @@ function CreateCitizenPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Personal Information Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <User className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Informasi Pribadi</h3>
-                            </div>
+                        <DetailCard title="Informasi Pribadi" icon={User}>
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                    <InputField
+                                        label="Nama Lengkap"
+                                        value={data.full_name}
+                                        onChange={(value) => setData('full_name', value)}
+                                        placeholder="Masukkan nama lengkap"
+                                        required
+                                    />
 
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <InputField
-                                    label="Nama Lengkap"
-                                    value={data.full_name}
-                                    onChange={(value) => setData('full_name', value)}
-                                    placeholder="Masukkan nama lengkap"
-                                    required
-                                />
+                                    <InputField
+                                        label="NIK"
+                                        type="number"
+                                        value={data.nik}
+                                        onChange={(value) => setData('nik', value)}
+                                        placeholder="Masukkan NIK (16 digit)"
+                                        required
+                                    />
 
-                                <InputField
-                                    label="NIK"
-                                    type="number"
-                                    value={data.nik}
-                                    onChange={(value) => setData('nik', value)}
-                                    placeholder="Masukkan NIK (16 digit)"
-                                    required
-                                />
+                                    <InputField
+                                        label="Email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(value) => setData('email', value)}
+                                        placeholder="Masukkan email"
+                                        required
+                                    />
 
-                                <InputField
-                                    label="Email"
-                                    type="email"
-                                    value={data.email}
-                                    onChange={(value) => setData('email', value)}
-                                    placeholder="Masukkan email"
-                                    required
-                                />
+                                    <InputField
+                                        label="Nomor Telepon"
+                                        type="number"
+                                        value={data.phone_number}
+                                        onChange={(value) => setData('phone_number', value)}
+                                        placeholder="Masukkan nomor telepon"
+                                    />
 
-                                <InputField
-                                    label="Nomor Telepon"
-                                    type="number"
-                                    value={data.phone_number}
-                                    onChange={(value) => setData('phone_number', value)}
-                                    placeholder="Masukkan nomor telepon"
-                                />
+                                    <InputField
+                                        label="Tanggal Lahir"
+                                        value={data.date_of_birth}
+                                        onChange={(value) => setData('date_of_birth', value)}
+                                        type="date"
+                                        required
+                                    />
 
-                                <InputField
-                                    label="Tanggal Lahir"
-                                    value={data.date_of_birth}
-                                    onChange={(value) => setData('date_of_birth', value)}
-                                    type="date"
-                                    required
-                                />
+                                    <Select
+                                        label="Jenis Kelamin"
+                                        value={data.gender}
+                                        onChange={(value) => setData('gender', value)}
+                                        options={genderOptions}
+                                        required
+                                    />
 
-                                <Select
-                                    label="Jenis Kelamin"
-                                    value={data.gender}
-                                    onChange={(value) => setData('gender', value)}
-                                    options={genderOptions}
-                                    required
-                                />
+                                    <Select
+                                        label="Agama"
+                                        value={data.religion}
+                                        onChange={(value) => setData('religion', value)}
+                                        options={religionOptions}
+                                    />
 
-                                <Select
-                                    label="Agama"
-                                    value={data.religion}
-                                    onChange={(value) => setData('religion', value)}
-                                    options={religionOptions}
-                                />
+                                    <Select
+                                        label="Status Pernikahan"
+                                        value={data.marital_status}
+                                        onChange={(value) => setData('marital_status', value)}
+                                        options={maritalStatusOptions}
+                                    />
+                                </div>
 
-                                <Select
-                                    label="Status Pernikahan"
-                                    value={data.marital_status}
-                                    onChange={(value) => setData('marital_status', value)}
-                                    options={maritalStatusOptions}
-                                />
-                            </div>
-
-                            <div className="mt-6">
                                 <InputField
                                     label="Alamat"
                                     value={data.address}
@@ -222,9 +218,7 @@ function CreateCitizenPage() {
                                     rows={3}
                                     required
                                 />
-                            </div>
 
-                            <div className="mt-6">
                                 <FileUpload
                                     label="Foto Profil"
                                     accept="image/*"
@@ -235,15 +229,10 @@ function CreateCitizenPage() {
                                     onPreviewChange={setPreview}
                                 />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Professional Information Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <Briefcase className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Informasi Profesi</h3>
-                            </div>
-
+                        <DetailCard title="Informasi Profesi" icon={Briefcase}>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <InputField
                                     label="Pekerjaan"
@@ -260,15 +249,10 @@ function CreateCitizenPage() {
                                     placeholder="Masukkan jabatan (opsional)"
                                 />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Family Information Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <Users className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Informasi Keluarga</h3>
-                            </div>
-
+                        <DetailCard title="Informasi Keluarga" icon={Users}>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <Select
                                     label="Keluarga"
@@ -288,7 +272,7 @@ function CreateCitizenPage() {
                                     required
                                 />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Action Buttons */}
                         <div className="flex flex-col gap-4 sm:flex-row sm:justify-end">
