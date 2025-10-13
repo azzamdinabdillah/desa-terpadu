@@ -1,5 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -8,7 +10,7 @@ import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { useForm, usePage } from '@inertiajs/react';
-import { CheckCircle, FileText, User } from 'lucide-react';
+import { Calendar, CheckCircle, FileText, Hash, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface ActionPageProps {
@@ -131,37 +133,24 @@ export default function ActionPage() {
                     <HeaderPage title="Action Penerima Bansos" description="Konfirmasi penerimaan bantuan sosial" total={1} />
 
                     {/* Recipient Info Card */}
-                    <div className="mb-6 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                        <div className="mb-4 flex items-center gap-2">
-                            <User className="h-5 w-5 text-green-600" />
-                            <h3 className="text-lg font-semibold text-green-900">Informasi Penerima</h3>
-                        </div>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <label className="text-sm font-medium text-green-700">Nama Penerima</label>
-                                <p className="text-lg font-semibold text-green-900">{getRecipientName()}</p>
+                    <div className="mb-6">
+                        <DetailCard title="Informasi Penerima" icon={User}>
+                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                <DetailItem icon={User} label="Nama Penerima" value={getRecipientName()} />
+                                <DetailItem icon={Hash} label="ID Penerima" value={getRecipientId()} />
+                                <DetailItem
+                                    icon={FileText}
+                                    label="Program Bansos"
+                                    value={recipient.program?.program_name || '-'}
+                                    withBorder={false}
+                                />
+                                <DetailItem icon={Calendar} label="Periode" value={recipient.program?.period || '-'} withBorder={false} />
                             </div>
-                            <div>
-                                <label className="text-sm font-medium text-green-700">ID Penerima</label>
-                                <p className="text-lg text-green-900">{getRecipientId()}</p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-green-700">Program Bansos</label>
-                                <p className="text-lg text-green-900">{recipient.program?.program_name}</p>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-green-700">Periode</label>
-                                <p className="text-lg text-green-900">{recipient.program?.period}</p>
-                            </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     {/* Action Form */}
-                    <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                        <div className="mb-4 flex items-center gap-2">
-                            <FileText className="h-5 w-5 text-green-600" />
-                            <h3 className="text-lg font-semibold text-green-900">Konfirmasi Penerimaan</h3>
-                        </div>
+                    <DetailCard title="Konfirmasi Penerimaan" icon={CheckCircle}>
                         <p className="mb-6 text-sm text-green-700">Upload foto bukti, tambahkan catatan, dan konfirmasi status penerimaan</p>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -221,7 +210,7 @@ export default function ActionPage() {
                                 </Button>
                             </div>
                         </form>
-                    </div>
+                    </DetailCard>
 
                     {/* Current Status Info */}
                     {recipient.status === 'collected' && (
@@ -235,7 +224,9 @@ export default function ActionPage() {
                                             Diterima pada {new Date(recipient.collected_at).toLocaleString('id-ID')}
                                         </p>
                                     )}
-                                    {recipient.performed_by && <p className="text-sm text-green-700">Oleh: {recipient.performed_by.citizen.full_name}</p>}
+                                    {recipient.performed_by && (
+                                        <p className="text-sm text-green-700">Oleh: {recipient.performed_by.citizen.full_name}</p>
+                                    )}
                                 </div>
                             </div>
                         </div>

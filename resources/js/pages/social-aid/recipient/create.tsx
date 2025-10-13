@@ -1,6 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -10,7 +11,7 @@ import { CitizenType } from '@/types/citizen/citizenType';
 import { FamilyType } from '@/types/familyType';
 import { SocialAidProgram } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Minus, Plus, UserCheck } from 'lucide-react';
+import { HandHeart, Minus, Plus, UserCheck, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface CreateRecipientPageProps {
@@ -155,7 +156,7 @@ function CreateRecipientPage() {
         return 'Belum dipilih';
     };
 
-    const updateRecipient = (id: string, field: keyof RecipientForm, value: number | undefined) => {
+    const updateRecipient = (id: string, field: keyof RecipientForm, value: number | string | undefined) => {
         // Check for duplicates when selecting citizen or family
         if (field === 'citizen_id' && value) {
             const duplicateRecipient = recipients.find((recipient) => recipient.id !== id && recipient.citizen_id === value);
@@ -236,7 +237,7 @@ function CreateRecipientPage() {
                 preserveScroll: true,
                 onError: (errors) => {
                     console.log(errors);
-                    
+
                     const firstError = typeof errors === 'object' ? Object.values(errors)[0] : null;
                     const errorMessage = (firstError as string) || 'Gagal menyimpan penerima bantuan sosial';
                     setAlert({ type: 'error', message: formatErrorMessage(errorMessage) });
@@ -257,8 +258,7 @@ function CreateRecipientPage() {
 
                     <div className="space-y-6">
                         {/* Program Selection */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <h3 className="mb-4 text-lg font-semibold text-green-900">Pilih Program Bantuan Sosial</h3>
+                        <DetailCard title="Pilih Program Bantuan Sosial" icon={HandHeart}>
                             <Select
                                 label="Program Bantuan Sosial"
                                 options={programOptions}
@@ -277,13 +277,12 @@ function CreateRecipientPage() {
                                     </p>
                                 </div>
                             )}
-                        </div>
+                        </DetailCard>
 
                         {/* Recipients Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
+                        <DetailCard title="Penerima Bantuan Sosial" icon={Users}>
                             <div className="mb-4 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <h3 className="text-lg font-semibold text-green-900">Penerima Bantuan Sosial</h3>
                                     {selectedProgram && (
                                         <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
                                             Kuota&nbsp;:&nbsp;
@@ -397,7 +396,7 @@ function CreateRecipientPage() {
                                     ))}
                                 </div>
                             )}
-                        </div>
+                        </DetailCard>
 
                         {/* Action Buttons */}
                         <div className="flex justify-end gap-3">

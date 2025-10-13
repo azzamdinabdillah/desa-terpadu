@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -8,7 +9,7 @@ import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { Calendar, HandHeart, MapPin, Save } from 'lucide-react';
+import { Calendar, HandHeart, Image as ImageIcon, MapPin, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface SocialAidCreatePageProps {
@@ -139,14 +140,7 @@ function SocialAidCreatePage() {
                     />
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Program Information Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                                    <HandHeart className="h-5 w-5 text-green-600" />
-                                </div>
-                                <h2 className="text-xl font-bold text-green-900">Informasi Program</h2>
-                            </div>
-
+                        <DetailCard title="Informasi Program" icon={HandHeart}>
                             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                 {/* Program Name */}
                                 <div className="lg:col-span-2">
@@ -241,17 +235,10 @@ function SocialAidCreatePage() {
                                     rows={4}
                                 />
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Image Upload Card */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                                    <HandHeart className="h-5 w-5 text-green-600" />
-                                </div>
-                                <h2 className="text-xl font-bold text-green-900">Gambar Program</h2>
-                            </div>
-
+                        <DetailCard title="Gambar Program" icon={ImageIcon}>
                             <FileUpload
                                 label="Gambar Program"
                                 accept="image/*"
@@ -261,7 +248,7 @@ function SocialAidCreatePage() {
                                 onChange={(file) => setData('image', file)}
                                 onPreviewChange={setImagePreview}
                             />
-                        </div>
+                        </DetailCard>
 
                         {/* Action Buttons */}
                         <div className="flex justify-end gap-4">

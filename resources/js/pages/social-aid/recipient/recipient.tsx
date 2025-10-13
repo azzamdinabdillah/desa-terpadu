@@ -275,7 +275,7 @@ function SocialAidRecipientPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: SocialAidRecipient) => (
                     <div className="flex items-center gap-2">
-                        {isAdmin && (
+                        {isAdmin && item.status !== 'collected' && (
                             <Button variant="ghost" onClick={() => router.visit(`/recipients/${item.id}/action`)} title="Action Penerima">
                                 <StickyNote className="h-4 w-4" />
                             </Button>
@@ -352,11 +352,7 @@ function SocialAidRecipientPage() {
                             />
 
                             {isAdmin && (
-                                <Button
-                                    onClick={() => router.visit('/recipients/create')}
-                                    icon={<Plus className="h-4 w-4" />}
-                                    iconPosition="left"
-                                >
+                                <Button onClick={() => router.visit('/recipients/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
                                     Tambah Penerima
                                 </Button>
                             )}
