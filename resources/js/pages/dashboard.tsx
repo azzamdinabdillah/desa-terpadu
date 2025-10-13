@@ -155,7 +155,7 @@ function Dashboard() {
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: [3, 3, 3],
+            width: [5, 5, 5],
             // dashArray: [0, 0, 5],
         },
         markers: {
@@ -885,7 +885,7 @@ function Dashboard() {
                         {/* Top Occupations */}
                         <DetailCard title="5 Pekerjaan Teratas" icon={Users}>
                             <div style={{ minHeight: '340px' }}>
-                                <Bar data={createBarData(topOccupations)} options={horizontalBarOptions} />
+                                <Doughnut data={createDoughnutData(topOccupations)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
                     </div>
