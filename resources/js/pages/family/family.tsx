@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -46,8 +47,6 @@ function Family() {
     const { isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
-    const [viewModalOpen, setViewModalOpen] = useState(false);
-    const [viewModalData] = useState<FamilyType | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<FamilyType | null>(null);
 
@@ -86,11 +85,6 @@ function Family() {
     const handleViewClick = (family: FamilyType) => {
         router.visit(`/families/${family.id}`);
     };
-
-    // const handleViewClose = () => {
-    //     setViewModalOpen(false);
-    //     setViewModalData(null);
-    // };
 
     const handleDeleteClick = (family: FamilyType) => {
         setDeleteModalData(family);
@@ -133,13 +127,13 @@ function Family() {
             },
             ...(isAdmin
                 ? [
-                    {
-                        key: 'kk_number',
-                        header: 'Nomor KK',
-                        className: 'whitespace-nowrap',
-                        cell: (item: FamilyType) => <p className="font-mono text-sm text-green-900">{item.kk_number}</p>,
-                    },
-                ]
+                      {
+                          key: 'kk_number',
+                          header: 'Nomor KK',
+                          className: 'whitespace-nowrap',
+                          cell: (item: FamilyType) => <p className="font-mono text-sm text-green-900">{item.kk_number}</p>,
+                      },
+                  ]
                 : []),
             {
                 key: 'citizens_count',
@@ -259,95 +253,29 @@ function Family() {
 
                     {/* Empty State handled by DataTable when no data */}
 
-                    {/* View Detail Modal */}
-                    <Dialog.Root open={viewModalOpen} onOpenChange={setViewModalOpen}>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg md:w-full">
-                                <div className="mb-4 flex items-center justify-between border-b border-green-200 pb-4">
-                                    <Dialog.Title className="text-lg font-semibold text-green-900">Detail Keluarga</Dialog.Title>
-                                    <Dialog.Close asChild>
-                                        <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </Button>
-                                    </Dialog.Close>
-                                </div>
-
-                                {viewModalData && (
-                                    <div className="space-y-4">
-                                        {/* Family Name */}
-                                        <div>
-                                            <h2 className="mb-2 text-xl font-bold text-green-900">{viewModalData.family_name}</h2>
-                                        </div>
-
-                                        {/* KK Number */}
-                                        <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                            <h3 className="mb-2 text-sm font-medium text-green-700">Nomor Kartu Keluarga</h3>
-                                            <p className="font-mono text-sm text-green-800">{viewModalData.kk_number}</p>
-                                        </div>
-
-                                        {/* Members Count */}
-                                        <div className="flex items-center gap-2 text-sm text-green-700">
-                                            <Users className="h-4 w-4" />
-                                            <span className="font-medium">Jumlah Anggota Keluarga:</span>
-                                            <span>{viewModalData.citizens_count || 0} orang</span>
-                                        </div>
-
-                                        {/* Date */}
-                                        <div className="flex items-center gap-2 text-sm text-green-700">
-                                            <Calendar className="h-4 w-4" />
-                                            <span className="font-medium">Tanggal Dibuat:</span>
-                                            <span>{formatDate(viewModalData.created_at || '')}</span>
-                                        </div>
+                    {/* Delete Confirmation Modal */}
+                    <ConfirmationModal
+                        isOpen={deleteModalOpen}
+                        onClose={handleDeleteClose}
+                        onConfirm={handleDeleteConfirm}
+                        title="Konfirmasi Hapus Keluarga"
+                        message={
+                            <div className="space-y-3">
+                                <p className="text-sm">Apakah Anda yakin ingin menghapus keluarga berikut?</p>
+                                <p className="text-sm font-semibold">
+                                    Peringatan: Menghapus data keluarga ini juga akan menghapus semua data yang berkaitan dengan keluarga ini,
+                                    termasuk seluruh anggota keluarga yang terdaftar.
+                                </p>
+                                {deleteModalData && (
+                                    <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                                        <h3 className="font-medium text-red-900">{deleteModalData.family_name}</h3>
+                                        <p className="mt-1 text-sm">Nomor KK: {deleteModalData.kk_number}</p>
+                                        <p className="mt-1 text-sm">Anggota: {deleteModalData.citizens_count || 0} orang</p>
                                     </div>
                                 )}
-                            </Dialog.Content>
-                        </Dialog.Portal>
-                    </Dialog.Root>
-
-                    {/* Delete Confirmation Modal */}
-                    <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-red-200 bg-white p-6 shadow-lg md:w-full">
-                                <div className="mb-4 flex items-center gap-3 border-b border-red-200 pb-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                                        <Trash2 className="h-5 w-5 text-red-600" />
-                                    </div>
-                                    <div>
-                                        <Dialog.Title className="text-lg font-semibold text-red-900">Konfirmasi Hapus</Dialog.Title>
-                                        <p className="text-sm text-red-700">Tindakan ini tidak dapat dibatalkan.</p>
-                                    </div>
-                                </div>
-
-                                <div className="mb-6">
-                                    <p className="mb-1 text-sm text-gray-700">Apakah Anda yakin ingin menghapus keluarga berikut?</p>
-                                    <p className="mb-2 text-sm font-semibold text-red-600">
-                                        Peringatan: Menghapus data keluarga ini juga akan menghapus semua data yang berkaitan dengan keluarga ini,
-                                        termasuk seluruh anggota keluarga yang terdaftar.
-                                    </p>
-                                    {deleteModalData && (
-                                        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-                                            <h3 className="font-medium text-red-900">{deleteModalData.family_name}</h3>
-                                            <p className="mt-1 text-sm text-red-700">Nomor KK: {deleteModalData.kk_number}</p>
-                                            <p className="mt-1 text-sm text-red-700">Anggota: {deleteModalData.citizens_count || 0} orang</p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="flex justify-end gap-3">
-                                    <Button onClick={handleDeleteClose} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
-                                        Batal
-                                    </Button>
-                                    <Button onClick={handleDeleteConfirm} variant="red">
-                                        Hapus
-                                    </Button>
-                                </div>
-                            </Dialog.Content>
-                        </Dialog.Portal>
-                    </Dialog.Root>
+                            </div>
+                        }
+                    />
                 </div>
             </div>
         </BaseLayouts>
