@@ -1,12 +1,13 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField, { formatters, parsers } from '@/components/InputField';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useForm, usePage } from '@inertiajs/react';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, FileText, TrendingDown, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -118,123 +119,133 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                         <HeaderPage title="Tambah Transaksi Keuangan" description="Catat pemasukan atau pengeluaran desa" />
 
                         {/* Form */}
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             {/* Transaction Type */}
-                            <div>
-                                <h3 className="mb-4 text-lg font-medium text-green-800">
-                                    Jenis Transaksi <span className="text-sm text-green-500"> (klik untuk pilih!)</span>{' '}
-                                </h3>
-                                <div className="grid gap-4 md:grid-cols-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setData('type', 'income')}
-                                        className={`relative rounded-xl border-2 px-4 py-2 text-left transition-all lg:px-5 lg:py-3 ${
-                                            data.type === 'income'
-                                                ? 'border-green-500 bg-green-50'
-                                                : 'border-green-200 bg-white hover:border-green-300'
-                                        }`}
-                                    >
-                                        <div className="flex items-center">
-                                            <div className="">
-                                                <h4 className={`font-medium ${data.type === 'income' ? 'text-green-900' : 'text-green-900'}`}>
-                                                    Pemasukan
-                                                </h4>
-                                                <p className={`text-sm ${data.type === 'income' ? 'text-green-700' : 'text-green-600'}`}>
-                                                    Uang masuk ke kas
-                                                </p>
+                            <DetailCard title="Jenis Transaksi" icon={data.type === 'income' ? TrendingUp : TrendingDown}>
+                                <div className="space-y-3">
+                                    <p className="text-sm text-gray-600">Klik untuk memilih jenis transaksi</p>
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setData('type', 'income')}
+                                            className={`relative rounded-xl border-2 px-4 py-3 text-left transition-all lg:px-5 lg:py-4 ${
+                                                data.type === 'income'
+                                                    ? 'border-green-500 bg-green-50'
+                                                    : 'border-gray-200 bg-white hover:border-green-300'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+                                                    <TrendingUp className="h-5 w-5 text-green-600" />
+                                                </div>
+                                                <div>
+                                                    <h4 className={`font-medium ${data.type === 'income' ? 'text-green-900' : 'text-gray-900'}`}>
+                                                        Pemasukan
+                                                    </h4>
+                                                    <p className={`text-sm ${data.type === 'income' ? 'text-green-700' : 'text-gray-600'}`}>
+                                                        Uang masuk ke kas
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
+                                        </button>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => setData('type', 'expense')}
-                                        className={`relative rounded-xl border-2 px-4 py-2 text-left transition-all lg:px-5 lg:py-3 ${
-                                            data.type === 'expense'
-                                                ? 'border-blue-500 bg-blue-50'
-                                                : 'border-green-200 bg-white hover:border-green-300'
-                                        }`}
-                                    >
-                                        <div className="flex items-center">
-                                            <div className="">
-                                                <h4 className={`font-medium ${data.type === 'expense' ? 'text-blue-900' : 'text-green-900'}`}>
-                                                    Pengeluaran
-                                                </h4>
-                                                <p className={`text-sm ${data.type === 'expense' ? 'text-blue-700' : 'text-green-600'}`}>
-                                                    Uang keluar dari kas
-                                                </p>
+                                        <button
+                                            type="button"
+                                            onClick={() => setData('type', 'expense')}
+                                            className={`relative rounded-xl border-2 px-4 py-3 text-left transition-all lg:px-5 lg:py-4 ${
+                                                data.type === 'expense'
+                                                    ? 'border-blue-500 bg-blue-50'
+                                                    : 'border-gray-200 bg-white hover:border-blue-300'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div
+                                                    className={`flex h-10 w-10 items-center justify-center rounded-lg ${data.type === 'expense' ? 'bg-blue-100' : 'bg-gray-100'}`}
+                                                >
+                                                    <TrendingDown
+                                                        className={`h-5 w-5 ${data.type === 'expense' ? 'text-blue-600' : 'text-gray-600'}`}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <h4 className={`font-medium ${data.type === 'expense' ? 'text-blue-900' : 'text-gray-900'}`}>
+                                                        Pengeluaran
+                                                    </h4>
+                                                    <p className={`text-sm ${data.type === 'expense' ? 'text-blue-700' : 'text-gray-600'}`}>
+                                                        Uang keluar dari kas
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </DetailCard>
 
                             {/* Form Fields */}
-                            <div className="space-y-6 rounded-lg border border-green-200 bg-white p-6 shadow-lg">
-                                <h3 className="text-lg font-medium text-green-800">Detail Transaksi</h3>
+                            <DetailCard title="Detail Transaksi" icon={FileText}>
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                        {/* Date */}
+                                        <InputField
+                                            placeholder="Pilih tanggal transaksi"
+                                            prefix={<CalendarDays className="h-5 w-5" />}
+                                            label="Tanggal Transaksi"
+                                            type="date"
+                                            required
+                                            value={data.date}
+                                            onChange={(v) => setData('date', v)}
+                                        />
 
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    {/* Date */}
-                                    <InputField
-                                        placeholder="Pilih tanggal transaksi"
-                                        prefix={<CalendarDays className="h-5 w-5" />}
-                                        label="Tanggal Transaksi"
-                                        type="date"
-                                        required
-                                        value={data.date}
-                                        onChange={(v) => setData('date', v)}
-                                    />
+                                        {/* Amount */}
+                                        <InputField
+                                            label="Jumlah (Rupiah)"
+                                            value={data.amount}
+                                            placeholder="Masukkan jumlah transaksi"
+                                            onChange={(v) => setData('amount', v)}
+                                            prefix="Rp"
+                                            parseInput={parsers.digitsOnly}
+                                            formatValue={formatters.currencyDigitsToDisplay}
+                                            required
+                                        />
+                                    </div>
 
-                                    {/* Amount */}
+                                    {/* Remaining Balance */}
                                     <InputField
-                                        label="Jumlah (Rupiah)"
-                                        value={data.amount}
-                                        placeholder="Masukkan jumlah transaksi"
-                                        onChange={(v) => setData('amount', v)}
+                                        label="Sisa Saldo Saat Ini"
+                                        value={remainingBalance}
                                         prefix="Rp"
-                                        parseInput={parsers.digitsOnly}
+                                        variant="muted"
+                                        readOnly
+                                        helperText="Akan dihitung otomatis"
                                         formatValue={formatters.currencyDigitsToDisplay}
-                                        required
+                                        onChange={() => {}}
                                     />
+
+                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                        {/* Notes */}
+                                        <InputField
+                                            label="Catatan"
+                                            as="textarea"
+                                            rows={5}
+                                            value={data.note}
+                                            onChange={(v) => setData('note', v)}
+                                            placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
+                                            required
+                                        />
+
+                                        {/* File Upload */}
+                                        <FileUpload
+                                            label="Bukti Transaksi"
+                                            required
+                                            accept="image/*,.pdf"
+                                            maxSize={10}
+                                            file={data.proof_file}
+                                            preview={proofPreview}
+                                            onChange={handleFileChange}
+                                            onPreviewChange={setProofPreview}
+                                        />
+                                    </div>
                                 </div>
-
-                                {/* Remaining Balance */}
-                                <InputField
-                                    label="Sisa Saldo Saat Ini"
-                                    value={remainingBalance}
-                                    prefix="Rp"
-                                    variant="muted"
-                                    readOnly
-                                    helperText="Akan dihitung otomatis"
-                                    formatValue={formatters.currencyDigitsToDisplay}
-                                    onChange={() => {}}
-                                />
-
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    {/* Notes */}
-                                    <InputField
-                                        label="Catatan"
-                                        as="textarea"
-                                        rows={5}
-                                        value={data.note}
-                                        onChange={(v) => setData('note', v)}
-                                        placeholder="Tambahkan catatan atau keterangan transaksi (opsional)"
-                                        required
-                                    />
-
-                                    {/* File Upload */}
-                                    <FileUpload
-                                        label="Bukti Transaksi"
-                                        required
-                                        accept="image/*,.pdf"
-                                        maxSize={10}
-                                        file={data.proof_file}
-                                        preview={proofPreview}
-                                        onChange={handleFileChange}
-                                        onPreviewChange={setProofPreview}
-                                    />
-                                </div>
-                            </div>
+                            </DetailCard>
 
                             {/* Action Buttons */}
                             <div className="flex flex-col space-y-3 md:flex-row md:justify-end md:space-y-0 md:space-x-3">
