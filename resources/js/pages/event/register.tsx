@@ -1,5 +1,7 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -9,7 +11,7 @@ import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, User } from 'lucide-react';
+import { Calendar, Clock, Info, MapPin, User, UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface EventRegisterPageProps {
@@ -72,91 +74,64 @@ function EventRegisterPage() {
                     <HeaderPage title="Pendaftaran Event" description="Pendaftaran Event" />
 
                     {/* Event Information Card */}
-                    <div className="mb-8 rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                        <div className="mb-4 flex items-start justify-between">
-                            <div>
-                                <div className="flex items-center space-x-4">
-                                    <StatusBadge type="status" value={event.status} />
-                                    <StatusBadge type="eventType" value={event.type} />
+                    <div className="mb-8">
+                        <DetailCard title="Informasi Event" icon={Info}>
+                            <div className="mb-4 flex items-start justify-between">
+                                <div>
+                                    <div className="flex items-center space-x-4">
+                                        <StatusBadge type="status" value={event.status} />
+                                        <StatusBadge type="eventType" value={event.type} />
+                                    </div>
                                 </div>
+                                {event.flyer ? (
+                                    <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
+                                        <img
+                                            src={`/storage/${event.flyer}`}
+                                            alt={event.event_name}
+                                            className="h-full w-full object-cover"
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = 'https://placehold.co/48x48?text=No+Image';
+                                                target.alt = 'Flyer tidak tersedia';
+                                                target.className = 'h-full w-full object-cover opacity-60';
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
+                                        <img
+                                            src="https://placehold.co/48x48?text=No+Image"
+                                            alt="Flyer tidak tersedia"
+                                            className="h-full w-full object-cover opacity-60"
+                                        />
+                                    </div>
+                                )}
                             </div>
-                            {event.flyer ? (
-                                <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
-                                    <img
-                                        src={`/storage/${event.flyer}`}
-                                        alt={event.event_name}
-                                        className="h-full w-full object-cover"
-                                        onError={(e) => {
-                                            const target = e.target as HTMLImageElement;
-                                            target.src = 'https://placehold.co/48x48?text=No+Image';
-                                            target.alt = 'Flyer tidak tersedia';
-                                            target.className = 'h-full w-full object-cover opacity-60';
-                                        }}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
-                                    <img
-                                        src="https://placehold.co/48x48?text=No+Image"
-                                        alt="Flyer tidak tersedia"
-                                        className="h-full w-full object-cover opacity-60"
-                                    />
+
+                            {event.description && (
+                                <div className="mb-6">
+                                    <h3 className="mb-2 text-lg font-semibold text-green-900">Deskripsi</h3>
+                                    <p className="leading-relaxed text-green-700">{event.description}</p>
                                 </div>
                             )}
-                        </div>
 
-                        {event.description && (
-                            <div className="mb-6">
-                                <h3 className="mb-2 text-lg font-semibold text-green-900">Deskripsi</h3>
-                                <p className="leading-relaxed text-green-700">{event.description}</p>
+                            {/* Event Details */}
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <DetailItem icon={Calendar} label="Tanggal Mulai" value={formatDateTime(event.date_start)} />
+                                <DetailItem icon={Clock} label="Tanggal Selesai" value={formatDateTime(event.date_end)} />
+                                <DetailItem icon={MapPin} label="Lokasi" value={event.location} withBorder={false} />
+                                <DetailItem
+                                    icon={User}
+                                    label="Dibuat Oleh"
+                                    value={event.created_by?.citizen.full_name || 'Tidak diketahui'}
+                                    withBorder={false}
+                                />
                             </div>
-                        )}
-
-                        {/* Event Details */}
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            <div className="flex items-center space-x-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                    <Calendar className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900">Tanggal Mulai</h4>
-                                    <p className="text-green-700">{formatDateTime(event.date_start)}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                    <Clock className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900">Tanggal Selesai</h4>
-                                    <p className="text-green-700">{formatDateTime(event.date_end)}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                    <MapPin className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900">Lokasi</h4>
-                                    <p className="text-green-700">{event.location}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                    <User className="h-5 w-5 text-green-600" />
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-900">Dibuat Oleh</h4>
-                                    <p className="text-green-700">{event.created_by?.citizen.full_name || 'Tidak diketahui'}</p>
-                                </div>
-                            </div>
-                        </div>
+                        </DetailCard>
                     </div>
 
                     {/* Registration Form */}
-                    <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                        <h2 className="mb-6 text-xl font-semibold text-green-900">Form Pendaftaran</h2>
-
+                    <DetailCard title="Form Pendaftaran" icon={UserPlus}>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-4">
                                 <InputField
@@ -238,7 +213,7 @@ function EventRegisterPage() {
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </DetailCard>
                 </div>
             </div>
         </BaseLayouts>

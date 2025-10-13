@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'citizen_id' => 8, // Sari Indah
-                'email' => 'sari.indah@email.com',
+                'email' => 'citizen2@gmail.com',
                 'password' => Hash::make('123'),
                 'role' => 'citizen',
                 'status' => 'active',
@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'citizen_id' => 7, // Andi Pratama
-                'email' => 'andi.pratama@email.com',
+                'email' => 'citizen3@gmail.com',
                 'password' => Hash::make('123'),
                 'role' => 'citizen',
                 'status' => 'pending',

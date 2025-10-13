@@ -118,22 +118,6 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     <p className="leading-relaxed text-gray-900">{event.description}</p>
                                 </DetailCard>
                             )}
-
-                            {/* Event Actions - Only show for restricted events */}
-                            {event.type === 'restricted' && (
-                                <DetailCard title="Aksi Cepat" icon={Tag}>
-                                    <div className="flex flex-col gap-2">
-                                        <Link href={`/events/${event.id}/register`}>
-                                            <Button className="w-full">Daftar Event</Button>
-                                        </Link>
-                                        <Link href="/events">
-                                            <Button variant="outline" className="w-full">
-                                                Kembali ke Daftar Event
-                                            </Button>
-                                        </Link>
-                                    </div>
-                                </DetailCard>
-                            )}
                         </div>
 
                         {/* Participants Section - Only show for restricted events */}
