@@ -1,3 +1,5 @@
+import DetailCard from '@/components/DetailCard';
+import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import StatusBadge from '@/components/StatusBadge';
@@ -90,196 +92,88 @@ const Profile: React.FC = () => {
                     </div>
 
                     {/* Account Information */}
-                    <div className="rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-                        <div className="mb-6 flex items-center">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
-                                <UserCircle className="h-6 w-6 text-green-600" />
-                            </div>
-                            <h2 className="ml-3 text-xl font-semibold text-gray-900">Informasi Akun</h2>
+                    <DetailCard title="Informasi Akun" icon={UserCircle}>
+                        <div className="space-y-4">
+                            <DetailItem icon={CreditCard} label="ID Pengguna" value={`#${user.id}`} />
+                            <DetailItem icon={Mail} label="Email" value={user.email} />
+                            <DetailItem icon={Clock} label="Terdaftar Sejak" value={formatDate(user.created_at, false, false)} />
+                            <DetailItem
+                                icon={Clock}
+                                label="Terakhir Diperbarui"
+                                value={formatDate(user.updated_at, false, false)}
+                                withBorder={false}
+                            />
                         </div>
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium text-gray-500">ID Pengguna</label>
-                                <div className="flex items-center text-gray-900">
-                                    <CreditCard className="mr-2 h-4 w-4 text-gray-400" />#{user.id}
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium text-gray-500">Email</label>
-                                <div className="flex items-center text-gray-900">
-                                    <Mail className="mr-2 h-4 w-4 text-gray-400" />
-                                    {user.email}
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium text-gray-500">Terdaftar Sejak</label>
-                                <div className="flex items-center text-gray-900">
-                                    <Clock className="mr-2 h-4 w-4 text-gray-400" />
-                                    {formatDate(user.created_at, false, false)}
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium text-gray-500">Terakhir Diperbarui</label>
-                                <div className="flex items-center text-gray-900">
-                                    <Clock className="mr-2 h-4 w-4 text-gray-400" />
-                                    {formatDate(user.updated_at, false, false)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </DetailCard>
 
                     {user.citizen && (
                         <>
                             {/* Personal Information */}
-                            <div className="rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-                                <div className="mb-6 flex items-center">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                                        <UserIcon className="h-6 w-6 text-blue-600" />
-                                    </div>
-                                    <h2 className="ml-3 text-xl font-semibold text-gray-900">Informasi Pribadi</h2>
-                                </div>
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">NIK</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <CreditCard className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.nik}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Nama Lengkap</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <UserIcon className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.full_name}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Tanggal Lahir</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <Calendar className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.date_of_birth
+                            <DetailCard title="Informasi Pribadi" icon={UserIcon}>
+                                <div className="space-y-4">
+                                    <DetailItem icon={CreditCard} label="NIK" value={user.citizen.nik} />
+                                    <DetailItem icon={UserIcon} label="Nama Lengkap" value={user.citizen.full_name} />
+                                    <DetailItem
+                                        icon={Calendar}
+                                        label="Tanggal Lahir"
+                                        value={
+                                            user.citizen.date_of_birth
                                                 ? `${formatDate(user.citizen.date_of_birth, false, false)} (${calculateAge(user.citizen.date_of_birth)} tahun)`
-                                                : '-'}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Jenis Kelamin</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <UserIcon className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.gender ? getGenderLabel(user.citizen.gender) : '-'}
-                                        </div>
-                                    </div>
-                                    {user.citizen.phone_number && (
-                                        <div className="space-y-1">
-                                            <label className="text-sm font-medium text-gray-500">Nomor Telepon</label>
-                                            <div className="flex items-center text-gray-900">
-                                                <Phone className="mr-2 h-4 w-4 text-gray-400" />
-                                                {user.citizen.phone_number}
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Agama</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <Heart className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.religion ? getReligionLabel(user.citizen.religion) : '-'}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Status Pernikahan</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <Heart className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.marital_status ? getMaritalStatusLabel(user.citizen.marital_status) : '-'}
-                                        </div>
-                                    </div>
+                                                : '-'
+                                        }
+                                    />
+                                    <DetailItem
+                                        icon={UserIcon}
+                                        label="Jenis Kelamin"
+                                        value={user.citizen.gender ? getGenderLabel(user.citizen.gender) : '-'}
+                                    />
+                                    {user.citizen.phone_number && <DetailItem icon={Phone} label="Nomor Telepon" value={user.citizen.phone_number} />}
+                                    <DetailItem
+                                        icon={Heart}
+                                        label="Agama"
+                                        value={user.citizen.religion ? getReligionLabel(user.citizen.religion) : '-'}
+                                    />
+                                    <DetailItem
+                                        icon={Heart}
+                                        label="Status Pernikahan"
+                                        value={user.citizen.marital_status ? getMaritalStatusLabel(user.citizen.marital_status) : '-'}
+                                        withBorder={false}
+                                    />
                                 </div>
-                            </div>
+                            </DetailCard>
 
                             {/* Professional Information */}
-                            <div className="rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-                                <div className="mb-6 flex items-center">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100">
-                                        <Briefcase className="h-6 w-6 text-orange-600" />
-                                    </div>
-                                    <h2 className="ml-3 text-xl font-semibold text-gray-900">Informasi Pekerjaan</h2>
+                            <DetailCard title="Informasi Pekerjaan" icon={Briefcase}>
+                                <div className="space-y-4">
+                                    <DetailItem icon={Briefcase} label="Pekerjaan" value={user.citizen.occupation || '-'} />
+                                    <DetailItem icon={Building2} label="Jabatan" value={user.citizen.position || '-'} withBorder={false} />
                                 </div>
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Pekerjaan</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <Briefcase className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.occupation || '-'}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Jabatan</label>
-                                        <div className="flex items-center text-gray-900">
-                                            <Building2 className="mr-2 h-4 w-4 text-gray-400" />
-                                            {user.citizen.position || '-'}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </DetailCard>
 
                             {/* Address Information */}
-                            <div className="rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-                                <div className="mb-6 flex items-center">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
-                                        <MapPin className="h-6 w-6 text-purple-600" />
-                                    </div>
-                                    <h2 className="ml-3 text-xl font-semibold text-gray-900">Informasi Alamat</h2>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="space-y-1">
-                                        <label className="text-sm font-medium text-gray-500">Alamat Lengkap</label>
-                                        <div className="flex items-start text-gray-900">
-                                            <MapPin className="mt-1 mr-2 h-4 w-4 flex-shrink-0 text-gray-400" />
-                                            <span>{user.citizen.address || '-'}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <DetailCard title="Informasi Alamat" icon={MapPin}>
+                                <DetailItem icon={MapPin} label="Alamat Lengkap" value={user.citizen.address || '-'} withBorder={false} />
+                            </DetailCard>
 
                             {/* Family Information */}
                             {user.citizen.family && (
-                                <div className="rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-                                    <div className="mb-6 flex items-center">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-100">
-                                            <Users className="h-6 w-6 text-pink-600" />
-                                        </div>
-                                        <h2 className="ml-3 text-xl font-semibold text-gray-900">Informasi Keluarga</h2>
+                                <DetailCard title="Informasi Keluarga" icon={Users}>
+                                    <div className="space-y-4">
+                                        <DetailItem icon={CreditCard} label="Nomor Kartu Keluarga" value={user.citizen.family.kk_number || '-'} />
+                                        <DetailItem
+                                            icon={Users}
+                                            label="Status dalam Keluarga"
+                                            value={user.citizen.status ? getStatusLabel(user.citizen.status) : '-'}
+                                        />
+                                        <DetailItem icon={UserIcon} label="Nama Keluarga" value={user.citizen.family.family_name || '-'} />
+                                        <DetailItem
+                                            icon={Home}
+                                            label="Alamat Keluarga"
+                                            value={user.citizen.family.address || '-'}
+                                            withBorder={false}
+                                        />
                                     </div>
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                        <div className="space-y-1">
-                                            <label className="text-sm font-medium text-gray-500">Nomor Kartu Keluarga</label>
-                                            <div className="flex items-center text-gray-900">
-                                                <CreditCard className="mr-2 h-4 w-4 text-gray-400" />
-                                                {user.citizen.family.kk_number || '-'}
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-sm font-medium text-gray-500">Status dalam Keluarga</label>
-                                            <div className="flex items-center text-gray-900">
-                                                <Users className="mr-2 h-4 w-4 text-gray-400" />
-                                                {user.citizen.status ? getStatusLabel(user.citizen.status) : '-'}
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-sm font-medium text-gray-500">Nama Keluarga</label>
-                                            <div className="flex items-center text-gray-900">
-                                                <UserIcon className="mr-2 h-4 w-4 text-gray-400" />
-                                                {user.citizen.family.family_name || '-'}
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-sm font-medium text-gray-500">Alamat Keluarga</label>
-                                            <div className="flex items-start text-gray-900">
-                                                <Home className="mt-1 mr-2 h-4 w-4 flex-shrink-0 text-gray-400" />
-                                                <span>{user.citizen.family.address || '-'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </DetailCard>
                             )}
                         </>
                     )}
