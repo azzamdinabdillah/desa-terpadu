@@ -276,6 +276,12 @@ class CitizenController extends Controller
     {
         try {
             $citizenName = $citizen->full_name;
+            
+            // Delete profile picture if exists
+            if ($citizen->profile_picture && Storage::disk('public')->exists($citizen->profile_picture)) {
+                Storage::disk('public')->delete($citizen->profile_picture);
+            }
+            
             $citizen->delete();
 
             return redirect()->route('citizens.index')
