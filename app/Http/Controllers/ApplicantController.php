@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\ApplicationDocument;
 use App\Models\MasterDocument;
 use App\Models\Citizen;
+use App\Models\User;
 use App\Mail\ApprovalApplicationDocument;
+use App\Mail\NewApplicationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
@@ -69,7 +71,7 @@ class ApplicantController extends Controller
      */
     public function create()
     {
-        $masterDocuments = MasterDocument::orderBy('document_name')->get();
+        $masterDocuments = MasterDocument::orderBy('created_at', 'desc')->get();
         
         return Inertia::render('document/applicant/create', [
             'masterDocuments' => $masterDocuments,
@@ -114,7 +116,10 @@ class ApplicantController extends Controller
 
         $data['status'] = 'pending';
 
-        ApplicationDocument::create($data);
+        $application = ApplicationDocument::create($data);
+
+        // Send email notification to all admins
+        $this->sendNotificationToAdmins($application);
 
         return redirect('/document-applications')->with('success', 'Pengajuan surat berhasil dikirim. Silakan tunggu konfirmasi dari admin desa.');
     }
@@ -388,6 +393,31 @@ class ApplicantController extends Controller
             // Log error but don't fail the completion
             \Log::error('Failed to send completion email: ' . $e->getMessage());
             return redirect()->back()->with('success', 'Pengajuan berhasil diselesaikan, namun email gagal dikirim.');
+        }
+    }
+
+    /**
+     * Send notification email to all admins about new application.
+     */
+    private function sendNotificationToAdmins(ApplicationDocument $application)
+    {
+        try {
+            // Load relationships for email
+            $application->load(['masterDocument', 'citizen']);
+
+            // Get all admin and superadmin users with active status
+            $admins = User::whereIn('role', ['admin', 'superadmin'])
+                ->where('status', 'active')
+                ->whereNotNull('email')
+                ->get();
+
+            // Send email to each admin
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(new NewApplicationNotification($application));
+            }
+        } catch (\Exception $e) {
+            // Log error but don't fail the application creation
+            \Log::error('Failed to send admin notification email: ' . $e->getMessage());
         }
     }
 }

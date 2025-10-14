@@ -102,9 +102,7 @@ function ApplicantPage() {
                         </div>
                         <div>
                             <p className="font-medium text-green-900">{item.citizen?.full_name || 'N/A'}</p>
-                            {isAdmin && (
-                                <p className="text-sm text-green-700">{item.nik}</p>
-                            )}
+                            {isAdmin && <p className="text-sm text-green-700">{item.nik}</p>}
                         </div>
                     </div>
                 ),
@@ -153,8 +151,7 @@ function ApplicantPage() {
                         >
                             <Eye className="h-4 w-4" />
                         </Button>
-
-                        {item.status === 'pending' && (
+                        {item.status === 'pending' && isCitizen && (
                             <Button
                                 variant="ghost"
                                 size="sm"

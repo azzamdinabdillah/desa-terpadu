@@ -257,8 +257,8 @@ const ApplicantDetail: React.FC = () => {
                                         application.citizen?.gender === 'male'
                                             ? 'Laki-laki'
                                             : application.citizen?.gender === 'female'
-                                                ? 'Perempuan'
-                                                : 'N/A'
+                                              ? 'Perempuan'
+                                              : 'N/A'
                                     }
                                 />
                                 <DetailItem
@@ -274,12 +274,12 @@ const ApplicantDetail: React.FC = () => {
                                         application.citizen?.marital_status === 'married'
                                             ? 'Kawin'
                                             : application.citizen?.marital_status === 'single'
-                                                ? 'Belum Kawin'
-                                                : application.citizen?.marital_status === 'divorced'
-                                                    ? 'Cerai'
-                                                    : application.citizen?.marital_status === 'widowed'
-                                                        ? 'Duda/Janda'
-                                                        : 'N/A'
+                                              ? 'Belum Kawin'
+                                              : application.citizen?.marital_status === 'divorced'
+                                                ? 'Cerai'
+                                                : application.citizen?.marital_status === 'widowed'
+                                                  ? 'Duda/Janda'
+                                                  : 'N/A'
                                     }
                                 />
                                 <DetailItem

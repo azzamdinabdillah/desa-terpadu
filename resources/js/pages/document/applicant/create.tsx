@@ -6,6 +6,7 @@ import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { ApplicationDocumentType, MasterDocumentType } from '@/types/document/documentTypes';
 import { router, useForm, usePage } from '@inertiajs/react';
 import { FileText, Save } from 'lucide-react';
@@ -23,6 +24,7 @@ interface CreateDocumentApplicationProps {
 
 function CreateDocumentApplication() {
     const { masterDocuments, application, flash } = usePage<CreateDocumentApplicationProps>().props;
+    const { user } = useAuth();
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
     // Determine if we're in edit mode
@@ -30,7 +32,7 @@ function CreateDocumentApplication() {
 
     const { data, setData, post, processing } = useForm({
         master_document_id: application?.master_document_id?.toString() || 'placeholder',
-        nik: application?.nik || '',
+        nik: application?.nik || user?.citizen?.nik || '',
         reason: application?.reason || '',
         citizen_note: application?.citizen_note || '',
     });
@@ -114,28 +116,15 @@ function CreateDocumentApplication() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Application Information Section */}
                         <DetailCard title="Informasi Pengajuan" icon={FileText}>
-                            <div className={`grid grid-cols-1 gap-6 ${isEditMode ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
-                                <Select
-                                    label="Pilih Jenis Surat"
-                                    value={data.master_document_id}
-                                    onChange={(value) => setData('master_document_id', value)}
-                                    options={documentOptions}
-                                    enableSearch
-                                    searchPlaceholder="Cari jenis surat..."
-                                    required
-                                />
-
-                                {!isEditMode && (
-                                    <InputField
-                                        label="NIK"
-                                        type="number"
-                                        value={data.nik}
-                                        onChange={(value) => setData('nik', value)}
-                                        placeholder="Masukkan NIK (16 digit)"
-                                        required
-                                    />
-                                )}
-                            </div>
+                            <Select
+                                label="Pilih Jenis Surat"
+                                value={data.master_document_id}
+                                onChange={(value) => setData('master_document_id', value)}
+                                options={documentOptions}
+                                enableSearch
+                                searchPlaceholder="Cari jenis surat..."
+                                required
+                            />
                         </DetailCard>
 
                         {/* Application Details Section */}
