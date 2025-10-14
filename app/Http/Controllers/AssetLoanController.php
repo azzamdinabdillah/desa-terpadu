@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AssetLoanNotification;
+use App\Mail\NewAssetLoanNotification;
 use App\Models\Asset;
 use App\Models\AssetLoan;
 use App\Models\Citizen;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -130,7 +132,7 @@ class AssetLoanController extends Controller
         }
 
         // Create the asset loan with default status
-        AssetLoan::create([
+        $assetLoan = AssetLoan::create([
             'citizen_id' => $citizen->id,
             'asset_id' => $validated['asset_id'],
             'reason' => $validated['reason'],
@@ -138,6 +140,23 @@ class AssetLoanController extends Controller
             'expected_return_date' => $validated['expected_return_date'],
             'status' => 'waiting_approval', // Default status
         ]);
+
+        // Load relationships for email
+        $assetLoan->load(['asset', 'citizen']);
+
+        // Send email notification to all admins
+        try {
+            $admins = User::where('role', 'admin')->where('status', 'active')->get();
+            
+            foreach ($admins as $admin) {
+                if ($admin->email) {
+                    Mail::to($admin->email)->send(new NewAssetLoanNotification($assetLoan));
+                }
+            }
+        } catch (\Exception $e) {
+            // Log the error but don't prevent the submission
+            Log::error('Failed to send asset loan notification email: ' . $e->getMessage());
+        }
 
         return redirect()->route('asset-loans.index')
             ->with('success', 'Pengajuan peminjaman asset berhasil diajukan dan menunggu persetujuan.');
