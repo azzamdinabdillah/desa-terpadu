@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -11,8 +12,8 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { User } from '@/types/user/userTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Edit, Mail, Plus, Search, Shield, User as UserIcon, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { Calendar, Edit, Mail, Plus, Search, Shield, Trash2, User as UserIcon, Users } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface UserPageProps {
     users: {
@@ -49,6 +50,8 @@ function UserPage() {
     const [role, setRole] = useState(filters.role || 'all');
     const [status, setStatus] = useState(filters.status || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; user: ExtendedUser | null }>({ isOpen: false, user: null });
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Redirect if not admin
     useEffect(() => {
@@ -87,6 +90,32 @@ function UserPage() {
             router.visit(url, { preserveState: true, replace: true });
         }
     };
+
+    const handleDeleteClick = useCallback((user: ExtendedUser) => {
+        setDeleteModal({ isOpen: true, user });
+    }, []);
+
+    const handleDeleteConfirm = useCallback(() => {
+        if (!deleteModal.user) return;
+
+        setIsDeleting(true);
+        router.delete(`/users/${deleteModal.user.id}`, {
+            preserveState: true,
+            onSuccess: () => {
+                setDeleteModal({ isOpen: false, user: null });
+                setIsDeleting(false);
+            },
+            onError: () => {
+                setIsDeleting(false);
+            },
+        });
+    }, [deleteModal.user]);
+
+    const handleDeleteCancel = useCallback(() => {
+        if (!isDeleting) {
+            setDeleteModal({ isOpen: false, user: null });
+        }
+    }, [isDeleting]);
 
     const getRoleLabel = (role?: string) => {
         switch (role) {
@@ -212,11 +241,21 @@ function UserPage() {
                         >
                             Edit
                         </Button>
+                        <Button
+                            variant="red"
+                            size="sm"
+                            icon={<Trash2 className="h-4 w-4" />}
+                            iconPosition="left"
+                            onClick={() => handleDeleteClick(item)}
+                            className="border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                            Hapus
+                        </Button>
                     </div>
                 ),
             },
         ],
-        [],
+        [handleDeleteClick],
     );
 
     if (!isAdmin) {
@@ -318,6 +357,22 @@ function UserPage() {
                         nextUrl={users.next_page_url}
                         links={users.links}
                         onChange={handlePageChange}
+                    />
+
+                    <ConfirmationModal
+                        isOpen={deleteModal.isOpen}
+                        onClose={handleDeleteCancel}
+                        onConfirm={handleDeleteConfirm}
+                        title="Hapus Pengguna"
+                        message={
+                            <span>
+                                Apakah Anda yakin ingin menghapus pengguna{' '}
+                                <strong className="font-semibold">{deleteModal.user?.citizen?.full_name || deleteModal.user?.email}</strong>?
+                            </span>
+                        }
+                        confirmText="Hapus"
+                        cancelText="Batal"
+                        isLoading={isDeleting}
                     />
                 </div>
             </div>

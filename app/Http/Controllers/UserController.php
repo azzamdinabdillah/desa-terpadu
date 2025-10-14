@@ -242,5 +242,32 @@ class UserController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat memperbarui data pengguna: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function destroy(Request $request, User $user)
+    {
+        // Check if user is admin
+        if (!$request->user() || !$request->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Prevent deleting own account
+        if ($user->id === $request->user()->id) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        // Prevent deleting superadmin
+        if ($user->role === 'superadmin') {
+            return back()->with('error', 'Akun Super Admin tidak dapat dihapus.');
+        }
+
+        try {
+            $userName = $user->citizen->full_name ?? $user->email;
+            $user->delete();
+
+            return redirect()->route('users.index')->with('success', "Pengguna {$userName} berhasil dihapus.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghapus pengguna: ' . $e->getMessage());
+        }
+    }
 }
 

@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update.post');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
