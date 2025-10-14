@@ -115,9 +115,16 @@ function MasterDocumentPage() {
                 className: 'whitespace-nowrap text-right',
                 cell: (item: MasterDocument) => (
                     <div className="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => router.visit(`/documents/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
-                            Detail
-                        </Button>
+                        {isAdmin && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => router.visit(`/documents/${item.id}`)}
+                                icon={<Eye className="h-4 w-4" />}
+                            >
+                                Detail
+                            </Button>
+                        )}
                         {isAdmin && (
                             <>
                                 <Button

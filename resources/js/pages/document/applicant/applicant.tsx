@@ -8,6 +8,7 @@ import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { ApplicationDocumentType, PaginatedApplicationDocuments } from '@/types/document/documentTypes';
 import { router, usePage } from '@inertiajs/react';
@@ -29,6 +30,7 @@ interface ApplicantPageProps {
 
 function ApplicantPage() {
     const { applications, filters, flash } = usePage().props as unknown as ApplicantPageProps;
+    const { isCitizen, isAdmin } = useAuth();
 
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [searchQuery, setSearchQuery] = useState(filters?.search ?? '');
@@ -100,7 +102,9 @@ function ApplicantPage() {
                         </div>
                         <div>
                             <p className="font-medium text-green-900">{item.citizen?.full_name || 'N/A'}</p>
-                            <p className="text-sm text-green-700">{item.nik}</p>
+                            {isAdmin && (
+                                <p className="text-sm text-green-700">{item.nik}</p>
+                            )}
                         </div>
                     </div>
                 ),
@@ -203,14 +207,16 @@ function ApplicantPage() {
                             </div>
                         </div>
 
-                        <Button
-                            className="h-full shrink-0"
-                            onClick={() => router.visit('/document-applications/create')}
-                            icon={<Plus className="h-4 w-4" />}
-                            iconPosition="left"
-                        >
-                            Tambah Pengajuan
-                        </Button>
+                        {isCitizen && (
+                            <Button
+                                className="h-full shrink-0"
+                                onClick={() => router.visit('/document-applications/create')}
+                                icon={<Plus className="h-4 w-4" />}
+                                iconPosition="left"
+                            >
+                                Tambah Pengajuan
+                            </Button>
+                        )}
                     </div>
 
                     <div className="rounded-lg bg-white shadow">
