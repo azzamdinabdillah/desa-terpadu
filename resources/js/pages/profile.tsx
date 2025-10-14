@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
 
                     {/* Account Information */}
                     <DetailCard title="Informasi Akun" icon={UserCircle}>
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <DetailItem icon={CreditCard} label="ID Pengguna" value={`#${user.id}`} />
                             <DetailItem icon={Mail} label="Email" value={user.email} />
                             <DetailItem icon={Clock} label="Terdaftar Sejak" value={formatDate(user.created_at, false, false)} />
@@ -110,7 +110,7 @@ const Profile: React.FC = () => {
                         <>
                             {/* Personal Information */}
                             <DetailCard title="Informasi Pribadi" icon={UserIcon}>
-                                <div className="space-y-4">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <DetailItem icon={CreditCard} label="NIK" value={user.citizen.nik} />
                                     <DetailItem icon={UserIcon} label="Nama Lengkap" value={user.citizen.full_name} />
                                     <DetailItem
@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
                             {/* Family Information */}
                             {user.citizen.family && (
                                 <DetailCard title="Informasi Keluarga" icon={Users}>
-                                    <div className="space-y-4">
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <DetailItem icon={CreditCard} label="Nomor Kartu Keluarga" value={user.citizen.family.kk_number || '-'} />
                                         <DetailItem
                                             icon={Users}

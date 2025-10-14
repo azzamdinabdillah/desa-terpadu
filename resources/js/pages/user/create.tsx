@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
@@ -127,12 +128,7 @@ function CreateUserPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Form Section */}
-                        <div className="rounded-lg border border-green-200 bg-white p-6 shadow-sm">
-                            <div className="mb-6 flex items-center gap-2">
-                                <UserIcon className="h-5 w-5 text-green-600" />
-                                <h3 className="text-lg font-semibold text-green-900">Form Tambah Pengguna</h3>
-                            </div>
-
+                        <DetailCard title={isEdit ? 'Form Edit Pengguna' : 'Form Tambah Pengguna'} icon={UserIcon}>
                             <div className="flex flex-col gap-6">
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <Select
@@ -175,7 +171,7 @@ function CreateUserPage() {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Action Buttons */}
                         <div className="flex flex-col gap-4 sm:flex-row sm:justify-end">
