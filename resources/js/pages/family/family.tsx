@@ -11,7 +11,6 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { FamilyType } from '@/types/familyType';
 import { router, usePage } from '@inertiajs/react';
-import * as Dialog from '@radix-ui/react-dialog';
 import { Calendar, Edit, Eye, Home, Plus, Search, Trash2, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -163,34 +162,21 @@ function Family() {
                 className: 'text-right whitespace-nowrap',
                 cell: (item: FamilyType) => (
                     <div className="flex items-center justify-end gap-2">
-                        <Button
-                            onClick={() => handleViewClick(item)}
-                            variant="ghost"
-                            size="sm"
-                            className="text-green-600 hover:text-green-800"
-                            title="Lihat Detail"
-                        >
-                            <Eye className="h-4 w-4" />
+                        <Button variant="ghost" size="sm" onClick={() => handleViewClick(item)} icon={<Eye className="h-4 w-4" />}>
+                            Detail
                         </Button>
                         {isAdmin && (
                             <>
                                 <Button
+                                    variant="outline"
+                                    size="sm"
                                     onClick={() => router.visit(`/families/${item.id}/edit`)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-blue-600 hover:text-blue-800"
-                                    title="Edit Keluarga"
+                                    icon={<Edit className="h-4 w-4" />}
                                 >
-                                    <Edit className="h-4 w-4" />
+                                    Edit
                                 </Button>
-                                <Button
-                                    onClick={() => handleDeleteClick(item)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-red-600 hover:text-red-800"
-                                    title="Hapus Keluarga"
-                                >
-                                    <Trash2 className="h-4 w-4" />
+                                <Button variant="red" size="sm" onClick={() => handleDeleteClick(item)} icon={<Trash2 className="h-4 w-4" />}>
+                                    Hapus
                                 </Button>
                             </>
                         )}

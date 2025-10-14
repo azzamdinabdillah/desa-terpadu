@@ -184,15 +184,16 @@ export default function AssetPage() {
                     <div className="flex items-center gap-2">
                         {isAdmin && (
                             <>
-                                <Button variant="ghost" onClick={() => router.visit(`/assets/${asset.id}/edit`)}>
-                                    <Edit className="h-4 w-4" />
-                                </Button>
                                 <Button
-                                    variant="ghost"
-                                    onClick={() => handleDeleteAsset(asset)}
-                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => router.visit(`/assets/${asset.id}/edit`)}
+                                    icon={<Edit className="h-4 w-4" />}
                                 >
-                                    <Trash2 className="h-4 w-4" />
+                                    Edit
+                                </Button>
+                                <Button variant="red" size="sm" onClick={() => handleDeleteAsset(asset)} icon={<Trash2 className="h-4 w-4" />}>
+                                    Hapus
                                 </Button>
                             </>
                         )}

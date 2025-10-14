@@ -287,21 +287,21 @@ function SocialAidRecipientPage() {
                 cell: (item: SocialAidRecipient) => (
                     <div className="flex items-center gap-2">
                         {isAdmin && item.status !== 'collected' && (
-                            <Button variant="ghost" onClick={() => router.visit(`/recipients/${item.id}/action`)} title="Action Penerima">
-                                <StickyNote className="h-4 w-4" />
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => router.visit(`/recipients/${item.id}/action`)}
+                                icon={<StickyNote className="h-4 w-4" />}
+                            >
+                                Aksi
                             </Button>
                         )}
                         {/* <Button variant="ghost" onClick={() => router.visit(`/${item.program_id}`)} title="Lihat Program">
                             <Eye className="h-4 w-4" />
                         </Button> */}
                         {isAdmin && item.status !== 'collected' && (
-                            <Button
-                                variant="ghost"
-                                onClick={() => handleDeleteClick(item)}
-                                title="Hapus Penerima"
-                                className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                            >
-                                <Trash2 className="h-4 w-4" />
+                            <Button variant="red" size="sm" onClick={() => handleDeleteClick(item)} icon={<Trash2 className="h-4 w-4" />}>
+                                Hapus
                             </Button>
                         )}
                     </div>

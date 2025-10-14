@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Eye, MapPin, Pencil, Plus, Search, Settings, UserPlus, Users } from 'lucide-react';
+import { Calendar, Clock, Edit, Eye, MapPin, Plus, Search, Settings, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventPageProps {
@@ -213,32 +213,38 @@ function EventPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: EventType) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}`)} title="Lihat Detail">
-                            <Eye className="h-4 w-4" />
+                        <Button variant="ghost" size="sm" onClick={() => router.visit(`/events/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                            Detail
                         </Button>
                         {isAdmin && (
-                            <Button variant="ghost" onClick={() => router.visit(`/events/${item.id}/edit`)} title="Edit Event">
-                                <Pencil className="h-4 w-4" />
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => router.visit(`/events/${item.id}/edit`)}
+                                icon={<Edit className="h-4 w-4" />}
+                            >
+                                Edit
                             </Button>
                         )}
                         {isAdmin && (
                             <Button
-                                variant="ghost"
+                                variant="outline"
+                                size="sm"
                                 onClick={() => router.visit(`/events/${item.id}/change-status`)}
-                                title="Ubah Status"
-                                className="text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                                icon={<Settings className="h-4 w-4" />}
+                                className="text-blue-600 hover:text-blue-800"
                             >
-                                <Settings className="h-4 w-4" />
+                                Ubah Status
                             </Button>
                         )}
                         {item.type !== 'public' && item.status === 'pending' && !isAdmin && (
                             <Button
-                                variant="ghost"
+                                variant="primary"
+                                size="sm"
                                 onClick={() => router.visit(`/events/${item.id}/register`)}
-                                title="Daftar Event"
-                                className="text-green-600 hover:bg-green-50 hover:text-green-700"
+                                icon={<UserPlus className="h-4 w-4" />}
                             >
-                                <UserPlus className="h-4 w-4" />
+                                Daftar
                             </Button>
                         )}
                     </div>

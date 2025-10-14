@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { ApplicationDocumentType, PaginatedApplicationDocuments } from '@/types/document/documentTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Eye, FileText, Pencil, Plus, Search, User } from 'lucide-react';
+import { Calendar, Edit, Eye, FileText, Plus, Search, User } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface ApplicantPageProps {
@@ -148,18 +148,20 @@ function ApplicantPage() {
                             onClick={() => {
                                 router.visit(`/document-applications/${item.id}`);
                             }}
+                            icon={<Eye className="h-4 w-4" />}
                         >
-                            <Eye className="h-4 w-4" />
+                            Detail
                         </Button>
                         {item.status === 'pending' && isCitizen && (
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => {
                                     router.visit(`/document-applications/${item.id}/edit`);
                                 }}
+                                icon={<Edit className="h-4 w-4" />}
                             >
-                                <Pencil className="h-4 w-4" />
+                                Edit
                             </Button>
                         )}
                     </div>

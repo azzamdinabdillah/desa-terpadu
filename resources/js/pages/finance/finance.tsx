@@ -267,22 +267,20 @@ function Finance() {
                           cell: (item: FinanceType) => (
                               <div className="flex items-center justify-end gap-2">
                                   <Button
-                                      onClick={() => router.visit(`/finance/${item.id}/edit`)}
-                                      variant="ghost"
+                                      variant="outline"
                                       size="sm"
-                                      className="text-green-600 hover:text-green-800"
-                                      title="Edit"
+                                      onClick={() => router.visit(`/finance/${item.id}/edit`)}
+                                      icon={<Edit className="h-4 w-4" />}
                                   >
-                                      <Edit className="h-4 w-4" />
+                                      Edit
                                   </Button>
                                   <Button
-                                      variant="ghost"
+                                      variant="red"
                                       size="sm"
-                                      className="text-green-600 hover:text-red-600"
-                                      title="Hapus"
                                       onClick={() => handleDeleteClick(item.id, item.note, item.amount, item.type)}
+                                      icon={<Trash2 className="h-4 w-4" />}
                                   >
-                                      <Trash2 className="h-4 w-4" />
+                                      Hapus
                                   </Button>
                               </div>
                           ),

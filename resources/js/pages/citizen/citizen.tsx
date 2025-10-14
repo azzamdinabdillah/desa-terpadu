@@ -13,7 +13,7 @@ import { useAuth } from '@/lib/auth';
 import { calculateAge, formatDate, getGenderLabel, getMaritalStatusLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { router, usePage } from '@inertiajs/react';
-import { Award, Briefcase, Calendar, Edit, Eye, Heart, Home, IdCard, Mail, MapPin, Phone, Plus, Search, Trash, User, Users } from 'lucide-react';
+import { Award, Briefcase, Calendar, Edit, Eye, Heart, Home, IdCard, Mail, MapPin, Phone, Plus, Search, Trash2, User, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface CitizenPageProps {
@@ -298,26 +298,33 @@ function CitizenPage() {
                     const hasAdminUser = Boolean(item.user && item.user.role === 'admin');
                     return (
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}`)}>
-                                <Eye className="h-4 w-4" />
+                            <Button variant="ghost" size="sm" onClick={() => router.visit(`/citizens/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                                Detail
                             </Button>
                             {isAdmin && (
                                 <>
-                                    <Button variant="ghost" onClick={() => router.visit(`/citizens/${item.id}/edit`)}>
-                                        <Edit className="h-4 w-4" />
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => router.visit(`/citizens/${item.id}/edit`)}
+                                        icon={<Edit className="h-4 w-4" />}
+                                    >
+                                        Edit
                                     </Button>
                                     <Button
-                                        variant="ghost"
+                                        variant="red"
+                                        size="sm"
                                         onClick={() => handleDeleteClick(item)}
                                         disabled={hasAdminUser}
                                         className={hasAdminUser ? 'cursor-not-allowed opacity-50' : ''}
+                                        icon={<Trash2 className="h-4 w-4" />}
                                         title={
                                             hasAdminUser
                                                 ? 'Tidak dapat menghapus warga yang memiliki akun user dengan role admin'
                                                 : 'Hapus data warga'
                                         }
                                     >
-                                        <Trash className="h-4 w-4" />
+                                        Hapus
                                     </Button>
                                 </>
                             )}

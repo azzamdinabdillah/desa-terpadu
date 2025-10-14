@@ -261,20 +261,21 @@ function SocialAidPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: SocialAidProgram) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.id}`)}>
-                            <Eye className="h-4 w-4" />
+                        <Button variant="ghost" size="sm" onClick={() => router.visit(`/social-aid/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                            Detail
                         </Button>
                         {isAdmin && (
                             <>
-                                <Button variant="ghost" onClick={() => router.visit(`/social-aid/${item.id}/edit`)}>
-                                    <Edit className="h-4 w-4" />
-                                </Button>
                                 <Button
-                                    variant="ghost"
-                                    onClick={() => handleDelete(item)}
-                                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => router.visit(`/social-aid/${item.id}/edit`)}
+                                    icon={<Edit className="h-4 w-4" />}
                                 >
-                                    <Trash2 className="h-4 w-4" />
+                                    Edit
+                                </Button>
+                                <Button variant="red" size="sm" onClick={() => handleDelete(item)} icon={<Trash2 className="h-4 w-4" />}>
+                                    Hapus
                                 </Button>
                             </>
                         )}
