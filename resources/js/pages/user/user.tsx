@@ -11,7 +11,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { User } from '@/types/user/userTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Mail, Plus, Search, Shield, User as UserIcon, Users } from 'lucide-react';
+import { Calendar, Edit, Mail, Plus, Search, Shield, User as UserIcon, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface UserPageProps {
@@ -197,6 +197,24 @@ function UserPage() {
                     </div>
                 ),
             },
+            {
+                key: 'actions',
+                header: 'Aksi',
+                className: 'whitespace-nowrap',
+                cell: (item: ExtendedUser) => (
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            icon={<Edit className="h-4 w-4" />}
+                            iconPosition="left"
+                            onClick={() => router.visit(`/users/${item.id}/edit`)}
+                        >
+                            Edit
+                        </Button>
+                    </div>
+                ),
+            },
         ],
         [],
     );
@@ -235,7 +253,7 @@ function UserPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex gap-2 shrink-0">
+                        <div className="flex shrink-0 gap-2">
                             <Select
                                 label=""
                                 value={role}

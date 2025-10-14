@@ -27,7 +27,7 @@ function CreateUserPage() {
     const { citizens, user, isEdit, flash } = usePage().props as unknown as CreateUserPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, put, processing } = useForm({
         password: '',
         password_confirmation: '',
         role: user?.role || 'placeholder',
@@ -102,6 +102,11 @@ function CreateUserPage() {
         { value: 'admin', label: 'Admin' },
     ];
 
+    const statusOptions = [
+        { value: 'active', label: 'Aktif' },
+        { value: 'inactive', label: 'Tidak Aktif' },
+    ];
+
     const citizenOptions = [
         { value: 'placeholder', label: 'Pilih Warga' },
         ...citizens.map((citizen) => ({
@@ -150,6 +155,18 @@ function CreateUserPage() {
                                     />
                                 </div>
 
+                                {isEdit && (
+                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                        <Select
+                                            label="Status"
+                                            value={data.status}
+                                            onChange={(value) => setData('status', value)}
+                                            options={statusOptions}
+                                            required
+                                        />
+                                    </div>
+                                )}
+
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <InputField
                                         label="Password"
@@ -167,7 +184,8 @@ function CreateUserPage() {
                                         value={data.password_confirmation}
                                         onChange={(value) => setData('password_confirmation', value)}
                                         placeholder="Masukkan ulang password"
-                                        required={!isEdit && data.password !== ''}
+                                        required={!isEdit || data.password !== ''}
+                                        helperText={isEdit ? 'Kosongkan jika tidak ingin mengubah password' : ''}
                                     />
                                 </div>
                             </div>

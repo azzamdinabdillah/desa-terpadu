@@ -143,5 +143,104 @@ class UserController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data pengguna: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function edit(Request $request, User $user)
+    {
+        // Check if user is admin
+        if (!$request->user() || !$request->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Get all citizens with email (for select dropdown)
+        $citizens = Citizen::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->get();
+
+        return Inertia::render('user/create', [
+            'citizens' => $citizens,
+            'user' => $user->load('citizen'),
+            'isEdit' => true,
+        ]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        // Check if user is admin
+        if (!$request->user() || !$request->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            // Validation rules
+            $rules = [
+                'role' => 'required|string|in:citizen,admin',
+                'citizen_id' => 'required|exists:citizens,id',
+                'status' => 'required|string|in:active,inactive',
+            ];
+
+            // Only validate password if it's provided
+            if ($request->filled('password')) {
+                $rules['password'] = ['required', 'confirmed', Password::min(8)];
+            }
+
+            $validated = $request->validate($rules, [
+                'password.required' => 'Password wajib diisi.',
+                'password.confirmed' => 'Konfirmasi password tidak cocok.',
+                'password.min' => 'Password minimal 8 karakter.',
+                'role.required' => 'Role wajib dipilih.',
+                'role.in' => 'Role yang dipilih tidak valid.',
+                'citizen_id.required' => 'Warga wajib dipilih.',
+                'citizen_id.exists' => 'Warga yang dipilih tidak ditemukan.',
+                'status.required' => 'Status wajib dipilih.',
+                'status.in' => 'Status yang dipilih tidak valid.',
+            ]);
+
+            // Check if citizen already has a different user account
+            $existingUser = User::where('citizen_id', $validated['citizen_id'])
+                ->where('id', '!=', $user->id)
+                ->first();
+            
+            if ($existingUser) {
+                return back()->withErrors([
+                    'citizen_id' => 'Warga ini sudah memiliki akun pengguna lain.',
+                ])->withInput();
+            }
+
+            // Get citizen data
+            $citizen = Citizen::findOrFail($validated['citizen_id']);
+
+            // Check if email is already used by another user
+            $emailExists = User::where('email', $citizen->email)
+                ->where('id', '!=', $user->id)
+                ->first();
+            
+            if ($emailExists) {
+                return back()->withErrors([
+                    'citizen_id' => 'Email warga ini sudah terdaftar sebagai akun pengguna lain.',
+                ])->withInput();
+            }
+
+            // Update user data
+            $user->email = $citizen->email;
+            $user->role = $validated['role'];
+            $user->status = $validated['status'];
+            $user->citizen_id = $validated['citizen_id'];
+
+            // Update password only if provided
+            if ($request->filled('password')) {
+                $user->password = Hash::make($validated['password']);
+            }
+
+            $user->save();
+
+            return redirect()->route('users.index')->with('success', 'Pengguna berhasil diperbarui.');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return back with validation errors for Inertia
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui data pengguna: ' . $e->getMessage())->withInput();
+        }
+    }
 }
 
