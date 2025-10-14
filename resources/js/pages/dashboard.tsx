@@ -879,21 +879,21 @@ function Dashboard() {
                     {/* Citizens Statistics */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
-                        <DetailCard title="Penduduk Berdasarkan Jenis Kelamin" icon={Users}>
+                        <DetailCard title="Jenis Kelamin Warga" icon={Users}>
                             <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByGender)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
 
                         {/* Marital Status Distribution */}
-                        <DetailCard title="Penduduk Berdasarkan Status Pernikahan" icon={Users}>
+                        <DetailCard title="Status Pernikahan Warga" icon={Users}>
                             <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByMaritalStatus)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
 
                         {/* Religion Distribution */}
-                        <DetailCard title="Penduduk Berdasarkan Agama" icon={Users}>
+                        <DetailCard title="Agama Warga" icon={Users}>
                             <div style={{ minHeight: '300px' }}>
                                 <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
                             </div>
@@ -1070,14 +1070,16 @@ function Dashboard() {
                     {/* Recent Activities */}
                     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
                         {/* Recent Events */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-green-800">Acara Terbaru</h3>
+                        <DetailCard
+                            title="Acara Terbaru"
+                            icon={Calendar}
+                            headerRight={
                                 <a href="/events" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
-                            </div>
-                            <div className="space-y-3 p-6">
+                            }
+                        >
+                            <div className="space-y-3">
                                 {recentEvents.length === 0 ? (
                                     <p className="text-center text-sm text-gray-500">Belum ada acara</p>
                                 ) : (
@@ -1111,17 +1113,19 @@ function Dashboard() {
                                     ))
                                 )}
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Recent Announcements */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-green-800">Pengumuman Terbaru</h3>
+                        <DetailCard
+                            title="Pengumuman Terbaru"
+                            icon={AlertCircle}
+                            headerRight={
                                 <a href="/announcement" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
-                            </div>
-                            <div className="space-y-3 p-6">
+                            }
+                        >
+                            <div className="space-y-3">
                                 {recentAnnouncements.length === 0 ? (
                                     <p className="text-center text-sm text-gray-500">Belum ada pengumuman</p>
                                 ) : (
@@ -1139,17 +1143,19 @@ function Dashboard() {
                                     ))
                                 )}
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Recent Finance Transactions */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-green-800">Transaksi Keuangan Terbaru</h3>
+                        <DetailCard
+                            title="Transaksi Keuangan Terbaru"
+                            icon={Wallet}
+                            headerRight={
                                 <a href="/finance" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
-                            </div>
-                            <div className="space-y-3 p-6">
+                            }
+                        >
+                            <div className="space-y-3">
                                 {recentFinanceTransactions.length === 0 ? (
                                     <p className="text-center text-sm text-gray-500">Belum ada transaksi</p>
                                 ) : (
@@ -1174,17 +1180,19 @@ function Dashboard() {
                                     ))
                                 )}
                             </div>
-                        </div>
+                        </DetailCard>
 
                         {/* Recent Document Applications */}
-                        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md">
-                            <div className="flex items-center justify-between border-b border-green-200 bg-green-100 px-6 py-4">
-                                <h3 className="text-lg font-semibold text-green-800">Pengajuan Dokumen Terbaru</h3>
+                        <DetailCard
+                            title="Pengajuan Dokumen Terbaru"
+                            icon={FileText}
+                            headerRight={
                                 <a href="/document-applications" className="text-sm font-medium text-green-800 hover:underline">
                                     Lihat Semua
                                 </a>
-                            </div>
-                            <div className="space-y-3 p-6">
+                            }
+                        >
+                            <div className="space-y-3">
                                 {recentDocumentApplications.length === 0 ? (
                                     <p className="text-center text-sm text-gray-500">Belum ada pengajuan</p>
                                 ) : (
@@ -1222,7 +1230,7 @@ function Dashboard() {
                                     ))
                                 )}
                             </div>
-                        </div>
+                        </DetailCard>
                     </div>
                 </div>
             </div>
