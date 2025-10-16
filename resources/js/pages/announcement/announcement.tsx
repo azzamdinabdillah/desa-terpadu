@@ -66,14 +66,14 @@ function Announcement() {
     }, [flash]);
 
     const handleSearch = () => {
-        router.get('/announcement', { search: searchTerm }, { preserveState: true, replace: true });
+        router.get(`${import.meta.env.VITE_APP_SUB_URL}/announcement`, { search: searchTerm }, { preserveState: true, replace: true });
     };
 
     // Debounce search input
     useEffect(() => {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.search || '')) {
-                router.get('/announcement', { search: searchTerm }, { preserveState: true, replace: true });
+                router.get(`${import.meta.env.VITE_APP_SUB_URL}/announcement`, { search: searchTerm }, { preserveState: true, replace: true });
             }
         }, 300);
         return () => clearTimeout(handler);
@@ -105,7 +105,7 @@ function Announcement() {
 
     const handleDeleteConfirm = () => {
         if (deleteModalData) {
-            router.delete(`/announcement/${deleteModalData.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/announcement/${deleteModalData.id}`, {
                 onSuccess: () => {
                     setDeleteModalOpen(false);
                     setDeleteModalData(null);
@@ -190,7 +190,7 @@ function Announcement() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => router.visit(`/announcement/${item.id}/edit`)}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/announcement/${item.id}/edit`)}
                                     icon={<Edit className="h-4 w-4" />}
                                 >
                                     Edit
@@ -240,7 +240,11 @@ function Announcement() {
 
                         {isAdmin && (
                             <div className="flex flex-wrap gap-2">
-                                <Button onClick={() => router.visit('/announcement/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/announcement/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Pengumuman
                                 </Button>
                             </div>

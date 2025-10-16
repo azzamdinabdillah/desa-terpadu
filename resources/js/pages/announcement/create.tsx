@@ -53,7 +53,7 @@ function CreateAnnouncement() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to announcement list after success
             setTimeout(() => {
-                router.visit('/announcement');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/announcement`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
@@ -81,18 +81,18 @@ function CreateAnnouncement() {
 
         if (isEdit && announcement) {
             // Use POST with method spoofing for file uploads
-            post(`/announcement/${announcement.id}`, {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/announcement/${announcement.id}`, {
                 ...submitData,
                 ...data,
                 method: 'put',
             });
         } else {
-            post('/announcement', submitData);
+            post(`${import.meta.env.VITE_APP_SUB_URL}/announcement`, submitData);
         }
     };
 
     const handleBack = () => {
-        router.visit('/announcement');
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/announcement`);
     };
 
     return (
