@@ -58,7 +58,7 @@ function SocialAidPage() {
         const handler = setTimeout(() => {
             if (searchQuery !== (filters.search || '') || selectedType !== (filters.type || 'all')) {
                 router.get(
-                    '/social-aid',
+                    `${import.meta.env.VITE_APP_SUB_URL}/social-aid`,
                     {
                         search: searchQuery || undefined,
                         type: selectedType !== 'all' ? selectedType : undefined,
@@ -87,7 +87,7 @@ function SocialAidPage() {
 
     const handleDeleteConfirm = () => {
         if (deleteProgram) {
-            router.delete(`/social-aid/${deleteProgram.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${deleteProgram.id}`, {
                 onSuccess: () => {
                     setShowDeleteModal(false);
                     setDeleteProgram(null);
@@ -261,7 +261,12 @@ function SocialAidPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: SocialAidProgram) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => router.visit(`/social-aid/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${item.id}`)}
+                            icon={<Eye className="h-4 w-4" />}
+                        >
                             Detail
                         </Button>
                         {isAdmin && (
@@ -269,7 +274,7 @@ function SocialAidPage() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => router.visit(`/social-aid/${item.id}/edit`)}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${item.id}/edit`)}
                                     icon={<Edit className="h-4 w-4" />}
                                 >
                                     Edit
@@ -326,7 +331,11 @@ function SocialAidPage() {
                             />
 
                             {isAdmin && (
-                                <Button onClick={() => router.visit('/social-aid/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Program
                                 </Button>
                             )}
@@ -350,7 +359,7 @@ function SocialAidPage() {
                                 </p>
                                 {isAdmin && (
                                     <Button
-                                        onClick={() => router.visit('/social-aid/create')}
+                                        onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/create`)}
                                         icon={<Plus className="h-4 w-4" />}
                                         iconPosition="left"
                                         className="mx-auto"

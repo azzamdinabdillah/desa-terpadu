@@ -82,7 +82,7 @@ function SocialAidRecipientPage() {
                 selectedStatus !== (filters.status || 'all')
             ) {
                 router.get(
-                    '/recipients',
+                    `${import.meta.env.VITE_APP_SUB_URL}/recipients`,
                     {
                         search: searchQuery || undefined,
                         program_id: selectedProgram !== 'all_programs' ? selectedProgram : undefined,
@@ -133,7 +133,7 @@ function SocialAidRecipientPage() {
         if (!recipientToDelete) return;
 
         setIsDeleting(true);
-        router.delete(`/recipients/${recipientToDelete.id}`, {
+        router.delete(`${import.meta.env.VITE_APP_SUB_URL}/recipients/${recipientToDelete.id}`, {
             onSuccess: () => {
                 setDeleteModalOpen(false);
                 setRecipientToDelete(null);
@@ -290,7 +290,7 @@ function SocialAidRecipientPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => router.visit(`/recipients/${item.id}/action`)}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/recipients/${item.id}/action`)}
                                 icon={<StickyNote className="h-4 w-4" />}
                             >
                                 Aksi
@@ -363,7 +363,11 @@ function SocialAidRecipientPage() {
                             />
 
                             {isAdmin && (
-                                <Button onClick={() => router.visit('/recipients/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/recipients/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Penerima
                                 </Button>
                             )}

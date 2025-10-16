@@ -11,7 +11,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Circle, Clock, Edit, Eye, FileImage, HandHeart, Info, MapPin, Users } from 'lucide-react';
+import { Calendar, CheckCircle, Circle, Clock, Edit, FileImage, HandHeart, Info, MapPin, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface SocialAidDetailPageProps {
@@ -157,7 +157,7 @@ function SocialAidDetailPage() {
                         <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
                     </div>
                 ),
-            }
+            },
         ],
         [],
     );
@@ -220,7 +220,7 @@ function SocialAidDetailPage() {
                                 </div>
                                 {isAdmin && (
                                     <Button
-                                        onClick={() => router.visit(`/social-aid/${program.id}/edit`)}
+                                        onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${program.id}/edit`)}
                                         icon={<Edit className="h-4 w-4" />}
                                         iconPosition="left"
                                     >

@@ -65,7 +65,7 @@ function SocialAidCreatePage() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to social aid list after success
             setTimeout(() => {
-                router.visit('/social-aid');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
@@ -93,13 +93,13 @@ function SocialAidCreatePage() {
 
         if (isEdit && program) {
             // Use POST with method spoofing for file uploads
-            post(`/social-aid/${program.id}`, {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${program.id}`, {
                 ...submitData,
                 ...data,
                 method: 'put',
             });
         } else {
-            post('/social-aid', submitData);
+            post(`${import.meta.env.VITE_APP_SUB_URL}/social-aid`, submitData);
         }
     };
 
@@ -252,7 +252,7 @@ function SocialAidCreatePage() {
 
                         {/* Action Buttons */}
                         <div className="flex justify-end gap-4">
-                            <Button type="button" variant="secondary" onClick={() => router.visit('/social-aid')}>
+                            <Button type="button" variant="secondary" onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid`)}>
                                 Batal
                             </Button>
                             <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">

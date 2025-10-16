@@ -227,7 +227,7 @@ function CreateRecipientPage() {
         setIsSubmitting(true);
 
         router.post(
-            '/recipients',
+            `${import.meta.env.VITE_APP_SUB_URL}/recipients`,
             {
                 program_id: parseInt(selectedProgram),
                 recipients: validRecipients.map((r) => ({
@@ -409,7 +409,7 @@ function CreateRecipientPage() {
                         {/* Action Buttons */}
                         <div className="flex justify-end gap-3">
                             <Button
-                                onClick={() => router.visit('/recipients')}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/recipients`)}
                                 variant="outline"
                                 className="border-gray-300 text-gray-700 hover:bg-gray-50"
                                 disabled={isSubmitting}

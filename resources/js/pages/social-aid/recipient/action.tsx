@@ -79,7 +79,7 @@ export default function ActionPage() {
             submitData.append('image_proof', imageFile);
         }
 
-        post(`/recipients/${recipient.id}/action`, {
+        post(`${import.meta.env.VITE_APP_SUB_URL}/recipients/${recipient.id}/action`, {
             ...submitData,
             forceFormData: true,
             preserveState: true,
