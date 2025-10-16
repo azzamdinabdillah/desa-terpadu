@@ -93,7 +93,7 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
 
     const handleSubmit = () => {
         // Use post method with _method=PUT for file uploads
-        post(`/finance/${finance.id}`, {
+        post(`${import.meta.env.VITE_APP_SUB_URL}/finance/${finance.id}`, {
             ...data,
             method: 'put',
             preserveState: true,

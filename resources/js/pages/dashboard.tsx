@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { ApexOptions } from 'apexcharts';
 import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -1074,9 +1074,12 @@ function Dashboard() {
                             title="Acara Terbaru"
                             icon={Calendar}
                             headerRight={
-                                <a href="/events" className="text-sm font-medium text-green-800 hover:underline">
+                                <Link
+                                    href={`${import.meta.env.VITE_APP_SUB_URL}/events`}
+                                    className="text-sm font-medium text-green-800 hover:underline"
+                                >
                                     Lihat Semua
-                                </a>
+                                </Link>
                             }
                         >
                             <div className="space-y-3">
@@ -1120,9 +1123,12 @@ function Dashboard() {
                             title="Pengumuman Terbaru"
                             icon={AlertCircle}
                             headerRight={
-                                <a href="/announcement" className="text-sm font-medium text-green-800 hover:underline">
+                                <Link
+                                    href={`${import.meta.env.VITE_APP_SUB_URL}/announcement`}
+                                    className="text-sm font-medium text-green-800 hover:underline"
+                                >
                                     Lihat Semua
-                                </a>
+                                </Link>
                             }
                         >
                             <div className="space-y-3">
@@ -1150,9 +1156,12 @@ function Dashboard() {
                             title="Transaksi Keuangan Terbaru"
                             icon={Wallet}
                             headerRight={
-                                <a href="/finance" className="text-sm font-medium text-green-800 hover:underline">
+                                <Link
+                                    href={`${import.meta.env.VITE_APP_SUB_URL}/finance`}
+                                    className="text-sm font-medium text-green-800 hover:underline"
+                                >
                                     Lihat Semua
-                                </a>
+                                </Link>
                             }
                         >
                             <div className="space-y-3">
@@ -1187,9 +1196,12 @@ function Dashboard() {
                             title="Pengajuan Dokumen Terbaru"
                             icon={FileText}
                             headerRight={
-                                <a href="/document-applications" className="text-sm font-medium text-green-800 hover:underline">
+                                <Link
+                                    href={`${import.meta.env.VITE_APP_SUB_URL}/document-applications`}
+                                    className="text-sm font-medium text-green-800 hover:underline"
+                                >
                                     Lihat Semua
-                                </a>
+                                </Link>
                             }
                         >
                             <div className="space-y-3">

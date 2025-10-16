@@ -90,7 +90,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     };
 
     const handleSubmit = () => {
-        post('/finance', {
+        post(`${import.meta.env.VITE_APP_SUB_URL}/finance`, {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {

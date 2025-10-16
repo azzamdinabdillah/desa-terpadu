@@ -69,7 +69,7 @@ function Finance() {
 
     const handleSearch = () => {
         router.get(
-            '/finance',
+            `${import.meta.env.VITE_APP_SUB_URL}/finance`,
             {
                 search: searchTerm,
                 type: filterType,
@@ -85,7 +85,11 @@ function Finance() {
     useEffect(() => {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.search || '')) {
-                router.get('/finance', { search: searchTerm, type: filterType }, { preserveState: true, replace: true });
+                router.get(
+                    `${import.meta.env.VITE_APP_SUB_URL}/finance`,
+                    { search: searchTerm, type: filterType },
+                    { preserveState: true, replace: true },
+                );
             }
         }, 300);
         return () => clearTimeout(handler);
@@ -94,7 +98,7 @@ function Finance() {
     const handleFilterChange = (type: string) => {
         setFilterType(type);
         router.get(
-            '/finance',
+            `${import.meta.env.VITE_APP_SUB_URL}/finance`,
             {
                 search: searchTerm,
                 type: type,
@@ -122,7 +126,7 @@ function Finance() {
 
     const handleDeleteConfirm = () => {
         if (deleteModalData) {
-            router.delete(`/finance/${deleteModalData.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/finance/${deleteModalData.id}`, {
                 onSuccess: () => {
                     setAlert({ type: 'success', message: 'Transaksi berhasil dihapus!' });
                     setDeleteModalOpen(false);
@@ -144,7 +148,7 @@ function Finance() {
 
     const handleDateFilterApply = () => {
         router.get(
-            '/finance',
+            `${import.meta.env.VITE_APP_SUB_URL}/finance`,
             {
                 search: searchTerm,
                 type: filterType,
@@ -165,7 +169,7 @@ function Finance() {
         setStartDate('');
         setEndDate('');
         router.get(
-            '/finance',
+            `${import.meta.env.VITE_APP_SUB_URL}/finance`,
             {
                 search: searchTerm,
                 type: filterType,
@@ -269,7 +273,7 @@ function Finance() {
                                   <Button
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => router.visit(`/finance/${item.id}/edit`)}
+                                      onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/finance/${item.id}/edit`)}
                                       icon={<Edit className="h-4 w-4" />}
                                   >
                                       Edit
@@ -391,7 +395,11 @@ function Finance() {
                             </Button>
 
                             {isAdmin && (
-                                <Button onClick={() => router.visit('/finance/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/finance/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Transaksi
                                 </Button>
                             )}
@@ -414,7 +422,7 @@ function Finance() {
                                         : 'Belum ada transaksi keuangan yang tercatat.'}
                                 </p>
                                 <Button
-                                    onClick={() => router.visit('/finance/create')}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/finance/create`)}
                                     icon={<Plus className="h-4 w-4" />}
                                     iconPosition="left"
                                     className="mx-auto"
