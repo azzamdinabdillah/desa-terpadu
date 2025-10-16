@@ -52,7 +52,7 @@ export default function CreateAssetPage() {
             setAlert({ type: 'success', message: flash.success });
             // Auto redirect after success
             setTimeout(() => {
-                router.visit('/assets');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/assets`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
@@ -92,17 +92,17 @@ export default function CreateAssetPage() {
 
         if (isEditMode) {
             // Use POST with method spoofing for file uploads
-            post(`/assets/${asset.id}`, {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/assets/${asset.id}`, {
                 ...submitOptions,
                 method: 'put',
             });
         } else {
-            post('/assets', submitOptions);
+            post(`${import.meta.env.VITE_APP_SUB_URL}/assets`, submitOptions);
         }
     };
 
     const handleCancel = () => {
-        router.get('/assets');
+        router.get(`${import.meta.env.VITE_APP_SUB_URL}/assets`);
     };
 
     return (

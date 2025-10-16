@@ -69,7 +69,7 @@ export default function AssetLoanPage() {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.search || '') || statusFilter !== (filters.status || 'all')) {
                 router.get(
-                    '/asset-loans',
+                    `${import.meta.env.VITE_APP_SUB_URL}/asset-loans`,
                     {
                         search: searchTerm,
                         status: statusFilter === 'all' ? undefined : statusFilter,
@@ -83,7 +83,7 @@ export default function AssetLoanPage() {
 
     const handleSearch = () => {
         router.get(
-            '/asset-loans',
+            `${import.meta.env.VITE_APP_SUB_URL}/asset-loans`,
             {
                 search: searchTerm,
                 status: statusFilter === 'all' ? undefined : statusFilter,
@@ -121,7 +121,7 @@ export default function AssetLoanPage() {
         formData.append('note', note);
         formData.append('_method', 'PUT');
 
-        router.post(`/asset-loans/${returnModal.loan.id}`, formData, {
+        router.post(`${import.meta.env.VITE_APP_SUB_URL}/asset-loans/${returnModal.loan.id}`, formData, {
             preserveState: true,
             onSuccess: () => {
                 setReturnModal({ isOpen: false, loan: null });
@@ -316,7 +316,7 @@ export default function AssetLoanPage() {
                                       <Button
                                           variant="primary"
                                           size="sm"
-                                          onClick={() => router.visit(`/asset-loans/${loan.id}/approval`)}
+                                          onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/asset-loans/${loan.id}/approval`)}
                                           icon={<CheckCircle className="h-4 w-4" />}
                                       >
                                           Review
@@ -395,7 +395,11 @@ export default function AssetLoanPage() {
                             />
 
                             {!isAdmin && (
-                                <Button onClick={() => router.visit('/asset-loans/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/asset-loans/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Ajukan Peminjaman
                                 </Button>
                             )}

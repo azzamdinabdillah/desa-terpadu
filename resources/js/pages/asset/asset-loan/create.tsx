@@ -63,7 +63,7 @@ export default function CreateAssetLoanPage() {
     // Handle form submission
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/asset-loans', {
+        post(`${import.meta.env.VITE_APP_SUB_URL}/asset-loans`, {
             onSuccess: () => {
                 reset();
             },

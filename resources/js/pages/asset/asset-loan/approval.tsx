@@ -65,7 +65,7 @@ export default function ApprovalPage() {
             return;
         }
 
-        post(`/asset-loans/${assetLoan.id}`, {
+        post(`${import.meta.env.VITE_APP_SUB_URL}/asset-loans/${assetLoan.id}`, {
             onSuccess: () => {
                 // Success will be handled by redirect
             },

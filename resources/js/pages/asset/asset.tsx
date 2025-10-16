@@ -61,7 +61,7 @@ export default function AssetPage() {
     const handleDeleteConfirm = () => {
         if (assetToDelete) {
             setIsDeleting(true);
-            router.delete(`/assets/${assetToDelete.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/assets/${assetToDelete.id}`, {
                 onSuccess: () => {
                     setShowDeleteModal(false);
                     setAssetToDelete(null);
@@ -91,7 +91,7 @@ export default function AssetPage() {
                 statusFilter !== (filters.status || 'all')
             ) {
                 router.get(
-                    '/assets',
+                    `${import.meta.env.VITE_APP_SUB_URL}/assets`,
                     {
                         search: searchTerm,
                         condition: conditionFilter === 'all' ? undefined : conditionFilter,
@@ -106,7 +106,7 @@ export default function AssetPage() {
 
     const handleSearch = () => {
         router.get(
-            '/assets',
+            `${import.meta.env.VITE_APP_SUB_URL}/assets`,
             {
                 search: searchTerm,
                 condition: conditionFilter === 'all' ? undefined : conditionFilter,
@@ -187,7 +187,7 @@ export default function AssetPage() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => router.visit(`/assets/${asset.id}/edit`)}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/assets/${asset.id}/edit`)}
                                     icon={<Edit className="h-4 w-4" />}
                                 >
                                     Edit
@@ -260,7 +260,11 @@ export default function AssetPage() {
                             />
 
                             {isAdmin && (
-                                <Button onClick={() => router.visit('/assets/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/assets/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Asset
                                 </Button>
                             )}
