@@ -58,7 +58,7 @@ function CitizenPage() {
 
     const handleSearch = () => {
         router.get(
-            '/citizens',
+            `${import.meta.env.VITE_APP_SUB_URL}/citizens`,
             {
                 q: searchTerm,
                 gender: gender === 'all' ? undefined : gender,
@@ -73,7 +73,11 @@ function CitizenPage() {
     useEffect(() => {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.q || '') || (filters.gender || 'all') !== gender) {
-                router.get('/citizens', { q: searchTerm, gender: gender === 'all' ? undefined : gender }, { preserveState: true, replace: true });
+                router.get(
+                    `${import.meta.env.VITE_APP_SUB_URL}/citizens`,
+                    { q: searchTerm, gender: gender === 'all' ? undefined : gender },
+                    { preserveState: true, replace: true },
+                );
             }
         }, 300);
         return () => clearTimeout(handler);
@@ -98,7 +102,7 @@ function CitizenPage() {
     const handleDeleteConfirm = () => {
         if (citizenToDelete) {
             setIsDeleting(true);
-            router.delete(`/citizens/${citizenToDelete.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/citizens/${citizenToDelete.id}`, {
                 onSuccess: () => {
                     setShowDeleteModal(false);
                     setCitizenToDelete(null);
@@ -298,7 +302,12 @@ function CitizenPage() {
                     const hasAdminUser = Boolean(item.user && item.user.role === 'admin');
                     return (
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => router.visit(`/citizens/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/citizens/${item.id}`)}
+                                icon={<Eye className="h-4 w-4" />}
+                            >
                                 Detail
                             </Button>
                             {isAdmin && (
@@ -306,7 +315,7 @@ function CitizenPage() {
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => router.visit(`/citizens/${item.id}/edit`)}
+                                        onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/citizens/${item.id}/edit`)}
                                         icon={<Edit className="h-4 w-4" />}
                                     >
                                         Edit
@@ -376,7 +385,11 @@ function CitizenPage() {
                             />
 
                             {isAdmin && (
-                                <Button onClick={() => router.visit('/citizens/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/citizens/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Data Warga
                                 </Button>
                             )}

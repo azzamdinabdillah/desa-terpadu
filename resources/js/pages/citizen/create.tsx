@@ -55,7 +55,7 @@ function CreateCitizenPage() {
         const submitData = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, value === 'placeholder' ? '' : value]));
 
         if (isEdit && citizen) {
-            post(`/citizens/${citizen.id}`, {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/citizens/${citizen.id}`, {
                 ...submitData,
                 method: 'put',
                 preserveState: true,
@@ -72,7 +72,7 @@ function CreateCitizenPage() {
                 },
             });
         } else {
-            post('/citizens', {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/citizens`, {
                 ...submitData,
                 preserveState: true,
                 preserveScroll: true,
@@ -92,7 +92,7 @@ function CreateCitizenPage() {
 
     // Handle cancel
     const handleCancel = () => {
-        router.visit('/citizens');
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/citizens`);
     };
 
     // Set initial preview for existing profile picture
@@ -108,7 +108,7 @@ function CreateCitizenPage() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to citizens list after success
             setTimeout(() => {
-                router.visit('/citizens');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/citizens`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
