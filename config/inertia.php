@@ -17,7 +17,7 @@ return [
 
     'ssr' => [
         'enabled' => true,
-        'url' => 'http://azamportfolio.my.id/desa-terpadu',
+        'url' => env('APP_URL', 'http://localhost'),
         // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
 
     ],

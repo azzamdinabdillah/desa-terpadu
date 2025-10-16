@@ -1,5 +1,5 @@
 import { PageProps } from '@/types';
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import * as Popover from '@radix-ui/react-popover';
 import * as Tooltip from '@radix-ui/react-tooltip';
@@ -221,7 +221,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                                     </div>
                                                     <div className="space-y-1">
                                                         {item.submenu.map((subitem) => (
-                                                            <a
+                                                            <Link
                                                                 key={subitem.id}
                                                                 href={subitem.href}
                                                                 className={`block rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-900 ${
@@ -231,7 +231,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                                                 }`}
                                                             >
                                                                 {subitem.label}
-                                                            </a>
+                                                            </Link>
                                                         ))}
                                                     </div>
                                                     <Popover.Arrow className="fill-white" />
@@ -263,7 +263,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
 
                                             <Collapsible.Content className="mt-2 ml-4 space-y-1">
                                                 {item.submenu.map((subitem) => (
-                                                    <a
+                                                    <Link
                                                         key={subitem.id}
                                                         href={subitem.href}
                                                         className={`block rounded-md px-3 py-2 text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-900 hover:shadow-sm ${
@@ -273,7 +273,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                                         }`}
                                                     >
                                                         {subitem.label}
-                                                    </a>
+                                                    </Link>
                                                 ))}
                                             </Collapsible.Content>
                                         </Collapsible.Root>
@@ -282,8 +282,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                     // Collapsed regular menu - show with tooltip
                                     <Tooltip.Root>
                                         <Tooltip.Trigger asChild>
-                                            <a
-                                                href={item.href}
+                                            <Link
+                                                href={item.href || '#'}
                                                 className={`flex items-center justify-center rounded-lg p-3 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
                                                     isActive(item.href || '') ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
                                                 }`}
@@ -291,7 +291,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                                 <div className={`${isActive(item.href || '') ? 'text-green-800' : 'text-green-700'}`}>
                                                     {item.icon}
                                                 </div>
-                                            </a>
+                                            </Link>
                                         </Tooltip.Trigger>
                                         <Tooltip.Portal>
                                             <Tooltip.Content
@@ -305,15 +305,15 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                         </Tooltip.Portal>
                                     </Tooltip.Root>
                                 ) : (
-                                    <a
-                                        href={item.href}
+                                    <Link
+                                        href={item.href || '#'}
                                         className={`flex items-center space-x-3 rounded-lg p-3 transition-all duration-200 hover:bg-green-100 hover:text-green-900 hover:shadow-sm ${
                                             isActive(item.href || '') ? 'bg-green-200 text-green-900 shadow-sm' : 'text-green-800'
                                         }`}
                                     >
                                         <div className={`${isActive(item.href || '') ? 'text-green-800' : 'text-green-700'}`}>{item.icon}</div>
                                         <span className="text-sm font-medium">{item.label}</span>
-                                    </a>
+                                    </Link>
                                 )}
                             </div>
                         ))}
