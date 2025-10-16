@@ -56,7 +56,7 @@ function EventPage() {
 
     const handleSearch = () => {
         router.get(
-            '/events',
+            `${import.meta.env.VITE_APP_SUB_URL}/events`,
             {
                 q: searchTerm,
                 status: status === 'all' ? undefined : status,
@@ -73,7 +73,7 @@ function EventPage() {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.q || '') || (filters.status || 'all') !== status || (filters.type || 'all') !== type) {
                 router.get(
-                    '/events',
+                    `${import.meta.env.VITE_APP_SUB_URL}/events`,
                     {
                         q: searchTerm,
                         status: status === 'all' ? undefined : status,
@@ -213,14 +213,19 @@ function EventPage() {
                 className: 'whitespace-nowrap',
                 cell: (item: EventType) => (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => router.visit(`/events/${item.id}`)} icon={<Eye className="h-4 w-4" />}>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events/${item.id}`)}
+                            icon={<Eye className="h-4 w-4" />}
+                        >
                             Detail
                         </Button>
                         {isAdmin && (
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => router.visit(`/events/${item.id}/edit`)}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events/${item.id}/edit`)}
                                 icon={<Edit className="h-4 w-4" />}
                             >
                                 Edit
@@ -230,7 +235,7 @@ function EventPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => router.visit(`/events/${item.id}/change-status`)}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events/${item.id}/change-status`)}
                                 icon={<Settings className="h-4 w-4" />}
                                 className="text-blue-600 hover:text-blue-800"
                             >
@@ -241,7 +246,7 @@ function EventPage() {
                             <Button
                                 variant="primary"
                                 size="sm"
-                                onClick={() => router.visit(`/events/${item.id}/register`)}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events/${item.id}/register`)}
                                 icon={<UserPlus className="h-4 w-4" />}
                             >
                                 Daftar
@@ -312,7 +317,7 @@ function EventPage() {
                                     icon={<Plus className="h-4 w-4" />}
                                     iconPosition="left"
                                     variant="primary"
-                                    onClick={() => router.visit('/events/create')}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events/create`)}
                                 >
                                     Tambah Event
                                 </Button>

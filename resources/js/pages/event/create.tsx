@@ -85,7 +85,7 @@ export default function CreateEvent() {
         };
 
         if (isEdit) {
-            post(`/events/${event?.id}`, {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/events/${event?.id}`, {
                 preserveState: true,
                 preserveScroll: true,
                 ...submitData,
@@ -103,7 +103,7 @@ export default function CreateEvent() {
                 },
             });
         } else {
-            post('/events', {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/events`, {
                 preserveState: true,
                 preserveScroll: true,
                 ...submitData,

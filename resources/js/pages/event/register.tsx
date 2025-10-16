@@ -47,7 +47,7 @@ function EventRegisterPage() {
         setIsLoading(true);
 
         router.post(
-            `/events/${event.id}/register`,
+            `${import.meta.env.VITE_APP_SUB_URL}/events/${event.id}/register`,
             {},
             {
                 onSuccess: () => {
@@ -155,7 +155,12 @@ function EventRegisterPage() {
                             </div>
 
                             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
-                                <Button type="button" variant="outline" onClick={() => router.visit('/events')} className="w-full sm:w-auto">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events`)}
+                                    className="w-full sm:w-auto"
+                                >
                                     Kembali ke Daftar Event
                                 </Button>
 

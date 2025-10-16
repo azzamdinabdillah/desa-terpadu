@@ -103,7 +103,7 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                 formData.append(`documentation_captions[${index}]`, item.caption);
             });
 
-            router.post(`/events/${event.id}/change-status`, formData, {
+            router.post(`${import.meta.env.VITE_APP_SUB_URL}/events/${event.id}/change-status`, formData, {
                 onSuccess: () => {
                     // Reset form
                     setSelectedFiles([]);
@@ -327,7 +327,7 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        onClick={() => router.visit(`/events/${event.id}`)}
+                                        onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/events/${event.id}`)}
                                         className="text-green-600 hover:bg-green-50 hover:text-green-700"
                                     >
                                         Batal
