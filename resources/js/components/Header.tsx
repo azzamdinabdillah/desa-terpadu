@@ -56,7 +56,7 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-2 p-4 overflow-y-auto">
+            <nav className="flex-1 space-y-2 overflow-y-auto p-4">
                 {menuItems
                     .filter((item) => {
                         // Hide login menu when user is authenticated

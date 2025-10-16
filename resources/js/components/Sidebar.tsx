@@ -43,42 +43,42 @@ export const menuItems: MenuItem[] = [
         id: 'dashboard',
         label: 'Dashboard',
         icon: <Home className="h-5 w-5" />,
-        href: '/',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/`,
     },
     {
         id: 'finance',
         label: 'Manajemen Keuangan',
         icon: <CircleDollarSign className="h-5 w-5" />,
-        href: '/finance',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/finance`,
     },
     {
         id: 'warga',
         label: 'Manajemen Warga',
         icon: <Users className="h-5 w-5" />,
         submenu: [
-            { id: 'data-warga', label: 'Data Penduduk', href: '/citizens' },
-            { id: 'data-keluarga', label: 'Keluarga', href: '/families' },
+            { id: 'data-warga', label: 'Data Penduduk', href: `${import.meta.env.VITE_APP_SUB_URL}/citizens` },
+            { id: 'data-keluarga', label: 'Keluarga', href: `${import.meta.env.VITE_APP_SUB_URL}/families` },
         ],
     },
     {
         id: 'announcement',
         label: 'Pengumuman',
         icon: <Bell className="h-5 w-5" />,
-        href: '/announcement',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/announcement`,
     },
     {
         id: 'event',
         label: 'Acara',
         icon: <Calendar className="h-5 w-5" />,
-        href: '/events',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/events`,
     },
     {
         id: 'social-aid',
         label: 'Bantuan Sosial',
         icon: <HandHeart className="h-5 w-5" />,
         submenu: [
-            { id: 'social-aid-programs', label: 'Program Bantuan', href: '/social-aid' },
-            { id: 'social-recipients', label: 'Penerima Bantuan', href: '/recipients' },
+            { id: 'social-aid-programs', label: 'Program Bantuan', href: `${import.meta.env.VITE_APP_SUB_URL}/social-aid` },
+            { id: 'social-recipients', label: 'Penerima Bantuan', href: `${import.meta.env.VITE_APP_SUB_URL}/recipients` },
         ],
     },
     {
@@ -86,8 +86,8 @@ export const menuItems: MenuItem[] = [
         label: 'Aset',
         icon: <Building className="h-5 w-5" />,
         submenu: [
-            { id: 'asset', label: 'Data Aset', href: '/assets' },
-            { id: 'asset-loan', label: 'Peminjaman Aset', href: '/asset-loans' },
+            { id: 'asset', label: 'Data Aset', href: `${import.meta.env.VITE_APP_SUB_URL}/assets` },
+            { id: 'asset-loan', label: 'Peminjaman Aset', href: `${import.meta.env.VITE_APP_SUB_URL}/asset-loans` },
         ],
     },
     {
@@ -95,27 +95,27 @@ export const menuItems: MenuItem[] = [
         label: 'Master Dokumen',
         icon: <FileText className="h-5 w-5" />,
         submenu: [
-            { id: 'master-documents-list', label: 'Daftar Dokumen', href: '/documents' },
-            { id: 'applicant', label: 'Pengajuan Dokumen', href: '/document-applications' },
+            { id: 'master-documents-list', label: 'Daftar Dokumen', href: `${import.meta.env.VITE_APP_SUB_URL}/documents` },
+            { id: 'applicant', label: 'Pengajuan Dokumen', href: `${import.meta.env.VITE_APP_SUB_URL}/document-applications` },
         ],
     },
     {
         id: 'user',
         label: 'Manajemen User',
         icon: <Users className="h-5 w-5" />,
-        href: '/users',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/users`,
     },
     {
         id: 'profile',
         label: 'Profile',
         icon: <User className="h-5 w-5" />,
-        href: '/profile',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/profile`,
     },
     {
         id: 'login',
         label: 'Login',
         icon: <LogIn className="h-5 w-5" />,
-        href: '/login',
+        href: `${import.meta.env.VITE_APP_SUB_URL}/login`,
     },
 ];
 
@@ -379,7 +379,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isCollapsed, onToggle }) =
                                 {isAuthenticated && (
                                     <button
                                         type="button"
-                                        onClick={() => router.post('/logout')}
+                                        onClick={() => router.post(`${import.meta.env.VITE_APP_SUB_URL}/logout`)}
                                         className="mt-3 w-full rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
                                     >
                                         Keluar
