@@ -58,7 +58,7 @@ function ApplicantPage() {
         const handler = setTimeout(() => {
             if (searchQuery !== (filters.search || '')) {
                 router.get(
-                    '/document-applications',
+                    `${import.meta.env.VITE_APP_SUB_URL}/document-applications`,
                     {
                         search: searchQuery || undefined,
                         status: statusFilter && statusFilter !== 'all' ? statusFilter : undefined,
@@ -77,7 +77,7 @@ function ApplicantPage() {
     useEffect(() => {
         if (statusFilter !== (filters.status || 'all')) {
             router.get(
-                '/document-applications',
+                `${import.meta.env.VITE_APP_SUB_URL}/document-applications`,
                 {
                     search: searchQuery || undefined,
                     status: statusFilter && statusFilter !== 'all' ? statusFilter : undefined,
@@ -146,7 +146,7 @@ function ApplicantPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                                router.visit(`/document-applications/${item.id}`);
+                                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/document-applications/${item.id}`);
                             }}
                             icon={<Eye className="h-4 w-4" />}
                         >
@@ -157,7 +157,7 @@ function ApplicantPage() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => {
-                                    router.visit(`/document-applications/${item.id}/edit`);
+                                    router.visit(`${import.meta.env.VITE_APP_SUB_URL}/document-applications/${item.id}/edit`);
                                 }}
                                 icon={<Edit className="h-4 w-4" />}
                             >
@@ -209,7 +209,7 @@ function ApplicantPage() {
                         {isCitizen && (
                             <Button
                                 className="h-full shrink-0"
-                                onClick={() => router.visit('/document-applications/create')}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/document-applications/create`)}
                                 icon={<Plus className="h-4 w-4" />}
                                 iconPosition="left"
                             >

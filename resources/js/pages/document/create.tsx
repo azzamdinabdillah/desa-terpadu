@@ -38,7 +38,7 @@ function CreateDocumentPage() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to document list after success
             setTimeout(() => {
-                router.visit('/documents');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
@@ -76,14 +76,14 @@ function CreateDocumentPage() {
         };
 
         if (isEdit && masterDocument) {
-            put(`/documents/${masterDocument.id}`, submitData);
+            put(`${import.meta.env.VITE_APP_SUB_URL}/documents/${masterDocument.id}`, submitData);
         } else {
-            post('/documents', submitData);
+            post(`${import.meta.env.VITE_APP_SUB_URL}/documents`, submitData);
         }
     };
 
     const handleCancel = () => {
-        router.visit('/documents');
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents`);
     };
 
     return (

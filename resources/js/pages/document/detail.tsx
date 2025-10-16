@@ -72,7 +72,7 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                                router.visit(`/document-applications/${item.id}`);
+                                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/document-applications/${item.id}`);
                             }}
                             icon={<Eye className="h-4 w-4" />}
                         >
@@ -174,10 +174,14 @@ const MasterDocumentDetail: React.FC<MasterDocumentDetailProps> = ({ masterDocum
 
                         {/* Action Buttons */}
                         <div className="flex gap-3">
-                            <Button variant="outline" onClick={() => router.visit('/documents')}>
+                            <Button variant="outline" onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents`)}>
                                 Kembali ke Daftar Dokumen
                             </Button>
-                            {isAdmin && <Button onClick={() => router.visit(`/documents/${masterDocument.id}/edit`)}>Edit Dokumen</Button>}
+                            {isAdmin && (
+                                <Button onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents/${masterDocument.id}/edit`)}>
+                                    Edit Dokumen
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

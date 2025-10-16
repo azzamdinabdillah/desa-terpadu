@@ -48,7 +48,7 @@ const ApplicantDetail: React.FC = () => {
     }, [flash]);
 
     const handleBack = () => {
-        router.visit('/document-applications');
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/document-applications`);
     };
 
     const handleApprove = () => {
@@ -64,7 +64,7 @@ const ApplicantDetail: React.FC = () => {
 
         setIsSubmitting(true);
         router.post(
-            `/document-applications/${application.id}/approve`,
+            `${import.meta.env.VITE_APP_SUB_URL}/document-applications/${application.id}/approve`,
             { admin_note: adminNote },
             {
                 onSuccess: () => {
@@ -101,7 +101,7 @@ const ApplicantDetail: React.FC = () => {
 
         setIsSubmitting(true);
         router.post(
-            `/document-applications/${application.id}/reject`,
+            `${import.meta.env.VITE_APP_SUB_URL}/document-applications/${application.id}/reject`,
             { admin_note: adminNote },
             {
                 onSuccess: () => {
@@ -138,7 +138,7 @@ const ApplicantDetail: React.FC = () => {
 
         setIsSubmitting(true);
         router.post(
-            `/document-applications/${application.id}/notify`,
+            `${import.meta.env.VITE_APP_SUB_URL}/document-applications/${application.id}/notify`,
             { admin_note: adminNote },
             {
                 onSuccess: () => {
@@ -189,7 +189,7 @@ const ApplicantDetail: React.FC = () => {
         formData.append('admin_note', adminNote);
         formData.append('proof_file', proofFile);
 
-        router.post(`/document-applications/${application.id}/complete`, formData, {
+        router.post(`${import.meta.env.VITE_APP_SUB_URL}/document-applications/${application.id}/complete`, formData, {
             onSuccess: () => {
                 setShowCompleteModal(false);
                 setAdminNote('');

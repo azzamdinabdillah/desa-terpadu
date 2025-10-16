@@ -36,7 +36,7 @@ function MasterDocumentPage() {
         const handler = setTimeout(() => {
             if (searchQuery !== (filters.search || '')) {
                 router.get(
-                    '/documents',
+                    `${import.meta.env.VITE_APP_SUB_URL}/documents`,
                     {
                         search: searchQuery || undefined,
                     },
@@ -63,7 +63,7 @@ function MasterDocumentPage() {
     const handleDeleteConfirm = () => {
         if (documentToDelete) {
             setIsDeleting(true);
-            router.delete(`/documents/${documentToDelete.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/documents/${documentToDelete.id}`, {
                 onSuccess: () => {
                     setShowDeleteModal(false);
                     setDocumentToDelete(null);
@@ -119,7 +119,7 @@ function MasterDocumentPage() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => router.visit(`/documents/${item.id}`)}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents/${item.id}`)}
                                 icon={<Eye className="h-4 w-4" />}
                             >
                                 Detail
@@ -130,7 +130,7 @@ function MasterDocumentPage() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => router.visit(`/documents/${item.id}/edit`)}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents/${item.id}/edit`)}
                                     icon={<Edit className="h-4 w-4" />}
                                 >
                                     Edit
@@ -177,7 +177,11 @@ function MasterDocumentPage() {
                         </div>
 
                         {isAdmin && (
-                            <Button onClick={() => router.visit('/documents/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                            <Button
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents/create`)}
+                                icon={<Plus className="h-4 w-4" />}
+                                iconPosition="left"
+                            >
                                 Tambah Dokumen
                             </Button>
                         )}
@@ -199,7 +203,7 @@ function MasterDocumentPage() {
                                         : 'Belum ada master dokumen yang terdaftar.'}
                                 </p>
                                 <Button
-                                    onClick={() => router.visit('/documents/create')}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/documents/create`)}
                                     icon={<Plus className="h-4 w-4" />}
                                     iconPosition="left"
                                     className="mx-auto"

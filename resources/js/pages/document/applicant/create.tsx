@@ -43,7 +43,7 @@ function CreateDocumentApplication() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to home after success
             setTimeout(() => {
-                router.visit('/');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/`);
             }, 2000);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
@@ -71,19 +71,19 @@ function CreateDocumentApplication() {
 
         if (isEditMode && application) {
             // Use POST route for update
-            post(`/document-applications/${application.id}/update`, options);
+            post(`${import.meta.env.VITE_APP_SUB_URL}/document-applications/${application.id}/update`, options);
         } else {
             // Use POST for create
-            post('/document-applications', options);
+            post(`${import.meta.env.VITE_APP_SUB_URL}/document-applications`, options);
         }
     };
 
     // Handle cancel
     const handleCancel = () => {
         if (isEditMode) {
-            router.visit('/document-applications');
+            router.visit(`${import.meta.env.VITE_APP_SUB_URL}/document-applications`);
         } else {
-            router.visit('/');
+            router.visit(`${import.meta.env.VITE_APP_SUB_URL}/`);
         }
     };
 
