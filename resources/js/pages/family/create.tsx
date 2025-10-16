@@ -34,7 +34,7 @@ function CreateFamilyPage() {
         e.preventDefault();
 
         if (isEdit && family) {
-            put(`/families/${family.id}`, {
+            put(`${import.meta.env.VITE_APP_SUB_URL}/families/${family.id}`, {
                 onSuccess: () => {
                     setAlert({
                         type: 'success',
@@ -50,7 +50,7 @@ function CreateFamilyPage() {
                 },
             });
         } else {
-            post('/families', {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/families`, {
                 onSuccess: () => {
                     setAlert({
                         type: 'success',
@@ -132,7 +132,12 @@ function CreateFamilyPage() {
                     </DetailCard>
 
                     <div className="flex justify-end space-x-4">
-                        <Button type="button" variant="outline" onClick={() => router.visit('/families')} disabled={processing}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/families`)}
+                            disabled={processing}
+                        >
                             Batal
                         </Button>
                         <Button type="submit" variant="primary" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">

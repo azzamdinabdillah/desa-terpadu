@@ -39,7 +39,7 @@ function Login() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post('/login', {
+        post(`${import.meta.env.VITE_APP_SUB_URL}/login`, {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {

@@ -59,14 +59,14 @@ function Family() {
     }, [flash]);
 
     const handleSearch = () => {
-        router.get('/families', { search: searchTerm }, { preserveState: true, replace: true });
+        router.get(`${import.meta.env.VITE_APP_SUB_URL}/families`, { search: searchTerm }, { preserveState: true, replace: true });
     };
 
     // Debounce search input
     useEffect(() => {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.search || '')) {
-                router.get('/families', { search: searchTerm }, { preserveState: true, replace: true });
+                router.get(`${import.meta.env.VITE_APP_SUB_URL}/families`, { search: searchTerm }, { preserveState: true, replace: true });
             }
         }, 300);
         return () => clearTimeout(handler);
@@ -82,7 +82,7 @@ function Family() {
     };
 
     const handleViewClick = (family: FamilyType) => {
-        router.visit(`/families/${family.id}`);
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/families/${family.id}`);
     };
 
     const handleDeleteClick = (family: FamilyType) => {
@@ -92,7 +92,7 @@ function Family() {
 
     const handleDeleteConfirm = () => {
         if (deleteModalData) {
-            router.delete(`/families/${deleteModalData.id}`, {
+            router.delete(`${import.meta.env.VITE_APP_SUB_URL}/families/${deleteModalData.id}`, {
                 onSuccess: () => {
                     setDeleteModalOpen(false);
                     setDeleteModalData(null);
@@ -170,7 +170,7 @@ function Family() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => router.visit(`/families/${item.id}/edit`)}
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/families/${item.id}/edit`)}
                                     icon={<Edit className="h-4 w-4" />}
                                 >
                                     Edit
@@ -215,7 +215,11 @@ function Family() {
 
                         {isAdmin && (
                             <div className="flex flex-wrap gap-2">
-                                <Button onClick={() => router.visit('/families/create')} icon={<Plus className="h-4 w-4" />} iconPosition="left">
+                                <Button
+                                    onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/families/create`)}
+                                    icon={<Plus className="h-4 w-4" />}
+                                    iconPosition="left"
+                                >
                                     Tambah Keluarga
                                 </Button>
                             </div>
