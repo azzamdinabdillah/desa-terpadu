@@ -155,16 +155,16 @@ function Dashboard() {
         dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
-            width: [5, 5, 5],
+            width: [6, 6, 6],
             // dashArray: [0, 0, 5],
         },
         markers: {
-            size: [5, 5, 5],
+            size: [7, 7, 7],
             colors: ['#10b981', '#ef4444', '#3b82f6'],
             strokeColors: '#fff',
             strokeWidth: 2,
             hover: {
-                size: 8,
+                size: 9,
                 sizeOffset: 3,
             },
         },
@@ -235,6 +235,7 @@ function Dashboard() {
                     if (value <= -1000) return `${(value / 1000).toFixed(0)}rb`;
                     return value.toFixed(0);
                 },
+                show: window.innerWidth > 768, // Hide yAxis labels on mobile
             },
         },
         tooltip: {
@@ -257,6 +258,121 @@ function Dashboard() {
                 const netPercentage = income > 0 ? ((netIncome / income) * 100).toFixed(1) : 0;
                 const showNetSummary = isIncomeActive && isExpenseActive && isBalanceActive;
 
+                // Check if mobile screen
+                const isMobile = window.innerWidth < 768;
+
+                if (isMobile) {
+                    // Simple mobile tooltip - show only essential info
+                    let mobileContent = `
+                        <div style="
+                            background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+                            border-radius: 8px;
+                            padding: 12px;
+                            min-width: 200px;
+                            max-width: 250px;
+                            box-shadow: 0 4px 20px rgba(21, 128, 61, 0.3);
+                            font-family: 'Poppins', sans-serif;
+                        ">
+                    `;
+
+                    // Show only active series in mobile
+                    if (isIncomeActive) {
+                        mobileContent += `
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                padding: 4px 0;
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                            ">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <div style="
+                                        width: 6px;
+                                        height: 6px;
+                                        border-radius: 50%;
+                                        background: #22c55e;
+                                    "></div>
+                                    <span style="
+                                        font-size: 11px;
+                                        color: #f0fdf4;
+                                        font-weight: 500;
+                                    ">Pemasukan</span>
+                                </div>
+                                <span style="
+                                    font-size: 11px;
+                                    font-weight: 700;
+                                    color: #bbf7d0;
+                                ">${formatCurrency(income)}</span>
+                            </div>
+                        `;
+                    }
+
+                    if (isExpenseActive) {
+                        mobileContent += `
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                padding: 4px 0;
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                            ">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <div style="
+                                        width: 6px;
+                                        height: 6px;
+                                        border-radius: 50%;
+                                        background: #f59e0b;
+                                    "></div>
+                                    <span style="
+                                        font-size: 11px;
+                                        color: #f0fdf4;
+                                        font-weight: 500;
+                                    ">Pengeluaran</span>
+                                </div>
+                                <span style="
+                                    font-size: 11px;
+                                    font-weight: 700;
+                                    color: #fef3c7;
+                                ">${formatCurrency(expense)}</span>
+                            </div>
+                        `;
+                    }
+
+                    if (isBalanceActive) {
+                        mobileContent += `
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                padding: 4px 0;
+                            ">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <div style="
+                                        width: 6px;
+                                        height: 6px;
+                                        border-radius: 50%;
+                                        background: #4ade80;
+                                    "></div>
+                                    <span style="
+                                        font-size: 11px;
+                                        color: #f0fdf4;
+                                        font-weight: 500;
+                                    ">Saldo</span>
+                                </div>
+                                <span style="
+                                    font-size: 11px;
+                                    font-weight: 700;
+                                    color: #dcfce7;
+                                ">${formatCurrency(balance)}</span>
+                            </div>
+                        `;
+                    }
+
+                    mobileContent += `</div>`;
+                    return mobileContent;
+                }
+
+                // Desktop tooltip - full detailed version
                 let tooltipContent = `
                     <div style="
                         background: linear-gradient(135deg, #15803d 0%, #166534 100%);
@@ -439,16 +555,16 @@ function Dashboard() {
         },
         legend: {
             position: 'top',
-            horizontalAlign: 'right',
+            horizontalAlign: 'center',
             fontSize: '13px',
             fontWeight: 600,
             offsetY: 0,
             itemMargin: {
-                horizontal: 12,
+                horizontal: window.innerWidth < 768 ? 8 : 12,
                 vertical: 5,
             },
             markers: {
-                size: 8,
+                size: window.innerWidth < 768 ? 6 : 8,
                 strokeWidth: 2,
                 fillColors: ['#10b981', '#ef4444', '#3b82f6'],
                 shape: 'circle',
@@ -476,6 +592,150 @@ function Dashboard() {
                 left: 10,
             },
         },
+        responsive: [
+            {
+                breakpoint: 768,
+                options: {
+                    chart: {
+                        height: 250,
+                    },
+                    stroke: {
+                        width: [3, 3, 3],
+                    },
+                    markers: {
+                        size: [4, 4, 4],
+                        strokeWidth: 1,
+                        hover: {
+                            size: 6,
+                            sizeOffset: 2,
+                        },
+                    },
+                    xaxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px',
+                                colors: '#6b7280',
+                            },
+                            rotate: -45,
+                        },
+                        crosshairs: {
+                            show: true,
+                            width: 0.5,
+                            opacity: 0.7,
+                            stroke: {
+                                color: '#15803d',
+                                width: 1,
+                                dashArray: 2,
+                            },
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    colorFrom: '#dcfce7',
+                                    colorTo: '#bbf7d0',
+                                    opacityFrom: 0.4,
+                                    opacityTo: 0.2,
+                                },
+                            },
+                            dropShadow: {
+                                enabled: false,
+                            },
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            show: false, // Hide yAxis labels on mobile
+                        },
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'center',
+                        fontSize: '11px',
+                        offsetY: 0,
+                    },
+                    grid: {
+                        borderColor: '#e5e7eb',
+                        strokeDashArray: 2,
+                        padding: {
+                            top: 0,
+                            right: 10,
+                            bottom: 0,
+                            left: 5,
+                        },
+                    },
+                },
+            },
+            {
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 200,
+                    },
+                    stroke: {
+                        width: [2, 2, 2],
+                    },
+                    markers: {
+                        size: [3.5, 3.5, 3.5],
+                        strokeWidth: 1,
+                        hover: {
+                            size: 5,
+                            sizeOffset: 1,
+                        },
+                    },
+                    xaxis: {
+                        labels: {
+                            style: {
+                                fontSize: '9px',
+                                colors: '#6b7280',
+                            },
+                            rotate: -45,
+                        },
+                        crosshairs: {
+                            show: true,
+                            width: 0.3,
+                            opacity: 0.5,
+                            stroke: {
+                                color: '#15803d',
+                                width: 0.5,
+                                dashArray: 1,
+                            },
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    colorFrom: '#dcfce7',
+                                    colorTo: '#bbf7d0',
+                                    opacityFrom: 0.3,
+                                    opacityTo: 0.1,
+                                },
+                            },
+                            dropShadow: {
+                                enabled: false,
+                            },
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            show: false, // Hide yAxis labels on mobile
+                        },
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'center',
+                        fontSize: '10px',
+                        offsetY: 0,
+                    },
+                    grid: {
+                        borderColor: '#e5e7eb',
+                        strokeDashArray: 1,
+                        padding: {
+                            top: 0,
+                            right: 5,
+                            bottom: 0,
+                            left: 2,
+                        },
+                    },
+                },
+            },
+        ],
     };
 
     const financeTrendSeries = [
@@ -512,6 +772,8 @@ function Dashboard() {
         responsive: true,
         maintainAspectRatio: false,
         cutout: '60%',
+        aspectRatio: 1,
+        resizeDelay: 100,
         plugins: {
             datalabels: {
                 color: '#fff',
@@ -530,19 +792,21 @@ function Dashboard() {
                 align: 'center' as const,
             },
             legend: {
-                position: 'bottom' as const,
+                position: 'top' as const,
                 labels: {
                     font: {
                         family: 'Poppins',
-                        size: 13,
+                        size: window.innerWidth < 768 ? 11 : 13,
                         weight: 500,
                     },
-                    padding: 15,
+                    padding: window.innerWidth < 768 ? 8 : 15,
                     usePointStyle: true,
                     pointStyle: 'circle',
-                    boxWidth: 12,
-                    boxHeight: 12,
+                    boxWidth: window.innerWidth < 768 ? 8 : 12,
+                    boxHeight: window.innerWidth < 768 ? 8 : 12,
                 },
+                responsive: true,
+                adaptiveSize: true,
             },
             tooltip: {
                 backgroundColor: 'rgba(0, 0, 0, 0.85)',
@@ -586,6 +850,8 @@ function Dashboard() {
     const barOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        aspectRatio: 1.5,
+        resizeDelay: 100,
         plugins: {
             datalabels: {
                 display: false,
@@ -616,6 +882,7 @@ function Dashboard() {
         },
         scales: {
             y: {
+                display: window.innerWidth > 768, // Hide yAxis on mobile
                 ticks: {
                     font: {
                         family: 'Poppins',
@@ -655,6 +922,8 @@ function Dashboard() {
     const horizontalBarOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        aspectRatio: 1.2,
+        resizeDelay: 100,
         indexAxis: 'y' as const,
         layout: {
             padding: {
@@ -718,6 +987,7 @@ function Dashboard() {
                 },
             },
             y: {
+                display: window.innerWidth > 768, // Hide yAxis on mobile
                 ticks: {
                     font: {
                         family: 'Poppins',
@@ -792,7 +1062,7 @@ function Dashboard() {
                                             <p className="text-sm font-semibold text-green-100">Saldo Saat Ini</p>
                                             <p className="mt-2 text-3xl font-bold text-white">{formatCurrency(financeStats.current_balance)}</p>
                                         </div>
-                                        <div className="rounded-xl bg-white/20 p-3 hidden md:block">
+                                        <div className="hidden rounded-xl bg-white/20 p-3 md:block">
                                             <Wallet className="h-8 w-8 text-white" />
                                         </div>
                                     </div>
@@ -859,10 +1129,10 @@ function Dashboard() {
                         </div>
                     </DetailCard>
 
-                    <DetailCard title="Tren Keuangan" icon={TrendingUp}>
+                    <DetailCard title="Tren Keuangan" icon={TrendingUp} classNameContent="px-2 pb-0">
                         <div className="mb-4">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="w-full sm:w-64">
+                                <div className="w-full px-4 sm:w-64">
                                     <Select
                                         label=""
                                         value={financePeriod}

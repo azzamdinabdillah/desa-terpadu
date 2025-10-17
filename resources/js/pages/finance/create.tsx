@@ -197,6 +197,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
                                         {/* Amount */}
                                         <InputField
+                                            type="number"
                                             label="Jumlah (Rupiah)"
                                             value={data.amount}
                                             placeholder="Masukkan jumlah transaksi"

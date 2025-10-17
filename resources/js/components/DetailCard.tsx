@@ -6,9 +6,10 @@ interface DetailCardProps {
     icon: LucideIcon;
     children: ReactNode;
     headerRight?: ReactNode;
+    classNameContent?: string;
 }
 
-const DetailCard: React.FC<DetailCardProps> = ({ title, icon: Icon, children, headerRight }) => {
+const DetailCard: React.FC<DetailCardProps> = ({ title, icon: Icon, children, headerRight, classNameContent }) => {
     return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg">
             <div className="border-b border-green-200 bg-green-100 px-6 py-4">
@@ -20,7 +21,7 @@ const DetailCard: React.FC<DetailCardProps> = ({ title, icon: Icon, children, he
                     {headerRight && <div>{headerRight}</div>}
                 </div>
             </div>
-            <div className="p-6">{children}</div>
+            <div className={`p-6 ${classNameContent}`}>{children}</div>
         </div>
     );
 };
