@@ -463,7 +463,7 @@ function Finance() {
                             </div>
                             <div className="p-4">
                                 <img
-                                    src={`/storage/${selectedImage}`}
+                                    src={`${import.meta.env.VITE_APP_URL}/storage/${selectedImage}`}
                                     alt="Bukti Transaksi"
                                     className="h-auto w-full rounded-2xl border border-green-400"
                                 />

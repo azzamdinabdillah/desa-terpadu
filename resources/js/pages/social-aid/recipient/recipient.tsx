@@ -246,7 +246,7 @@ function SocialAidRecipientPage() {
                         {item.image_proof ? (
                             <div className="group relative">
                                 <img
-                                    src={`/storage/${item.image_proof}`}
+                                    src={`${import.meta.env.VITE_APP_URL}/storage/${item.image_proof}`}
                                     alt="Bukti penerimaan"
                                     className="h-10 w-10 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                     onClick={() => {

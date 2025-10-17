@@ -34,7 +34,7 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                 <div className="mb-4 flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-green-200 bg-green-50 shadow-sm md:mb-0">
                                     {citizen.profile_picture ? (
                                         <img
-                                            src={`/storage/${citizen.profile_picture}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${citizen.profile_picture}`}
                                             alt={citizen.full_name}
                                             className="h-full w-full object-cover"
                                         />

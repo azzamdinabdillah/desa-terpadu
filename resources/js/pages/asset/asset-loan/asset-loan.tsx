@@ -170,7 +170,7 @@ export default function AssetLoanPage() {
                         return (
                             <div className="flex flex-col items-center gap-1">
                                 <img
-                                    src={`/storage/${loan.image_before_loan}`}
+                                    src={`${import.meta.env.VITE_APP_URL}/storage/${loan.image_before_loan}`}
                                     alt="Gambar saat dipinjamkan"
                                     className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                     onClick={() =>
@@ -193,7 +193,7 @@ export default function AssetLoanPage() {
                                 {loan.image_before_loan && (
                                     <div className="flex flex-col items-center gap-1">
                                         <img
-                                            src={`/storage/${loan.image_before_loan}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${loan.image_before_loan}`}
                                             alt="Gambar saat dipinjamkan"
                                             className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                             onClick={() =>
@@ -210,7 +210,7 @@ export default function AssetLoanPage() {
                                 {loan.image_after_loan && (
                                     <div className="flex flex-col items-center gap-1">
                                         <img
-                                            src={`/storage/${loan.image_after_loan}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${loan.image_after_loan}`}
                                             alt="Gambar saat diterima kembali"
                                             className="h-16 w-16 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                             onClick={() =>

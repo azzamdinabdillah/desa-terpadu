@@ -365,7 +365,7 @@ function Dashboard() {
                                     color: #dcfce7;
                                 ">${formatCurrency(balance)}</span>
                             </div>
-                        -->`;
+                        `;
                     }
 
                     mobileContent += `</div>`;
@@ -987,7 +987,7 @@ function Dashboard() {
                 },
             },
             y: {
-                display: window.innerWidth > 768, // Hide yAxis on mobile
+                display: window.innerWidth > 1, // Hide yAxis on mobile
                 ticks: {
                     font: {
                         family: 'Poppins',
@@ -1441,7 +1441,7 @@ function Dashboard() {
                                     recentFinanceTransactions.map((transaction: any) => (
                                         <div
                                             key={transaction.id}
-                                            className="flex items-center justify-between rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md"
+                                            className="flex items-center justify-between flex-wrap gap-2 rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md"
                                         >
                                             <div>
                                                 <p className="text-sm font-medium text-green-800">{transaction.note || 'Transaksi'}</p>
@@ -1453,7 +1453,7 @@ function Dashboard() {
                                                 >
                                                     {transaction.type === 'income' ? '+' : '-'} {formatCurrency(transaction.amount)}
                                                 </p>
-                                                <p className="text-xs text-gray-500">Saldo: {formatCurrency(transaction.remaining_balance)}</p>
+                                                {/* <p className="text-xs text-gray-500">Saldo: {formatCurrency(transaction.remaining_balance)}</p> */}
                                             </div>
                                         </div>
                                     ))

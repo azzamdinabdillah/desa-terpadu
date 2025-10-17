@@ -116,7 +116,7 @@ function SocialAidPage() {
                     <div className="flex justify-center">
                         {item.image ? (
                             <img
-                                src={`/storage/${item.image}`}
+                                src={`${import.meta.env.VITE_APP_URL}/storage/${item.image}`}
                                 alt={item.program_name}
                                 className="h-12 w-12 rounded-lg border border-green-200 object-cover"
                             />

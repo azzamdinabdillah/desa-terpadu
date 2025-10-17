@@ -86,7 +86,7 @@ function EventRegisterPage() {
                                 {event.flyer ? (
                                     <div className="h-32 w-32 overflow-hidden rounded-lg border border-green-200">
                                         <img
-                                            src={`/storage/${event.flyer}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${event.flyer}`}
                                             alt={event.event_name}
                                             className="h-full w-full object-cover"
                                             onError={(e) => {

@@ -310,7 +310,7 @@ function Announcement() {
                                                 <h3 className="mb-2 text-sm font-medium text-green-700">Gambar</h3>
                                                 <div className="relative">
                                                     <img
-                                                        src={`/storage/${viewModalData.image}`}
+                                                        src={`${import.meta.env.VITE_APP_URL}/storage/${viewModalData.image}`}
                                                         alt="Gambar Pengumuman"
                                                         className="max-h-80 w-full rounded-lg border border-green-200 object-contain"
                                                     />
@@ -346,7 +346,7 @@ function Announcement() {
                                 <div className="p-4">
                                     {selectedImage && (
                                         <img
-                                            src={`/storage/${selectedImage}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${selectedImage}`}
                                             alt="Gambar Pengumuman"
                                             className="h-full max-h-80 w-full rounded-2xl border border-green-400 object-contain"
                                         />

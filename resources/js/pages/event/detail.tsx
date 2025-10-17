@@ -1,5 +1,4 @@
 import Alert, { AlertProps } from '@/components/Alert';
-import Button from '@/components/Button';
 import DetailCard from '@/components/DetailCard';
 import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
@@ -9,9 +8,9 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Calendar, Clock, FileText, Image, MapPin, Tag, User, Users, X } from 'lucide-react';
+import { Calendar, Clock, FileText, Image, MapPin, User, Users, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 interface EventDetailProps {
@@ -61,7 +60,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                 <div className="mb-4 flex h-32 w-32 items-center justify-center overflow-hidden rounded-lg border-2 border-green-200 bg-green-50 shadow-sm md:mb-0">
                                     {event.flyer ? (
                                         <img
-                                            src={`/storage/${event.flyer}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${event.flyer}`}
                                             alt={event.event_name}
                                             className="h-full w-full object-cover"
                                             onError={(e) => {
@@ -168,7 +167,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                             {doc.path && (
                                                 <div className="mb-3">
                                                     <img
-                                                        src={`/storage/${doc.path}`}
+                                                        src={`${import.meta.env.VITE_APP_URL}/storage/${doc.path}`}
                                                         alt={doc.caption || 'Dokumentasi'}
                                                         className="h-32 w-full cursor-pointer rounded object-cover transition-transform hover:scale-105"
                                                         onClick={() => setSelectedDocumentation(doc)}
@@ -211,7 +210,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     <div className="space-y-4">
                                         <div className="max-h-[60vh] overflow-hidden">
                                             <img
-                                                src={`/storage/${selectedDocumentation.path}`}
+                                                src={`${import.meta.env.VITE_APP_URL}/storage/${selectedDocumentation.path}`}
                                                 alt={selectedDocumentation.caption || 'Dokumentasi'}
                                                 className="h-full w-full rounded-lg border border-green-200 object-contain"
                                                 onError={(e) => {

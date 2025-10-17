@@ -59,7 +59,7 @@ const Profile: React.FC = () => {
                                 <div className="relative">
                                     {user.citizen?.profile_picture ? (
                                         <img
-                                            src={`/storage/${user.citizen.profile_picture}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${user.citizen.profile_picture}`}
                                             alt={user.citizen.full_name}
                                             className="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg"
                                         />

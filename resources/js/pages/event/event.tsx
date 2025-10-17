@@ -114,7 +114,7 @@ function EventPage() {
                 cell: (item: EventType) =>
                     item.flyer ? (
                         <img
-                            src={`/storage/${item.flyer}`}
+                            src={`${import.meta.env.VITE_APP_URL}/storage/${item.flyer}`}
                             alt={item.event_name}
                             className="h-12 w-12 rounded border border-green-200 object-cover"
                             onError={(e) => {

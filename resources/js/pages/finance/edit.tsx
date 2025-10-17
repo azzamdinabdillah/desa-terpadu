@@ -252,7 +252,7 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
                                             {finance.proof_image && !proofPreview && (
                                                 <div className="mt-4 flex flex-row items-center rounded-lg bg-green-50 p-3">
                                                     <img
-                                                        src={`/storage/${finance.proof_image}`}
+                                                        src={`${import.meta.env.VITE_APP_URL}/storage/${finance.proof_image}`}
                                                         alt="Current proof"
                                                         className="h-12 w-12 rounded object-cover"
                                                     />

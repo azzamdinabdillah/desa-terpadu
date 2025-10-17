@@ -158,7 +158,7 @@ export default function ChangeStatus({ event }: ChangeStatusProps) {
                                 {event.flyer ? (
                                     <div className="mb-4 flex justify-center">
                                         <img
-                                            src={`/storage/${event.flyer}`}
+                                            src={`${import.meta.env.VITE_APP_URL}/storage/${event.flyer}`}
                                             alt={event.event_name}
                                             className="h-40 w-full rounded-lg border border-green-200 object-cover"
                                             onError={(e) => {

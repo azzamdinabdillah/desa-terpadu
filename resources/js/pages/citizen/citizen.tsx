@@ -131,7 +131,7 @@ function CitizenPage() {
                     <div className="flex items-center gap-2">
                         {item.profile_picture ? (
                             <img
-                                src={`/storage/${item.profile_picture}`}
+                                src={`${import.meta.env.VITE_APP_URL}/storage/${item.profile_picture}`}
                                 alt={item.full_name}
                                 className="h-8 w-8 shrink-0 rounded-full border border-green-200 object-cover"
                             />

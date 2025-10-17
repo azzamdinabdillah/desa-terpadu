@@ -138,7 +138,11 @@ export default function AssetPage() {
                 cell: (asset) => (
                     <div className="flex items-center">
                         {asset.image ? (
-                            <img src={`/storage/${asset.image}`} alt={asset.asset_name} className="h-12 w-12 rounded-md object-cover" />
+                            <img
+                                src={`${import.meta.env.VITE_APP_URL}/storage/${asset.image}`}
+                                alt={asset.asset_name}
+                                className="h-12 w-12 rounded-md object-cover"
+                            />
                         ) : (
                             <div className="flex h-12 w-12 items-center justify-center rounded-md bg-green-100">
                                 <Package className="h-6 w-6 text-green-400" />
