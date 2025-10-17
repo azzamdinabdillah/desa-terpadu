@@ -8,7 +8,7 @@ interface ModalSelectSearchProps {
     placeholder?: string;
     selectedValue?: string;
     selectedLabel?: string;
-    items: Array<{ id: number; name: string; address?: string }>;
+    items: Array<{ id: number; name: string; address?: string; disabled?: boolean }>;
     onSelect: (value: string) => void;
     required?: boolean;
 }
@@ -44,7 +44,7 @@ export default function ModalSelectSearch({
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="flex w-full items-center justify-between rounded-lg border border-green-300 bg-white px-3 py-[11px] text-left text-sm sm:text-base text-green-900 shadow-sm transition focus:ring-2 focus:ring-green-200 focus:outline-none"
+                className="flex w-full items-center justify-between rounded-lg border border-green-300 bg-white px-3 py-[11px] text-left text-sm text-green-900 shadow-sm transition focus:ring-2 focus:ring-green-200 focus:outline-none sm:text-base"
             >
                 <span className="truncate">{selectedLabel || placeholder}</span>
                 {/* <span className="ml-3 shrink-0 rounded-md bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700">Pilih</span> */}
@@ -85,11 +85,17 @@ export default function ModalSelectSearch({
                                     <ul className="divide-y divide-green-100">
                                         {filteredItems.map((item) => {
                                             const isSelected = tempSelected === item.id.toString();
+                                            const isDisabled = Boolean(item.disabled);
                                             return (
                                                 <li
                                                     key={item.id}
-                                                    className="flex cursor-pointer items-center justify-between px-4 py-3 hover:bg-green-50"
-                                                    onClick={() => setTempSelected(item.id.toString())}
+                                                    className={`flex items-center justify-between px-4 py-3 ${
+                                                        isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:bg-green-50'
+                                                    }`}
+                                                    onClick={() => {
+                                                        if (isDisabled) return;
+                                                        setTempSelected(item.id.toString());
+                                                    }}
                                                 >
                                                     <div className="min-w-0">
                                                         <p className="truncate text-sm font-medium text-green-900">{item.name}</p>

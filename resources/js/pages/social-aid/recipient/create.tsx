@@ -5,6 +5,7 @@ import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
+import ModalSelectSearch from '@/components/ModalSelectSearch';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { CitizenType } from '@/types/citizen/citizenType';
@@ -337,26 +338,29 @@ function CreateRecipientPage() {
                                                 {/* Citizen Selection - Show if program type is individual */}
                                                 {selectedProgramData?.type === 'individual' && (
                                                     <div className="md:col-span-2">
-                                                        <Select
+                                                        <ModalSelectSearch
                                                             label="Pilih Warga"
-                                                            options={citizens.map((citizen) => {
+                                                            placeholder="Pilih warga"
+                                                            selectedValue={recipient.citizen_id ? recipient.citizen_id.toString() : undefined}
+                                                            selectedLabel={
+                                                                recipient.citizen_id
+                                                                    ? citizens.find((c) => c.id === recipient.citizen_id)?.full_name
+                                                                    : undefined
+                                                            }
+                                                            items={citizens.map((citizen) => {
                                                                 const isSelected = recipients.some(
                                                                     (r) => r.id !== recipient.id && r.citizen_id === citizen.id,
                                                                 );
-
                                                                 return {
-                                                                    value: citizen.id.toString(),
-                                                                    label: `${citizen.full_name} (${citizen.nik})${isSelected ? ' - Sudah dipilih' : ''}`,
+                                                                    id: citizen.id,
+                                                                    name: `${citizen.full_name} (${citizen.nik})${isSelected ? ' - Sudah dipilih' : ''}`,
+                                                                    address: citizen.address,
                                                                     disabled: isSelected,
                                                                 };
                                                             })}
-                                                            value={recipient.citizen_id?.toString() || ''}
-                                                            onChange={(value) =>
+                                                            onSelect={(value) =>
                                                                 updateRecipient(recipient.id, 'citizen_id', value ? parseInt(value) : undefined)
                                                             }
-                                                            placeholder="Pilih warga"
-                                                            enableSearch={true}
-                                                            searchPlaceholder="Cari warga..."
                                                         />
                                                     </div>
                                                 )}
@@ -364,27 +368,33 @@ function CreateRecipientPage() {
                                                 {/* Family Selection - Show if program type is household */}
                                                 {selectedProgramData?.type === 'household' && (
                                                     <div className="md:col-span-2">
-                                                        <Select
+                                                        <ModalSelectSearch
                                                             label="Pilih Keluarga"
-                                                            options={families
+                                                            placeholder="Pilih keluarga"
+                                                            selectedValue={recipient.family_id ? recipient.family_id.toString() : undefined}
+                                                            selectedLabel={
+                                                                recipient.family_id
+                                                                    ? families.find((f) => f.id === recipient.family_id)?.family_name
+                                                                    : undefined
+                                                            }
+                                                            items={families
                                                                 .filter((family) => family.has_head_of_household)
                                                                 .map((family) => {
                                                                     const isSelected = recipients.some(
                                                                         (r) => r.id !== recipient.id && r.family_id === family.id,
                                                                     );
                                                                     return {
-                                                                        value: family.id.toString(),
-                                                                        label: `${family.family_name} (${family.kk_number || 'No KK'})${isSelected ? ' - Sudah dipilih' : ''}`,
+                                                                        id: family.id,
+                                                                        name: `${family.family_name} (${family.kk_number || 'No KK'})${
+                                                                            isSelected ? ' - Sudah dipilih' : ''
+                                                                        }`,
+                                                                        address: family.address,
                                                                         disabled: isSelected,
                                                                     };
                                                                 })}
-                                                            value={recipient.family_id?.toString() || ''}
-                                                            onChange={(value) =>
+                                                            onSelect={(value) =>
                                                                 updateRecipient(recipient.id, 'family_id', value ? parseInt(value) : undefined)
                                                             }
-                                                            placeholder="Pilih keluarga"
-                                                            enableSearch={true}
-                                                            searchPlaceholder="Cari keluarga..."
                                                         />
                                                     </div>
                                                 )}
