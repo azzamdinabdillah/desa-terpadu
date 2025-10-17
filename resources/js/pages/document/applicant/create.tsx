@@ -4,7 +4,7 @@ import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
-import Select from '@/components/Select';
+import ModalSelectSearch from '@/components/ModalSelectSearch';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { ApplicationDocumentType, MasterDocumentType } from '@/types/document/documentTypes';
@@ -87,14 +87,7 @@ function CreateDocumentApplication() {
         }
     };
 
-    // Options for master documents
-    const documentOptions = [
-        { value: 'placeholder', label: 'Pilih Jenis Surat' },
-        ...masterDocuments.map((doc) => ({
-            value: doc.id.toString(),
-            label: doc.document_name,
-        })),
-    ];
+    const selectedDocument = masterDocuments.find((doc) => doc.id.toString() === data.master_document_id);
 
     return (
         <BaseLayouts>
@@ -116,13 +109,17 @@ function CreateDocumentApplication() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Application Information Section */}
                         <DetailCard title="Informasi Pengajuan" icon={FileText}>
-                            <Select
+                            <ModalSelectSearch
                                 label="Pilih Jenis Surat"
-                                value={data.master_document_id}
-                                onChange={(value) => setData('master_document_id', value)}
-                                options={documentOptions}
-                                enableSearch
-                                searchPlaceholder="Cari jenis surat..."
+                                placeholder="Pilih Jenis Surat"
+                                selectedValue={data.master_document_id !== 'placeholder' ? data.master_document_id : undefined}
+                                selectedLabel={selectedDocument?.document_name}
+                                items={masterDocuments.map((doc) => ({
+                                    id: doc.id,
+                                    name: doc.document_name,
+                                    address: doc.description || 'Tidak ada deskripsi',
+                                }))}
+                                onSelect={(value) => setData('master_document_id', value)}
                                 required
                             />
                         </DetailCard>

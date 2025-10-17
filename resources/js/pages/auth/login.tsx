@@ -102,6 +102,25 @@ function Login() {
                             Masuk
                         </Button>
                     </form>
+
+                    <div className="mt-6 text-center">
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <div className="w-full border-t border-green-200"></div>
+                            </div>
+                            <div className="relative flex justify-center text-xs">
+                                <span className="bg-white px-2 text-green-600">atau</span>
+                            </div>
+                        </div>
+
+                        <a
+                            href={`${import.meta.env.VITE_APP_SUB_URL}/`}
+                            className="mt-4 inline-flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-colors hover:bg-green-100 hover:text-green-800"
+                        >
+                            <span>🚀</span>
+                            Masuk ke Dashboard
+                        </a>
+                    </div>
                 </div>
 
                 <p className="mt-6 text-center text-xs text-green-700">Sistem Manajemen Desa Terpadu</p>

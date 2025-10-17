@@ -4,7 +4,7 @@ import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
-import Select from '@/components/Select';
+import ModalSelectSearch from '@/components/ModalSelectSearch';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
 import { Asset } from '@/types/assetType';
@@ -77,11 +77,7 @@ export default function CreateAssetLoanPage() {
         });
     };
 
-    // Prepare asset options with search
-    const assetOptions = assets.map((asset) => ({
-        value: asset.id.toString(),
-        label: `${asset.asset_name} (${asset.code}) - ${asset.condition === 'good' ? 'Baik' : asset.condition === 'fair' ? 'Cukup' : asset.condition === 'bad' ? 'Buruk' : asset.condition}`,
-    }));
+    const selectedAsset = assets.find((a) => a.id.toString() === data.asset_id);
 
     return (
         <BaseLayouts>
@@ -115,17 +111,29 @@ export default function CreateAssetLoanPage() {
                                 />
 
                                 {/* Asset Selection */}
-                                <Select
-                                    label="Pilih Asset"
-                                    value={data.asset_id}
-                                    onChange={(value) => setData('asset_id', value)}
-                                    options={assetOptions}
-                                    placeholder="Pilih asset yang akan dipinjam"
-                                    required
-                                    enableSearch
-                                    searchPlaceholder="Cari nama asset atau kode..."
-                                    error={errors.asset_id}
-                                />
+                                <div>
+                                    <ModalSelectSearch
+                                        label="Pilih Asset"
+                                        placeholder="Pilih asset yang akan dipinjam"
+                                        selectedValue={data.asset_id || undefined}
+                                        selectedLabel={selectedAsset ? `${selectedAsset.asset_name} (${selectedAsset.code})` : undefined}
+                                        items={assets.map((asset) => ({
+                                            id: asset.id,
+                                            name: `${asset.asset_name} (${asset.code})`,
+                                            address:
+                                                asset.condition === 'good'
+                                                    ? 'Kondisi: Baik'
+                                                    : asset.condition === 'fair'
+                                                      ? 'Kondisi: Cukup'
+                                                      : asset.condition === 'bad'
+                                                        ? 'Kondisi: Buruk'
+                                                        : `Kondisi: ${asset.condition}`,
+                                        }))}
+                                        onSelect={(value) => setData('asset_id', value)}
+                                        required
+                                    />
+                                    {errors.asset_id && <p className="mt-1 text-sm text-red-600">{errors.asset_id}</p>}
+                                </div>
                             </div>
                         </DetailCard>
 
