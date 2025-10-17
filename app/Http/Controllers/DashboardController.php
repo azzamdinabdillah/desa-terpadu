@@ -223,7 +223,7 @@ class DashboardController extends Controller
         foreach ($ageRanges as $range) {
             $count = Citizen::whereRaw('TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN ? AND ?', [$range['min'], $range['max']])->count();
             $ageDistribution[] = [
-                'name' => $range['name'] . ' tahun',
+                'name' => $range['name'],
                 'value' => $count,
             ];
         }

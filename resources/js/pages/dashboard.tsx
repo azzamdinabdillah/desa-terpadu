@@ -792,7 +792,7 @@ function Dashboard() {
                                             <p className="text-sm font-semibold text-green-100">Saldo Saat Ini</p>
                                             <p className="mt-2 text-3xl font-bold text-white">{formatCurrency(financeStats.current_balance)}</p>
                                         </div>
-                                        <div className="rounded-xl bg-white/20 p-3">
+                                        <div className="rounded-xl bg-white/20 p-3 hidden md:block">
                                             <Wallet className="h-8 w-8 text-white" />
                                         </div>
                                     </div>
@@ -903,7 +903,7 @@ function Dashboard() {
                     {/* Age Distribution & Top Occupations */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Age Distribution */}
-                        <DetailCard title="Distribusi Usia Penduduk" icon={Users}>
+                        <DetailCard title="Usia Penduduk (Tahun)" icon={Users}>
                             <div style={{ minHeight: '340px' }}>
                                 <Bar data={createBarData(ageDistribution)} options={barOptions} />
                             </div>
@@ -998,7 +998,7 @@ function Dashboard() {
                         </DetailCard>
 
                         {/* Social Aid Stats */}
-                        <DetailCard title="Status Program Bantuan Sosial" icon={HandHeart}>
+                        <DetailCard title="Status Program Bansos" icon={HandHeart}>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between rounded-lg border-b border-green-200 bg-green-100 p-3">
                                     <span className="text-sm font-medium text-gray-700">Menunggu</span>
@@ -1022,7 +1022,7 @@ function Dashboard() {
                         </DetailCard>
 
                         {/* Social Aid by Type */}
-                        <DetailCard title="Bantuan Sosial per Tipe" icon={HandHeart}>
+                        <DetailCard title="Bansos per Tipe" icon={HandHeart}>
                             <div className="space-y-3">
                                 {socialAidByType.length === 0 ? (
                                     <p className="text-center text-sm text-gray-500">Belum ada data</p>
