@@ -4,6 +4,7 @@ import DetailCard from '@/components/DetailCard';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
+import ModalSelectSearch from '@/components/ModalSelectSearch';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { CitizenType } from '@/types/citizen/citizenType';
@@ -136,16 +137,22 @@ function CreateUserPage() {
                         <DetailCard title={isEdit ? 'Form Edit Pengguna' : 'Form Tambah Pengguna'} icon={UserIcon}>
                             <div className="flex flex-col gap-6">
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    <Select
-                                        label="Pilih Warga"
-                                        value={data.citizen_id}
-                                        enableSearch
-                                        searchPlaceholder="Cari warga"
-                                        onChange={(value) => setData('citizen_id', value)}
-                                        options={citizenOptions}
-                                        required
-                                        helperText="Email akan diambil dari data warga yang dipilih"
-                                    />
+                                    <div>
+                                        <ModalSelectSearch
+                                            label="Pilih Warga"
+                                            placeholder="Pilih Warga"
+                                            selectedValue={data.citizen_id !== 'placeholder' ? data.citizen_id : undefined}
+                                            selectedLabel={
+                                                data.citizen_id !== 'placeholder'
+                                                    ? citizens.find((c) => c.id.toString() === data.citizen_id)?.full_name
+                                                    : undefined
+                                            }
+                                            items={citizens.map((c) => ({ id: c.id, name: c.full_name, address: c.address }))}
+                                            onSelect={(value) => setData('citizen_id', value)}
+                                            required
+                                        />
+                                        <p className="mt-1 text-sm text-green-600">Email akan diambil dari data warga yang dipilih</p>
+                                    </div>
                                     <Select
                                         label="Role"
                                         value={data.role}
