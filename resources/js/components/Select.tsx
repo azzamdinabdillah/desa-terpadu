@@ -1,6 +1,6 @@
 import * as RadixSelect from '@radix-ui/react-select';
-import { ChevronDown, Search, X } from 'lucide-react';
-import { ReactNode, useMemo, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { ReactNode } from 'react';
 
 interface SelectOption {
     value: string | number;
@@ -20,8 +20,6 @@ interface SelectProps {
     error?: string;
     prefix?: ReactNode;
     suffix?: ReactNode;
-    enableSearch?: boolean;
-    searchPlaceholder?: string;
 }
 
 export default function Select({
@@ -37,21 +35,8 @@ export default function Select({
     error,
     prefix,
     suffix,
-    enableSearch = false,
-    searchPlaceholder = 'Cari...',
 }: SelectProps) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
-    const searchInputRef = useRef<HTMLInputElement>(null);
-
-    // Filter options berdasarkan search term
-    const filteredOptions = useMemo(() => {
-        if (!enableSearch || !searchTerm.trim()) {
-            return options;
-        }
-        return options.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()));
-    }, [options, searchTerm, enableSearch]);
+    // Basic select without search functionality
 
     const wrapperClasses = `flex overflow-hidden rounded-lg border shadow-sm transition focus-within:ring-2 focus:outline-none ${
         error
@@ -73,21 +58,6 @@ export default function Select({
                     value={value}
                     onValueChange={(newValue) => {
                         onChange(newValue);
-                        if (enableSearch) {
-                            setSearchTerm('');
-                        }
-                        setIsOpen(false);
-                        setIsSearchFocused(false);
-                    }}
-                    open={isOpen}
-                    onOpenChange={(open) => {
-                        // Prevent closing if search is focused
-                        if (!open && isSearchFocused) return;
-                        setIsOpen(open);
-                        if (!open && enableSearch) {
-                            setSearchTerm('');
-                            setIsSearchFocused(false);
-                        }
                     }}
                     disabled={disabled}
                     required={required}
@@ -103,49 +73,10 @@ export default function Select({
                             className="z-50 min-w-[var(--radix-select-trigger-width)] rounded-lg border border-green-300 bg-white shadow-lg"
                             position="popper"
                             sideOffset={4}
-                            modal={false}
-                            onCloseAutoFocus={(e) => {
-                                // Always prevent auto-focus when search is enabled
-                                if (enableSearch) {
-                                    e.preventDefault();
-                                }
-                            }}
                         >
-                            {enableSearch && (
-                                <div className="border-b border-green-200 p-2">
-                                    <div className="relative flex items-center">
-                                        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-green-500" />
-                                        <input
-                                            ref={searchInputRef}
-                                            type="text"
-                                            placeholder={searchPlaceholder}
-                                            value={searchTerm}
-                                            onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full rounded border border-green-300 bg-white py-2 pr-10 pl-9 text-sm text-green-900 placeholder-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500 focus:outline-none"
-                                            onClick={(e) => e.stopPropagation()}
-                                            onFocus={() => setIsSearchFocused(true)}
-                                            onBlur={() => {
-                                                setTimeout(() => setIsSearchFocused(false), 100);
-                                            }}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsOpen(false);
-                                                setSearchTerm('');
-                                                setIsSearchFocused(false);
-                                            }}
-                                            className="absolute top-1/2 right-3 -translate-y-1/2 rounded p-1 hover:bg-green-100"
-                                            aria-label="Close"
-                                        >
-                                            <X className="h-4 w-4 text-green-500" />
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                             <RadixSelect.Viewport className="p-1">
-                                {filteredOptions.length > 0 ? (
-                                    filteredOptions.map((option) => (
+                                {options.length > 0 ? (
+                                    options.map((option) => (
                                         <RadixSelect.Item
                                             key={option.value}
                                             value={option.value.toString()}
@@ -155,9 +86,7 @@ export default function Select({
                                         </RadixSelect.Item>
                                     ))
                                 ) : (
-                                    <div className="px-3 py-2 text-sm text-gray-500">
-                                        {enableSearch && searchTerm.trim() ? 'Tidak ada hasil ditemukan' : 'Tidak ada opsi tersedia'}
-                                    </div>
+                                    <div className="px-3 py-2 text-sm text-gray-500">Tidak ada opsi tersedia</div>
                                 )}
                             </RadixSelect.Viewport>
                         </RadixSelect.Content>
