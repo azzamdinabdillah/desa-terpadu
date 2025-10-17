@@ -5,6 +5,7 @@ import FileUpload from '@/components/FileUpload';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import InputField from '@/components/InputField';
+import ModalSelectSearch from '@/components/ModalSelectSearch';
 import Select from '@/components/Select';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { genderOptions, maritalStatusOptions, religionOptions, statusOptions } from '@/lib/options';
@@ -123,6 +124,8 @@ function CreateCitizenPage() {
             label: family.family_name,
         })),
     ];
+
+    const selectedFamily = families.find((f) => f.id.toString() === data.family_id);
 
     return (
         <BaseLayouts>
@@ -254,13 +257,13 @@ function CreateCitizenPage() {
                         {/* Family Information Section */}
                         <DetailCard title="Informasi Keluarga" icon={Users}>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <Select
+                                <ModalSelectSearch
                                     label="Keluarga"
-                                    value={data.family_id}
-                                    enableSearch
-                                    searchPlaceholder="Cari keluarga"
-                                    onChange={(value) => setData('family_id', value)}
-                                    options={familyOptions}
+                                    placeholder="Pilih Keluarga"
+                                    selectedValue={data.family_id !== 'placeholder' ? data.family_id : undefined}
+                                    selectedLabel={selectedFamily?.family_name}
+                                    items={families.map((f) => ({ id: f.id, name: f.family_name, address: f.address }))}
+                                    onSelect={(familyId) => setData('family_id', familyId)}
                                     required
                                 />
 
