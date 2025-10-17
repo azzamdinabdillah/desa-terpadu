@@ -59,7 +59,10 @@ class FinanceController extends Controller
         
         $totalIncome = (clone $summaryQuery)->where('type', 'income')->sum('amount');
         $totalExpense = (clone $summaryQuery)->where('type', 'expense')->sum('amount');
+        // dd($totalExpense);
         $balance = $totalIncome - $totalExpense;
+        // dd($balance);
+        // dd($totalIncome, $totalExpense, $balance);
 
         return inertia('finance/finance', [
             'finances' => $finances,

@@ -240,12 +240,12 @@ function Finance() {
                     </div>
                 ),
             },
-            {
-                key: 'remaining_balance',
-                header: 'Sisa Saldo',
-                className: 'whitespace-nowrap',
-                cell: (item: FinanceType) => <span className="text-sm font-semibold text-green-700">{formatCurrency(item.remaining_balance)}</span>,
-            },
+            // {
+            //     key: 'remaining_balance',
+            //     header: 'Sisa Saldo',
+            //     className: 'whitespace-nowrap',
+            //     cell: (item: FinanceType) => <span className="text-sm font-semibold text-green-700">{formatCurrency(item.remaining_balance)}</span>,
+            // },
             {
                 key: 'proof_image',
                 header: 'Bukti',

@@ -340,7 +340,7 @@ function Dashboard() {
 
                     if (isBalanceActive) {
                         mobileContent += `
-                            <div style="
+                            <!-- <div style="
                                 display: flex;
                                 align-items: center;
                                 justify-content: space-between;
@@ -365,7 +365,7 @@ function Dashboard() {
                                     color: #dcfce7;
                                 ">${formatCurrency(balance)}</span>
                             </div>
-                        `;
+                        -->`;
                     }
 
                     mobileContent += `</div>`;
@@ -476,7 +476,7 @@ function Dashboard() {
                 // Balance - only show if active
                 if (isBalanceActive) {
                     tooltipContent += `
-                        <div style="
+                        <!-- <div style="
                             display: flex;
                             align-items: center;
                             justify-content: space-between;
@@ -504,13 +504,13 @@ function Dashboard() {
                                 letter-spacing: 0.3px;
                             ">${formatCurrency(balance)}</span>
                         </div>
-                    `;
+                    -->`;
                 }
 
                 // Net Income Summary - only show if all series are active
                 if (showNetSummary) {
                     tooltipContent += `
-                        <div style="
+                        <!-- <div style="
                             margin-top: 12px;
                             padding-top: 12px;
                             border-top: 2px solid rgba(255, 255, 255, 0.15);
@@ -546,7 +546,7 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                    `;
+                    -->`;
                 }
 
                 tooltipContent += `</div>`;
