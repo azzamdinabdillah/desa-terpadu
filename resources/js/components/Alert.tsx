@@ -75,33 +75,33 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
         switch (type) {
             case 'success':
                 return {
-                    container: 'bg-green-50 border-green-200 text-green-800',
-                    icon: <CheckCircle className="h-5 w-5 text-green-400" />,
-                    closeButton: 'text-green-400 hover:text-green-600',
+                    container: 'bg-emerald-100 border-emerald-300 text-emerald-900',
+                    icon: <CheckCircle className="h-5 w-5 text-emerald-600" />,
+                    closeButton: 'text-emerald-600 hover:text-emerald-800',
                 };
             case 'error':
                 return {
-                    container: 'bg-red-50 border-red-200 text-red-800',
-                    icon: <AlertCircle className="h-5 w-5 text-red-400" />,
-                    closeButton: 'text-red-400 hover:text-red-600',
+                    container: 'bg-red-100 border-red-300 text-red-900',
+                    icon: <AlertCircle className="h-5 w-5 text-red-600" />,
+                    closeButton: 'text-red-600 hover:text-red-800',
                 };
             case 'warning':
                 return {
-                    container: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-                    icon: <AlertCircle className="h-5 w-5 text-yellow-400" />,
-                    closeButton: 'text-yellow-400 hover:text-yellow-600',
+                    container: 'bg-amber-100 border-amber-300 text-amber-900',
+                    icon: <AlertCircle className="h-5 w-5 text-amber-600" />,
+                    closeButton: 'text-amber-600 hover:text-amber-800',
                 };
             case 'info':
                 return {
-                    container: 'bg-blue-50 border-blue-200 text-blue-800',
-                    icon: <Info className="h-5 w-5 text-blue-400" />,
-                    closeButton: 'text-blue-400 hover:text-blue-600',
+                    container: 'bg-blue-100 border-blue-300 text-blue-900',
+                    icon: <Info className="h-5 w-5 text-blue-600" />,
+                    closeButton: 'text-blue-600 hover:text-blue-800',
                 };
             default:
                 return {
-                    container: 'bg-gray-50 border-gray-200 text-gray-800',
-                    icon: <Info className="h-5 w-5 text-gray-400" />,
-                    closeButton: 'text-gray-400 hover:text-gray-600',
+                    container: 'bg-gray-100 border-gray-300 text-gray-900',
+                    icon: <Info className="h-5 w-5 text-gray-600" />,
+                    closeButton: 'text-gray-600 hover:text-gray-800',
                 };
         }
     };
