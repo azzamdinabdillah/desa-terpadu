@@ -149,7 +149,7 @@ const SidebarContent: React.FC<{ onItemClick?: () => void }> = ({ onItemClick })
                     {isAuthenticated && (
                         <button
                             type="button"
-                            onClick={() => router.post('/logout')}
+                            onClick={() => router.post(`${import.meta.env.VITE_APP_SUB_URL}/logout`)}
                             className="mt-3 w-full rounded-md border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
                         >
                             Keluar
