@@ -796,14 +796,14 @@ function Dashboard() {
                 labels: {
                     font: {
                         family: 'Poppins',
-                        size: window.innerWidth < 768 ? 11 : 13,
-                        weight: 500,
+                        size: window.innerWidth < 768 ? 13 : 15,
+                        weight: 600,
                     },
-                    padding: window.innerWidth < 768 ? 8 : 15,
+                    padding: window.innerWidth < 768 ? 12 : 18,
                     usePointStyle: true,
                     pointStyle: 'circle',
-                    boxWidth: window.innerWidth < 768 ? 8 : 12,
-                    boxHeight: window.innerWidth < 768 ? 8 : 12,
+                    boxWidth: window.innerWidth < 768 ? 12 : 16,
+                    boxHeight: window.innerWidth < 768 ? 12 : 16,
                 },
                 responsive: true,
                 adaptiveSize: true,
@@ -1149,21 +1149,21 @@ function Dashboard() {
                     {/* Citizens Statistics */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
-                        <DetailCard title="Jenis Kelamin Warga" icon={Users}>
+                        <DetailCard title="Jenis Kelamin Warga" icon={Users} classNameContent='pt-2'>
                             <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByGender)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
 
                         {/* Marital Status Distribution */}
-                        <DetailCard title="Status Pernikahan Warga" icon={Users}>
+                        <DetailCard title="Status Pernikahan Warga" icon={Users} classNameContent='pt-2'>
                             <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByMaritalStatus)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
 
                         {/* Religion Distribution */}
-                        <DetailCard title="Agama Warga" icon={Users}>
+                        <DetailCard title="Agama Warga" icon={Users} classNameContent='pt-2'>
                             <div style={{ minHeight: '300px' }}>
                                 <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
                             </div>
@@ -1180,7 +1180,7 @@ function Dashboard() {
                         </DetailCard>
 
                         {/* Top Occupations */}
-                        <DetailCard title="5 Pekerjaan Teratas" icon={Users}>
+                        <DetailCard title="5 Pekerjaan Teratas" icon={Users} classNameContent='pt-2'>
                             <div style={{ minHeight: '340px' }}>
                                 <Doughnut data={createDoughnutData(topOccupations)} options={doughnutOptions} />
                             </div>
@@ -1441,7 +1441,7 @@ function Dashboard() {
                                     recentFinanceTransactions.map((transaction: any) => (
                                         <div
                                             key={transaction.id}
-                                            className="flex items-center justify-between flex-wrap gap-2 rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md"
+                                            className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-200 p-3 transition-shadow hover:shadow-md"
                                         >
                                             <div>
                                                 <p className="text-sm font-medium text-green-800">{transaction.note || 'Transaksi'}</p>
