@@ -55,7 +55,7 @@ function SocialAidCreatePage() {
     // Set image preview for edit mode
     useEffect(() => {
         if (isEdit && program?.image) {
-            setImagePreview(`/storage/${program.image}`);
+            setImagePreview(`${import.meta.env.VITE_APP_URL}/storage/${program.image}`);
         }
     }, [isEdit, program?.image]);
 

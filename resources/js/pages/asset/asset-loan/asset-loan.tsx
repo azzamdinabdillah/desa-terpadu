@@ -176,7 +176,7 @@ export default function AssetLoanPage() {
                                     onClick={() =>
                                         setImageModal({
                                             isOpen: true,
-                                            imageUrl: `/storage/${loan.image_before_loan}`,
+                                            imageUrl: `${import.meta.env.VITE_APP_URL}/storage/${loan.image_before_loan}`,
                                             title: 'Kondisi Asset Saat Dipinjamkan',
                                         })
                                     }
@@ -199,7 +199,7 @@ export default function AssetLoanPage() {
                                             onClick={() =>
                                                 setImageModal({
                                                     isOpen: true,
-                                                    imageUrl: `/storage/${loan.image_before_loan}`,
+                                                    imageUrl: `${import.meta.env.VITE_APP_URL}/storage/${loan.image_before_loan}`,
                                                     title: 'Kondisi Asset Saat Dipinjamkan',
                                                 })
                                             }
@@ -216,7 +216,7 @@ export default function AssetLoanPage() {
                                             onClick={() =>
                                                 setImageModal({
                                                     isOpen: true,
-                                                    imageUrl: `/storage/${loan.image_after_loan}`,
+                                                    imageUrl: `${import.meta.env.VITE_APP_URL}/storage/${loan.image_after_loan}`,
                                                     title: 'Kondisi Asset Saat Diterima Kembali',
                                                 })
                                             }

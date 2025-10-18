@@ -33,7 +33,9 @@ export default function ApprovalPage() {
 
     const [alert, setAlert] = useState<AlertProps | null>(null);
 
-    const [imagePreview, setImagePreview] = useState<string | null>(assetLoan.image_before_loan ? `/storage/${assetLoan.image_before_loan}` : null);
+    const [imagePreview, setImagePreview] = useState<string | null>(
+        assetLoan.image_before_loan ? `${import.meta.env.VITE_APP_URL}/storage/${assetLoan.image_before_loan}` : null,
+    );
 
     // Handle flash messages
     useEffect(() => {

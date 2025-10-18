@@ -337,7 +337,7 @@ const ApplicantDetail: React.FC = () => {
                                                         size="sm"
                                                         variant="outline"
                                                         onClick={() => {
-                                                            window.open(`/storage/${application.file}`, '_blank');
+                                                            window.open(`${import.meta.env.VITE_APP_URL}/storage/${application.file}`, '_blank');
                                                         }}
                                                     >
                                                         Lihat
@@ -346,7 +346,7 @@ const ApplicantDetail: React.FC = () => {
                                                         size="sm"
                                                         onClick={() => {
                                                             const link = document.createElement('a');
-                                                            link.href = `/storage/${application.file}`;
+                                                            link.href = `${import.meta.env.VITE_APP_URL}/storage/${application.file}`;
                                                             link.download = application.file?.split('/').pop() || 'dokumen';
                                                             document.body.appendChild(link);
                                                             link.click();

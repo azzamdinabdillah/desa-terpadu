@@ -48,7 +48,7 @@ export default function ActionPage() {
     // Show existing image if available
     useEffect(() => {
         if (recipient.image_proof && !imagePreview && !imageFile) {
-            setImagePreview(`/storage/${recipient.image_proof}`);
+            setImagePreview(`${import.meta.env.VITE_APP_URL}/storage/${recipient.image_proof}`);
         }
     }, [recipient.image_proof, imagePreview, imageFile]);
 

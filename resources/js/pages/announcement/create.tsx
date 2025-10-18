@@ -42,7 +42,7 @@ function CreateAnnouncement() {
             });
 
             if (announcement.image) {
-                setPreview(`/storage/${announcement.image}`);
+                setPreview(`${import.meta.env.VITE_APP_URL}/storage/${announcement.image}`);
             }
         }
     }, [isEdit, announcement, setData]);

@@ -129,7 +129,7 @@ function SocialAidDetailPage() {
                                     className="h-10 w-10 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                     onClick={() => {
                                         // Open image in new tab
-                                        window.open(`/storage/${item.image_proof}`, '_blank');
+                                        window.open(`${import.meta.env.VITE_APP_URL}/storage/${item.image_proof}`, '_blank');
                                     }}
                                     onError={(e) => {
                                         const target = e.target as HTMLImageElement;

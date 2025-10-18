@@ -42,7 +42,7 @@ export default function CreateAssetPage() {
     // Set preview for edit mode
     useEffect(() => {
         if (isEditMode && asset?.image) {
-            setPreview(`/storage/${asset.image}`);
+            setPreview(`${import.meta.env.VITE_APP_URL}/storage/${asset.image}`);
         }
     }, [isEditMode, asset]);
 

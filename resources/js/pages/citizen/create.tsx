@@ -99,7 +99,7 @@ function CreateCitizenPage() {
     // Set initial preview for existing profile picture
     useEffect(() => {
         if (citizen?.profile_picture) {
-            setPreview(`/storage/${citizen.profile_picture}`);
+            setPreview(`${import.meta.env.VITE_APP_URL}/storage/${citizen.profile_picture}`);
         }
     }, [citizen?.profile_picture]);
 

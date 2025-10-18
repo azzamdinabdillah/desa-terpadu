@@ -62,7 +62,7 @@ export default function CreateEvent() {
     // Set flyer preview for edit mode
     useEffect(() => {
         if (isEdit && event?.flyer) {
-            setFlyerPreview(`/storage/${event.flyer}`);
+            setFlyerPreview(`${import.meta.env.VITE_APP_URL}/storage/${event.flyer}`);
         }
     }, [isEdit, event?.flyer]);
 
