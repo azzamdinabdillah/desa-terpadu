@@ -272,62 +272,68 @@ function Announcement() {
                     <Dialog.Root open={viewModalOpen} onOpenChange={setViewModalOpen}>
                         <Dialog.Portal>
                             <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg md:w-full">
-                                <div className="mb-4 flex items-center justify-between border-b border-green-200 pb-4">
-                                    <Dialog.Title className="text-lg font-semibold text-green-900">Detail Pengumuman</Dialog.Title>
-                                    <Dialog.Close asChild>
-                                        <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </Button>
-                                    </Dialog.Close>
-                                </div>
+                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                                <div className="flex h-full max-h-[90vh] flex-col">
+                                    <div className="flex flex-shrink-0 items-center justify-between border-b border-green-200 p-6 pb-4">
+                                        <Dialog.Title className="text-lg font-semibold text-green-900">Detail Pengumuman</Dialog.Title>
+                                        <Dialog.Close asChild>
+                                            <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </Button>
+                                        </Dialog.Close>
+                                    </div>
 
-                                {viewModalData && (
-                                    <div className="space-y-4">
-                                        {/* Title */}
-                                        <div>
-                                            <h2 className="mb-2 text-xl font-bold text-green-900">{viewModalData.title}</h2>
-                                        </div>
-
-                                        {/* Description */}
-                                        <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                            <h3 className="mb-2 text-sm font-medium text-green-700">Isi Pengumuman</h3>
-                                            <p className="text-sm leading-relaxed whitespace-pre-wrap text-green-800">{viewModalData.description}</p>
-                                        </div>
-
-                                        {/* Date */}
-                                        <div className="flex items-center gap-2 text-sm text-green-700">
-                                            <Calendar className="h-4 w-4" />
-                                            <span className="font-medium">Tanggal Dibuat:</span>
-                                            <span>{formatDate(viewModalData.created_at)}</span>
-                                        </div>
-
-                                        {/* Image */}
-                                        {viewModalData.image && (
-                                            <div>
-                                                <h3 className="mb-2 text-sm font-medium text-green-700">Gambar</h3>
-                                                <div className="relative">
-                                                    <img
-                                                        src={`${import.meta.env.VITE_APP_URL}/storage/${viewModalData.image}`}
-                                                        alt="Gambar Pengumuman"
-                                                        className="max-h-80 w-full rounded-lg border border-green-200 object-contain"
-                                                    />
-                                                    <Button
-                                                        onClick={() => setSelectedImage(viewModalData.image as string)}
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="absolute top-2 right-2 bg-white/90 hover:bg-white"
-                                                        icon={<ImageIcon className="h-4 w-4" />}
-                                                    >
-                                                        Lihat
-                                                    </Button>
+                                    <div className="flex-1 overflow-y-auto p-6 pt-4">
+                                        {viewModalData && (
+                                            <div className="space-y-4">
+                                                {/* Title */}
+                                                <div>
+                                                    <h2 className="mb-2 text-xl font-bold text-green-900">{viewModalData.title}</h2>
                                                 </div>
+
+                                                {/* Description */}
+                                                <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                                                    <h3 className="mb-2 text-sm font-medium text-green-700">Isi Pengumuman</h3>
+                                                    <p className="text-sm leading-relaxed whitespace-pre-wrap text-green-800">
+                                                        {viewModalData.description}
+                                                    </p>
+                                                </div>
+
+                                                {/* Date */}
+                                                <div className="flex items-center gap-2 text-sm text-green-700">
+                                                    <Calendar className="h-4 w-4" />
+                                                    <span className="font-medium">Tanggal Dibuat:</span>
+                                                    <span>{formatDate(viewModalData.created_at)}</span>
+                                                </div>
+
+                                                {/* Image */}
+                                                {viewModalData.image && (
+                                                    <div>
+                                                        <h3 className="mb-2 text-sm font-medium text-green-700">Gambar</h3>
+                                                        <div className="relative">
+                                                            <img
+                                                                src={`${import.meta.env.VITE_APP_URL}/storage/${viewModalData.image}`}
+                                                                alt="Gambar Pengumuman"
+                                                                className="max-h-80 w-full rounded-lg border border-green-200 object-contain"
+                                                            />
+                                                            <Button
+                                                                onClick={() => setSelectedImage(viewModalData.image as string)}
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="absolute top-2 right-2 bg-white/90 hover:bg-white"
+                                                                icon={<ImageIcon className="h-4 w-4" />}
+                                                            >
+                                                                Lihat
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>
-                                )}
+                                </div>
                             </Dialog.Content>
                         </Dialog.Portal>
                     </Dialog.Root>
@@ -336,21 +342,23 @@ function Announcement() {
                     <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
                         <Dialog.Portal>
                             <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="w:[90%] fixed top-1/2 left-1/2 z-50 max-h-[90vh] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
-                                <div className="flex items-center justify-between border-b border-green-200 p-4">
-                                    <Dialog.Title className="text-lg font-semibold text-green-900">Gambar Pengumuman</Dialog.Title>
-                                    <Dialog.Close asChild>
-                                        <button className="rounded-lg p-2 text-green-700 hover:bg-green-50">✕</button>
-                                    </Dialog.Close>
-                                </div>
-                                <div className="p-4">
-                                    {selectedImage && (
-                                        <img
-                                            src={`${import.meta.env.VITE_APP_URL}/storage/${selectedImage}`}
-                                            alt="Gambar Pengumuman"
-                                            className="h-full max-h-80 w-full rounded-2xl border border-green-400 object-contain"
-                                        />
-                                    )}
+                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                                <div className="flex h-full max-h-[90vh] flex-col">
+                                    <div className="flex flex-shrink-0 items-center justify-between border-b border-green-200 p-4">
+                                        <Dialog.Title className="text-lg font-semibold text-green-900">Gambar Pengumuman</Dialog.Title>
+                                        <Dialog.Close asChild>
+                                            <button className="rounded-lg p-2 text-green-700 hover:bg-green-50">✕</button>
+                                        </Dialog.Close>
+                                    </div>
+                                    <div className="flex-1 overflow-y-auto p-4">
+                                        {selectedImage && (
+                                            <img
+                                                src={`${import.meta.env.VITE_APP_URL}/storage/${selectedImage}`}
+                                                alt="Gambar Pengumuman"
+                                                className="h-full max-h-80 w-full rounded-2xl border border-green-400 object-contain"
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </Dialog.Content>
                         </Dialog.Portal>
