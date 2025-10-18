@@ -3,6 +3,7 @@ import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -44,6 +45,8 @@ function EventPage() {
     const [status, setStatus] = useState(filters.status || 'all');
     const [type, setType] = useState(filters.type || 'all');
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<{ url: string; alt: string } | null>(null);
     const { isAdmin } = useAuth();
 
     useEffect(() => {
@@ -92,6 +95,21 @@ function EventPage() {
         }
     };
 
+    const handleImageClick = (event: EventType) => {
+        if (event.flyer) {
+            setSelectedImage({
+                url: `${import.meta.env.VITE_APP_URL}/storage/${event.flyer}`,
+                alt: event.event_name,
+            });
+            setShowImageModal(true);
+        }
+    };
+
+    const handleCloseImageModal = () => {
+        setShowImageModal(false);
+        setSelectedImage(null);
+    };
+
     const columns = useMemo(
         () => [
             {
@@ -116,7 +134,8 @@ function EventPage() {
                         <img
                             src={`${import.meta.env.VITE_APP_URL}/storage/${item.flyer}`}
                             alt={item.event_name}
-                            className="h-12 w-12 rounded border border-green-200 object-cover"
+                            className="h-12 w-12 cursor-pointer rounded border border-green-200 object-cover transition-opacity hover:opacity-80"
+                            onClick={() => handleImageClick(item)}
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = 'https://placehold.co/48x48?text=No+Image';
@@ -256,7 +275,7 @@ function EventPage() {
                 ),
             },
         ],
-        [isAdmin],
+        [isAdmin, handleImageClick],
     );
 
     return (
@@ -353,6 +372,11 @@ function EventPage() {
                         links={events.links}
                         onChange={handlePageChange}
                     />
+
+                    {/* Image Modal */}
+                    {selectedImage && (
+                        <ImageModal isOpen={showImageModal} onClose={handleCloseImageModal} imageUrl={selectedImage.url} alt={selectedImage.alt} />
+                    )}
                 </div>
             </div>
         </BaseLayouts>

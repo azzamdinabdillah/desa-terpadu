@@ -35,7 +35,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana APBD tahun anggaran 2023',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/apbd_2023.jpg',
         ]);
 
         // Februari 2023 - RENDAH
@@ -47,7 +46,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Alat tulis dan keperluan kantor',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/supplies_feb_2023.jpg',
         ]);
 
         // Maret 2023 - SANGAT TINGGI
@@ -59,7 +57,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan jalan desa besar',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/road_construction_2023.jpg',
         ]);
 
         // April 2023 - SEDANG
@@ -71,7 +68,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Retribusi dan sewa lahan',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/retribution_apr_2023.jpg',
         ]);
 
         // Mei 2023 - RENDAH
@@ -83,7 +79,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Iuran warga dan parkir',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/contribution_may_2023.jpg',
         ]);
 
         // Juni 2023 - TINGGI
@@ -95,7 +90,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana bantuan provinsi',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/provincial_aid_2023.jpg',
         ]);
 
         // Juli 2023 - SEDANG
@@ -107,7 +101,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Renovasi kantor desa',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/renovation_2023.jpg',
         ]);
 
         // Agustus 2023 - RENDAH
@@ -119,7 +112,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Perayaan HUT RI ke-78',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/independence_2023.jpg',
         ]);
 
         // September 2023 - SANGAT TINGGI
@@ -131,7 +123,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana CSR perusahaan besar',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/csr_2023.jpg',
         ]);
 
         // Oktober 2023 - TINGGI
@@ -143,7 +134,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan MCK umum',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/sanitation_2023.jpg',
         ]);
 
         // November 2023 - RENDAH
@@ -155,7 +145,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Retribusi pasar mingguan',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/market_nov_2023.jpg',
         ]);
 
         // Desember 2023 - SEDANG
@@ -167,7 +156,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Gaji dan tunjangan akhir tahun',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/salary_dec_2023.jpg',
         ]);
 
         // ========== TAHUN 2024 (12 BULAN) ==========
@@ -181,7 +169,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana APBD tahun anggaran 2024',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/apbd_2024.jpg',
         ]);
 
         // Februari 2024 - RENDAH
@@ -193,7 +180,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Retribusi dan iuran warga',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/retribution_feb_2024.jpg',
         ]);
 
         // Maret 2024 - SEDANG
@@ -205,7 +191,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Perbaikan saluran air dan drainase',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/drainage_2024.jpg',
         ]);
 
         // April 2024 - SANGAT TINGGI
@@ -217,7 +202,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana bantuan pemerintah pusat',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/government_aid_2024.jpg',
         ]);
 
         // Mei 2024 - TINGGI
@@ -229,7 +213,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan gedung serbaguna',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/multipurpose_building_2024.jpg',
         ]);
 
         // Juni 2024 - RENDAH
@@ -241,7 +224,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pemeliharaan fasilitas desa',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/maintenance_jun_2024.jpg',
         ]);
 
         // Juli 2024 - SANGAT TINGGI
@@ -253,7 +235,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana hibah dan CSR',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/grant_2024.jpg',
         ]);
 
         // Agustus 2024 - SEDANG
@@ -265,7 +246,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Perayaan HUT RI dan gaji perangkat',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/independence_2024.jpg',
         ]);
 
         // September 2024 - RENDAH
@@ -277,7 +257,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Hasil sewa tanah kas desa',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/land_rent_2024.jpg',
         ]);
 
         // Oktober 2024 - TINGGI
@@ -289,7 +268,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana desa dari kementerian',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/ministry_fund_2024.jpg',
         ]);
 
         // November 2024 - SEDANG
@@ -301,7 +279,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan pos ronda',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/security_post_2024.jpg',
         ]);
 
         // Desember 2024 - SANGAT TINGGI
@@ -313,7 +290,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan gedung posyandu',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/paud_building_2024.jpg',
         ]);
 
         // ========== TAHUN 2025 (12 BULAN) ==========
@@ -327,7 +303,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Retribusi awal tahun',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/retribution_jan_2025.jpg',
         ]);
 
         // Februari 2025 - TINGGI
@@ -339,7 +314,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana APBD tahun anggaran 2025',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/apbd_2025.jpg',
         ]);
 
         // Maret 2025 - SEDANG
@@ -351,7 +325,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Perbaikan jalan dan saluran air',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/road_repair_2025.jpg',
         ]);
 
         // April 2025 - RENDAH
@@ -363,7 +336,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pengadaan alat tulis kantor',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/supplies_apr_2025.jpg',
         ]);
 
         // Mei 2025 - SANGAT TINGGI
@@ -375,7 +347,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana hibah provinsi besar',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/grant_2025.jpg',
         ]);
 
         // Juni 2025 - TINGGI
@@ -387,7 +358,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan jembatan desa',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/bridge_construction_2025.jpg',
         ]);
 
         // Juli 2025 - SEDANG
@@ -399,7 +369,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Hasil pengelolaan BUMDes',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/bumdes_income_2025.jpg',
         ]);
 
         // Agustus 2025 - RENDAH
@@ -411,7 +380,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Perayaan HUT RI ke-80',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/independence_2025.jpg',
         ]);
 
         // September 2025 - SANGAT TINGGI
@@ -423,7 +391,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Pembangunan gedung serbaguna besar',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/multipurpose_2025.jpg',
         ]);
 
         // Oktober 2025 - SEDANG
@@ -435,7 +402,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Retribusi dan sewa aset desa',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/retribution_oct_2025.jpg',
         ]);
 
         // November 2025 - TINGGI
@@ -447,7 +413,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana desa dari kementerian',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/ministry_fund_2025.jpg',
         ]);
 
         // Desember 2025 - RENDAH
@@ -459,7 +424,6 @@ class FinanceSeeder extends Seeder
             'remaining_balance' => $balance,
             'note' => 'Dana operasional akhir tahun',
             'user_id' => $user->id,
-            'proof_image' => 'proof_images/income_dec_2025.jpg',
         ]);
     }
 }

@@ -4,6 +4,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination, { Paginated } from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -41,6 +42,9 @@ export default function AssetPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState('');
+    const [selectedImageAlt, setSelectedImageAlt] = useState('');
     const { isAdmin } = useAuth();
 
     // Handle flash messages
@@ -80,6 +84,19 @@ export default function AssetPage() {
         setShowDeleteModal(false);
         setAssetToDelete(null);
         setIsDeleting(false);
+    };
+
+    // Handle image modal
+    const handleImageClick = (imageUrl: string, alt: string) => {
+        setSelectedImageUrl(imageUrl);
+        setSelectedImageAlt(alt);
+        setShowImageModal(true);
+    };
+
+    const handleImageModalClose = () => {
+        setShowImageModal(false);
+        setSelectedImageUrl('');
+        setSelectedImageAlt('');
     };
 
     // Handle search with debounce
@@ -141,7 +158,8 @@ export default function AssetPage() {
                             <img
                                 src={`${import.meta.env.VITE_APP_URL}/storage/${asset.image}`}
                                 alt={asset.asset_name}
-                                className="h-12 w-12 rounded-md object-cover"
+                                className="h-12 w-12 cursor-pointer rounded-md object-cover transition-transform hover:scale-105"
+                                onClick={() => handleImageClick(`${import.meta.env.VITE_APP_URL}/storage/${asset.image}`, asset.asset_name)}
                             />
                         ) : (
                             <div className="flex h-12 w-12 items-center justify-center rounded-md bg-green-100">
@@ -325,6 +343,9 @@ export default function AssetPage() {
                     cancelText="Batal"
                     isLoading={isDeleting}
                 />
+
+                {/* Image Modal */}
+                <ImageModal isOpen={showImageModal} onClose={handleImageModalClose} imageUrl={selectedImageUrl} alt={selectedImageAlt} />
             </div>
         </BaseLayouts>
     );

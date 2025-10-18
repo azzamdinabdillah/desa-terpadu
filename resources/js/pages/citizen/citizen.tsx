@@ -4,6 +4,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -47,6 +48,9 @@ function CitizenPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [citizenToDelete, setCitizenToDelete] = useState<CitizenType | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState('');
+    const [selectedImageAlt, setSelectedImageAlt] = useState('');
 
     useEffect(() => {
         if (flash?.success) {
@@ -121,6 +125,19 @@ function CitizenPage() {
         setIsDeleting(false);
     };
 
+    // Handle image modal
+    const handleImageClick = (imageUrl: string, alt: string) => {
+        setSelectedImageUrl(imageUrl);
+        setSelectedImageAlt(alt);
+        setShowImageModal(true);
+    };
+
+    const handleImageModalClose = () => {
+        setShowImageModal(false);
+        setSelectedImageUrl('');
+        setSelectedImageAlt('');
+    };
+
     const columns = useMemo(
         () => [
             {
@@ -133,7 +150,8 @@ function CitizenPage() {
                             <img
                                 src={`${import.meta.env.VITE_APP_URL}/storage/${item.profile_picture}`}
                                 alt={item.full_name}
-                                className="h-8 w-8 shrink-0 rounded-full border border-green-200 object-cover"
+                                className="h-8 w-8 shrink-0 cursor-pointer rounded-full border border-green-200 object-cover transition-transform hover:scale-105"
+                                onClick={() => handleImageClick(`${import.meta.env.VITE_APP_URL}/storage/${item.profile_picture}`, item.full_name)}
                             />
                         ) : (
                             <Users className="h-8 w-8 rounded-full border border-green-200 bg-green-50 p-1.5 text-green-600" />
@@ -436,6 +454,9 @@ function CitizenPage() {
                     cancelText="Batal"
                     isLoading={isDeleting}
                 />
+
+                {/* Image Modal */}
+                <ImageModal isOpen={showImageModal} onClose={handleImageModalClose} imageUrl={selectedImageUrl} alt={selectedImageAlt} />
             </div>
         </BaseLayouts>
     );

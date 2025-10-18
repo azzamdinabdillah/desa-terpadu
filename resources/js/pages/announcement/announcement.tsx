@@ -4,6 +4,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination, { Paginated } from '@/components/Pagination';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
@@ -52,7 +53,9 @@ function Announcement() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewModalData, setViewModalData] = useState<AnnouncementType | null>(null);
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState('');
+    const [selectedImageAlt, setSelectedImageAlt] = useState('');
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<AnnouncementType | null>(null);
 
@@ -123,6 +126,19 @@ function Announcement() {
         setDeleteModalData(null);
     };
 
+    // Handle image modal
+    const handleImageClick = (imageUrl: string, alt: string) => {
+        setSelectedImageUrl(imageUrl);
+        setSelectedImageAlt(alt);
+        setShowImageModal(true);
+    };
+
+    const handleImageModalClose = () => {
+        setShowImageModal(false);
+        setSelectedImageUrl('');
+        setSelectedImageAlt('');
+    };
+
     const columns = useMemo(
         () => [
             {
@@ -149,21 +165,22 @@ function Announcement() {
             {
                 key: 'image',
                 header: 'Gambar',
-                className: 'whitespace-nowrap',
-                cell: (item: AnnouncementType) =>
-                    item.image ? (
-                        <Button
-                            onClick={() => setSelectedImage(item.image as string)}
-                            variant="ghost"
-                            size="sm"
-                            icon={<ImageIcon className="h-4 w-4" />}
-                            className="text-green-600 hover:text-green-800"
-                        >
-                            <span className="text-sm">Lihat</span>
-                        </Button>
-                    ) : (
-                        <span className="text-sm text-green-700">-</span>
-                    ),
+                cell: (item: AnnouncementType) => (
+                    <div className="flex items-center">
+                        {item.image ? (
+                            <img
+                                src={`${import.meta.env.VITE_APP_URL}/storage/${item.image}`}
+                                alt={item.title}
+                                className="h-12 w-12 cursor-pointer rounded-md object-cover transition-transform hover:scale-105"
+                                onClick={() => handleImageClick(`${import.meta.env.VITE_APP_URL}/storage/${item.image}`, item.title)}
+                            />
+                        ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-md bg-green-100">
+                                <ImageIcon className="h-6 w-6 text-green-400" />
+                            </div>
+                        )}
+                    </div>
+                ),
             },
             {
                 key: 'created_at',
@@ -204,7 +221,7 @@ function Announcement() {
                 ),
             },
         ],
-        [setSelectedImage, isAdmin],
+        [isAdmin],
     );
 
     return (
@@ -319,7 +336,12 @@ function Announcement() {
                                                                 className="max-h-80 w-full rounded-lg border border-green-200 object-contain"
                                                             />
                                                             <Button
-                                                                onClick={() => setSelectedImage(viewModalData.image as string)}
+                                                                onClick={() =>
+                                                                    handleImageClick(
+                                                                        `${import.meta.env.VITE_APP_URL}/storage/${viewModalData.image}`,
+                                                                        viewModalData.title,
+                                                                    )
+                                                                }
                                                                 variant="outline"
                                                                 size="sm"
                                                                 className="absolute top-2 right-2 bg-white/90 hover:bg-white"
@@ -338,31 +360,8 @@ function Announcement() {
                         </Dialog.Portal>
                     </Dialog.Root>
 
-                    {/* Image Preview Modal */}
-                    <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                            <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
-                                <div className="flex h-full max-h-[90vh] flex-col">
-                                    <div className="flex flex-shrink-0 items-center justify-between border-b border-green-200 p-4">
-                                        <Dialog.Title className="text-lg font-semibold text-green-900">Gambar Pengumuman</Dialog.Title>
-                                        <Dialog.Close asChild>
-                                            <button className="rounded-lg p-2 text-green-700 hover:bg-green-50">✕</button>
-                                        </Dialog.Close>
-                                    </div>
-                                    <div className="flex-1 overflow-y-auto p-4">
-                                        {selectedImage && (
-                                            <img
-                                                src={`${import.meta.env.VITE_APP_URL}/storage/${selectedImage}`}
-                                                alt="Gambar Pengumuman"
-                                                className="h-full max-h-80 w-full rounded-2xl border border-green-400 object-contain"
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            </Dialog.Content>
-                        </Dialog.Portal>
-                    </Dialog.Root>
+                    {/* Image Modal */}
+                    <ImageModal isOpen={showImageModal} onClose={handleImageModalClose} imageUrl={selectedImageUrl} alt={selectedImageAlt} />
 
                     {/* Delete Confirmation Modal */}
                     <ConfirmationModal

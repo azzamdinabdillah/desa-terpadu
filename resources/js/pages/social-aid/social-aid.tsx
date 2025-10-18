@@ -4,6 +4,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -44,6 +45,8 @@ function SocialAidPage() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteProgram, setDeleteProgram] = useState<SocialAidProgram | null>(null);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<{ url: string; alt: string } | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -106,6 +109,21 @@ function SocialAidPage() {
         setDeleteProgram(null);
     };
 
+    const handleImageClick = (program: SocialAidProgram) => {
+        if (program.image) {
+            setSelectedImage({
+                url: `${import.meta.env.VITE_APP_URL}/storage/${program.image}`,
+                alt: program.program_name,
+            });
+            setShowImageModal(true);
+        }
+    };
+
+    const handleCloseImageModal = () => {
+        setShowImageModal(false);
+        setSelectedImage(null);
+    };
+
     const columns = useMemo(
         () => [
             {
@@ -118,7 +136,8 @@ function SocialAidPage() {
                             <img
                                 src={`${import.meta.env.VITE_APP_URL}/storage/${item.image}`}
                                 alt={item.program_name}
-                                className="h-12 w-12 rounded-lg border border-green-200 object-cover"
+                                className="h-12 w-12 cursor-pointer rounded-lg border border-green-200 object-cover transition-opacity hover:opacity-80"
+                                onClick={() => handleImageClick(item)}
                             />
                         ) : (
                             <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-200 bg-green-100">
@@ -288,7 +307,7 @@ function SocialAidPage() {
                 ),
             },
         ],
-        [isAdmin],
+        [isAdmin, handleImageClick],
     );
 
     return (
@@ -413,6 +432,11 @@ function SocialAidPage() {
                 confirmText="Hapus"
                 cancelText="Batal"
             />
+
+            {/* Image Modal */}
+            {selectedImage && (
+                <ImageModal isOpen={showImageModal} onClose={handleCloseImageModal} imageUrl={selectedImage.url} alt={selectedImage.alt} />
+            )}
         </BaseLayouts>
     );
 }

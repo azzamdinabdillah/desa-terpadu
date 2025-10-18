@@ -3,6 +3,7 @@ import Button from '@/components/Button';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -50,7 +51,9 @@ function Finance() {
     const { isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [filterType, setFilterType] = useState(filters.type || 'all');
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedImageUrl, setSelectedImageUrl] = useState('');
+    const [selectedImageAlt, setSelectedImageAlt] = useState('');
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<{ id: number; note: string; amount: number; type: string } | null>(null);
@@ -184,6 +187,19 @@ function Finance() {
         );
     };
 
+    // Handle image modal
+    const handleImageClick = (imageUrl: string, alt: string) => {
+        setSelectedImageUrl(imageUrl);
+        setSelectedImageAlt(alt);
+        setShowImageModal(true);
+    };
+
+    const handleImageModalClose = () => {
+        setShowImageModal(false);
+        setSelectedImageUrl('');
+        setSelectedImageAlt('');
+    };
+
     const hasDateFilter = filters.start_date || filters.end_date;
 
     const columns = useMemo(
@@ -249,17 +265,26 @@ function Finance() {
             {
                 key: 'proof_image',
                 header: 'Bukti',
-                className: 'whitespace-nowrap',
                 cell: (item: FinanceType) => (
-                    <Button
-                        onClick={() => setSelectedImage(item.proof_image)}
-                        variant="ghost"
-                        size="sm"
-                        icon={<ImageIcon className="h-4 w-4" />}
-                        className="text-green-600 hover:text-green-800"
-                    >
-                        <span className="text-sm">Lihat</span>
-                    </Button>
+                    <div className="flex items-center">
+                        {item.proof_image ? (
+                            <img
+                                src={`${import.meta.env.VITE_APP_URL}/storage/${item.proof_image}`}
+                                alt={`Bukti ${item.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}`}
+                                className="h-12 w-12 cursor-pointer rounded-md object-cover transition-transform hover:scale-105"
+                                onClick={() =>
+                                    handleImageClick(
+                                        `${import.meta.env.VITE_APP_URL}/storage/${item.proof_image}`,
+                                        `Bukti ${item.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}`,
+                                    )
+                                }
+                            />
+                        ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-md bg-green-100">
+                                <ImageIcon className="h-6 w-6 text-green-400" />
+                            </div>
+                        )}
+                    </div>
                 ),
             },
             ...(isAdmin
@@ -292,7 +317,7 @@ function Finance() {
                   ]
                 : []),
         ],
-        [setSelectedImage, isAdmin],
+        [isAdmin],
     );
 
     return (
@@ -446,31 +471,8 @@ function Finance() {
                     />
                 </div>
 
-                {/* Image Preview Modal */}
-                <Dialog.Root open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
-                    <Dialog.Portal>
-                        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                        <Dialog.Content className="max_h_[90vh] fixed top-1/2 left-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
-                            <div className="flex items-center justify-between border-b border-green-200 p-4">
-                                <Dialog.Title className="text-lg font-semibold text-green-900">Bukti Transaksi</Dialog.Title>
-                                <Dialog.Close asChild>
-                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </Button>
-                                </Dialog.Close>
-                            </div>
-                            <div className="p-4">
-                                <img
-                                    src={`${import.meta.env.VITE_APP_URL}/storage/${selectedImage}`}
-                                    alt="Bukti Transaksi"
-                                    className="h-auto w-full rounded-2xl border border-green-400"
-                                />
-                            </div>
-                        </Dialog.Content>
-                    </Dialog.Portal>
-                </Dialog.Root>
+                {/* Image Modal */}
+                <ImageModal isOpen={showImageModal} onClose={handleImageModalClose} imageUrl={selectedImageUrl} alt={selectedImageAlt} />
 
                 {/* Delete Confirmation Modal */}
                 <Dialog.Root open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>

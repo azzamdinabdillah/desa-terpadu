@@ -417,102 +417,106 @@ function SocialAidRecipientPage() {
                 <Dialog.Root open={isProgramModalOpen} onOpenChange={setIsProgramModalOpen}>
                     <Dialog.Portal>
                         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg md:w-full">
-                            <div className="mb-4 flex items-center justify-between border-b border-green-200 pb-4">
-                                <Dialog.Title className="text-lg font-semibold text-green-900">Filter Program Bantuan</Dialog.Title>
-                                <Dialog.Close asChild>
-                                    <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
-                                        <X className="h-5 w-5" />
-                                    </Button>
-                                </Dialog.Close>
-                            </div>
-
-                            <div className="mb-6">
-                                <p className="mb-4 text-sm text-green-700">Pilih program bantuan sosial untuk memfilter data penerima:</p>
-
-                                {/* Search Input */}
-                                <div className="mb-4">
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <Search className="h-5 w-5 text-green-600" />
-                                        </div>
-                                        <InputField
-                                            type="text"
-                                            placeholder="Cari program bantuan sosial..."
-                                            value={programSearchQuery}
-                                            onChange={setProgramSearchQuery}
-                                            inputClassName="pl-10"
-                                        />
-                                    </div>
+                        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white shadow-lg md:w-full">
+                            <div className="flex h-full max-h-[90vh] flex-col">
+                                <div className="flex flex-shrink-0 items-center justify-between border-b border-green-200 p-6 pb-4">
+                                    <Dialog.Title className="text-lg font-semibold text-green-900">Filter Program Bantuan</Dialog.Title>
+                                    <Dialog.Close asChild>
+                                        <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-800">
+                                            <X className="h-5 w-5" />
+                                        </Button>
+                                    </Dialog.Close>
                                 </div>
 
-                                <div className="max-h-96 space-y-2 overflow-y-auto">
-                                    <label className="flex cursor-pointer items-center space-x-3 rounded-lg border border-green-200 p-3 hover:bg-green-50">
-                                        <input
-                                            type="radio"
-                                            name="program"
-                                            value="all_programs"
-                                            checked={tempSelectedProgram === 'all_programs'}
-                                            onChange={(e) => setTempSelectedProgram(e.target.value)}
-                                            className="h-4 w-4 border-green-300 text-green-600 focus:ring-green-500"
-                                        />
-                                        <div className="flex-1">
-                                            <div className="text-sm font-medium text-green-900">Semua Program</div>
-                                            <div className="text-xs text-green-600">Tampilkan semua penerima dari semua program</div>
-                                        </div>
-                                    </label>
+                                <div className="flex-1 overflow-y-auto p-6 pt-4">
+                                    <div className="mb-6">
+                                        <p className="mb-4 text-sm text-green-700">Pilih program bantuan sosial untuk memfilter data penerima:</p>
 
-                                    {filteredPrograms.length > 0 ? (
-                                        filteredPrograms.map((program) => (
-                                            <label
-                                                key={program.id}
-                                                className="flex cursor-pointer items-center space-x-3 rounded-lg border border-green-200 p-3 hover:bg-green-50"
-                                            >
+                                        {/* Search Input */}
+                                        <div className="mb-4">
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <Search className="h-5 w-5 text-green-600" />
+                                                </div>
+                                                <InputField
+                                                    type="text"
+                                                    placeholder="Cari program bantuan sosial..."
+                                                    value={programSearchQuery}
+                                                    onChange={setProgramSearchQuery}
+                                                    inputClassName="pl-10"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="max-h-96 space-y-2 overflow-y-auto">
+                                            <label className="flex cursor-pointer items-center space-x-3 rounded-lg border border-green-200 p-3 hover:bg-green-50">
                                                 <input
                                                     type="radio"
                                                     name="program"
-                                                    value={program.id.toString()}
-                                                    checked={tempSelectedProgram === program.id.toString()}
+                                                    value="all_programs"
+                                                    checked={tempSelectedProgram === 'all_programs'}
                                                     onChange={(e) => setTempSelectedProgram(e.target.value)}
                                                     className="h-4 w-4 border-green-300 text-green-600 focus:ring-green-500"
                                                 />
                                                 <div className="flex-1">
-                                                    <div className="text-sm font-medium text-green-900">{program.program_name}</div>
-                                                    <div className="text-xs text-green-600">Periode: {program.period}</div>
+                                                    <div className="text-sm font-medium text-green-900">Semua Program</div>
+                                                    <div className="text-xs text-green-600">Tampilkan semua penerima dari semua program</div>
                                                 </div>
                                             </label>
-                                        ))
-                                    ) : (
-                                        <div className="flex items-center justify-center py-8">
-                                            <div className="text-center">
-                                                <Search className="mx-auto h-8 w-8 text-gray-400" />
-                                                <p className="mt-2 text-sm text-gray-500">Tidak ada program yang sesuai dengan pencarian</p>
-                                                <p className="text-xs text-gray-400">Coba kata kunci lain</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
 
-                            <div className="flex flex-wrap justify-between gap-3">
-                                <Button
-                                    onClick={handleClearProgramFilter}
-                                    variant="outline"
-                                    className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                                >
-                                    Hapus Filter
-                                </Button>
-                                <div className="flex gap-3">
+                                            {filteredPrograms.length > 0 ? (
+                                                filteredPrograms.map((program) => (
+                                                    <label
+                                                        key={program.id}
+                                                        className="flex cursor-pointer items-center space-x-3 rounded-lg border border-green-200 p-3 hover:bg-green-50"
+                                                    >
+                                                        <input
+                                                            type="radio"
+                                                            name="program"
+                                                            value={program.id.toString()}
+                                                            checked={tempSelectedProgram === program.id.toString()}
+                                                            onChange={(e) => setTempSelectedProgram(e.target.value)}
+                                                            className="h-4 w-4 border-green-300 text-green-600 focus:ring-green-500"
+                                                        />
+                                                        <div className="flex-1">
+                                                            <div className="text-sm font-medium text-green-900">{program.program_name}</div>
+                                                            <div className="text-xs text-green-600">Periode: {program.period}</div>
+                                                        </div>
+                                                    </label>
+                                                ))
+                                            ) : (
+                                                <div className="flex items-center justify-center py-8">
+                                                    <div className="text-center">
+                                                        <Search className="mx-auto h-8 w-8 text-gray-400" />
+                                                        <p className="mt-2 text-sm text-gray-500">Tidak ada program yang sesuai dengan pencarian</p>
+                                                        <p className="text-xs text-gray-400">Coba kata kunci lain</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-shrink-0 flex-wrap justify-between gap-3 border-t border-green-200 p-6 pt-4">
                                     <Button
-                                        onClick={handleCloseProgramModal}
+                                        onClick={handleClearProgramFilter}
                                         variant="outline"
                                         className="border-gray-300 text-gray-700 hover:bg-gray-50"
                                     >
-                                        Batal
+                                        Hapus Filter
                                     </Button>
-                                    <Button onClick={handleApplyProgramFilter} icon={<Filter className="h-4 w-4" />} iconPosition="left">
-                                        Terapkan Filter
-                                    </Button>
+                                    <div className="flex gap-3">
+                                        <Button
+                                            onClick={handleCloseProgramModal}
+                                            variant="outline"
+                                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                                        >
+                                            Batal
+                                        </Button>
+                                        <Button onClick={handleApplyProgramFilter} icon={<Filter className="h-4 w-4" />} iconPosition="left">
+                                            Terapkan Filter
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </Dialog.Content>
