@@ -23,6 +23,6 @@ createInertiaApp({
         // root.render(<h1>asdasdasd</h1>);
     },
     progress: {
-        color: '#4B5563',
+        color: '#FACC15',
     },
 });

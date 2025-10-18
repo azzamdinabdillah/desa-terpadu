@@ -21,26 +21,26 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
-    // server: {
-    //     host: 'localhost',
-    //     port: 5173,
-    //     strictPort: true,
-    //     cors: true,
-    //     hmr: {
-    //         host: 'localhost',
-    //         protocol: 'http',
-    //         port: 5173,
-    //     },
-    // },
     server: {
-        host: '192.168.254.198', // Ganti dari 'localhost' ke '0.0.0.0'
+        host: 'localhost',
         port: 5173,
         strictPort: true,
         cors: true,
         hmr: {
-            host: '192.168.254.198', // Ganti dari 'localhost' ke '0.0.0.0'
+            host: 'localhost',
             protocol: 'http',
             port: 5173,
         },
     },
+    // server: {
+    //     host: '192.168.254.198', // Ganti dari 'localhost' ke '0.0.0.0'
+    //     port: 5173,
+    //     strictPort: true,
+    //     cors: true,
+    //     hmr: {
+    //         host: '192.168.254.198', // Ganti dari 'localhost' ke '0.0.0.0'
+    //         protocol: 'http',
+    //         port: 5173,
+    //     },
+    // },
 });

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Alert, { AlertProps } from './Alert';
 
 interface FileUploadProps {
     label: string;
@@ -23,6 +24,7 @@ export default function FileUpload({
     onPreviewChange,
     className = '',
 }: FileUploadProps) {
+    const [alert, setAlert] = useState<AlertProps | null>(null);
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0] || null;
 
@@ -31,14 +33,26 @@ export default function FileUpload({
             if (accept === 'image/jpeg,image/jpg,image/png') {
                 const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
                 if (!validTypes.includes(selectedFile.type)) {
-                    alert('Format file tidak valid. Hanya JPEG, JPG, dan PNG yang diperbolehkan.');
+                    setAlert({
+                        type: 'error',
+                        message: 'Format file tidak valid. Hanya JPEG, JPG, dan PNG yang diperbolehkan.',
+                        autoClose: true,
+                        duration: 5000,
+                        onClose: () => setAlert(null),
+                    });
                     return;
                 }
             }
 
             // Validate file size
             if (selectedFile.size > maxSize * 1024 * 1024) {
-                alert(`File terlalu besar. Maksimal ${maxSize}MB`);
+                setAlert({
+                    type: 'error',
+                    message: `File terlalu besar. Maksimal ${maxSize}MB`,
+                    autoClose: true,
+                    duration: 5000,
+                    onClose: () => setAlert(null),
+                });
                 return;
             }
         }
@@ -70,6 +84,7 @@ export default function FileUpload({
 
     return (
         <div className={`w-full ${className}`}>
+            {alert && <Alert {...alert} />}
             <label className="mb-2 block text-sm font-medium text-green-800">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>

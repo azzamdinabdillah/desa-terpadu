@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { useAuth } from '@/lib/auth';
-import { calculateAge, formatDate, getGenderLabel, getStatusLabel } from '@/lib/utils';
+import { calculateAge, formatDate, getGenderLabel, getReligionLabel, getStatusLabel } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { FamilyType } from '@/types/familyType';
 import { Head } from '@inertiajs/react';
@@ -72,7 +72,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                         />
                                     )}
                                     {headOfHousehold.religion && (
-                                        <DetailItem icon={Heart} label="Agama" value={headOfHousehold.religion} withBorder={false} />
+                                        <DetailItem icon={Heart} label="Agama" value={getReligionLabel(headOfHousehold.religion || '')} withBorder={false} />
                                     )}
                                 </div>
                             </DetailCard>
@@ -106,7 +106,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                             {spouse.phone_number && (
                                                 <DetailItem icon={Phone} label="Telepon" value={spouse.phone_number} withBorder={!!spouse.religion} />
                                             )}
-                                            {spouse.religion && <DetailItem icon={Heart} label="Agama" value={spouse.religion} withBorder={false} />}
+                                            {spouse.religion && <DetailItem icon={Heart} label="Agama" value={getReligionLabel(spouse.religion || '')} withBorder={false} />}
                                         </div>
                                     </DetailCard>
                                 ))}
@@ -141,7 +141,7 @@ export default function FamilyDetail({ family, headOfHousehold, spouses, childre
                                             {child.phone_number && (
                                                 <DetailItem icon={Phone} label="Telepon" value={child.phone_number} withBorder={!!child.religion} />
                                             )}
-                                            {child.religion && <DetailItem icon={Heart} label="Agama" value={child.religion} withBorder={false} />}
+                                            {child.religion && <DetailItem icon={Heart} label="Agama" value={getReligionLabel(child.religion || '')} withBorder={false} />}
                                         </div>
                                     </DetailCard>
                                 ))}
