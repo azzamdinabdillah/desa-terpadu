@@ -34,7 +34,6 @@ export default function CreateAssetPage() {
     const { data, setData, post, processing, errors } = useForm({
         asset_name: asset?.asset_name || '',
         condition: asset?.condition || ('good' as 'good' | 'fair' | 'bad'),
-        status: asset?.status || ('idle' as 'idle' | 'onloan'),
         notes: asset?.notes || '',
         image: null as File | null,
     });
@@ -149,8 +148,8 @@ export default function CreateAssetPage() {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                    {/* Kondisi */}
+                                {/* Kondisi */}
+                                <div className="">
                                     <Select
                                         label="Kondisi Asset"
                                         value={data.condition}
@@ -159,18 +158,6 @@ export default function CreateAssetPage() {
                                             { value: 'good', label: 'Baik' },
                                             { value: 'fair', label: 'Cukup' },
                                             { value: 'bad', label: 'Buruk' },
-                                        ]}
-                                        required
-                                    />
-
-                                    {/* Status */}
-                                    <Select
-                                        label="Status Asset"
-                                        value={data.status}
-                                        onChange={(value) => setData('status', value as 'idle' | 'onloan')}
-                                        options={[
-                                            { value: 'idle', label: 'Tersedia' },
-                                            { value: 'onloan', label: 'Dipinjam' },
                                         ]}
                                         required
                                     />

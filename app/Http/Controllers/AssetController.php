@@ -110,7 +110,6 @@ class AssetController extends Controller
         $validated = $request->validate([
             'asset_name' => 'required|string|max:255',
             'condition' => 'required|in:good,fair,bad',
-            'status' => 'required|in:idle,onloan',
             'notes' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
@@ -119,8 +118,6 @@ class AssetController extends Controller
             'asset_name.max' => 'Nama asset maksimal 255 karakter.',
             'condition.required' => 'Kondisi asset wajib dipilih.',
             'condition.in' => 'Kondisi asset harus berupa: baik, cukup, atau buruk.',
-            'status.required' => 'Status asset wajib dipilih.',
-            'status.in' => 'Status asset harus berupa: tersedia atau dipinjam.',
             'notes.string' => 'Catatan harus berupa teks.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Gambar harus berformat JPEG, PNG, JPG, atau GIF.',
@@ -129,6 +126,9 @@ class AssetController extends Controller
 
         // Generate unique asset code
         $validated['code'] = $this->generateAssetCode();
+        
+        // Set default status to idle for new assets
+        $validated['status'] = 'idle';
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -166,7 +166,6 @@ class AssetController extends Controller
         $validated = $request->validate([
             'asset_name' => 'required|string|max:255',
             'condition' => 'required|in:good,fair,bad',
-            'status' => 'required|in:idle,onloan',
             'notes' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
@@ -175,8 +174,6 @@ class AssetController extends Controller
             'asset_name.max' => 'Nama asset maksimal 255 karakter.',
             'condition.required' => 'Kondisi asset wajib dipilih.',
             'condition.in' => 'Kondisi asset harus berupa: baik, cukup, atau buruk.',
-            'status.required' => 'Status asset wajib dipilih.',
-            'status.in' => 'Status asset harus berupa: tersedia atau dipinjam.',
             'notes.string' => 'Catatan harus berupa teks.',
             'image.image' => 'File harus berupa gambar.',
             'image.mimes' => 'Gambar harus berformat JPEG, PNG, JPG, atau GIF.',
