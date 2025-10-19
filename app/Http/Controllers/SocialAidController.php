@@ -207,9 +207,13 @@ class SocialAidController extends Controller
      */
     public function edit(SocialAidProgram $socialAid)
     {
+        // Check if there are existing recipients
+        $hasRecipients = $socialAid->recipients()->count() > 0;
+        
         return Inertia::render('social-aid/create', [
             'program' => $socialAid,
             'isEdit' => true,
+            'hasRecipients' => $hasRecipients,
         ]);
     }
 
@@ -222,16 +226,28 @@ class SocialAidController extends Controller
             // Get current recipients count
             $currentRecipientsCount = $socialAid->total_recipients_count;
             
+            // Check if there are existing recipients
+            $hasRecipients = $currentRecipientsCount > 0;
+            
             $rules = [
                 'program_name' => 'required|string|max:255',
                 'period' => 'required|string|max:255',
-                'type' => 'required|in:individual,household,public',
                 'date_start' => 'required|date',
                 'date_end' => 'required|date|after:date_start',
                 'quota' => 'required|integer|min:' . $currentRecipientsCount,
                 'description' => 'nullable|string',
                 'location' => 'required|string|max:255',
             ];
+
+            // Only allow type change if there are no recipients
+            if (!$hasRecipients) {
+                $rules['type'] = 'required|in:individual,household,public';
+            } else {
+                // If there are recipients, validate that type hasn't changed
+                if ($request->type !== $socialAid->type) {
+                    return back()->with('error', 'Tipe program tidak dapat diubah karena sudah ada penerima yang terdaftar dalam program ini.');
+                }
+            }
 
             // Only validate image if it's present in the request
             if ($request->hasFile('image')) {

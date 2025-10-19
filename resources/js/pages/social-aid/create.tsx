@@ -31,11 +31,12 @@ interface SocialAidCreatePageProps {
         image?: string;
     };
     isEdit?: boolean;
+    hasRecipients?: boolean;
     [key: string]: unknown;
 }
 
 function SocialAidCreatePage() {
-    const { flash, program, isEdit } = usePage<SocialAidCreatePageProps>().props;
+    const { flash, program, isEdit, hasRecipients } = usePage<SocialAidCreatePageProps>().props;
     const { isAdmin } = useAuth();
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -174,6 +175,12 @@ function SocialAidCreatePage() {
                                         options={programTypes}
                                         placeholder="Pilih tipe program"
                                         required
+                                        disabled={isEdit && hasRecipients}
+                                        helperText={
+                                            isEdit && hasRecipients
+                                                ? 'Tipe program tidak dapat diubah karena sudah ada penerima yang terdaftar'
+                                                : undefined
+                                        }
                                     />
                                 </div>
 
