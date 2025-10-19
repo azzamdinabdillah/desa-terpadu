@@ -45,7 +45,7 @@ const DetailCitizen: React.FC<Props> = ({ citizen }) => {
                                 <div className="flex-1 text-center md:text-left">
                                     <h2 className="mb-2 text-2xl font-bold text-green-900">{citizen.full_name}</h2>
                                     <div className="mb-4">
-                                        <StatusBadge type="status" value={citizen.status || ''} />
+                                        <StatusBadge type="citizenStatus" value={citizen.status || ''} />
                                     </div>
                                     <div className="flex flex-wrap justify-center gap-2 md:justify-start">
                                         <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-sm">

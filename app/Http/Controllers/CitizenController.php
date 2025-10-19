@@ -43,8 +43,22 @@ class CitizenController extends Controller
             ->onEachSide(0)
             ->withQueryString();
 
+        // Get families for filter dropdown
+        $families = Family::select('id', 'family_name', 'kk_number')
+            ->orderBy('family_name')
+            ->get()
+            ->map(function ($family) use ($request) {
+                $isAdmin = $request->user() && $request->user()->role === 'admin';
+                return [
+                    'id' => $family->id,
+                    'name' => $family->family_name,
+                    'address' => $isAdmin ? "No. KK: {$family->kk_number}" : null,
+                ];
+            });
+
         return Inertia::render('citizen/citizen', [
             'citizens' => $citizens,
+            'families' => $families,
             'filters' => [
                 'q' => $search,
                 'gender' => $gender,

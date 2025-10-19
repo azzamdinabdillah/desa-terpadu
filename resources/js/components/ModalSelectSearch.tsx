@@ -4,17 +4,19 @@ import { useState } from 'react';
 import Button from './Button';
 
 interface ModalSelectSearchProps {
-    label: string;
+    label?: string;
     placeholder?: string;
     selectedValue?: string;
     selectedLabel?: string;
     items: Array<{ id: number; name: string; address?: string; disabled?: boolean }>;
     onSelect: (value: string) => void;
     required?: boolean;
+    title?: string;
 }
 
 export default function ModalSelectSearch({
     label,
+    title,
     placeholder = 'Pilih opsi',
     selectedValue,
     selectedLabel,
@@ -35,16 +37,18 @@ export default function ModalSelectSearch({
     return (
         <div>
             {/* Label */}
+            {label && (
             <label className="mb-2 block text-sm font-medium text-green-800">
                 {label}
-                {required && <span className="ml-1 text-red-500">*</span>}
-            </label>
+                    {required && <span className="ml-1 text-red-500">*</span>}
+                </label>
+            )}
 
             {/* Button Trigger */}
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="flex w-full items-center justify-between rounded-lg border border-green-300 bg-white px-3 py-[11px] text-left text-sm text-green-900 shadow-sm transition focus:ring-2 focus:ring-green-200 focus:outline-none sm:text-base"
+                className="flex w-full items-center gap-2 justify-between rounded-lg border border-green-300 bg-white px-3 py-2.5 text-left text-sm text-green-900 shadow-sm transition focus:ring-2 focus:ring-green-200 focus:outline-none sm:text-base"
             >
                 <span className="truncate">{selectedLabel || placeholder}</span>
                 {/* <span className="ml-3 shrink-0 rounded-md bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700">Pilih</span> */}
@@ -61,7 +65,7 @@ export default function ModalSelectSearch({
                             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
                                 <Users className="h-5 w-5 text-green-700" />
                             </div>
-                            <Dialog.Title className="text-base font-semibold text-green-900">{label}</Dialog.Title>
+                            <Dialog.Title className="text-base font-semibold text-green-900">{label || title}</Dialog.Title>
                         </div>
 
                         <div className="p-4">

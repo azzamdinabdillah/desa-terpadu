@@ -9,7 +9,8 @@ interface StatusBadgeProps {
         | 'socialAidStatus'
         | 'documentStatus'
         | 'userRole'
-        | 'userStatus';
+        | 'userStatus'
+        | 'citizenStatus';
     value: string;
     className?: string;
 }
@@ -76,6 +77,12 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
         inactive: { label: 'Tidak Aktif', className: 'bg-red-100 text-red-800' },
     };
 
+    const citizenStatusConfig = {
+        child: { label: 'Anak', className: 'bg-blue-100 text-blue-800' },
+        spouse: { label: 'Pasangan', className: 'bg-purple-100 text-purple-800' },
+        head_of_household: { label: 'Kepala Keluarga', className: 'bg-green-100 text-green-800' },
+    };
+
     let config;
     switch (type) {
         case 'status':
@@ -107,6 +114,9 @@ export default function StatusBadge({ type, value, className = '' }: StatusBadge
             break;
         case 'userStatus':
             config = userStatusConfig[value as keyof typeof userStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
+            break;
+        case 'citizenStatus':
+            config = citizenStatusConfig[value as keyof typeof citizenStatusConfig] || { label: value, className: 'bg-gray-100 text-gray-800' };
             break;
         default:
             config = { label: value, className: 'bg-gray-100 text-gray-800' };

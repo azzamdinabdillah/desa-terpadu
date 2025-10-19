@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
+import ModalSelectSearch from '@/components/ModalSelectSearch';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
 import StatusBadge from '@/components/StatusBadge';
@@ -28,9 +29,11 @@ interface CitizenPageProps {
         next_page_url: string | null;
         links: { url: string | null; label: string; active: boolean }[];
     };
+    families: Array<{ id: number; name: string; address: string }>;
     filters: {
         q?: string;
         gender?: string;
+        family_id?: string;
     };
     flash?: {
         success?: string;
@@ -40,10 +43,11 @@ interface CitizenPageProps {
 }
 
 function CitizenPage() {
-    const { citizens, filters, flash } = usePage().props as unknown as CitizenPageProps;
+    const { citizens, families, filters, flash } = usePage().props as unknown as CitizenPageProps;
     const { isAdmin } = useAuth();
     const [searchTerm, setSearchTerm] = useState(filters.q || '');
     const [gender, setGender] = useState(filters.gender || 'all');
+    const [selectedFamilyId, setSelectedFamilyId] = useState(filters.family_id || '');
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [citizenToDelete, setCitizenToDelete] = useState<CitizenType | null>(null);
@@ -66,6 +70,7 @@ function CitizenPage() {
             {
                 q: searchTerm,
                 gender: gender === 'all' ? undefined : gender,
+                family_id: selectedFamilyId || undefined,
             },
             {
                 preserveState: true,
@@ -76,16 +81,20 @@ function CitizenPage() {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            if (searchTerm !== (filters.q || '') || (filters.gender || 'all') !== gender) {
+            if (searchTerm !== (filters.q || '') || (filters.gender || 'all') !== gender || (filters.family_id || '') !== selectedFamilyId) {
                 router.get(
                     `${import.meta.env.VITE_APP_SUB_URL}/citizens`,
-                    { q: searchTerm, gender: gender === 'all' ? undefined : gender },
+                    {
+                        q: searchTerm,
+                        gender: gender === 'all' ? undefined : gender,
+                        family_id: selectedFamilyId || undefined,
+                    },
                     { preserveState: true, replace: true },
                 );
             }
         }, 300);
         return () => clearTimeout(handler);
-    }, [searchTerm, gender, filters.q, filters.gender]);
+    }, [searchTerm, gender, selectedFamilyId, filters.q, filters.gender, filters.family_id]);
 
     const handlePageChange = (url: string) => {
         if (url) {
@@ -400,6 +409,21 @@ function CitizenPage() {
                                 ]}
                                 className="min-w-[220px]"
                                 placeholder="Pilih gender"
+                            />
+
+                            <ModalSelectSearch
+                                title="Filter by Keluarga"
+                                placeholder="Filter by Keluarga"
+                                selectedValue={selectedFamilyId}
+                                selectedLabel={selectedFamilyId ? families.find((f) => f.id.toString() === selectedFamilyId)?.name : undefined}
+                                items={[
+                                    { id: 0, name: 'Semua Keluarga', address: 'Tampilkan semua warga' },
+                                    ...families.map((family) => ({
+                                        ...family,
+                                        address: family.address || undefined,
+                                    })),
+                                ]}
+                                onSelect={(value) => setSelectedFamilyId(value === '0' ? '' : value)}
                             />
 
                             {isAdmin && (
