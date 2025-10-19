@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
 import StatusBadge from '@/components/StatusBadge';
 import { BaseLayouts } from '@/layouts/BaseLayouts';
+import { useAuth } from '@/lib/auth';
 import { formatDateTime } from '@/lib/utils';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { EventType, EventsDocumentationType } from '@/types/event/eventType';
@@ -33,6 +34,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
     const { flash } = usePage().props as unknown as EventDetailProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [selectedDocumentation, setSelectedDocumentation] = useState<EventsDocumentationType | null>(null);
+    const { isAdmin } = useAuth();
 
     useEffect(() => {
         if (flash?.success) {
@@ -105,7 +107,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                     <DetailItem
                                         icon={User}
                                         label="Dibuat Oleh"
-                                        value={event.createdBy?.full_name || 'Tidak diketahui'}
+                                        value={event.created_by?.citizen.full_name || 'Tidak diketahui'}
                                         withBorder={false}
                                     />
                                 </div>
@@ -127,7 +129,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                         {event.participants.map((participant) => (
                                             <div
                                                 key={participant.id}
-                                                className="flex items-center justify-between rounded-lg border border-gray-100 bg-green-50 p-4"
+                                                className="flex flex-col justify-between gap-3 rounded-lg border border-gray-100 bg-green-50 p-4 md:flex-row md:items-center"
                                             >
                                                 <div className="flex items-center space-x-4">
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
@@ -137,7 +139,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                                                     </div>
                                                     <div>
                                                         <h4 className="font-medium text-green-900">{participant.citizen.full_name}</h4>
-                                                        <p className="text-sm text-gray-600">NIK: {participant.citizen.nik}</p>
+                                                        {isAdmin && <p className="text-sm text-gray-600">NIK: {participant.citizen.nik}</p>}
                                                     </div>
                                                 </div>
                                                 <div className="text-sm text-gray-500">

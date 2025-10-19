@@ -100,7 +100,7 @@ function CreateFamilyPage() {
 
     return (
         <BaseLayouts>
-            <Header />
+            <Header showBackButton />
             <div className="p-6">
                 <HeaderPage
                     title={isEdit ? 'Edit Data Keluarga' : 'Tambah Data Keluarga'}

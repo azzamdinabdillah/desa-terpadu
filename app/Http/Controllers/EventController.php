@@ -275,7 +275,7 @@ class EventController extends Controller
     public function show(Event $event)
     {
         $event->load([
-            'createdBy', 
+            'createdBy.citizen', 
             'participants.citizen', 
             'documentations'
         ]);
@@ -384,6 +384,7 @@ class EventController extends Controller
             ]);
 
             // Handle documentation upload if provided
+            $documentationUploaded = false;
             if ($request->hasFile('documentation_files')) {
                 $files = $request->file('documentation_files');
                 $captions = $request->input('documentation_captions', []);
@@ -403,10 +404,16 @@ class EventController extends Controller
                         'uploaded_by' => Auth::id(),
                     ]);
                 }
+                $documentationUploaded = true;
             }
 
+            // Set appropriate success message
+            $message = $documentationUploaded 
+                ? 'Status event berhasil diubah dan dokumentasi berhasil diupload!'
+                : 'Status event berhasil diubah!';
+
             return redirect()->route('events.show', $event->id)
-                ->with('success', 'Status event berhasil diubah dan dokumentasi berhasil diupload!');
+                ->with('success', $message);
 
         } catch (\Exception $e) {
             return redirect()->back()

@@ -76,7 +76,7 @@ function EventRegisterPage() {
                     {/* Event Information Card */}
                     <div className="mb-8">
                         <DetailCard title="Informasi Event" icon={Info}>
-                            <div className="mb-4 flex items-start justify-between">
+                            <div className="mb-4 flex items-start justify-between flex-wrap gap-3">
                                 <div>
                                     <div className="flex items-center space-x-4">
                                         <StatusBadge type="status" value={event.status} />
