@@ -244,19 +244,20 @@ function Dashboard() {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                 const income = series[0][dataPointIndex];
                 const expense = series[1][dataPointIndex];
-                const balance = series[2][dataPointIndex];
+                // const balance = series[2][dataPointIndex]; // Commented out since balance series is removed
                 const month = w.globals.labels[dataPointIndex];
 
                 // Check which series are active (not collapsed)
                 const collapsedSeriesIndices = w.globals.collapsedSeriesIndices || [];
                 const isIncomeActive = !collapsedSeriesIndices.includes(0);
                 const isExpenseActive = !collapsedSeriesIndices.includes(1);
-                const isBalanceActive = !collapsedSeriesIndices.includes(2);
+                // const isBalanceActive = !collapsedSeriesIndices.includes(2); // Commented out since balance series is removed
 
                 // Calculate net income only if both income and expense are active
                 const netIncome = income - expense;
                 const netPercentage = income > 0 ? ((netIncome / income) * 100).toFixed(1) : 0;
-                const showNetSummary = isIncomeActive && isExpenseActive && isBalanceActive;
+                // const showNetSummary = isIncomeActive && isExpenseActive && isBalanceActive;
+                const showNetSummary = isIncomeActive && isExpenseActive; // Removed isBalanceActive since balance series is commented out
 
                 // Check if mobile screen
                 const isMobile = window.innerWidth < 768;
@@ -338,35 +339,35 @@ function Dashboard() {
                         `;
                     }
 
-                    if (isBalanceActive) {
-                        mobileContent += `
-                            <!-- <div style="
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                padding: 4px 0;
-                            ">
-                                <div style="display: flex; align-items: center; gap: 6px;">
-                                    <div style="
-                                        width: 6px;
-                                        height: 6px;
-                                        border-radius: 50%;
-                                        background: #4ade80;
-                                    "></div>
-                                    <span style="
-                                        font-size: 11px;
-                                        color: #f0fdf4;
-                                        font-weight: 500;
-                                    ">Saldo</span>
-                                </div>
-                                <span style="
-                                    font-size: 11px;
-                                    font-weight: 700;
-                                    color: #dcfce7;
-                                ">${formatCurrency(balance)}</span>
-                            </div>
-                        `;
-                    }
+                    // if (isBalanceActive) {
+                    //     mobileContent += `
+                    //         <!-- <div style="
+                    //             display: flex;
+                    //             align-items: center;
+                    //             justify-content: space-between;
+                    //             padding: 4px 0;
+                    //         ">
+                    //             <div style="display: flex; align-items: center; gap: 6px;">
+                    //                 <div style="
+                    //                     width: 6px;
+                    //                     height: 6px;
+                    //                     border-radius: 50%;
+                    //                     background: #4ade80;
+                    //                 "></div>
+                    //                 <span style="
+                    //                     font-size: 11px;
+                    //                     color: #f0fdf4;
+                    //                     font-weight: 500;
+                    //                 ">Saldo</span>
+                    //             </div>
+                    //             <span style="
+                    //                 font-size: 11px;
+                    //                 font-weight: 700;
+                    //                 color: #dcfce7;
+                    //             ">${formatCurrency(balance)}</span>
+                    //         </div>
+                    //     `;
+                    // }
 
                     mobileContent += `</div>`;
                     return mobileContent;
@@ -474,38 +475,38 @@ function Dashboard() {
                 }
 
                 // Balance - only show if active
-                if (isBalanceActive) {
-                    tooltipContent += `
-                        <!-- <div style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            padding: 8px 0;
-                            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                        ">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <div style="
-                                    width: 8px;
-                                    height: 8px;
-                                    border-radius: 50%;
-                                    background: linear-gradient(135deg, #86efac, #4ade80);
-                                    box-shadow: 0 0 10px rgba(134, 239, 172, 0.6);
-                                "></div>
-                                <span style="
-                                    font-size: 12px;
-                                    color: #f0fdf4;
-                                    font-weight: 500;
-                                ">Saldo Tersisa</span>
-                            </div>
-                            <span style="
-                                font-size: 13px;
-                                font-weight: 700;
-                                color: #dcfce7;
-                                letter-spacing: 0.3px;
-                            ">${formatCurrency(balance)}</span>
-                        </div>
-                    -->`;
-                }
+                // if (isBalanceActive) {
+                //     tooltipContent += `
+                //         <!-- <div style="
+                //             display: flex;
+                //             align-items: center;
+                //             justify-content: space-between;
+                //             padding: 8px 0;
+                //             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                //         ">
+                //             <div style="display: flex; align-items: center; gap: 8px;">
+                //                 <div style="
+                //                     width: 8px;
+                //                     height: 8px;
+                //                     border-radius: 50%;
+                //                     background: linear-gradient(135deg, #86efac, #4ade80);
+                //                     box-shadow: 0 0 10px rgba(134, 239, 172, 0.6);
+                //                 "></div>
+                //                 <span style="
+                //                     font-size: 12px;
+                //                     color: #f0fdf4;
+                //                     font-weight: 500;
+                //                 ">Saldo Tersisa</span>
+                //             </div>
+                //             <span style="
+                //                 font-size: 13px;
+                //                 font-weight: 700;
+                //                 color: #dcfce7;
+                //                 letter-spacing: 0.3px;
+                //             ">${formatCurrency(balance)}</span>
+                //         </div>
+                //     -->`;
+                // }
 
                 // Net Income Summary - only show if all series are active
                 if (showNetSummary) {
@@ -747,10 +748,10 @@ function Dashboard() {
             name: 'Pengeluaran',
             data: financeTrend.map((d) => d.expense),
         },
-        {
-            name: 'Saldo Tersisa',
-            data: financeTrend.map((d) => d.balance),
-        },
+        // {
+        //     name: 'Saldo Tersisa',
+        //     data: financeTrend.map((d) => d.balance),
+        // },
     ];
 
     // Donut Chart Config (with border radius!)
@@ -1149,21 +1150,21 @@ function Dashboard() {
                     {/* Citizens Statistics */}
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {/* Gender Distribution */}
-                        <DetailCard title="Jenis Kelamin Warga" icon={Users} classNameContent='pt-2'>
+                        <DetailCard title="Jenis Kelamin Warga" icon={Users} classNameContent="pt-2">
                             <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByGender)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
 
                         {/* Marital Status Distribution */}
-                        <DetailCard title="Status Pernikahan Warga" icon={Users} classNameContent='pt-2'>
+                        <DetailCard title="Status Pernikahan Warga" icon={Users} classNameContent="pt-2">
                             <div style={{ minHeight: '300px' }}>
                                 <Doughnut data={createDoughnutData(citizensByMaritalStatus)} options={doughnutOptions} />
                             </div>
                         </DetailCard>
 
                         {/* Religion Distribution */}
-                        <DetailCard title="Agama Warga" icon={Users} classNameContent='pt-2'>
+                        <DetailCard title="Agama Warga" icon={Users} classNameContent="pt-2">
                             <div style={{ minHeight: '300px' }}>
                                 <Bar data={createBarData(citizensByReligion)} options={horizontalBarOptions} />
                             </div>
@@ -1180,7 +1181,7 @@ function Dashboard() {
                         </DetailCard>
 
                         {/* Top Occupations */}
-                        <DetailCard title="5 Pekerjaan Teratas" icon={Users} classNameContent='pt-2'>
+                        <DetailCard title="5 Pekerjaan Teratas" icon={Users} classNameContent="pt-2">
                             <div style={{ minHeight: '340px' }}>
                                 <Doughnut data={createDoughnutData(topOccupations)} options={doughnutOptions} />
                             </div>

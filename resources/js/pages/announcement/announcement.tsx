@@ -335,20 +335,6 @@ function Announcement() {
                                                                 alt="Gambar Pengumuman"
                                                                 className="max-h-80 w-full rounded-lg border border-green-200 object-contain"
                                                             />
-                                                            <Button
-                                                                onClick={() =>
-                                                                    handleImageClick(
-                                                                        `${import.meta.env.VITE_APP_URL}/storage/${viewModalData.image}`,
-                                                                        viewModalData.title,
-                                                                    )
-                                                                }
-                                                                variant="outline"
-                                                                size="sm"
-                                                                className="absolute top-2 right-2 bg-white/90 hover:bg-white"
-                                                                icon={<ImageIcon className="h-4 w-4" />}
-                                                            >
-                                                                Lihat
-                                                            </Button>
                                                         </div>
                                                     </div>
                                                 )}
