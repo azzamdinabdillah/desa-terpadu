@@ -359,7 +359,7 @@ function SocialAidRecipientPage() {
                                 value={selectedStatus}
                                 onChange={setSelectedStatus}
                                 placeholder="Filter berdasarkan status"
-                                className="w-48"
+                                className="w-36 md:w-48"
                             />
 
                             {isAdmin && (

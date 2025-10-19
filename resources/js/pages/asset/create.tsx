@@ -113,7 +113,7 @@ export default function CreateAssetPage() {
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
-                <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage
                         title={isEditMode ? 'Edit Asset' : 'Tambah Asset Baru'}
                         description={isEditMode ? 'Edit informasi asset yang ada' : 'Tambah asset baru ke dalam sistem desa'}

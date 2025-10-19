@@ -256,7 +256,7 @@ function CreateRecipientPage() {
     return (
         <BaseLayouts>
             <div>
-                <Header title="Tambah Penerima Bantuan Sosial" icon="🤝" />
+                <Header showBackButton title="Tambah Penerima Bantuan Sosial" icon="🤝" />
 
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
 

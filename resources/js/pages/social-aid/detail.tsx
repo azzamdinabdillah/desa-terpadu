@@ -1,6 +1,5 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
-import DataTable from '@/components/DataTable';
 import DetailCard from '@/components/DetailCard';
 import DetailItem from '@/components/DetailItem';
 import Header from '@/components/Header';
@@ -11,8 +10,8 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { SocialAidProgram, SocialAidRecipient } from '@/types/socialAid/socialAidTypes';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Circle, Clock, Edit, FileImage, HandHeart, Info, MapPin, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { Calendar, CheckCircle, Circle, Clock, Edit, HandHeart, Info, MapPin, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface SocialAidDetailPageProps {
     program: SocialAidProgram & {
@@ -54,112 +53,95 @@ function SocialAidDetailPage() {
         return types[type] || type;
     };
 
-    const recipientColumns = useMemo(
-        () => [
-            {
-                key: 'recipient_name',
-                header: 'Nama Penerima',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => (
-                    <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                            <Users className="h-4 w-4 text-green-600" />
+    // Recipient Card Component
+    const RecipientCard = ({ recipient }: { recipient: SocialAidRecipient }) => (
+        <div className="rounded-lg border border-green-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+            <div className="flex flex-col gap-3">
+                {/* Header with avatar and name */}
+                <div className="flex flex-wrap items-start gap-3 justify-between">
+                    <div className='flex flex-wrap gap-3 justify-between'>
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
+                            <Users className="h-5 w-5 text-green-600" />
                         </div>
-                        <div>
-                            <span className="text-sm font-medium text-green-900">{item.citizen?.full_name || item.family?.family_name || '-'}</span>
-                            <div className="text-xs text-green-600">{item.citizen?.nik || item.family?.kk_number || '-'}</div>
+                        <div className="min-w-0 flex-1">
+                            <h3 className="truncate text-sm font-semibold text-green-900">
+                                {recipient.citizen?.full_name || recipient.family?.family_name || '-'}
+                            </h3>
+                            <p className="truncate text-xs text-green-600">{recipient.citizen?.nik || recipient.family?.kk_number || '-'}</p>
                         </div>
                     </div>
-                ),
-            },
-            {
-                key: 'contact',
-                header: 'Kontak',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => <span className="text-sm text-green-900">{item.citizen?.phone_number || '-'}</span>,
-            },
-            {
-                key: 'status',
-                header: 'Status',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => <StatusBadge type="status" value={item.status} />,
-            },
-            {
-                key: 'collected_at',
-                header: 'Tanggal Ambil',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => (
+                    <StatusBadge type="status" value={recipient.status} />
+                </div>
+
+                {/* Contact info */}
+                {recipient.citizen?.phone_number && (
+                    <div className="flex items-center gap-2 text-sm text-green-700">
+                        <span className="font-medium">Kontak:</span>
+                        <span>{recipient.citizen.phone_number}</span>
+                    </div>
+                )}
+
+                {/* Collection status */}
+                <div className="flex items-center gap-2 text-sm">
+                    {recipient.status === 'collected' ? (
+                        <>
+                            <CheckCircle className="h-4 w-4 flex-shrink-0 text-green-600" />
+                            <span className="text-green-900">Diambil pada {recipient.collected_at ? formatDate(recipient.collected_at) : '-'}</span>
+                        </>
+                    ) : (
+                        <>
+                            <Circle className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                            <span className="text-gray-500">Belum diambil</span>
+                        </>
+                    )}
+                </div>
+
+                {/* Handled by */}
+                {recipient.performed_by?.citizen?.full_name && (
+                    <div className="flex items-center gap-2 text-sm text-green-700 flex-wrap">
+                        <span className="font-medium">Ditangani oleh:</span>
+                        <span>{recipient.performed_by.citizen.full_name}</span>
+                    </div>
+                )}
+
+                {/* Notes */}
+                {recipient.note && (
+                    <div className="text-sm text-green-700">
+                        <span className="font-medium">Catatan:</span>
+                        <p className="mt-1 text-green-600">{recipient.note}</p>
+                    </div>
+                )}
+
+                {/* Image proof */}
+                {recipient.image_proof && (
                     <div className="flex items-center gap-2">
-                        {item.status === 'collected' ? (
-                            <>
-                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                <span className="text-sm text-green-900">{item.collected_at ? formatDate(item.collected_at) : '-'}</span>
-                            </>
-                        ) : (
-                            <>
-                                <Circle className="h-4 w-4 text-gray-400" />
-                                <span className="text-sm text-gray-500">Belum diambil</span>
-                            </>
-                        )}
+                        <span className="text-sm font-medium text-green-700">Foto Bukti:</span>
+                        <div className="group relative">
+                            <img
+                                src={`${import.meta.env.VITE_APP_URL}/storage/${recipient.image_proof}`}
+                                alt="Bukti penerimaan"
+                                className="h-12 w-12 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
+                                onClick={() => {
+                                    window.open(`${import.meta.env.VITE_APP_URL}/storage/${recipient.image_proof}`, '_blank');
+                                }}
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = 'https://placehold.co/48x48?text=No+Image';
+                                    target.alt = 'Bukti tidak tersedia';
+                                    target.className = 'h-12 w-12 rounded border border-green-100 object-cover opacity-60';
+                                }}
+                            />
+                        </div>
                     </div>
-                ),
-            },
-            {
-                key: 'performed_by',
-                header: 'Ditangani Oleh',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => <span className="text-sm text-green-900">{item.performed_by?.citizen?.full_name || '-'}</span>,
-            },
-            {
-                key: 'notes',
-                header: 'Catatan',
-                cell: (item: SocialAidRecipient) => <span className="block max-w-xs truncate text-sm text-green-900">{item.note || '-'}</span>,
-            },
-            {
-                key: 'image_proof',
-                header: 'Foto Bukti',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => (
-                    <div className="flex items-center justify-center">
-                        {item.image_proof ? (
-                            <div className="group relative">
-                                <img
-                                    src={`${import.meta.env.VITE_APP_URL}/storage/${item.image_proof}`}
-                                    alt="Bukti penerimaan"
-                                    className="h-10 w-10 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
-                                    onClick={() => {
-                                        // Open image in new tab
-                                        window.open(`${import.meta.env.VITE_APP_URL}/storage/${item.image_proof}`, '_blank');
-                                    }}
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.src = 'https://placehold.co/48x48?text=No+Image';
-                                        target.alt = 'Flyer tidak tersedia';
-                                        target.className = 'h-12 w-12 rounded border border-green-100 object-cover opacity-60';
-                                    }}
-                                />
-                            </div>
-                        ) : (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
-                                <FileImage className="h-4 w-4 text-gray-400" />
-                            </div>
-                        )}
-                    </div>
-                ),
-            },
-            {
-                key: 'created_at',
-                header: 'Dibuat',
-                className: 'whitespace-nowrap',
-                cell: (item: SocialAidRecipient) => (
-                    <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-900">{formatDate(item.created_at)}</span>
-                    </div>
-                ),
-            },
-        ],
-        [],
+                )}
+
+                {/* Created date */}
+                <div className="flex items-center gap-2 border-t border-gray-100 pt-2 text-xs text-gray-500">
+                    <Calendar className="h-3 w-3" />
+                    <span>Dibuat {formatDate(recipient.created_at)}</span>
+                </div>
+            </div>
+        </div>
     );
 
     const collectionRate = calculateCollectionRate();
@@ -174,59 +156,67 @@ function SocialAidDetailPage() {
 
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
 
-                <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                <div className="mx-auto max-w-7xl p-3 sm:p-4 lg:p-8">
                     <HeaderPage title="Detail Program Bantuan Sosial" description="Detail program bantuan sosial" />
                     {/* Program Information Card */}
                     <div className="mb-8">
                         <DetailCard title="Informasi Program" icon={Info}>
-                            <div className="mb-6 flex items-start justify-between">
-                                <div className="flex items-center gap-4">
-                                    {program.image ? (
-                                        <img
-                                            src={`${import.meta.env.VITE_APP_URL}/storage/${program.image}`}
-                                            alt={program.program_name}
-                                            className="h-20 w-20 rounded-lg border border-green-200 object-cover"
-                                            onError={(e) => {
-                                                const target = e.target as HTMLImageElement;
-                                                target.src = 'https://placehold.co/80x80?text=No+Image';
-                                                target.alt = 'Gambar tidak tersedia';
-                                                target.className = 'h-20 w-20 rounded-lg object-cover border border-green-100 opacity-60';
-                                            }}
-                                        />
-                                    ) : (
-                                        <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-green-200 bg-green-100">
-                                            <HandHeart className="h-10 w-10 text-green-600" />
-                                        </div>
-                                    )}
-                                    <div>
-                                        <h1 className="mb-2 text-2xl font-bold text-green-900">{program.program_name}</h1>
-                                        <div className="flex flex-wrap items-center gap-4 text-sm text-green-700">
-                                            <div className="flex items-center gap-1">
-                                                <StatusBadge type="socialAidType" value={program.type} />
+                            <div className="mb-6">
+                                {/* Mobile-first layout */}
+                                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                                        {program.image ? (
+                                            <img
+                                                src={`${import.meta.env.VITE_APP_URL}/storage/${program.image}`}
+                                                alt={program.program_name}
+                                                className="h-16 w-16 flex-shrink-0 rounded-lg border border-green-200 object-cover sm:h-20 sm:w-20"
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.src = 'https://placehold.co/80x80?text=No+Image';
+                                                    target.alt = 'Gambar tidak tersedia';
+                                                    target.className =
+                                                        'h-16 w-16 flex-shrink-0 rounded-lg object-cover border border-green-100 opacity-60 sm:h-20 sm:w-20';
+                                                }}
+                                            />
+                                        ) : (
+                                            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg border border-green-200 bg-green-100 sm:h-20 sm:w-20">
+                                                <HandHeart className="h-8 w-8 text-green-600 sm:h-10 sm:w-10" />
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <StatusBadge type="socialAidStatus" value={program.status} />
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="h-4 w-4" />
-                                                {program.period}
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <MapPin className="h-4 w-4" />
-                                                {program.location}
+                                        )}
+                                        <div className="min-w-0 flex-1">
+                                            <h1 className="mb-2 text-xl font-bold text-green-900 sm:text-2xl">{program.program_name}</h1>
+                                            <div className="flex flex-wrap gap-2 text-sm text-green-700 sm:items-center sm:gap-4">
+                                                <div className="flex items-center gap-1">
+                                                    <StatusBadge type="socialAidType" value={program.type} />
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <StatusBadge type="socialAidStatus" value={program.status} />
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Calendar className="h-4 w-4 flex-shrink-0" />
+                                                    <span className="truncate">{program.period}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <MapPin className="h-4 w-4 flex-shrink-0" />
+                                                    <span className="truncate">{program.location}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    {isAdmin && (
+                                        <div className="flex justify-end sm:flex-shrink-0">
+                                            <Button
+                                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${program.id}/edit`)}
+                                                icon={<Edit className="h-4 w-4" />}
+                                                iconPosition="left"
+                                                className="w-full sm:w-auto"
+                                            >
+                                                <span className="hidden sm:inline">Edit Program</span>
+                                                <span className="sm:hidden">Edit</span>
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
-                                {isAdmin && (
-                                    <Button
-                                        onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid/${program.id}/edit`)}
-                                        icon={<Edit className="h-4 w-4" />}
-                                        iconPosition="left"
-                                    >
-                                        Edit Program
-                                    </Button>
-                                )}
                             </div>
 
                             {program.description && (
@@ -237,44 +227,44 @@ function SocialAidDetailPage() {
                             )}
 
                             {/* Statistics Cards */}
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                                <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-green-600">Total Kuota</p>
-                                            <p className="text-2xl font-bold text-green-900">{program.quota}</p>
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                                <div className="rounded-lg border border-green-200 bg-green-50 p-3 sm:p-4">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-xs font-medium text-green-600 sm:text-sm">Total Kuota</p>
+                                            <p className="text-xl font-bold text-green-900 sm:text-2xl">{program.quota}</p>
                                         </div>
-                                        <Users className="h-8 w-8 text-green-600" />
+                                        <Users className="h-6 w-6 flex-shrink-0 text-green-600 sm:h-8 sm:w-8" />
                                     </div>
                                 </div>
 
-                                <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-green-600">Total Penerima</p>
-                                            <p className="text-2xl font-bold text-green-900">{totalRecipients}</p>
+                                <div className="rounded-lg border border-green-200 bg-green-50 p-3 sm:p-4">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-xs font-medium text-green-600 sm:text-sm">Total Penerima</p>
+                                            <p className="text-xl font-bold text-green-900 sm:text-2xl">{totalRecipients}</p>
                                         </div>
-                                        <Users className="h-8 w-8 text-green-600" />
+                                        <Users className="h-6 w-6 flex-shrink-0 text-green-600 sm:h-8 sm:w-8" />
                                     </div>
                                 </div>
 
-                                <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-green-600">Sudah Diambil</p>
-                                            <p className="text-2xl font-bold text-green-900">{collectedCount}</p>
+                                <div className="rounded-lg border border-green-200 bg-green-50 p-3 sm:p-4">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-xs font-medium text-green-600 sm:text-sm">Sudah Diambil</p>
+                                            <p className="text-xl font-bold text-green-900 sm:text-2xl">{collectedCount}</p>
                                         </div>
-                                        <CheckCircle className="h-8 w-8 text-green-600" />
+                                        <CheckCircle className="h-6 w-6 flex-shrink-0 text-green-600 sm:h-8 sm:w-8" />
                                     </div>
                                 </div>
 
-                                <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-green-600">Belum Diambil</p>
-                                            <p className="text-2xl font-bold text-green-900">{notCollectedCount}</p>
+                                <div className="rounded-lg border border-green-200 bg-green-50 p-3 sm:p-4">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-xs font-medium text-green-600 sm:text-sm">Belum Diambil</p>
+                                            <p className="text-xl font-bold text-green-900 sm:text-2xl">{notCollectedCount}</p>
                                         </div>
-                                        <Circle className="h-8 w-8 text-gray-400" />
+                                        <Circle className="h-6 w-6 flex-shrink-0 text-gray-400 sm:h-8 sm:w-8" />
                                     </div>
                                 </div>
                             </div>
@@ -296,7 +286,7 @@ function SocialAidDetailPage() {
                             {/* Program Details */}
                             <div className="mt-6">
                                 <h4 className="mb-4 text-sm font-semibold text-gray-900">Detail Waktu Program</h4>
-                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <DetailItem icon={Calendar} label="Tanggal Mulai" value={formatDate(program.date_start)} />
                                     <DetailItem icon={Calendar} label="Tanggal Selesai" value={formatDate(program.date_end)} />
                                     <DetailItem icon={Clock} label="Dibuat" value={formatDate(program.created_at)} withBorder={false} />
@@ -306,26 +296,28 @@ function SocialAidDetailPage() {
                         </DetailCard>
                     </div>
 
-                    {/* Recipients Table */}
+                    {/* Recipients Cards */}
                     {program.type !== 'public' ? (
                         <DetailCard title="Daftar Penerima Bantuan" icon={Users}>
                             <div className="mb-4 flex items-center justify-between">
                                 <span className="text-sm text-green-600">{totalRecipients} penerima terdaftar</span>
                             </div>
 
-                            <DataTable
-                                columns={recipientColumns}
-                                data={program.recipients || []}
-                                emptyMessage={
-                                    <div>
-                                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                                            <Users className="h-8 w-8 text-green-600" />
-                                        </div>
-                                        <h3 className="mb-2 text-lg font-semibold text-green-900">Belum ada penerima bantuan</h3>
-                                        <p className="mb-6 text-green-700">Program ini belum memiliki penerima bantuan yang terdaftar.</p>
+                            {program.recipients && program.recipients.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                    {program.recipients.map((recipient) => (
+                                        <RecipientCard key={recipient.id} recipient={recipient} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-8 text-center">
+                                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                                        <Users className="h-8 w-8 text-green-600" />
                                     </div>
-                                }
-                            />
+                                    <h3 className="mb-2 text-lg font-semibold text-green-900">Belum ada penerima bantuan</h3>
+                                    <p className="text-green-700">Program ini belum memiliki penerima bantuan yang terdaftar.</p>
+                                </div>
+                            )}
                         </DetailCard>
                     ) : null}
                 </div>

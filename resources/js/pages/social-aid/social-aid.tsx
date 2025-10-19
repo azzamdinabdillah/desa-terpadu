@@ -339,14 +339,14 @@ function SocialAidPage() {
                             />
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                             <Select
                                 label=""
                                 options={typeOptions}
                                 value={selectedType}
                                 onChange={setSelectedType}
                                 placeholder="Filter berdasarkan tipe"
-                                className="w-48"
+                                className="w-32 md:w-48"
                             />
 
                             {isAdmin && (
