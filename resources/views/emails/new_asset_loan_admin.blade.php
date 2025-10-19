@@ -71,23 +71,6 @@
                                                 <td style="color: #1f2937; font-size: 14px; font-weight: 600;">{{ $assetLoan->asset->code ?? 'N/A' }}</td>
                                             </tr>
                                             <tr>
-                                                <td style="color: #6b7280; font-size: 14px;">Kategori Asset</td>
-                                                <td style="color: #1f2937; font-size: 14px; font-weight: 600;">
-                                                    @php
-                                                        $categoryLabels = [
-                                                            'building' => 'Bangunan',
-                                                            'land' => 'Tanah',
-                                                            'vehicle' => 'Kendaraan',
-                                                            'electronics' => 'Elektronik',
-                                                            'furniture' => 'Furniture',
-                                                            'equipment' => 'Peralatan',
-                                                            'other' => 'Lainnya'
-                                                        ];
-                                                    @endphp
-                                                    {{ $categoryLabels[$assetLoan->asset->asset_category] ?? 'N/A' }}
-                                                </td>
-                                            </tr>
-                                            <tr>
                                                 <td style="color: #6b7280; font-size: 14px;">Kondisi Asset</td>
                                                 <td style="color: #1f2937; font-size: 14px; font-weight: 600;">
                                                     @php

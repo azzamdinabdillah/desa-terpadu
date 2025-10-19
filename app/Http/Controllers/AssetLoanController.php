@@ -73,9 +73,10 @@ class AssetLoanController extends Controller
      */
     public function create()
     {
-        // Get all available assets (status = 'idle')
+        // Get all available assets (status = 'idle') ordered by newest first
         $assets = Asset::where('status', 'idle')
             ->select('id', 'code', 'asset_name', 'condition', 'status')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Get all citizens
