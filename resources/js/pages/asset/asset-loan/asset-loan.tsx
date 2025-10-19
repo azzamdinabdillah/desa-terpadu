@@ -261,6 +261,11 @@ export default function AssetLoanPage() {
                         {isOverdue(loan.expected_return_date || null, loan.status) && (
                             <span className="inline-flex w-fit rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-800">Terlambat</span>
                         )}
+                        {loan.status === 'waiting_approval' && loan.asset.status !== 'idle' && (
+                            <span className="inline-flex w-fit rounded-full bg-orange-100 px-2 py-1 text-xs font-semibold text-orange-800">
+                                Asset Sudah Dipinjam
+                            </span>
+                        )}
                     </div>
                 ),
             },
@@ -312,7 +317,7 @@ export default function AssetLoanPage() {
                           header: 'Aksi',
                           cell: (loan: AssetLoan) => (
                               <div className="flex gap-2">
-                                  {loan.status === 'waiting_approval' && (
+                                  {loan.status === 'waiting_approval' && loan.asset.status === 'idle' && (
                                       <Button
                                           variant="primary"
                                           size="sm"
@@ -320,6 +325,11 @@ export default function AssetLoanPage() {
                                           icon={<CheckCircle className="h-4 w-4" />}
                                       >
                                           Review
+                                      </Button>
+                                  )}
+                                  {loan.status === 'waiting_approval' && loan.asset.status !== 'idle' && (
+                                      <Button variant="secondary" size="sm" disabled icon={<X className="h-4 w-4" />}>
+                                          Tidak Dapat Review
                                       </Button>
                                   )}
                                   {loan.status === 'on_loan' && (

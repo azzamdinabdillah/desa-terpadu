@@ -1,5 +1,5 @@
-import { Asset } from "./assetType";
-import { CitizenType } from "./citizen/citizenType";
+import { Asset } from './assetType';
+import { CitizenType } from './citizen/citizenType';
 
 export interface AssetLoan {
     id: number;

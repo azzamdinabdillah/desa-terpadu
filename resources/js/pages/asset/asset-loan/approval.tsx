@@ -83,7 +83,7 @@ export default function ApprovalPage() {
 
     const statusOptions = [
         { value: 'waiting_approval', label: 'Menunggu Persetujuan' },
-        { value: 'on_loan', label: 'Setujui - Dipinjam' },
+        ...(assetLoan.asset.status === 'idle' ? [{ value: 'on_loan', label: 'Setujui - Dipinjam' }] : []),
         { value: 'rejected', label: 'Tolak Peminjaman' },
     ];
 
@@ -94,6 +94,16 @@ export default function ApprovalPage() {
 
                 <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage title="Form Review Peminjaman Asset" description="Review dan setujui atau tolak pengajuan peminjaman asset" />
+
+                    {assetLoan.asset.status !== 'idle' && (
+                        <div className="mb-6">
+                            <Alert
+                                type="warning"
+                                message="Asset tidak tersedia untuk dipinjam karena sudah dipinjam. Anda hanya dapat menolak pengajuan ini."
+                                onClose={() => {}}
+                            />
+                        </div>
+                    )}
 
                     {alert && (
                         <div className="mb-6">
@@ -191,7 +201,13 @@ export default function ApprovalPage() {
                             <Button type="button" variant="secondary" onClick={() => window.history.back()} disabled={processing}>
                                 Batal
                             </Button>
-                            <Button type="submit" variant="primary" disabled={processing} icon={<Save className="h-4 w-4" />} loading={processing}>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                disabled={processing || (assetLoan.asset.status !== 'idle' && data.status === 'on_loan')}
+                                icon={<Save className="h-4 w-4" />}
+                                loading={processing}
+                            >
                                 {processing ? 'Menyimpan...' : 'Simpan Keputusan'}
                             </Button>
                         </div>

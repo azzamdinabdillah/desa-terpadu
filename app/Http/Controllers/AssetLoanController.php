@@ -197,6 +197,18 @@ class AssetLoanController extends Controller
             'image_after_loan.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
+        // Check if asset is still available when approving loan
+        if ($validated['status'] === 'on_loan') {
+            $asset = Asset::findOrFail($assetLoan->asset_id);
+            
+            // Simple check: if asset is not idle, reject approval
+            if ($asset->status !== 'idle') {
+                return back()->withErrors([
+                    'status' => 'Asset tidak dapat dipinjamkan karena sudah dipinjam.'
+                ]);
+            }
+        }
+
         // If status is approved (on_loan), image_before_loan is required
         if ($validated['status'] === 'on_loan' && !$request->hasFile('image_before_loan') && !$assetLoan->image_before_loan) {
             return back()->withErrors([

@@ -68,4 +68,5 @@ class Asset extends Model
     {
         return $this->status === 'idle';
     }
+
 }

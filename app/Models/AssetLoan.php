@@ -95,4 +95,5 @@ class AssetLoan extends Model
                $this->expected_return_date && 
                $this->expected_return_date->isPast();
     }
+
 }
