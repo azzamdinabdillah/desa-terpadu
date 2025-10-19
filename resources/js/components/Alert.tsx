@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react';
 import { AlertCircle, CheckCircle, Info, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -12,6 +13,20 @@ export interface AlertProps {
 
 export default function Alert({ type, message, errors, onClose, autoClose = true, duration = 5000 }: AlertProps) {
     const [isVisible, setIsVisible] = useState(true);
+    const [flashCleared, setFlashCleared] = useState(false);
+
+    // Function to clear flash message from session
+    const clearFlashMessage = () => {
+        if (flashCleared) return; // Prevent multiple calls
+
+        setFlashCleared(true);
+        router.reload({
+            only: ['flash'],
+            onSuccess: () => {
+                // Flash message cleared from session
+            },
+        });
+    };
 
     // Format error messages if errors prop is provided
     const formatErrorMessage = () => {
@@ -57,17 +72,34 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
 
     useEffect(() => {
         if (autoClose) {
+            // Clear flash message setelah 500ms alert muncul
+            const clearTimer = setTimeout(() => {
+                clearFlashMessage();
+            }, 500);
+
+            // Auto close alert setelah duration
             const timer = setTimeout(() => {
                 setIsVisible(false);
                 setTimeout(() => onClose?.(), 300); // Wait for animation
             }, duration);
 
-            return () => clearTimeout(timer);
+            return () => {
+                clearTimeout(timer);
+                clearTimeout(clearTimer);
+            };
+        } else {
+            // Jika autoClose = false, tetap clear flash message setelah 500ms
+            const clearTimer = setTimeout(() => {
+                clearFlashMessage();
+            }, 500);
+
+            return () => clearTimeout(clearTimer);
         }
     }, [autoClose, duration, onClose]);
 
     const handleClose = () => {
         setIsVisible(false);
+        clearFlashMessage(); // Clear flash message saat manual close
         setTimeout(() => onClose?.(), 300);
     };
 
