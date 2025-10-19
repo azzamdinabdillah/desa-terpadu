@@ -72,7 +72,7 @@ function UserPage() {
         const handler = setTimeout(() => {
             if (searchTerm !== (filters.q || '') || (filters.role || 'all') !== role || (filters.status || 'all') !== status) {
                 router.get(
-                    '/users',
+                    `${import.meta.env.VITE_APP_SUB_URL}/users`,
                     {
                         q: searchTerm,
                         role: role === 'all' ? undefined : role,

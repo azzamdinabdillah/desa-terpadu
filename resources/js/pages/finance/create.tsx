@@ -24,7 +24,7 @@ interface CreateFinanceProps {
 
 function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
     const { flash } = usePage<Props>().props;
-    const { data, setData, post, reset } = useForm({
+    const { data, setData, post, reset, processing } = useForm({
         date: '',
         type: 'income' as 'income' | 'expense',
         amount: '',
@@ -197,7 +197,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
                                         {/* Amount */}
                                         <InputField
-                                            type="number"
+                                            type="text"
                                             label="Jumlah (Rupiah)"
                                             value={data.amount}
                                             placeholder="Masukkan jumlah transaksi"
@@ -237,7 +237,7 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
                                         <FileUpload
                                             label="Bukti Transaksi"
                                             required
-                                            accept="image/*,.pdf"
+                                            accept="image/*"
                                             maxSize={10}
                                             file={data.proof_file}
                                             preview={proofPreview}
@@ -250,11 +250,11 @@ function CreateFinance({ currentBalance: initialBalance }: CreateFinanceProps) {
 
                             {/* Action Buttons */}
                             <div className="flex flex-col space-y-3 md:flex-row md:justify-end md:space-y-0 md:space-x-3">
-                                <Button type="button" onClick={handleCancel} variant="outline">
+                                <Button type="button" onClick={handleCancel} variant="outline" disabled={processing}>
                                     Batal
                                 </Button>
-                                <Button type="button" variant="primary" onClick={handleSubmit}>
-                                    Simpan Transaksi
+                                <Button type="button" variant="primary" onClick={handleSubmit} disabled={processing} loading={processing}>
+                                    {processing ? 'Menyimpan...' : 'Simpan Transaksi'}
                                 </Button>
                             </div>
                         </div>

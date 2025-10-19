@@ -13,6 +13,8 @@ export interface AlertProps {
 
 export default function Alert({ type, message, errors, onClose, autoClose = true, duration = 5000 }: AlertProps) {
     const [isVisible, setIsVisible] = useState(true);
+    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+    const [isAnimatingIn, setIsAnimatingIn] = useState(false);
     const [flashCleared, setFlashCleared] = useState(false);
 
     // Function to clear flash message from session
@@ -71,6 +73,11 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
     const displayMessage = errors ? formatErrorMessage() : message;
 
     useEffect(() => {
+        // Trigger animasi masuk
+        const showTimer = setTimeout(() => {
+            setIsAnimatingIn(true);
+        }, 10);
+
         if (autoClose) {
             // Clear flash message setelah 500ms alert muncul
             const clearTimer = setTimeout(() => {
@@ -79,13 +86,17 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
 
             // Auto close alert setelah duration
             const timer = setTimeout(() => {
-                setIsVisible(false);
-                setTimeout(() => onClose?.(), 300); // Wait for animation
+                setIsAnimatingOut(true);
+                setTimeout(() => {
+                    setIsVisible(false);
+                    onClose?.();
+                }, 500); // Wait for animation
             }, duration);
 
             return () => {
                 clearTimeout(timer);
                 clearTimeout(clearTimer);
+                clearTimeout(showTimer);
             };
         } else {
             // Jika autoClose = false, tetap clear flash message setelah 500ms
@@ -93,14 +104,20 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
                 clearFlashMessage();
             }, 500);
 
-            return () => clearTimeout(clearTimer);
+            return () => {
+                clearTimeout(clearTimer);
+                clearTimeout(showTimer);
+            };
         }
     }, [autoClose, duration, onClose]);
 
     const handleClose = () => {
-        setIsVisible(false);
+        setIsAnimatingOut(true);
         clearFlashMessage(); // Clear flash message saat manual close
-        setTimeout(() => onClose?.(), 300);
+        setTimeout(() => {
+            setIsVisible(false);
+            onClose?.();
+        }, 500); // Wait for animation
     };
 
     const getAlertStyles = () => {
@@ -146,11 +163,15 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
 
     return (
         <div
-            className={`fixed top-4 right-4 z-50 mx-auto w-[90%] max-w-sm transform transition-all duration-300 ease-in-out ${
-                isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+            className={`fixed top-4 right-4 z-50 mx-auto w-[90%] max-w-sm transform transition-all duration-500 ease-in-out ${
+                isAnimatingOut
+                    ? 'translate-x-full scale-95 opacity-0'
+                    : isAnimatingIn
+                      ? 'translate-x-0 scale-100 opacity-100'
+                      : 'translate-x-full scale-95 opacity-0'
             }`}
         >
-            <div className={`rounded-lg border p-4 shadow-lg ${styles.container}`}>
+            <div className={`rounded-lg border p-4 shadow-lg transition-all duration-300 ${styles.container}`}>
                 <div className="flex items-start">
                     <div className="flex-shrink-0">{styles.icon}</div>
                     <div className="ml-3 flex-1">
@@ -159,7 +180,7 @@ export default function Alert({ type, message, errors, onClose, autoClose = true
                     <div className="ml-4 flex-shrink-0">
                         <button
                             type="button"
-                            className={`inline-flex rounded-md p-1.5 focus:ring-2 focus:ring-offset-2 focus:outline-none ${styles.closeButton}`}
+                            className={`inline-flex rounded-md p-1.5 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none ${styles.closeButton}`}
                             onClick={handleClose}
                         >
                             <X className="h-4 w-4" />

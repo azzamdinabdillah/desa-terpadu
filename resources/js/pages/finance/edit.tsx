@@ -26,7 +26,7 @@ interface EditFinanceProps {
 
 function EditFinance({ finance, currentBalance: initialBalance }: EditFinanceProps) {
     const { flash } = usePage<Props>().props;
-    const { data, setData, post, reset } = useForm({
+    const { data, setData, post, reset, processing } = useForm({
         date: finance.date ? finance.date.substring(0, 10) : '',
         type: finance.type,
         amount: finance.amount.toString(),
@@ -269,11 +269,11 @@ function EditFinance({ finance, currentBalance: initialBalance }: EditFinancePro
 
                             {/* Action Buttons */}
                             <div className="flex flex-col space-y-3 md:flex-row md:justify-end md:space-y-0 md:space-x-3">
-                                <Button type="button" onClick={handleCancel} variant="outline">
+                                <Button type="button" onClick={handleCancel} variant="outline" disabled={processing}>
                                     Batal
                                 </Button>
-                                <Button type="button" variant="primary" onClick={handleSubmit}>
-                                    Update Transaksi
+                                <Button type="button" variant="primary" onClick={handleSubmit} disabled={processing} loading={processing}>
+                                    {processing ? 'Mengupdate...' : 'Update Transaksi'}
                                 </Button>
                             </div>
                         </div>

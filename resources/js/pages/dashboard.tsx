@@ -129,7 +129,7 @@ function Dashboard() {
     const handlePeriodChange = (value: string) => {
         setFinancePeriod(value);
         router.get(
-            '/',
+            `${import.meta.env.VITE_APP_SUB_URL}/`,
             { period: value },
             {
                 preserveState: true,
