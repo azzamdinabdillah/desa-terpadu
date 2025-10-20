@@ -185,7 +185,6 @@ export default function CreateAssetPage() {
                                         onChange={(file) => setData('image', file)}
                                         onPreviewChange={setPreview}
                                     />
-                                    <p className="mt-1 text-xs text-gray-600">Upload gambar asset untuk dokumentasi (opsional)</p>
                                 </div>
                             </div>
                         </DetailCard>

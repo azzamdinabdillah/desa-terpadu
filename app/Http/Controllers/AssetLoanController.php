@@ -303,4 +303,36 @@ class AssetLoanController extends Controller
         return redirect()->route('asset-loans.index')
             ->with('success', $message);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request, AssetLoan $assetLoan)
+    {
+        $user = $request->user();
+
+        // Only allow deletion if:
+        // - The requester is the owner (same citizen_id as user's citizen_id), and
+        // - The loan is still waiting for approval
+        $isOwner = $user && $user->citizen_id && (int) $user->citizen_id === (int) $assetLoan->citizen_id;
+        if (!$isOwner) {
+            return back()->with('error', 'Anda tidak memiliki izin untuk membatalkan pengajuan ini.');
+        }
+
+        if ($assetLoan->status !== 'waiting_approval') {
+            return back()->with('error', 'Pengajuan hanya dapat dibatalkan saat status masih menunggu persetujuan.');
+        }
+
+        // Delete any stored images if exist
+        if ($assetLoan->image_before_loan && Storage::disk('public')->exists($assetLoan->image_before_loan)) {
+            Storage::disk('public')->delete($assetLoan->image_before_loan);
+        }
+        if ($assetLoan->image_after_loan && Storage::disk('public')->exists($assetLoan->image_after_loan)) {
+            Storage::disk('public')->delete($assetLoan->image_after_loan);
+        }
+
+        $assetLoan->delete();
+
+        return redirect()->route('asset-loans.index')->with('success', 'Pengajuan peminjaman berhasil dibatalkan.');
+    }
 }

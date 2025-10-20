@@ -83,9 +83,9 @@ function CreateRecipientPage() {
     }));
 
     // Quota counters (existing from DB + new selections)
-    const existingCount = selectedProgramData?.recipients_count ?? 0;
+    const existingCount = Number(selectedProgramData?.recipients_count ?? 0);
     const newSelectedCount = recipients.filter((r) => r.citizen_id || r.family_id).length;
-    const quota = selectedProgramData?.quota ?? 0;
+    const quota = Number(selectedProgramData?.quota ?? 0);
     const totalSelectedWithExisting = existingCount + newSelectedCount;
     const remainingSlots = quota ? Math.max(quota - totalSelectedWithExisting, 0) : 0;
 
@@ -119,8 +119,8 @@ function CreateRecipientPage() {
     };
 
     const addRecipient = () => {
-        const quota = selectedProgramData?.quota ?? 0;
-        const existingCount = selectedProgramData?.recipients_count ?? 0;
+        const quota = Number(selectedProgramData?.quota ?? 0);
+        const existingCount = Number(selectedProgramData?.recipients_count ?? 0);
         const currentNewCount = recipients.filter((r) => r.citizen_id || r.family_id).length;
         const remaining = quota ? Math.max(quota - existingCount, 0) : 0;
         if (quota && currentNewCount >= remaining) {
@@ -196,8 +196,8 @@ function CreateRecipientPage() {
         const validRecipients = recipients.filter((recipient) => recipient.citizen_id || recipient.family_id);
 
         // Enforce quota on client side before submit (include existing recipients)
-        const quota = selectedProgramData?.quota ?? 0;
-        const existingCount = selectedProgramData?.recipients_count ?? 0;
+        const quota = Number(selectedProgramData?.quota ?? 0);
+        const existingCount = Number(selectedProgramData?.recipients_count ?? 0);
         if (quota && existingCount + validRecipients.length > quota) {
             setAlert({ type: 'error', message: 'Jumlah penerima melebihi kuota program.' });
             return;
@@ -288,7 +288,7 @@ function CreateRecipientPage() {
 
                         {/* Recipients Section */}
                         <DetailCard title="Penerima Bantuan Sosial" icon={Users}>
-                            <div className="mb-4 flex items-center flex-wrap gap-3 justify-between">
+                            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                                 <div className="flex items-center gap-3">
                                     {selectedProgram && (
                                         <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
@@ -426,7 +426,13 @@ function CreateRecipientPage() {
                             >
                                 Batal
                             </Button>
-                            <Button loading={isSubmitting} onClick={handleSubmit} icon={<UserCheck className="h-4 w-4" />} iconPosition="left" disabled={isSubmitting}>
+                            <Button
+                                loading={isSubmitting}
+                                onClick={handleSubmit}
+                                icon={<UserCheck className="h-4 w-4" />}
+                                iconPosition="left"
+                                disabled={isSubmitting}
+                            >
                                 {isSubmitting ? 'Menyimpan...' : 'Simpan Penerima'}
                             </Button>
                         </div>

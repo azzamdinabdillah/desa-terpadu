@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable, { Column } from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -13,7 +14,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { AssetLoan } from '@/types/assetLoanType';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Calendar, CheckCircle, Clock, Package, Plus, RotateCcw, Search, X } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Package, Plus, RotateCcw, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 type AssetLoanPagination = Paginated<AssetLoan>;
@@ -46,6 +47,8 @@ export default function AssetLoanPage() {
         loan: null,
     });
     const [isReturning, setIsReturning] = useState(false);
+    const [cancelModal, setCancelModal] = useState<{ isOpen: boolean; loan: AssetLoan | null }>({ isOpen: false, loan: null });
+    const [isCancelling, setIsCancelling] = useState(false);
 
     // Handle flash messages
     useEffect(() => {
@@ -346,7 +349,26 @@ export default function AssetLoanPage() {
                           ),
                       },
                   ]
-                : []),
+                : [
+                      {
+                          key: 'user_actions',
+                          header: 'Aksi',
+                          cell: (loan: AssetLoan) => (
+                              <div className="flex gap-2">
+                                  {loan.status === 'waiting_approval' && (
+                                      <Button
+                                          variant="red"
+                                          size="sm"
+                                          icon={<Trash2 className="h-4 w-4" />}
+                                          onClick={() => setCancelModal({ isOpen: true, loan })}
+                                      >
+                                          Batalkan Pengajuan
+                                      </Button>
+                                  )}
+                              </div>
+                          ),
+                      },
+                  ]),
         );
 
         return baseColumns;
@@ -476,6 +498,39 @@ export default function AssetLoanPage() {
                 assetName={returnModal.loan?.asset.asset_name || ''}
                 borrowerName={returnModal.loan?.citizen.full_name || ''}
                 isLoading={isReturning}
+            />
+            {/* Cancel Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={cancelModal.isOpen}
+                onClose={() => setCancelModal({ isOpen: false, loan: null })}
+                onConfirm={() => {
+                    if (!cancelModal.loan) return;
+                    setIsCancelling(true);
+                    router.delete(`${import.meta.env.VITE_APP_SUB_URL}/asset-loans/${cancelModal.loan.id}`, {
+                        preserveState: true,
+                        onSuccess: () => {
+                            setIsCancelling(false);
+                            setCancelModal({ isOpen: false, loan: null });
+                        },
+                        onError: (errors) => {
+                            setIsCancelling(false);
+                            const errorMessages = Object.values(errors).flat();
+                            if (errorMessages.length > 0) {
+                                setAlert({ type: 'error', message: errorMessages.join(' ') });
+                            }
+                        },
+                    });
+                }}
+                title="Batalkan Pengajuan Peminjaman"
+                message={
+                    <span>
+                        Anda yakin ingin membatalkan pengajuan peminjaman asset{' '}
+                        <span className="font-semibold">{cancelModal.loan?.asset.asset_name}</span>?
+                    </span>
+                }
+                confirmText="Batalkan Pengajuan"
+                cancelText="Kembali"
+                isLoading={isCancelling}
             />
         </BaseLayouts>
     );

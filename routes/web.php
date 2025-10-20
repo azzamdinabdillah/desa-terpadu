@@ -118,6 +118,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/asset-loans/create', [AssetLoanController::class, 'create'])->name('asset-loans.create');
     Route::post('/asset-loans', [AssetLoanController::class, 'store'])->name('asset-loans.store');
     Route::get('/asset-loans/{assetLoan}/approval', [AssetLoanController::class, 'edit'])->name('asset-loans.edit');
+    Route::delete('/asset-loans/{assetLoan}', [AssetLoanController::class, 'destroy'])->name('asset-loans.destroy');
 
     Route::get('/social-aid/create', [SocialAidController::class, 'create'])->name('social-aid.create');
     Route::post('/social-aid', [SocialAidController::class, 'store'])->name('social-aid.store');
