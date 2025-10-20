@@ -4,6 +4,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
+import ImageModal from '@/components/ImageModal';
 import InputField from '@/components/InputField';
 import Pagination from '@/components/Pagination';
 import Select from '@/components/Select';
@@ -64,6 +65,8 @@ function SocialAidRecipientPage() {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [recipientToDelete, setRecipientToDelete] = useState<SocialAidRecipient | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
         if (flash?.success) {
@@ -166,14 +169,10 @@ function SocialAidRecipientPage() {
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                             <Users className="h-4 w-4 text-green-600" />
                         </div>
-                        {isAdmin && (
-                            <div>
-                                <span className="text-sm font-medium text-green-900">
-                                    {item.citizen?.full_name || item.family?.family_name || '-'}
-                                </span>
-                                <div className="text-xs text-green-600">{item.citizen?.nik || item.family?.kk_number || '-'}</div>
-                            </div>
-                        )}
+                        <div>
+                            <span className="text-sm font-medium text-green-900">{item.citizen?.full_name || item.family?.family_name || '-'}</span>
+                            <div className="text-xs text-green-600">{item.citizen?.nik || item.family?.kk_number || '-'}</div>
+                        </div>
                     </div>
                 ),
             },
@@ -250,8 +249,8 @@ function SocialAidRecipientPage() {
                                     alt="Bukti penerimaan"
                                     className="h-10 w-10 cursor-pointer rounded-lg border border-green-200 object-cover transition-transform hover:scale-105"
                                     onClick={() => {
-                                        // Open image in new tab
-                                        window.open(`${import.meta.env.VITE_APP_URL}/storage/${item.image_proof}`, '_blank');
+                                        setPreviewImageUrl(`${import.meta.env.VITE_APP_URL}/storage/${item.image_proof}`);
+                                        setIsImageModalOpen(true);
                                     }}
                                     onError={(e) => {
                                         const target = e.target as HTMLImageElement;
@@ -548,6 +547,15 @@ function SocialAidRecipientPage() {
                     confirmText="Hapus"
                     cancelText="Batal"
                     isLoading={isDeleting}
+                />
+                <ImageModal
+                    isOpen={isImageModalOpen}
+                    onClose={() => {
+                        setIsImageModalOpen(false);
+                        setPreviewImageUrl(null);
+                    }}
+                    imageUrl={previewImageUrl || ''}
+                    alt="Bukti penerimaan"
                 />
             </div>
         </BaseLayouts>

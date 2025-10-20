@@ -6,11 +6,12 @@ interface DetailItemProps {
     label: string;
     value: string | React.ReactNode;
     withBorder?: boolean;
+    removeBorderOnDesktop?: boolean;
 }
 
-const DetailItem: React.FC<DetailItemProps> = ({ icon: Icon, label, value, withBorder = true }) => {
+const DetailItem: React.FC<DetailItemProps> = ({ icon: Icon, label, value, withBorder = true, removeBorderOnDesktop = false }) => {
     return (
-        <div className={`flex items-center gap-3 ${withBorder ? 'border-b border-gray-100 pb-3' : ''}`}>
+        <div className={`flex items-center gap-3 ${withBorder ? `border-b border-gray-100 pb-3 ${removeBorderOnDesktop && 'lg:border-none lg:pb-0'} ` : ''}`}>
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100">
                 <Icon className="h-4 w-4 text-green-700" />
             </div>

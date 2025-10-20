@@ -142,7 +142,8 @@ export default function ActionPage() {
                                     icon={FileText}
                                     label="Program Bansos"
                                     value={recipient.program?.program_name || '-'}
-                                    withBorder={false}
+                                    // withBorder={false}
+                                    removeBorderOnDesktop
                                 />
                                 <DetailItem icon={Calendar} label="Periode" value={recipient.program?.period || '-'} withBorder={false} />
                             </div>

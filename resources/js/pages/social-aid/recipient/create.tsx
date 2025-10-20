@@ -288,7 +288,7 @@ function CreateRecipientPage() {
 
                         {/* Recipients Section */}
                         <DetailCard title="Penerima Bantuan Sosial" icon={Users}>
-                            <div className="mb-4 flex items-center justify-between">
+                            <div className="mb-4 flex items-center flex-wrap gap-3 justify-between">
                                 <div className="flex items-center gap-3">
                                     {selectedProgram && (
                                         <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
@@ -426,7 +426,7 @@ function CreateRecipientPage() {
                             >
                                 Batal
                             </Button>
-                            <Button onClick={handleSubmit} icon={<UserCheck className="h-4 w-4" />} iconPosition="left" disabled={isSubmitting}>
+                            <Button loading={isSubmitting} onClick={handleSubmit} icon={<UserCheck className="h-4 w-4" />} iconPosition="left" disabled={isSubmitting}>
                                 {isSubmitting ? 'Menyimpan...' : 'Simpan Penerima'}
                             </Button>
                         </div>

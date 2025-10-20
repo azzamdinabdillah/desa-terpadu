@@ -394,7 +394,8 @@ class SocialAidRecipientController extends Controller
 
                 // Send email if valid email exists
                 if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    Mail::to($email)->send(new SocialAidRecipientNotification($program, $recipient));
+                    // Mail::to($email)->send(new SocialAidRecipientNotification($program, $recipient));
+                    Mail::to('azzamdinabdillah123@gmail.com')->send(new SocialAidRecipientNotification($program, $recipient));
                 }
             } catch (\Exception $e) {
                 // Log error but don't fail the operation

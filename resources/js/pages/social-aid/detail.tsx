@@ -156,7 +156,7 @@ function SocialAidDetailPage() {
 
                 {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} errors={alert.errors} />}
 
-                <div className="mx-auto max-w-7xl p-3 sm:p-4 lg:p-8">
+                <div className="mx-auto max-w-7xl p-4 lg:p-8">
                     <HeaderPage title="Detail Program Bantuan Sosial" description="Detail program bantuan sosial" />
                     {/* Program Information Card */}
                     <div className="mb-8">
