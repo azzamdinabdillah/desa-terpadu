@@ -1,5 +1,6 @@
 import Alert, { AlertProps } from '@/components/Alert';
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
 import DataTable from '@/components/DataTable';
 import Header from '@/components/Header';
 import HeaderPage from '@/components/HeaderPage';
@@ -13,7 +14,7 @@ import { useAuth } from '@/lib/auth';
 import { formatDate } from '@/lib/utils';
 import { EventType } from '@/types/event/eventType';
 import { router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, Edit, Eye, MapPin, Plus, Search, Settings, UserPlus, Users } from 'lucide-react';
+import { Calendar, Clock, Edit, Eye, MapPin, Plus, Search, Settings, Trash, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface EventPageProps {
@@ -47,6 +48,9 @@ function EventPage() {
     const [alert, setAlert] = useState<AlertProps | null>(null);
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ url: string; alt: string } | null>(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selectedForDelete, setSelectedForDelete] = useState<EventType | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { isAdmin } = useAuth();
 
     useEffect(() => {
@@ -261,6 +265,20 @@ function EventPage() {
                                 Ubah Status
                             </Button>
                         )}
+                        {isAdmin && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                    setSelectedForDelete(item);
+                                    setConfirmOpen(true);
+                                }}
+                                icon={<Trash className="h-4 w-4" />}
+                                className="text-red-600 hover:text-red-800"
+                            >
+                                Hapus
+                            </Button>
+                        )}
                         {item.type !== 'public' && item.status === 'pending' && !isAdmin && (
                             <Button
                                 variant="primary"
@@ -379,6 +397,40 @@ function EventPage() {
                     )}
                 </div>
             </div>
+            {selectedForDelete && (
+                <ConfirmationModal
+                    isOpen={confirmOpen}
+                    onClose={() => {
+                        if (!isDeleting) {
+                            setConfirmOpen(false);
+                            setSelectedForDelete(null);
+                        }
+                    }}
+                    onConfirm={() => {
+                        if (!selectedForDelete) return;
+                        setIsDeleting(true);
+                        router.delete(`${import.meta.env.VITE_APP_SUB_URL}/events/${selectedForDelete.id}`, {
+                            preserveState: true,
+                            onFinish: () => {
+                                setIsDeleting(false);
+                                setConfirmOpen(false);
+                                setSelectedForDelete(null);
+                            },
+                        });
+                    }}
+                    title="Hapus Event"
+                    message={
+                        <span>
+                            Apakah Anda yakin ingin menghapus event
+                            <span className="font-semibold"> {selectedForDelete.event_name}</span>?
+                            semua foto dokumentasi juga akan terhapus secara otomatis.
+                        </span>
+                    }
+                    confirmText="Hapus"
+                    cancelText="Batal"
+                    isLoading={isDeleting}
+                />
+            )}
         </BaseLayouts>
     );
 }

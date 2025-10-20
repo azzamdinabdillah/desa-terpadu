@@ -78,9 +78,15 @@ function SocialAidPage() {
 
     const calculateCollectionRate = (program: SocialAidProgram) => {
         const total = program.recipients_count || 0;
-        if (total === 0) return 0;
         const collected = program.collected_count || 0;
-        return Math.round((collected / total) * 100);
+
+        // Handle edge cases to prevent NaN
+        if (total === 0 || isNaN(total) || isNaN(collected)) {
+            return 0;
+        }
+
+        const rate = (collected / total) * 100;
+        return isNaN(rate) ? 0 : Math.round(rate);
     };
 
     const handleDelete = (program: SocialAidProgram) => {
@@ -339,7 +345,7 @@ function SocialAidPage() {
                             />
                         </div>
 
-                        <div className="flex gap-2 flex-wrap">
+                        <div className="flex flex-wrap gap-2">
                             <Select
                                 label=""
                                 options={typeOptions}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Citizen;
 use App\Models\EventParticipant;
+use App\Models\EventsDocumentation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -418,6 +419,38 @@ class EventController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+        }
+    }
+
+    /**
+     * Remove the specified event from storage.
+     */
+    public function destroy(Event $event)
+    {
+        try {
+            // Delete flyer file if exists
+            if ($event->flyer && Storage::disk('public')->exists($event->flyer)) {
+                Storage::disk('public')->delete($event->flyer);
+            }
+
+            // Delete documentation files and records
+            $documentations = EventsDocumentation::where('event_id', $event->id)->get();
+            foreach ($documentations as $doc) {
+                if ($doc->path && Storage::disk('public')->exists($doc->path)) {
+                    Storage::disk('public')->delete($doc->path);
+                }
+                $doc->delete();
+            }
+
+            // Delete participants
+            EventParticipant::where('event_id', $event->id)->delete();
+
+            // Finally delete event
+            $event->delete();
+
+            return redirect()->route('events.index')->with('success', 'Event berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus event. Silakan coba lagi.');
         }
     }
 }
