@@ -173,9 +173,9 @@ class AnnouncementController extends Controller
                 ->get();
 
             if ($citizens->count() > 0) {
-                // Send email to each citizen
+                // Send email to each citizen (using queue for better performance)
                 foreach ($citizens as $citizen) {
-                    Mail::to($citizen->email)->send(new NewAnnouncementNotification($announcement));
+                    Mail::to($citizen->email)->queue(new NewAnnouncementNotification($announcement));
                 }
             }
         } catch (\Exception $e) {
