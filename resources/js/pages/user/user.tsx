@@ -292,7 +292,7 @@ function UserPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex shrink-0 gap-2">
+                        <div className="flex shrink-0 gap-2 flex-wrap">
                             <Select
                                 label=""
                                 value={role}
@@ -302,7 +302,7 @@ function UserPage() {
                                     { value: 'admin', label: 'Admin' },
                                     { value: 'citizen', label: 'Warga' },
                                 ]}
-                                className="w-full sm:w-44"
+                                className="w-44"
                                 placeholder="Pilih role"
                             />
 
@@ -315,7 +315,7 @@ function UserPage() {
                                     { value: 'active', label: 'Aktif' },
                                     { value: 'inactive', label: 'Tidak Aktif' },
                                 ]}
-                                className="w-full sm:w-44"
+                                className="w-44"
                                 placeholder="Pilih status"
                             />
                             <Button
