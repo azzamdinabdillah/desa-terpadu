@@ -99,7 +99,7 @@ function UserPage() {
         if (!deleteModal.user) return;
 
         setIsDeleting(true);
-        router.delete(`/users/${deleteModal.user.id}`, {
+        router.delete(`${import.meta.env.VITE_APP_SUB_URL}/users/${deleteModal.user.id}`, {
             preserveState: true,
             onSuccess: () => {
                 setDeleteModal({ isOpen: false, user: null });
