@@ -131,7 +131,7 @@ export default function CreateEvent() {
                 {/* Alert */}
                 {alert && <Alert type={alert.type} message={alert.message} errors={alert.errors} onClose={() => setAlert(null)} />}
 
-                <div className="mx-auto max-w-7xl p-4 lg:p-8">
+                <div className="mx-auto max-w-4xl p-4 lg:p-8">
                     <HeaderPage
                         title={isEdit ? 'Edit Event' : 'Tambah Event Baru'}
                         description={isEdit ? 'Ubah informasi event yang sudah ada' : 'Buat event baru untuk warga desa'}
@@ -288,7 +288,7 @@ export default function CreateEvent() {
                             >
                                 Batal
                             </Button>
-                            <Button icon={<Save className="h-4 w-4" />} iconPosition="left" type="submit" variant="primary" disabled={processing}>
+                            <Button loading={processing} icon={<Save className="h-4 w-4" />} iconPosition="left" type="submit" variant="primary" disabled={processing}>
                                 {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Event' : 'Simpan Event'}
                             </Button>
                         </div>

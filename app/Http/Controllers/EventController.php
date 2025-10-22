@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewEventNotification;
 use App\Models\Event;
 use App\Models\Citizen;
 use App\Models\EventParticipant;
 use App\Models\EventsDocumentation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -171,7 +173,10 @@ class EventController extends Controller
                 $data['flyer'] = $path;
             }
 
-            Event::create($data);
+            $event = Event::create($data);
+
+            // Send email notification to all citizens
+            $this->sendEventNotification($event);
 
             return redirect()->route('events.index')->with('success', 'Event berhasil dibuat!');
 
@@ -451,6 +456,29 @@ class EventController extends Controller
             return redirect()->route('events.index')->with('success', 'Event berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus event. Silakan coba lagi.');
+        }
+    }
+
+    /**
+     * Send event notification to all citizens
+     */
+    private function sendEventNotification(Event $event)
+    {
+        try {
+            // Get all citizens with email addresses
+            $citizens = Citizen::whereNotNull('email')
+                ->where('email', '!=', '')
+                ->get();
+
+            if ($citizens->count() > 0) {
+                // Send email to each citizen (using queue for better performance)
+                foreach ($citizens as $citizen) {
+                    Mail::to($citizen->email)->queue(new NewEventNotification($event));
+                }
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the event creation process
+            \Log::error('Failed to send event notification: ' . $e->getMessage());
         }
     }
 }
