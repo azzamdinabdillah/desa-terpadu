@@ -262,7 +262,7 @@ function SocialAidCreatePage() {
                             <Button type="button" variant="secondary" onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/social-aid`)}>
                                 Batal
                             </Button>
-                            <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
+                            <Button loading={processing} type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
                                 {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Program' : 'Simpan Program'}
                             </Button>
                         </div>

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SocialAidNewProgramNotification;
 use App\Models\SocialAidProgram;
+use App\Models\Citizen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -190,7 +193,22 @@ class SocialAidController extends Controller
                 $data['image'] = $imagePath;
             }
 
-            SocialAidProgram::create($data);
+            $program = SocialAidProgram::create($data);
+
+            // Send email notification to all citizens (queued)
+            try {
+                $citizens = Citizen::whereNotNull('email')
+                    ->where('email', '!=', '')
+                    ->get();
+
+                if ($citizens->count() > 0) {
+                    foreach ($citizens as $citizen) {
+                        Mail::to($citizen->email)->queue(new SocialAidNewProgramNotification($program));
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Failed to send social aid notification: ' . $e->getMessage());
+            }
 
             return redirect()->route('social-aid.index')->with('success', 'Program bantuan sosial berhasil dibuat!');
             
