@@ -154,7 +154,7 @@ function CreateAnnouncement() {
                             <Button type="button" onClick={handleBack} variant="ghost" className="text-green-600 hover:text-green-800">
                                 Batal
                             </Button>
-                            <Button type="submit" disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
+                            <Button type="submit" loading={processing} disabled={processing} icon={<Save className="h-4 w-4" />} iconPosition="left">
                                 {processing ? (isEdit ? 'Memperbarui...' : 'Menyimpan...') : isEdit ? 'Perbarui Pengumuman' : 'Simpan Pengumuman'}
                             </Button>
                         </div>

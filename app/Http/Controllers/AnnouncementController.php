@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewAnnouncementNotification;
 use App\Models\Announcement;
+use App\Models\Citizen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class AnnouncementController extends Controller
@@ -71,6 +74,9 @@ class AnnouncementController extends Controller
             }
 
             $announcement->save();
+
+            // Send email notification to all citizens
+            $this->sendAnnouncementNotification($announcement);
 
             return redirect()->route('announcement.index')
                 ->with('success', 'Pengumuman berhasil ditambahkan!');
@@ -154,4 +160,28 @@ class AnnouncementController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menghapus pengumuman: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Send announcement notification to all citizens
+     */
+    private function sendAnnouncementNotification(Announcement $announcement)
+    {
+        try {
+            // Get all citizens with email addresses
+            $citizens = Citizen::whereNotNull('email')
+                ->where('email', '!=', '')
+                ->get();
+
+            if ($citizens->count() > 0) {
+                // Send email to each citizen
+                foreach ($citizens as $citizen) {
+                    Mail::to($citizen->email)->send(new NewAnnouncementNotification($announcement));
+                }
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the announcement creation process
+            \Log::error('Failed to send announcement notification: ' . $e->getMessage());
+        }
+    }
+
 }
