@@ -58,6 +58,7 @@ function Announcement() {
     const [selectedImageAlt, setSelectedImageAlt] = useState('');
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<AnnouncementType | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Handle flash messages
     useEffect(() => {
@@ -108,14 +109,17 @@ function Announcement() {
 
     const handleDeleteConfirm = () => {
         if (deleteModalData) {
+            setIsDeleting(true);
             router.delete(`${import.meta.env.VITE_APP_SUB_URL}/announcement/${deleteModalData.id}`, {
                 onSuccess: () => {
                     setDeleteModalOpen(false);
                     setDeleteModalData(null);
+                    setIsDeleting(false);
                 },
                 onError: () => {
                     setDeleteModalOpen(false);
                     setDeleteModalData(null);
+                    setIsDeleting(false);
                 },
             });
         }
@@ -313,9 +317,7 @@ function Announcement() {
                                                 {/* Description */}
                                                 <div className="rounded-lg border border-green-200 bg-green-50 p-4">
                                                     <h3 className="mb-2 text-sm font-medium text-green-700">Isi Pengumuman</h3>
-                                                    <p className="text-sm leading-relaxed whitespace-pre-wrap text-green-800">
-                                                        {viewModalData.description}
-                                                    </p>
+                                                    <p className="text-sm leading-relaxed text-green-800">{viewModalData.description}</p>
                                                 </div>
 
                                                 {/* Date */}
@@ -374,6 +376,7 @@ function Announcement() {
                         }
                         confirmText="Hapus"
                         cancelText="Batal"
+                        isLoading={isDeleting}
                     />
                 </div>
             </div>

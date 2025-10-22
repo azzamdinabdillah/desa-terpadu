@@ -80,7 +80,7 @@ function CreateUserPage() {
 
     // Handle cancel
     const handleCancel = () => {
-        router.visit('/users');
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/users`);
     };
 
     // Show flash messages
@@ -89,7 +89,7 @@ function CreateUserPage() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to users list after success
             setTimeout(() => {
-                router.visit('/users');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/users`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
