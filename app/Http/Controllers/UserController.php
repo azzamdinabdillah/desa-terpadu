@@ -74,11 +74,8 @@ class UserController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Get citizens without user accounts and have email
-        $citizens = Citizen::doesntHave('user')
-            ->whereNotNull('email')
-            ->where('email', '!=', '')
-            ->get();
+        // Get citizens without user accounts
+        $citizens = Citizen::doesntHave('user')->get();
 
         return Inertia::render('user/create', [
             'citizens' => $citizens,
@@ -94,10 +91,14 @@ class UserController extends Controller
 
         try {
             $validated = $request->validate([
+                'email' => 'required|email|unique:users,email',
                 'password' => ['required', 'confirmed', Password::min(8)],
                 'role' => 'required|string|in:citizen,admin',
                 'citizen_id' => 'required|exists:citizens,id',
             ], [
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar.',
                 'password.required' => 'Password wajib diisi.',
                 'password.confirmed' => 'Konfirmasi password tidak cocok.',
                 'password.min' => 'Password minimal 8 karakter.',
@@ -115,19 +116,8 @@ class UserController extends Controller
                 ])->withInput();
             }
 
-            // Get citizen data
-            $citizen = Citizen::findOrFail($validated['citizen_id']);
-
-            // Check if email is already used by another user
-            $emailExists = User::where('email', $citizen->email)->first();
-            if ($emailExists) {
-                return back()->withErrors([
-                    'citizen_id' => 'Email warga ini sudah terdaftar sebagai akun pengguna lain.',
-                ])->withInput();
-            }
-
             $user = User::create([
-                'email' => $citizen->email,
+                'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role' => $validated['role'],
                 'status' => 'active',
@@ -151,10 +141,8 @@ class UserController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Get all citizens with email (for select dropdown)
-        $citizens = Citizen::whereNotNull('email')
-            ->where('email', '!=', '')
-            ->get();
+        // Get all citizens (for select dropdown)
+        $citizens = Citizen::all();
 
         return Inertia::render('user/create', [
             'citizens' => $citizens,
@@ -173,6 +161,7 @@ class UserController extends Controller
         try {
             // Validation rules
             $rules = [
+                'email' => 'required|email|unique:users,email,' . $user->id,
                 'role' => 'required|string|in:citizen,admin',
                 'citizen_id' => 'required|exists:citizens,id',
                 'status' => 'required|string|in:active,inactive',
@@ -184,6 +173,9 @@ class UserController extends Controller
             }
 
             $validated = $request->validate($rules, [
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar.',
                 'password.required' => 'Password wajib diisi.',
                 'password.confirmed' => 'Konfirmasi password tidak cocok.',
                 'password.min' => 'Password minimal 8 karakter.',
@@ -206,22 +198,8 @@ class UserController extends Controller
                 ])->withInput();
             }
 
-            // Get citizen data
-            $citizen = Citizen::findOrFail($validated['citizen_id']);
-
-            // Check if email is already used by another user
-            $emailExists = User::where('email', $citizen->email)
-                ->where('id', '!=', $user->id)
-                ->first();
-            
-            if ($emailExists) {
-                return back()->withErrors([
-                    'citizen_id' => 'Email warga ini sudah terdaftar sebagai akun pengguna lain.',
-                ])->withInput();
-            }
-
             // Update user data
-            $user->email = $citizen->email;
+            $user->email = $validated['email'];
             $user->role = $validated['role'];
             $user->status = $validated['status'];
             $user->citizen_id = $validated['citizen_id'];
