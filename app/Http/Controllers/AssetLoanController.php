@@ -278,8 +278,8 @@ class AssetLoanController extends Controller
 
             try {
                 if ($assetLoan->citizen && $assetLoan->citizen->email) {
-                    // Mail::to($assetLoan->citizen->email)->send(
-                    Mail::to('azzamdinabdillah123@gmail.com')->send(
+                    Mail::to($assetLoan->citizen->email)->send(
+                    // Mail::to('azzamdinabdillah123@gmail.com')->send(
                         new AssetLoanNotification($assetLoan, $isApproved, $validated['note'] ?? '')
                     );
                     return redirect()->route('asset-loans.index')

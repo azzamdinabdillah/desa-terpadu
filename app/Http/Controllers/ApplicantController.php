@@ -242,8 +242,8 @@ class ApplicantController extends Controller
         // Send email notification
         try {
             if ($application->citizen && $application->citizen->email) {
-                // Mail::to($application->citizen->email)->send(
-                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                Mail::to($application->citizen->email)->send(
+                // Mail::to('azzamdinabdillah123@gmail.com')->send(
                     new ApprovalApplicationDocument($application, true, $request->admin_note)
                 );
                 return redirect()->back()->with('success', 'Pengajuan berhasil disetujui dan email notifikasi telah dikirim.');
@@ -281,8 +281,8 @@ class ApplicantController extends Controller
         // Send email notification
         try {
             if ($application->citizen && $application->citizen->email) {
-                // Mail::to($application->citizen->email)->send(
-                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                Mail::to($application->citizen->email)->send(
+                // Mail::to('azzamdinabdillah123@gmail.com')->send(
                     new ApprovalApplicationDocument($application, false, $request->admin_note)
                 );
                 return redirect()->back()->with('success', 'Pengajuan berhasil ditolak dan email notifikasi telah dikirim.');
@@ -324,8 +324,8 @@ class ApplicantController extends Controller
         // Send email notification
         try {
             if ($application->citizen && $application->citizen->email) {
-                // Mail::to($application->citizen->email)->send(
-                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                Mail::to($application->citizen->email)->send(
+                // Mail::to('azzamdinabdillah123@gmail.com')->send(
                     new ApprovalApplicationDocument($application, true, $request->admin_note, true)
                 );
                 return redirect()->back()->with('success', 'Email notifikasi berhasil dikirim ke pemohon.');
@@ -382,8 +382,8 @@ class ApplicantController extends Controller
         // Send email notification
         try {
             if ($application->citizen && $application->citizen->email) {
-                // Mail::to($application->citizen->email)->send(
-                Mail::to('azzamdinabdillah123@gmail.com')->send(
+                Mail::to($application->citizen->email)->send(
+                // Mail::to('azzamdinabdillah123@gmail.com')->send(
                     new ApprovalApplicationDocument($application, true, $request->admin_note, false, true)
                 );
                 return redirect()->back()->with('success', 'Pengajuan berhasil diselesaikan dan email notifikasi telah dikirim.');
