@@ -171,10 +171,7 @@ function CreateUserPage() {
                                         onSelect={(value) => setData('citizen_id', value)}
                                         required
                                     />
-                                </div>
-
-                                {isEdit && (
-                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                    {isEdit && (
                                         <Select
                                             label="Status"
                                             value={data.status}
@@ -182,8 +179,8 @@ function CreateUserPage() {
                                             options={statusOptions}
                                             required
                                         />
-                                    </div>
-                                )}
+                                    )}
+                                </div>
 
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <InputField
