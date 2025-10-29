@@ -237,7 +237,7 @@ function UserPage() {
                             size="sm"
                             icon={<Edit className="h-4 w-4" />}
                             iconPosition="left"
-                            onClick={() => router.visit(`/users/${item.id}/edit`)}
+                            onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/users/${item.id}/edit`)}
                         >
                             Edit
                         </Button>
