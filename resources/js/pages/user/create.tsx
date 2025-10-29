@@ -10,7 +10,7 @@ import { BaseLayouts } from '@/layouts/BaseLayouts';
 import { CitizenType } from '@/types/citizen/citizenType';
 import { User } from '@/types/user/userTypes';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { Save, User as UserIcon } from 'lucide-react';
+import { Eye, EyeOff, Save, User as UserIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface CreateUserPageProps {
@@ -27,6 +27,8 @@ interface CreateUserPageProps {
 function CreateUserPage() {
     const { citizens, user, isEdit, flash } = usePage().props as unknown as CreateUserPageProps;
     const [alert, setAlert] = useState<AlertProps | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
     const { data, setData, post, put, processing } = useForm({
         password: '',
@@ -44,7 +46,7 @@ function CreateUserPage() {
         const submitData = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, value === 'placeholder' ? '' : value]));
 
         if (isEdit && user) {
-            post(`/users/${user.id}`, {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/users/${user.id}`, {
                 ...submitData,
                 preserveState: true,
                 preserveScroll: true,
@@ -60,7 +62,7 @@ function CreateUserPage() {
                 },
             });
         } else {
-            post('/users', {
+            post(`${import.meta.env.VITE_APP_SUB_URL}/users`, {
                 ...submitData,
                 preserveState: true,
                 preserveScroll: true,
@@ -80,7 +82,7 @@ function CreateUserPage() {
 
     // Handle cancel
     const handleCancel = () => {
-        router.visit('/users');
+        router.visit(`${import.meta.env.VITE_APP_SUB_URL}/users`);
     };
 
     // Show flash messages
@@ -89,7 +91,7 @@ function CreateUserPage() {
             setAlert({ type: 'success', message: flash.success });
             // Redirect to users list after success
             setTimeout(() => {
-                router.visit('/users');
+                router.visit(`${import.meta.env.VITE_APP_SUB_URL}/users`);
             }, 1500);
         } else if (flash?.error) {
             setAlert({ type: 'error', message: flash.error });
@@ -177,22 +179,46 @@ function CreateUserPage() {
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <InputField
                                         label="Password"
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         value={data.password}
                                         onChange={(value) => setData('password', value)}
                                         placeholder="Masukkan password"
                                         required={!isEdit}
                                         helperText={isEdit ? 'Kosongkan jika tidak ingin mengubah password' : ''}
+                                        suffix={
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword((v) => !v)}
+                                                className="flex items-center gap-1 text-green-800"
+                                                aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                                                title={showPassword ? 'Sembunyikan' : 'Tampilkan'}
+                                            >
+                                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        }
                                     />
 
                                     <InputField
                                         label="Konfirmasi Password"
-                                        type="password"
+                                        type={showPasswordConfirm ? 'text' : 'password'}
                                         value={data.password_confirmation}
                                         onChange={(value) => setData('password_confirmation', value)}
                                         placeholder="Masukkan ulang password"
                                         required={!isEdit || data.password !== ''}
                                         helperText={isEdit ? 'Kosongkan jika tidak ingin mengubah password' : ''}
+                                        suffix={
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPasswordConfirm((v) => !v)}
+                                                className="flex items-center gap-1 text-green-800"
+                                                aria-label={
+                                                    showPasswordConfirm ? 'Sembunyikan konfirmasi kata sandi' : 'Tampilkan konfirmasi kata sandi'
+                                                }
+                                                title={showPasswordConfirm ? 'Sembunyikan' : 'Tampilkan'}
+                                            >
+                                                {showPasswordConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        }
                                     />
                                 </div>
                             </div>

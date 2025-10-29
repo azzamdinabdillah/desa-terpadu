@@ -326,7 +326,7 @@ const ApplicantDetail: React.FC = () => {
                                     <div>
                                         <label className="mb-2 block text-sm font-medium text-gray-700">Dokumen</label>
                                         <div className="rounded-md border border-green-200 bg-green-50 p-4">
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-3 flex-wrap">
                                                 <FileText className="h-5 w-5 text-green-600" />
                                                 <div className="flex-1">
                                                     <p className="text-sm font-medium text-green-900">{application.file.split('/').pop()}</p>
@@ -406,7 +406,7 @@ const ApplicantDetail: React.FC = () => {
                             )}
 
                             {isAdmin && application.status === 'on_proccess' && (
-                                <div className="flex gap-3">
+                                <div className="flex gap-3 justify-end">
                                     <Button
                                         variant="outline"
                                         onClick={() => {
@@ -546,7 +546,7 @@ const ApplicantDetail: React.FC = () => {
                     <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
                     <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[90%] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-green-200 bg-white p-6 shadow-lg md:w-full">
                         <div className="mb-4 flex items-center gap-3 border-b border-green-200 pb-4">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                            <div className="h-10 w-10 items-center justify-center rounded-full bg-green-100 hidden md:flex">
                                 <MessageSquare className="h-5 w-5 text-green-600" />
                             </div>
                             <div className="flex-1">

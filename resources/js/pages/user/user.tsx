@@ -56,7 +56,7 @@ function UserPage() {
     // Redirect if not admin
     useEffect(() => {
         if (!isAdmin) {
-            router.visit('/');
+            router.visit(`${import.meta.env.VITE_APP_SUB_URL}/`);
         }
     }, [isAdmin]);
 
@@ -99,7 +99,7 @@ function UserPage() {
         if (!deleteModal.user) return;
 
         setIsDeleting(true);
-        router.delete(`/users/${deleteModal.user.id}`, {
+        router.delete(`${import.meta.env.VITE_APP_SUB_URL}/users/${deleteModal.user.id}`, {
             preserveState: true,
             onSuccess: () => {
                 setDeleteModal({ isOpen: false, user: null });
@@ -292,7 +292,7 @@ function UserPage() {
                                 />
                             </div>
                         </div>
-                        <div className="flex shrink-0 gap-2 flex-wrap">
+                        <div className="flex shrink-0 flex-wrap gap-2">
                             <Select
                                 label=""
                                 value={role}
@@ -323,7 +323,7 @@ function UserPage() {
                                 variant="primary"
                                 icon={<Plus className="h-4 w-4" />}
                                 iconPosition="left"
-                                onClick={() => router.visit('/users/create')}
+                                onClick={() => router.visit(`${import.meta.env.VITE_APP_SUB_URL}/users/create`)}
                             >
                                 Tambah Pengguna
                             </Button>

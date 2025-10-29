@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
                 'email' => 'citizen3@gmail.com',
                 'password' => Hash::make('123'),
                 'role' => 'citizen',
-                'status' => 'pending',
+                'status' => 'inactive',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
