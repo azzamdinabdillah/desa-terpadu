@@ -145,13 +145,13 @@ class AssetLoanController extends Controller
         // Load relationships for email
         $assetLoan->load(['asset', 'citizen']);
 
-        // Send email notification to all admins
+        // Send email notification to all admins (use email from related citizen record)
         try {
-            $admins = User::where('role', 'admin')->where('status', 'active')->get();
-            
+            $admins = User::where('role', 'admin')->where('status', 'active')->with('citizen')->get();
+
             foreach ($admins as $admin) {
-                if ($admin->email) {
-                    Mail::to($admin->email)->send(new NewAssetLoanNotification($assetLoan));
+                if ($admin->citizen && $admin->citizen->email) {
+                    Mail::to($admin->citizen->email)->send(new NewAssetLoanNotification($assetLoan));
                 }
             }
         } catch (\Exception $e) {
