@@ -1,0 +1,115 @@
+====================================================================
+  DRAF PORTOFOLIO APPLE DEVELOPER ACADEMY (BAHASA INDONESIA)
+  Project: Sistem Informasi & Dashboard Analitik Desa Terpadu
+====================================================================
+
+1. TITLE & TAGLINE (Judul & Sub-judul)
+--------------------------------------------------------------------
+* Judul Project: Sistem Pengelolaan Desa Terpadu
+* Tagline: Streamlining & Digitalizing Village Information & Administration
+  (Mengefisiensi dan Mendigitalisasi Pencatatan dan Informasi Desa)
+
+
+2. PROJECT SUMMARY (Ringkasan Proyek - 2 Kalimat)
+--------------------------------------------------------------------
+Platform sistem informasi dan manajemen pelayanan publik terpadu yang dirancang khusus untuk pemerintah desa dan warga. Platform ini mengubah tata kelola administrasi desa dari pencatatan manual berbasis kertas menjadi sistem digital terpusat yang dilengkapi dashboard analitik 360° untuk membantu pengambilan keputusan berbasis data secara transparan dan efisien.
+
+
+3. PROJECT METADATA (Keterangan Proyek)
+--------------------------------------------------------------------
+* Project Type: Self-Initiated Project (Proyek Inisiatif Sendiri)
+* Team Structure: Individual Project (Proyek Mandiri)
+* Role: Full-Stack Developer & UI/UX Designer
+  (Menangani seluruh alur dari riset masalah tata kelola desa, perancangan struktur data 14 modul, desain UI/UX interaktif, hingga pengembangan backend & frontend)
+
+
+4. BACKGROUND & PROBLEM STATEMENT (Latar Belakang & Masalah Nyata)
+--------------------------------------------------------------------
+* Cerita & Pengalaman Pribadi:
+  Proyek ini lahir dari pengamatan langsung terhadap alur pelayanan publik dan administrasi di lingkungan desa. Ketika warga ingin mengajukan surat pengantar/dokumen, meminjam inventaris desa, atau mencari informasi program bantuan sosial, prosesnya tergolong lambat karena warga harus datang langsung ke kantor desa dan menunggu petugas mencari berkas secara manual.
+
+* Masalah Sisi Pengelola / Perangkat Desa (Admin):
+  Dari sudut pandang perangkat desa, pendataan kependudukan, transparansi keuangan, inventarisasi aset, dan penyaluran bansos masih dikelola dalam dokumen/buku terpisah. Hal ini memicu rentannya kesalahan data (human error), penyaluran bantuan yang tidak tepat sasaran, serta kesulitan bagi kepala desa/administrator dalam memperoleh gambaran menyeluruh (real-time overview) terkait kondisi sosial-ekonomi desanya.
+
+
+5. SOLUTION & CORE FEATURES (Solusi & Fitur Utama)
+--------------------------------------------------------------------
+Saya merancang dan membangun platform end-to-end dengan 14 modul utama yang terintegrasi untuk menyelesaikan masalah pelayanan warga dan memberikan pengawasan menyeluruh bagi pengelola desa:
+* Dashboard Analitik 360° & Visualisasi Data: Menampilkan 16+ visualisasi chart interaktif (grafik tren keuangan 6 bulan, donut chart demografi penduduk berdasarkan usia/pekerjaan/status, dan statistik bansos) untuk memberikan gambaran cepat bagi pengambil keputusan.
+* Sistem Pengajuan Dokumen Mandiri (Digital Service): Warga dapat mengajukan permohonan surat secara online, mengunggah persyaratan, serta melacak status pemrosesan berkas secara transparan tanpa harus mengantre lama di kantor desa.
+* Manajemen Aset & Peminjaman Inventaris: Mengelola kondisi barang inventaris desa serta alur persetujuan peminjaman aset agar terdata rapi dan mencegah kerusakan/kehilangan aset publik.
+* Transparansi Keuangan & Program Bansos: Pencatatan otomatis pemasukan dan pengeluaran desa lengkap dengan grafik tren arus kas, serta pemetaan penerima bantuan sosial (kategori individu, keluarga, umum) agar penyaluran lebih akurat dan dapat dipertanggungjawabkan.
+* Manajemen Kependudukan (Satu Data Desa): Pengelolaan data keluarga (KK) dan penduduk yang saling terhubung dengan modul surat-menyurat dan program bantuan.
+
+
+6. IMPACT MADE (Dampak Proyek)
+--------------------------------------------------------------------
+* Efisiensi Pengurusan Administrasi: Memangkas alur бюрокраси manual dan mempercepat waktu pemrosesan dokumen warga dari hitungan hari menjadi jauh lebih cepat. dan para warga sudah tidak perlu mengantri di kantor desa karena sudah bisa dilakukan di rumah masing-masing
+* Pengambilan Keputusan Berbasis Data (Data-Driven Decision): Perangkat desa memiliki akses instant terhadap tren keuangan dan statistik kependudukan untuk perencanaan program desa yang tepat sasaran.
+* Transparansi & Bebas Redundansi Data: Integrasi 14 tabel database mengeliminasi duplikasi data warga dan memastikan keterbukaan dalam pengelolaan aset serta bantuan sosial.
+
+
+7. KEY LEARNINGS & GROWTH (Pembelajaran & Perkembangan Diri)
+--------------------------------------------------------------------
+* Problem-Solving Berbasis Isu Komunitas: Saya belajar cara mengidentifikasi permasalahan kompleks dalam tata kelola publik desa dan mengolah tantangan operasional menjadi produk digital yang solutif.
+* Penguasaan Full-Stack & Complex Data Analytics: Mempelajari dan mengimplementasikan arsitektur Laravel + Inertia.js + React (TypeScript) beserta library visualisasi data (Chart.js & ApexCharts) untuk mengolah 30+ query database sekaligus dengan performa tinggi.
+* Menangani Desain UI/UX tanpa Data Overload: Saya belajar merancang antarmuka antarmuka yang bersih (clean UI) berbasis Tailwind CSS sehingga data yang sangat banyak (demografi, arus kas, dokumen) dapat dipahami dengan mudah oleh pengguna dari berbagai latar belakang teknis.
+* Pengelolaan Relasi Database Skala Menengah: Saya belajar merancang 14 struktur tabel yang saling terhubung (eager loading, aggregasi, time-based filtering) untuk memastikan konsistensi data di seluruh modul.
+
+
+====================================================================
+  PORTFOLIO DRAFT - APPLE DEVELOPER ACADEMY (ENGLISH VERSION)
+  Project: Integrated Village Management System
+====================================================================
+
+1. TITLE & TAGLINE
+--------------------------------------------------------------------
+* Project Title: Integrated Village Management System
+* Tagline: Streamlining & Digitalizing Village Information & Administration
+
+
+2. PROJECT SUMMARY (2 Sentences)
+--------------------------------------------------------------------
+A unified public service and information management platform designed specifically for local village governments and their residents. It transforms village administration from manual, paper-based record-keeping into a centralized digital system equipped with a 360° analytics dashboard, enabling transparent and efficient data-driven decision-making.
+
+
+3. PROJECT METADATA
+--------------------------------------------------------------------
+* Project Type: Self-Initiated Project
+* Team Structure: Individual Project
+* Role: Full-Stack Developer & UI/UX Designer
+  (Handled the entire process from researching village governance problems, designing the 14-module data structure, crafting the interactive UI/UX, to developing the backend & frontend)
+
+
+4. BACKGROUND & PROBLEM STATEMENT
+--------------------------------------------------------------------
+* Personal Story & Observation:
+  This project was born from a direct observation of public service workflows and administration in a village environment. Whenever residents wanted to submit a letter/document request, borrow village inventory, or find information about social assistance programs, the process was slow — they had to come in person to the village office and wait for staff to manually search through physical records.
+
+* Problem from the Village Administrator's Perspective:
+  From the administrators' side, resident data registration, financial transparency, asset management, and social aid distribution were all managed in separate physical books and documents. This led to a high risk of human error, inaccurate aid distribution, and difficulty for the village head to get a real-time overview of the village's socio-economic conditions.
+
+
+5. SOLUTION & CORE FEATURES
+--------------------------------------------------------------------
+I designed and built an end-to-end platform with 14 integrated core modules to solve both resident service issues and provide comprehensive oversight for village administrators:
+* 360° Analytics Dashboard & Data Visualization: Displays 16+ interactive charts (6-month financial trend graphs, demographic donut charts by age/occupation/status, and social aid statistics) to give decision-makers a quick, clear overview.
+* Self-Service Document Submission System: Residents can submit document requests online, upload required files, and transparently track their application status — no more long queues at the village office.
+* Asset Management & Inventory Loans: Manages the condition of village inventory and the asset borrowing approval process, ensuring clean records and preventing loss or damage to public assets.
+* Financial Transparency & Social Aid Programs: Automated recording of village income and expenses with cash flow trend graphs, along with accurate mapping of social aid recipients (individual, household, and public categories).
+* Population Data Management (One Village Database): Manages family household (KK) and resident data that is interconnected with the document and social assistance modules.
+
+
+6. IMPACT MADE
+--------------------------------------------------------------------
+* Administrative Efficiency: Eliminated the slow, manual bureaucracy and drastically reduced document processing time. Residents no longer need to queue at the village office — everything can now be done from home.
+* Data-Driven Decision Making: Village administrators now have instant access to financial trends and population statistics, enabling more accurate and targeted village program planning.
+* Transparency & Zero Data Redundancy: The integration of 14 database tables eliminates duplicate resident data and ensures full transparency in asset management and social aid distribution.
+
+
+7. KEY LEARNINGS & GROWTH
+--------------------------------------------------------------------
+* Problem-Solving Rooted in Community Issues: I learned how to identify complex real-world problems in public administration and transform operational challenges into a concrete, practical digital solution.
+* Full-Stack Mastery & Complex Data Analytics: I studied and implemented the Laravel + Inertia.js + React (TypeScript) architecture alongside data visualization libraries (Chart.js & ApexCharts) to simultaneously process 30+ database queries with high performance.
+* Designing UI/UX Without Data Overload: I learned how to design a clean, intuitive interface using Tailwind CSS so that the large volume of data (demographics, cash flow, documents) remains easy to understand for users from various technical backgrounds.
+* Managing Mid-Scale Database Relationships: I learned to architect 14 interconnected database tables (with eager loading, aggregation, and time-based filtering) to ensure data consistency across all system modules.

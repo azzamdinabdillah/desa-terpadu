@@ -1,0 +1,52 @@
+# =============================================================================
+# .dockerignore - Desa Terpadu
+# Excludes unnecessary files from Docker build context
+# =============================================================================
+
+# Git
+.git
+.gitattributes
+.gitignore
+.github
+
+# Node.js (will be installed fresh in build stage)
+node_modules/
+npm-debug.log*
+
+# Laravel dev files
+.env
+.env.*
+!.env.example
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Tests
+tests/
+phpunit.xml
+
+# Documentation & dev files
+*.md
+!README.md
+draf_portofolio_apple_academy.txt
+
+# Docker files (not needed inside container)
+docker/
+Dockerfile
+
+# IDE & OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Compiled assets (will be built fresh inside Docker)
+public/build/
+public/hot
+
+# Vendor (will be installed by Composer in build stage)
+# Comment this out if you want to copy vendor from host
+# vendor/
