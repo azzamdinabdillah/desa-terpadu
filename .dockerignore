@@ -31,10 +31,6 @@ phpunit.xml
 !README.md
 draf_portofolio_apple_academy.txt
 
-# Docker files (not needed inside container)
-docker/
-Dockerfile
-
 # IDE & OS files
 .idea/
 .vscode/
