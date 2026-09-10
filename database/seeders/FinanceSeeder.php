@@ -425,5 +425,106 @@ class FinanceSeeder extends Seeder
             'note' => 'Dana operasional akhir tahun',
             'user_id' => $user->id,
         ]);
+
+        // ========== TAHUN 2026 (JANUARI - SEPTEMBER) ==========
+
+        // Januari 2026
+        $balance += 5200000;
+        Finance::create([
+            'date' => '2026-01-10',
+            'type' => 'income',
+            'amount' => 5200000,
+            'remaining_balance' => $balance,
+            'note' => 'Dana Transfer APBD Tahap I 2026',
+            'user_id' => $user->id,
+        ]);
+
+        // Februari 2026
+        $balance -= 1500000;
+        Finance::create([
+            'date' => '2026-02-14',
+            'type' => 'expense',
+            'amount' => 1500000,
+            'remaining_balance' => $balance,
+            'note' => 'Pengadaan perlengkapan Posyandu & ATK',
+            'user_id' => $user->id,
+        ]);
+
+        // Maret 2026
+        $balance += 2100000;
+        Finance::create([
+            'date' => '2026-03-20',
+            'type' => 'income',
+            'amount' => 2100000,
+            'remaining_balance' => $balance,
+            'note' => 'Bagi hasil BUMDes Maju Bersama',
+            'user_id' => $user->id,
+        ]);
+
+        // April 2026
+        $balance -= 3200000;
+        Finance::create([
+            'date' => '2026-04-12',
+            'type' => 'expense',
+            'amount' => 3200000,
+            'remaining_balance' => $balance,
+            'note' => 'Perbaikan jalan tani dan drainase RW 02',
+            'user_id' => $user->id,
+        ]);
+
+        // Mei 2026
+        $balance += 1800000;
+        Finance::create([
+            'date' => '2026-05-18',
+            'type' => 'income',
+            'amount' => 1800000,
+            'remaining_balance' => $balance,
+            'note' => 'Retribusi pasar desa & sewa gedung',
+            'user_id' => $user->id,
+        ]);
+
+        // Juni 2026
+        $balance -= 850000;
+        Finance::create([
+            'date' => '2026-06-25',
+            'type' => 'expense',
+            'amount' => 850000,
+            'remaining_balance' => $balance,
+            'note' => 'Perawatan genset dan penerangan jalan umum',
+            'user_id' => $user->id,
+        ]);
+
+        // Juli 2026
+        $balance += 4500000;
+        Finance::create([
+            'date' => '2026-07-05',
+            'type' => 'income',
+            'amount' => 4500000,
+            'remaining_balance' => $balance,
+            'note' => 'Pencairan Dana Desa Kemenkeu Tahap II',
+            'user_id' => $user->id,
+        ]);
+
+        // Agustus 2026
+        $balance -= 2500000;
+        Finance::create([
+            'date' => '2026-08-17',
+            'type' => 'expense',
+            'amount' => 2500000,
+            'remaining_balance' => $balance,
+            'note' => 'Kegiatan peringatan HUT RI ke-81 & Pesta Rakyat',
+            'user_id' => $user->id,
+        ]);
+
+        // September 2026
+        $balance += 1200000;
+        Finance::create([
+            'date' => '2026-09-02',
+            'type' => 'income',
+            'amount' => 1200000,
+            'remaining_balance' => $balance,
+            'note' => 'Iuran swadaya kebersihan dan keamanan',
+            'user_id' => $user->id,
+        ]);
     }
 }

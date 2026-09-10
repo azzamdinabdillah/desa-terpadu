@@ -17,8 +17,7 @@ class DatabaseSeeder extends Seeder
             FamilySeeder::class,
             CitizenSeeder::class,
             UserSeeder::class,
-            // FinanceSeeder::class,
-            FinanceSeeder2::class,
+            FinanceSeeder::class,
             AnnouncementSeeder::class,
             EventSeeder::class,
             EventParticipantSeeder::class,
@@ -28,7 +27,7 @@ class DatabaseSeeder extends Seeder
             MasterDocumentSeeder::class,
             ApplicationDocumentSeeder::class,
             AssetLoanSeeder::class,
-            // EventsDocumentationSeeder::class,
+            EventsDocumentationSeeder::class,
         ]);
     }
 }

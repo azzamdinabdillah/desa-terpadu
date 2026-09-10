@@ -13,26 +13,43 @@ class FamilySeeder extends Seeder
      */
     public function run(): void
     {
-        $families = [
-            [
-                'kk_number' => '3201010101000001',
-                'family_name' => 'Keluarga Pak Joko',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'kk_number' => '3201010101000002',
-                'family_name' => 'Keluarga Bu Siti',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'kk_number' => '3201010101000003',
-                'family_name' => 'Keluarga Pak Budi',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        $faker = \Faker\Factory::create('id_ID');
+
+        $familyNames = [
+            'Keluarga Pak Joko Widodo',
+            'Keluarga Pak Budi Santoso',
+            'Keluarga Pak Ahmad Dahlan',
+            'Keluarga Bu Siti Aminah',
+            'Keluarga Pak Hendra Wijaya',
+            'Keluarga Pak Agus Pratama',
+            'Keluarga Pak Bambang Sugianto',
+            'Keluarga Bu Sri Wahyuni',
+            'Keluarga Pak Tri Hartono',
+            'Keluarga Pak Dedi Setiawan',
+            'Keluarga Pak Eko Prasetyo',
+            'Keluarga Pak Rudy Hermawan',
+            'Keluarga Pak Gunawan Saputra',
+            'Keluarga Bu Rahmawati',
+            'Keluarga Pak Supriadi',
+            'Keluarga Pak Yudi Kurniawan',
+            'Keluarga Pak Slamet Susilo',
+            'Keluarga Pak Aris Munandar',
+            'Keluarga Bu Kartini',
+            'Keluarga Pak Wawan Purwanto',
         ];
+
+        $families = [];
+        $kkBase = 3201010101000001;
+
+        foreach ($familyNames as $index => $name) {
+            $families[] = [
+                'id' => $index + 1,
+                'kk_number' => (string)($kkBase + $index),
+                'family_name' => $name,
+                'created_at' => now()->subDays(rand(10, 300)),
+                'updated_at' => now(),
+            ];
+        }
 
         DB::table('families')->insert($families);
     }

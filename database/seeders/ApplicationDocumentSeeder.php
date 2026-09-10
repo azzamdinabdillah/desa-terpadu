@@ -26,7 +26,7 @@ class ApplicationDocumentSeeder extends Seeder
         $statuses = ['pending', 'on_proccess', 'rejected', 'completed'];
 
         // Create sample application documents
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 35; $i++) {
             $status = $statuses[array_rand($statuses)];
             
             // Adjust admin_note and file based on status

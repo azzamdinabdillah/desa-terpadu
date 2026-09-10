@@ -52,7 +52,39 @@ class AnnouncementSeeder extends Seeder
             ],
             [
                 'title' => 'Pengumuman Penutupan Jalan Sementara',
-                'description' => 'Sehubungan dengan adanya perbaikan jalan utama desa, akses jalan akan ditutup sementara mulai tanggal 22 Januari 2025 hingga 28 Januari 2025. Mohon warga menggunakan jalur alternatif yang telah disediakan.',
+                'description' => 'Sehubungan dengan adanya perbaikan jalan utama desa, akses jalan akan ditutup sementara mulai tanggal 22 Januari 2026 hingga 28 Januari 2026. Mohon warga menggunakan jalur alternatif yang telah disediakan.',
+            ],
+            [
+                'title' => 'Jadwal Perekaman KTP-el Keliling Desa',
+                'description' => 'Dinas Kependudukan dan Catatan Sipil bekerja sama dengan Pemerintah Desa akan menyelenggarakan pelayanan perekaman KTP Elektronik keliling di Kantor Desa pada hari Selasa, 10 Maret 2026. Warga usia 17 tahun atau yang belum memiliki KTP disilakan hadir membawa KK.',
+            ],
+            [
+                'title' => 'Penyaluran Bantuan Langsung Tunai (BLT) Desa Tahap I 2026',
+                'description' => 'Penyaluran BLT Dana Desa Tahap I akan dilaksanakan pada hari Jumat, 20 Maret 2026 pukul 09.00 WIB bertempat di Balai Desa. Penerima KPM diharap membawa e-KTP dan Kartu Keluarga asli.',
+            ],
+            [
+                'title' => 'Pelatihan Budaya Maggot dan Kompos Organik',
+                'description' => 'Karang Taruna bekerja sama dengan Dinas Lingkungan Hidup mengadakan workshop pengolahan sampah organik dan budidaya maggot BSF pada Sabtu, 5 April 2026. Pendaftaran gratis untuk seluruh warga.',
+            ],
+            [
+                'title' => 'Sosialisasi Pencegahan Demam Berdarah (DBD)',
+                'description' => 'Mengingat tingginya curah hujan, Puskesmas Desa mengadakan sosialisasi gerakan 3M Plus dan pembagian serbuk Abate secara gratis di seluruh pos RT mulai tanggal 12 Mei 2026.',
+            ],
+            [
+                'title' => 'Pengusulan Program Musrenbangdes Tahun 2027',
+                'description' => 'Pemerintah Desa membuka pengusulan aspirated pembangunan infrastruktur dan pemberdayaan masyarakat melalui ketua RT/RW masing-masing paling lambat tanggal 30 Juni 2026.',
+            ],
+            [
+                'title' => 'Jadwal Imunisasi & Cek Kesehatan Gratis Lansia',
+                'description' => 'Posyandu Lansia "Semaian Kasih" mengadakan pemeriksaan gula darah, asam urat, dan tensi gratis pada hari Rabu, 15 Juli 2026 mulai jam 08.00 WIB.',
+            ],
+            [
+                'title' => 'Turnamen Olahraga Antar RT Memperingati HUT RI',
+                'description' => 'Pendaftaran Turnamen Sepak Bola Plastik dan Voli Plastik antar RT resmi dibuka hingga 5 Agustus 2026. Hadiah total puluhan juta rupiah dan piala bergilir Kepala Desa.',
+            ],
+            [
+                'title' => 'Pendaftaran Program Sertifikat Tanah Gratis (PTSL)',
+                'description' => 'Pemerintah Desa mengumumkan pembukaan kuota PTSL bagi warga yang memiliki tanah durasi belum bersertifikat. Persyaratan berkas diserahkan ke sekretariat panitia PTSL Desa.',
             ],
         ];
 

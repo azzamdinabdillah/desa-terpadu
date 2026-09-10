@@ -62,8 +62,9 @@ class SocialAidRecipientSeeder extends Seeder
                     ];
                 }
             } else {
-                // For public programs, no specific family or citizen
-                for ($i = 0; $i < $program->quota; $i++) {
+                // For public programs, sample up to 20 public entries
+                $publicCount = min($program->quota, 20);
+                for ($i = 0; $i < $publicCount; $i++) {
                     $status = fake()->randomElement(['collected', 'not_collected']);
                     $recipients[] = [
                         'family_id' => null,

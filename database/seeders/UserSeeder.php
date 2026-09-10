@@ -15,10 +15,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create('id_ID');
+
         $users = [
-            // Warga dengan akun
+            // Admin utama
             [
-                'citizen_id' => 1, // Ahmad Susanto
+                'id' => 1,
+                'citizen_id' => 1,
                 'email' => 'testdesaterpadu@gmail.com',
                 'password' => Hash::make('123'),
                 'role' => 'admin',
@@ -26,34 +29,21 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'citizen_id' => 5, // Budi Santoso
-                'email' => 'citizen1@gmail.com',
-                'password' => Hash::make('123'),
-                'role' => 'citizen',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'citizen_id' => 8, // Sari Indah
-                'email' => 'citizen2@gmail.com',
-                'password' => Hash::make('123'),
-                'role' => 'citizen',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'citizen_id' => 7, // Andi Pratama
-                'email' => 'citizen3@gmail.com',
-                'password' => Hash::make('123'),
-                'role' => 'citizen',
-                'status' => 'inactive',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ];
+
+        // Seed additional accounts linked to citizens
+        for ($i = 2; $i <= 20; $i++) {
+            $users[] = [
+                'id' => $i,
+                'citizen_id' => $i,
+                'email' => 'citizen' . ($i - 1) . '@gmail.com',
+                'password' => Hash::make('123'),
+                'role' => $i <= 3 ? 'admin' : 'citizen',
+                'status' => $i == 7 ? 'inactive' : 'active',
+                'created_at' => now()->subDays(rand(1, 100)),
+                'updated_at' => now(),
+            ];
+        }
 
         DB::table('users')->insert($users);
     }
