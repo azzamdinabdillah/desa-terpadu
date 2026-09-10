@@ -103,6 +103,53 @@ function Login() {
                         </Button>
                     </form>
 
+                    {/* Akun Demo Info & Quick Fill */}
+                    <div className="mt-6 rounded-lg border border-green-200 bg-green-50/70 p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-semibold uppercase tracking-wider text-green-800 flex items-center gap-1">
+                                💡 Akun Demo
+                            </span>
+                            <span className="text-[10px] bg-green-200 text-green-800 px-2 py-0.5 rounded-full font-medium">Klik untuk isi otomatis</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setData({
+                                        ...data,
+                                        email: 'testdesaterpadu@gmail.com',
+                                        password: '123',
+                                    });
+                                }}
+                                className="flex flex-col items-start rounded-md border border-green-300 bg-white p-2.5 text-left transition hover:bg-green-100 hover:border-green-400 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <span className="font-semibold text-green-900 flex items-center gap-1">
+                                    🔑 Admin
+                                </span>
+                                <span className="text-gray-600 text-[11px] truncate w-full">testdesaterpadu@gmail.com</span>
+                                <span className="text-gray-500 text-[10px]">Pass: 123</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setData({
+                                        ...data,
+                                        email: 'citizen1@gmail.com',
+                                        password: '123',
+                                    });
+                                }}
+                                className="flex flex-col items-start rounded-md border border-green-300 bg-white p-2.5 text-left transition hover:bg-green-100 hover:border-green-400 focus:outline-none focus:ring-1 focus:ring-green-500"
+                            >
+                                <span className="font-semibold text-green-900 flex items-center gap-1">
+                                    👤 Warga
+                                </span>
+                                <span className="text-gray-600 text-[11px] truncate w-full">citizen1@gmail.com</span>
+                                <span className="text-gray-500 text-[10px]">Pass: 123</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div className="mt-6 text-center">
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">

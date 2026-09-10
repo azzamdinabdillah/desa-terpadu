@@ -1,37 +1,15 @@
 # =============================================================================
-# Stage 1: Node.js Build Stage (Frontend Assets)
+# Stage 1: Builder Stage (PHP + Node.js Assets Build)
 # =============================================================================
-FROM node:22-alpine AS node-builder
+FROM composer:2.8 AS builder
+
+# Install Node.js & npm for frontend asset compilation
+RUN apk add --no-cache nodejs npm
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install all dependencies (including optional linux binaries for rollup/tailwind)
-RUN npm ci --include=optional
-
-# Copy source files needed for build
-COPY resources/ resources/
-COPY vite.config.ts ./
-COPY tsconfig.json ./
-COPY .env.example .env
-
-# Placeholder APP env so Vite can build
-ENV VITE_APP_NAME="Desa Terpadu"
-
-# Build frontend assets
-RUN npm run build
-
-
-# =============================================================================
-# Stage 2: Composer / PHP Dependencies
-# =============================================================================
-FROM composer:2.8 AS composer-builder
-
-WORKDIR /app
-
-COPY composer.json composer.lock ./
+# Copy dependency definitions
+COPY package.json package-lock.json composer.json composer.lock ./
 
 # Install PHP dependencies without dev deps
 RUN composer install \
@@ -42,9 +20,21 @@ RUN composer install \
     --prefer-dist \
     --no-scripts
 
+# Install Node.js dependencies
+RUN npm ci --include=optional
+
+# Copy application source code
+COPY . .
+
+# Placeholder APP env so Vite can build
+ENV VITE_APP_NAME="Desa Terpadu"
+
+# Build frontend assets (Vite + Wayfinder plugin)
+RUN npm run build
+
 
 # =============================================================================
-# Stage 3: Final Production Image
+# Stage 2: Final Production Image
 # =============================================================================
 FROM php:8.3-fpm-alpine AS production
 
@@ -100,14 +90,14 @@ COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy PHP dependencies from composer stage
-COPY --from=composer-builder /app/vendor ./vendor
+# Copy PHP dependencies from builder stage
+COPY --from=builder /app/vendor ./vendor
 
 # Copy application source
 COPY . .
 
-# Copy built frontend assets from node stage
-COPY --from=node-builder /app/public/build ./public/build
+# Copy built frontend assets from builder stage
+COPY --from=builder /app/public/build ./public/build
 
 # Copy Docker configuration files
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
