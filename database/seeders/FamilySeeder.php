@@ -13,8 +13,6 @@ class FamilySeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = \Faker\Factory::create('id_ID');
-
         $familyNames = [
             'Keluarga Pak Joko Widodo',
             'Keluarga Pak Budi Santoso',
