@@ -27,11 +27,11 @@ docker/
 
 ## Tech Stack di Docker
 
-| Service | Image | Fungsi |
-|---------|-------|--------|
-| **app** | PHP 8.3-FPM Alpine + Nginx | Laravel + Frontend |
-| **db** | MySQL 8.4 | Database |
-| **redis** | Redis 7.4 Alpine | Cache & Queue |
+| Service   | Image                      | Fungsi             |
+| --------- | -------------------------- | ------------------ |
+| **app**   | PHP 8.3-FPM Alpine + Nginx | Laravel + Frontend |
+| **db**    | MySQL 8.4                  | Database           |
+| **redis** | Redis 7.4 Alpine           | Cache & Queue      |
 
 ---
 
@@ -52,6 +52,7 @@ nano docker/.env.docker.local  # atau gunakan editor favorit
 ```
 
 **Wajib diisi di `.env.docker.local`:**
+
 ```env
 APP_KEY=          # Generate dengan: php artisan key:generate --show
 APP_URL=          # https://yourdomain.com
@@ -61,6 +62,7 @@ REDIS_PASSWORD=   # password Redis (opsional tapi recommended)
 ```
 
 > **Generate APP_KEY:**
+>
 > ```bash
 > docker run --rm php:8.3-alpine php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
 > ```
@@ -116,6 +118,7 @@ docker compose -f docker/docker-compose.yml down -v
 Jika server punya domain dan mau pakai **Let's Encrypt**:
 
 ### Opsi A — Gunakan Nginx di host (recommended)
+
 Install Nginx dan Certbot di host, lalu proxy ke container port 80:
 
 ```nginx
@@ -139,6 +142,7 @@ sudo certbot --nginx -d yourdomain.com
 ```
 
 ### Opsi B — Uncomment certbot di docker-compose.yml
+
 Uncomment section `proxy` dan `certbot` di `docker/docker-compose.yml`.
 
 ---
@@ -151,6 +155,7 @@ bash docker/scripts/deploy.sh
 ```
 
 Script deploy otomatis akan:
+
 1. Build ulang image dengan kode terbaru
 2. Jalankan `php artisan migrate`
 3. Jalankan `php artisan config:cache`, `route:cache`, `view:cache`
