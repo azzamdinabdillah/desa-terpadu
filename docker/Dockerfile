@@ -28,6 +28,8 @@ COPY . .
 
 # Placeholder APP env so Vite can build
 ENV VITE_APP_NAME="Desa Terpadu"
+ENV VITE_APP_SUB_URL=""
+ENV VITE_APP_URL=""
 
 # Build frontend assets (Vite + Wayfinder plugin)
 RUN npm run build
